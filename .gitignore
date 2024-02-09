@@ -1,0 +1,14 @@
+# 의존성
+/node_modules/
+
+# FE 빌드 디렉토리
+.next/
+
+# BE 빌드 디렉토리
+dist/
+
+# Turbo 캐시 및 임시 파일
+.turbo/
+
+# 공통 환경 설정 파일
+.env
