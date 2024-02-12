@@ -2,6 +2,8 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Users } from '../database/entities/user.entity';
@@ -11,6 +13,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
   constructor(
     @InjectRepository(Users)
     private userRepository: Repository<Users>,
@@ -51,7 +54,24 @@ export class UsersService {
     }
   }
 
-  async findOne(username: string): Promise<Users | undefined> {
-    return this.userRepository.findOne({ where: { username } });
+  async findOne(email: string): Promise<Users | undefined> {
+    return this.userRepository.findOne({
+      where: { email },
+    });
+  }
+
+  async findById(userId: number): Promise<Users | undefined> {
+    return this.userRepository.findOne({ where: { userId } });
+  }
+
+  async delete(userId: number) {
+    this.logger.log(`Delete user called: ${userId}`);
+
+    const result = await this.userRepository.delete(userId);
+    if (result.affected === 0) {
+      throw new NotFoundException(`User with ID "${userId}" not found`);
+    }
+    this.logger.log(`Delete user successful: ${userId}`);
+    return null;
   }
 }
