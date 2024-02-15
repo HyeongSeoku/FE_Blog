@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Post,
+  Req,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -13,6 +14,8 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { Users } from 'src/database/entities/user.entity';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { LoginDto } from 'src/users/dto/login-user.dto';
+import { AuthenticatedRequest } from './auth.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -23,8 +26,8 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Body() user: Users) {
-    return this.authService.login(user);
+  async login(@Request() req: AuthenticatedRequest) {
+    return this.authService.login(req);
   }
 
   @Post('signup')

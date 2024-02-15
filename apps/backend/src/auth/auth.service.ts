@@ -1,8 +1,9 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, Req, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Users } from 'src/database/entities/user.entity';
+import { AuthenticatedRequest } from './auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -30,9 +31,12 @@ export class AuthService {
     return null;
   }
 
-  async login(user: Users) {
-    const access_token = await this.generateToken(user);
+  async login(@Req() req: AuthenticatedRequest) {
+    if ('userId' in req.user) {
+      const access_token = await this.generateToken(req.user);
+      return { access_token };
+    }
 
-    return { access_token };
+    throw new UnauthorizedException();
   }
 }
