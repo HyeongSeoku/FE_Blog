@@ -23,4 +23,11 @@ export class Users {
 
   @Column({ name: 'last_login', type: 'timestamp', nullable: true })
   lastLogin: Date | null;
+
+  @Column({ type: 'tinyint', name: 'is_admin' })
+  private is_admin: number;
+
+  get isAdmin(): boolean {
+    return this.is_admin === 1;
+  }
 }
