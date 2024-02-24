@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Users } from 'src/database/entities/user.entity';
 import { AuthenticatedRequest } from './auth.interface';
+import { UserResponseDto } from 'src/users/dto/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -21,12 +22,11 @@ export class AuthService {
   async validateUser(
     email: string,
     password: string,
-  ): Promise<Omit<Users, 'password'>> {
+  ): Promise<UserResponseDto> {
     const user = await this.usersService.findOne(email);
 
     if (user && bcrypt.compareSync(password, user.password)) {
-      const { password, ...result } = user;
-      return result;
+      return new UserResponseDto(user);
     }
     return null;
   }

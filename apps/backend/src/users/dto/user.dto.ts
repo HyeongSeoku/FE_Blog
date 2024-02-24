@@ -4,6 +4,8 @@ import {
   IsNotEmpty,
   IsEmail,
   Matches,
+  IsDate,
+  IsBoolean,
 } from 'class-validator';
 import { Users } from 'src/database/entities/user.entity';
 
@@ -29,11 +31,17 @@ export class CreateUserDto {
 /** 유저 응답 DTO */
 export class UserResponseDto {
   userId: number;
+
   username: string;
+
   email: string;
+
   createdAt: Date;
+
   updatedAt: Date;
+
   lastLogin: Date;
+
   isAdmin: boolean;
 
   // password는 제거하고 응답 반환
