@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Users } from './user.entity';
-import { Categories } from './categories';
+import { Categories } from './categories.entity';
 
 @Entity('posts')
 export class Posts {
@@ -25,11 +25,11 @@ export class Posts {
   @Column({ name: 'updated_at' })
   updatedAt: Date;
 
-  @ManyToOne(() => Users)
-  @JoinColumn({ name: 'fk_user_id' })
+  @ManyToOne(() => Users, (users) => users.userId)
+  @JoinColumn({ name: 'user_id' })
   user: Users;
 
-  @ManyToOne(() => Categories)
-  @JoinColumn({ name: 'fk_category_id' })
+  @ManyToOne(() => Categories, (category) => category.categoryId)
+  @JoinColumn({ name: 'category_id' })
   category: Categories;
 }

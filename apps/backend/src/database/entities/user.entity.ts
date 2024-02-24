@@ -21,6 +21,13 @@ export class Users {
   })
   createdAt: Date;
 
+  @Column({
+    name: 'updated_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
+
   @Column({ name: 'last_login', type: 'timestamp', nullable: true })
   lastLogin: Date | null;
 
