@@ -48,3 +48,13 @@ export class UserResponseDto {
     this.isAdmin = user.isAdmin;
   }
 }
+
+/** 유저 로그인 DTO */
+export class LoginUserDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @MinLength(8)
+  password: string;
+}
