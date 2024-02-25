@@ -3,9 +3,12 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
+  Logger,
   Post,
   Req,
   Request,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -18,6 +21,8 @@ import { RateLimit } from 'nestjs-rate-limiter';
 
 @Controller('auth')
 export class AuthController {
+  private readonly logger = new Logger(AuthController.name);
+
   constructor(
     private authService: AuthService,
     private readonly usersService: UsersService,
@@ -30,6 +35,19 @@ export class AuthController {
     return this.authService.login(req);
   }
 
+  @Post('refresh')
+  async refreshTokens(
+    @Req() request: Request,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const authorizationHeader = request.headers['authorization'];
+    if (!authorizationHeader) {
+      throw new UnauthorizedException('Authorization header is missing');
+    }
+
+    const bearerToken = authorizationHeader.split(' ')[1];
+    return this.authService.generateNewAccessToken(bearerToken);
+  }
+
   @RateLimit({ points: 2, duration: 60 })
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto) {
@@ -38,13 +56,14 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getProfile(@Request() req) {
-    return await this.usersService.findById(req.user.userId);
+  async getProfile(@Req() req) {
+    this.logger.log(req);
+    // return await this.usersService.findById(req.user.userId);
   }
 
   @UseGuards(LocalAuthGuard)
   @Delete('withdrawal')
-  async deleteUser(@Request() req): Promise<void> {
+  async deleteUser(@Req() req): Promise<void> {
     await this.usersService.delete(req.user.id);
   }
 }
