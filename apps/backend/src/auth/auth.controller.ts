@@ -58,7 +58,7 @@ export class AuthController {
   @Get('me')
   async getProfile(@Req() req) {
     this.logger.log(req);
-    // return await this.usersService.findById(req.user.userId);
+    return await this.usersService.findById(req.user.userId);
   }
 
   @UseGuards(LocalAuthGuard)
