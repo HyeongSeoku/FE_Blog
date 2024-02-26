@@ -8,6 +8,9 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "create-dev-env": "echo 'DB_HOST=localhost\nDB_USER=root\nDB_USERNAME=username\nDB_PASSWORD=s1mpl3\nDB_DATABASE=database\nPRIVATE_KEY_PATH=private_key_path\nPUBLIC_KEY_PATH=public_key_path' > .env.development",
+    "create-prod-env": "echo 'DB_HOST=localhost\nDB_USER=root\nDB_USERNAME=username\nDB_PASSWORD=s1mpl3\nDB_DATABASE=database\nPRIVATE_KEY_PATH=private_key_path\nPUBLIC_KEY_PATH=public_key_path' > .env.production",
+    "generate-rsa-keys": "mkdir -p cert && openssl genpkey -algorithm RSA -out cert/private_key.pem -pkeyopt rsa_keygen_bits:2048 && openssl rsa -pubout -in cert/private_key.pem -out cert/public_key.pem",
     "start": "nest start",
     "dev": "nest start --watch",
     "debug": "nest start --debug --watch",
