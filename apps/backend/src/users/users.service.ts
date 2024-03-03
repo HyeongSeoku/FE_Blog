@@ -28,7 +28,6 @@ export class UsersService {
       throw new ConflictException('Username already exists');
     }
 
-    // email 중복 검사
     const existingUserByEmail = await this.userRepository.findOne({
       where: { email: createUserDto.email },
     });
@@ -45,7 +44,7 @@ export class UsersService {
       });
 
       await this.userRepository.save(user);
-      //응답 데이터 비밀번호 삭제
+
       delete user.password;
 
       return user;

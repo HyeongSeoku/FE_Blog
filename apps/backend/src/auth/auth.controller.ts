@@ -8,6 +8,7 @@ import {
   Post,
   Req,
   Request,
+  Res,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ import { UsersService } from 'src/users/users.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { AuthenticatedRequest } from './auth.interface';
 import { RateLimit } from 'nestjs-rate-limiter';
+import { Request as ExpressRequest, Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -31,21 +33,14 @@ export class AuthController {
   @RateLimit({ points: 10, duration: 60 })
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req: AuthenticatedRequest) {
-    return this.authService.login(req);
+  async login(@Request() req: AuthenticatedRequest, @Res() res: Response) {
+    return this.authService.login(req, res);
   }
 
   @Post('refresh')
-  async refreshTokens(
-    @Req() request: Request,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
-    const authorizationHeader = request.headers['authorization'];
-    if (!authorizationHeader) {
-      throw new UnauthorizedException('Authorization header is missing');
-    }
-
-    const bearerToken = authorizationHeader.split(' ')[1];
-    return this.authService.generateNewAccessToken(bearerToken);
+  async refreshTokens(@Req() req: ExpressRequest, @Res() res: Response) {
+    this.logger.log('REFRESH TEST', res);
+    return this.authService.generateNewAccessToken(req, res);
   }
 
   @RateLimit({ points: 2, duration: 60 })

@@ -1,4 +1,10 @@
-import { Injectable, Logger, Req, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  Req,
+  Res,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -8,6 +14,13 @@ import { UserResponseDto } from 'src/users/dto/user.dto';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
+import { Request, Response } from 'express';
+import {
+  ACCESS_TOKEN_EXPIRE,
+  ACCESS_TOKEN_EXPIRE_TIME,
+  REFRESH_TOKEN_EXPIRE,
+  REFRESH_TOKEN_EXPIRE_TIME,
+} from './auth.constants';
 
 @Injectable()
 export class AuthService {
@@ -37,14 +50,14 @@ export class AuthService {
     const payload = { username: user.username, sub: user.userId };
 
     const { privateKey } = this.getJwtKeys();
-    const accessToken = this.jwtService.sign(payload, {
+    const accessToken = await this.jwtService.signAsync(payload, {
       privateKey: privateKey,
-      expiresIn: '60m',
+      expiresIn: ACCESS_TOKEN_EXPIRE,
       algorithm: 'RS256',
     });
-    const refreshToken = this.jwtService.sign(payload, {
+    const refreshToken = await this.jwtService.signAsync(payload, {
       privateKey: privateKey,
-      expiresIn: '7d',
+      expiresIn: REFRESH_TOKEN_EXPIRE,
       algorithm: 'RS256',
     });
 
@@ -56,20 +69,22 @@ export class AuthService {
     return !!refreshToken;
   }
 
-  async generateNewAccessToken(
-    token: string,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  async generateNewAccessToken(@Req() req: Request, @Res() res: Response) {
     try {
-      const isValidRefreshToken = await this.validateRefreshToken(token);
+      const refreshToken = req.cookies['refreshToken'];
+
+      this.logger.log('refreshToken:', refreshToken);
+
+      const isValidRefreshToken = await this.validateRefreshToken(refreshToken);
       if (!isValidRefreshToken) {
         throw new Error('Invalid refreshToken');
       }
 
-      await this.refreshTokenService.deleteToken(token);
+      await this.refreshTokenService.deleteToken(refreshToken);
 
       const { privateKey, publicKey } = this.getJwtKeys();
 
-      const decoded = this.jwtService.verify(token, {
+      const decoded = this.jwtService.verify(refreshToken, {
         publicKey,
       });
       if (decoded && decoded.username && decoded.sub) {
@@ -88,10 +103,29 @@ export class AuthService {
         await this.refreshTokenService.saveToken(
           newRefreshToken,
           decoded.sub,
-          new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          new Date(
+            Date.now() + REFRESH_TOKEN_EXPIRE_TIME * 24 * 60 * 60 * 1000,
+          ),
         );
 
-        return { accessToken, refreshToken: newRefreshToken };
+        const accessTokenExpires = new Date().setMinutes(
+          new Date().getMinutes() + ACCESS_TOKEN_EXPIRE_TIME,
+        );
+        const refreshTokenExpires = new Date().setDate(
+          new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+        );
+
+        res.cookie('accessToken', accessToken, {
+          httpOnly: true,
+          expires: new Date(accessTokenExpires),
+        });
+
+        res.cookie('refreshToken', refreshToken, {
+          httpOnly: true,
+          expires: new Date(refreshTokenExpires),
+        });
+
+        res.status(200).json({ message: 'Token reissue successful' });
       } else {
         throw new Error('Invalid refreshToken');
       }
@@ -112,20 +146,37 @@ export class AuthService {
     return null;
   }
 
-  async login(@Req() req: AuthenticatedRequest) {
+  async login(@Req() req: AuthenticatedRequest, @Res() res: Response) {
     if ('userId' in req.user) {
-      await this.refreshTokenService.deleteTokenForUserId(req.user.userId);
-
       const { accessToken, refreshToken } = await this.generateToken(req.user);
 
-      // 새 리프레시 토큰을 데이터베이스에 저장합니다.
+      await this.refreshTokenService.deleteTokenForUserId(req.user.userId);
+
+      // 새 리프레시 토큰을 데이터베이스에 저장
       await this.refreshTokenService.saveToken(
         refreshToken,
         req.user.userId,
         new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       );
 
-      return { accessToken, refreshToken };
+      const accessTokenExpires = new Date().setMinutes(
+        new Date().getMinutes() + ACCESS_TOKEN_EXPIRE_TIME,
+      );
+      const refreshTokenExpires = new Date().setDate(
+        new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+      );
+
+      res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        expires: new Date(accessTokenExpires),
+      });
+
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        expires: new Date(refreshTokenExpires),
+      });
+
+      res.status(200).json({ message: 'Login successful' });
     }
 
     throw new UnauthorizedException();
