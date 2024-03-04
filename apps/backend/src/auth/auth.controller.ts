@@ -3,13 +3,13 @@ import {
   Controller,
   Delete,
   Get,
-  Header,
+  HttpException,
+  HttpStatus,
   Logger,
   Post,
   Req,
   Request,
   Res,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -29,6 +29,23 @@ export class AuthController {
     private authService: AuthService,
     private readonly usersService: UsersService,
   ) {}
+
+  @Get('csrf-token')
+  async csrfToken(@Req() req: ExpressRequest, @Res() res: Response) {
+    try {
+      const csrfToken = req.csrfToken();
+      res.cookie('XSRF-TOKEN', csrfToken, {
+        httpOnly: true,
+      });
+
+      res.status(HttpStatus.OK).send('CSRF token generate success.');
+    } catch (error) {
+      throw new HttpException(
+        'CSRF token generate fail',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 
   @RateLimit({ points: 10, duration: 60 })
   @UseGuards(LocalAuthGuard)
