@@ -17,8 +17,9 @@ export class CsrfTokenInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       tap(() => {
-        logger.log('TESTTEST TESTESTSET S');
+        logger.log('TEST BEFORE csrf token');
         const newCsrfToken = request.csrfToken();
+        logger.log('TEST newCsrfToken');
 
         response.cookie('XSRF-TOKEN', newCsrfToken);
       }),
