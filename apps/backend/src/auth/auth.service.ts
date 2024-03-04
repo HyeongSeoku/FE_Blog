@@ -138,7 +138,7 @@ export class AuthService {
     email: string,
     password: string,
   ): Promise<UserResponseDto> {
-    const user = await this.usersService.findOne(email);
+    const user = await this.usersService.findOneByEmail(email);
 
     if (user && bcrypt.compareSync(password, user.password)) {
       return new UserResponseDto(user);
