@@ -24,19 +24,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         },
       ]),
       ignoreExpiration: false,
-      secretOrKeyProvider: () => {
-        return publicKey;
+      secretOrKeyProvider: (request, rawJwtToken, done) => {
+        return done(null, publicKey);
       },
       algorithms: ['RS256'],
     });
-
-    this.logger.debug(
-      `JWT Strategy configured with public key path: ${publicKeyPath}`,
-    );
   }
 
   async validate(payload: any) {
-    this.logger.debug('JwtStrategy validate method is called', payload);
     return { userId: payload.sub, username: payload.username };
   }
 }

@@ -176,7 +176,7 @@ export class AuthService {
         expires: new Date(refreshTokenExpires),
       });
 
-      res.status(200).json({ message: 'Login successful' });
+      return res.status(200).json({ message: 'Login successful' });
     }
 
     throw new UnauthorizedException();

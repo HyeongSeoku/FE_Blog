@@ -6,6 +6,7 @@ import {
   Logger,
   HttpStatus,
 } from '@nestjs/common';
+import { Response } from 'express';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -15,6 +16,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
+
+    if (response.headersSent) {
+      return;
+    }
+
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
@@ -25,6 +31,20 @@ export class AllExceptionsFilter implements ExceptionFilter {
       const message = err.getResponse();
       this.logger.error(`CSRF error: ${message} - Path: ${request.url}`);
     }
+
+    const message =
+      exception instanceof HttpException
+        ? exception.getResponse()
+        : 'Internal Server Error';
+
+    response
+      .status(status) // 'status' 메서드 호출
+      .json({
+        statusCode: status,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        message: message,
+      });
 
     // ... 기타 로깅과 예외 처리 로직
   }

@@ -56,7 +56,6 @@ export class AuthController {
 
   @Post('refresh')
   async refreshTokens(@Req() req: ExpressRequest, @Res() res: Response) {
-    this.logger.log('REFRESH TEST', res);
     return this.authService.generateNewAccessToken(req, res);
   }
 
@@ -68,8 +67,8 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getProfile(@Req() req) {
-    this.logger.log(req);
+  async getProfile(@Req() req: AuthenticatedRequest) {
+    this.logger.log('ME TEST', req);
     return await this.usersService.findById(req.user.userId);
   }
 
