@@ -1,4 +1,6 @@
 import {
+  HttpException,
+  HttpStatus,
   Injectable,
   Logger,
   Req,
@@ -73,11 +75,9 @@ export class AuthService {
     try {
       const refreshToken = req.cookies['refreshToken'];
 
-      this.logger.log('refreshToken:', refreshToken);
-
       const isValidRefreshToken = await this.validateRefreshToken(refreshToken);
       if (!isValidRefreshToken) {
-        throw new Error('Invalid refreshToken');
+        return res.status(HttpStatus.UNAUTHORIZED).json('Invalid refreshToken');
       }
 
       await this.refreshTokenService.deleteToken(refreshToken);
@@ -127,10 +127,10 @@ export class AuthService {
 
         res.status(200).json({ message: 'Token reissue successful' });
       } else {
-        throw new Error('Invalid refreshToken');
+        return res.status(HttpStatus.UNAUTHORIZED).json('Invalid refreshToken');
       }
     } catch (e) {
-      throw new UnauthorizedException();
+      return res.status(HttpStatus.UNAUTHORIZED).json('Invalid refreshToken');
     }
   }
 

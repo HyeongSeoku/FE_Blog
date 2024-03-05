@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
+import { Request } from 'express';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -13,7 +14,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const publicKey = fs.readFileSync(publicKeyPath, 'utf8');
 
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request: Request) => {
+          if (!request || !request?.cookies) {
+            return null;
+          }
+          const token = request.cookies['accessToken'];
+          return token;
+        },
+      ]),
       ignoreExpiration: false,
       secretOrKeyProvider: () => {
         return publicKey;
@@ -27,7 +36,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    this.logger.log(payload);
+    this.logger.debug('JwtStrategy validate method is called', payload);
     return { userId: payload.sub, username: payload.username };
   }
 }

@@ -33,14 +33,16 @@ import { CsrfTokenInterceptor } from './interceptors/csrf-token.interceptor';
   controllers: [AppController],
   providers: [
     AppService,
-    { provide: APP_INTERCEPTOR, useClass: CsrfTokenInterceptor },
+    // { provide: APP_INTERCEPTOR, useClass: CsrfTokenInterceptor },
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(csurf({ cookie: { key: 'XSRF-TOKEN', httpOnly: true } }))
-      .exclude({ path: 'auth/login', method: RequestMethod.POST })
-      .forRoutes({ path: '*', method: RequestMethod.ALL }); // CHECK: 특정 경로에만 적용할지 추후 결정
-  }
-}
+export class AppModule {}
+
+// export class AppModule implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer
+//       .apply(csurf({ cookie: { key: 'XSRF-TOKEN', httpOnly: true } }))
+//       .exclude({ path: 'auth/login', method: RequestMethod.POST })
+//       .forRoutes({ path: '*', method: RequestMethod.ALL }); // CHECK: 특정 경로에만 적용할지 추후 결정
+//   }
+// }
