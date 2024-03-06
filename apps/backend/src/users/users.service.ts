@@ -5,7 +5,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/user.dto';
+import { CreateUserDto, UserResponseDto } from './dto/user.dto';
 import { Users } from '../database/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -59,8 +59,12 @@ export class UsersService {
     });
   }
 
-  async findById(userId: number): Promise<Users | undefined> {
-    return this.userRepository.findOne({ where: { userId } });
+  async findById(
+    userId: number,
+  ): Promise<Omit<UserResponseDto, 'userId'> | undefined> {
+    const user = await this.userRepository.findOne({ where: { userId } });
+    const userSafeData = user.toSafeObject();
+    return userSafeData;
   }
 
   async delete(userId: number) {

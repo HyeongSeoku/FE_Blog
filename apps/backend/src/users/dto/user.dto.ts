@@ -31,7 +31,6 @@ export class CreateUserDto {
 /** 유저 응답 DTO */
 export class UserResponseDto {
   userId: number;
-
   username: string;
 
   email: string;
