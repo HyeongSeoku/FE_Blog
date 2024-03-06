@@ -26,16 +26,29 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    if (status === HttpStatus.FORBIDDEN) {
-      const err = exception as HttpException;
-      const message = err.getResponse();
-      this.logger.error(`CSRF error: ${message} - Path: ${request.url}`);
-    }
-
     const message =
       exception instanceof HttpException
         ? exception.getResponse()
         : 'Internal Server Error';
+
+    if (status === HttpStatus.FORBIDDEN) {
+      this.logger.error(`CSRF error: ${message} - Path: ${request.url}`);
+    }
+
+    if (status === HttpStatus.UNAUTHORIZED) {
+      const pastDate = new Date(0);
+      this.logger.log(`Unauthorized Error ${message}`);
+
+      // 쿠키 만료
+      response.cookie('accessToken', '', {
+        httpOnly: true,
+        expires: pastDate,
+      });
+      response.cookie('refreshToken', '', {
+        httpOnly: true,
+        expires: pastDate,
+      });
+    }
 
     response
       .status(status) // 'status' 메서드 호출
