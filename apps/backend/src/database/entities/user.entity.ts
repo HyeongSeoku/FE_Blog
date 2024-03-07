@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { AfterLoad, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class Users {
@@ -21,13 +21,28 @@ export class Users {
   })
   createdAt: Date;
 
+  @Column({
+    name: 'updated_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
+
   @Column({ name: 'last_login', type: 'timestamp', nullable: true })
   lastLogin: Date | null;
 
   @Column({ type: 'tinyint', name: 'is_admin' })
   private is_admin: number;
 
-  get isAdmin(): boolean {
-    return this.is_admin === 1;
+  @AfterLoad()
+  setIsAdmin() {
+    this.isAdmin = this.is_admin === 1;
+  }
+
+  isAdmin: boolean;
+
+  public toSafeObject() {
+    const { is_admin, password, userId, ...safeData } = this;
+    return safeData;
   }
 }

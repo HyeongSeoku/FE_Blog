@@ -6,18 +6,17 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Users } from './user.entity';
-import { Categories } from './categories.entity';
 
-@Entity('posts')
-export class Posts {
-  @PrimaryGeneratedColumn()
-  postId: number;
+@Entity('refresh_token')
+export class RefreshToken {
+  @PrimaryGeneratedColumn({ name: 'token_id' })
+  tokenId: number;
 
-  @Column()
-  title: String;
+  @Column({ type: 'varchar', length: 255 })
+  token: string;
 
-  @Column()
-  body: string;
+  @Column({ type: 'timestamp', name: 'expiry_date' })
+  expiryDate: Date;
 
   @Column({
     type: 'timestamp',
@@ -34,10 +33,6 @@ export class Posts {
   updatedAt: Date;
 
   @ManyToOne(() => Users, (users) => users.userId)
-  @JoinColumn({ name: 'user_id' })
-  user: Users;
-
-  @ManyToOne(() => Categories, (category) => category.categoryId)
-  @JoinColumn({ name: 'category_id' })
-  category: Categories;
+  @JoinColumn({ name: 'userId' })
+  users: Users;
 }

@@ -14,7 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: process.env.NODE_ENV !== 'production',
+        logging: process.env.NODE_ENV !== 'production',
         extra: {
           ssl: process.env.NODE_ENV === 'production', // SSL 활성화 여부를 환경에 따라 결정
         },
