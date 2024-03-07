@@ -13,10 +13,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './local-auth.guard';
+import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { CreateUserDto } from 'src/users/dto/user.dto';
 import { UsersService } from 'src/users/users.service';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AuthenticatedRequest } from './auth.interface';
 import { RateLimit } from 'nestjs-rate-limiter';
 import { Request as ExpressRequest, Response } from 'express';
@@ -68,6 +68,8 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getProfile(@Req() req: AuthenticatedRequest) {
+    const test = await this.usersService.findById(req.user.userId);
+    this.logger.log('TEST', test);
     return await this.usersService.findById(req.user.userId);
   }
 
