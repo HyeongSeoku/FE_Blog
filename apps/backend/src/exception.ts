@@ -36,18 +36,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     }
 
     if (status === HttpStatus.UNAUTHORIZED) {
-      const pastDate = new Date(0);
       this.logger.log(`Unauthorized Error ${message}`);
-
-      // 쿠키 만료
-      response.cookie('accessToken', '', {
-        httpOnly: true,
-        expires: pastDate,
-      });
-      response.cookie('refreshToken', '', {
-        httpOnly: true,
-        expires: pastDate,
-      });
     }
 
     response
