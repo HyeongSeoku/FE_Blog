@@ -14,6 +14,7 @@ import { RefreshTokenModule } from './refresh-token/refresh-token.module';
 import * as csurf from 'csurf';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CsrfTokenInterceptor } from './interceptors/csrf-token.interceptor';
+import PostModule from './posts/posts.module';
 
 @Module({
   imports: [
@@ -24,11 +25,11 @@ import { CsrfTokenInterceptor } from './interceptors/csrf-token.interceptor';
           ? '.env.production'
           : '.env.development',
     }),
-
     DatabaseModule,
     UsersModule,
     AuthModule,
     RefreshTokenModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [
@@ -36,7 +37,6 @@ import { CsrfTokenInterceptor } from './interceptors/csrf-token.interceptor';
     { provide: APP_INTERCEPTOR, useClass: CsrfTokenInterceptor },
   ],
 })
-// export class AppModule {}
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
