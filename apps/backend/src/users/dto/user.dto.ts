@@ -6,6 +6,8 @@ import {
   Matches,
   IsDate,
   IsBoolean,
+  isNumber,
+  IsNumber,
 } from 'class-validator';
 import { Users } from 'src/database/entities/user.entity';
 
@@ -64,4 +66,12 @@ export class LoginUserDto {
   @IsString()
   @MinLength(8)
   password: string;
+}
+
+export class ChangePasswordDto {
+  @IsString()
+  currentPassword: string;
+
+  @IsString()
+  newPassword: string;
 }

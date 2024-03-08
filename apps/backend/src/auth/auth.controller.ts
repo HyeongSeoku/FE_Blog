@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
-import { CreateUserDto } from 'src/users/dto/user.dto';
+import { ChangePasswordDto, CreateUserDto } from 'src/users/dto/user.dto';
 import { UsersService } from 'src/users/users.service';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AuthenticatedRequest } from './auth.interface';
@@ -75,5 +75,19 @@ export class AuthController {
   @Delete('withdrawal')
   async deleteUser(@Req() req): Promise<void> {
     await this.usersService.delete(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  async changePassword(
+    @Req() req,
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Res() res,
+  ): Promise<void> {
+    return await this.usersService.changePassword(
+      req.user.userId,
+      changePasswordDto,
+      res,
+    );
   }
 }
