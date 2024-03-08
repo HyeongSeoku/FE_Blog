@@ -1,6 +1,7 @@
-import { Controller, Get, Logger, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, UseGuards } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { AdminGuard } from 'src/guards/admin-auth.guard';
+import { CreatePostDto } from './dto/post.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -14,8 +15,8 @@ export class PostsController {
   }
 
   //   @UseGuards(AdminGuard)
-  @Post()
-  createPost() {
-    this.logger.log('글 생성');
+  @Post('create')
+  newPost(@Body() createPostDto: CreatePostDto) {
+    return this.postsService.createPost(createPostDto);
   }
 }

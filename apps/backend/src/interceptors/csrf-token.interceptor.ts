@@ -14,6 +14,7 @@ export class CsrfTokenInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const response = context.switchToHttp().getResponse();
     const logger = new Logger(CsrfTokenInterceptor.name);
+    logger.log('CSRF TEST', request.headers);
 
     return next.handle().pipe(
       tap(() => {
