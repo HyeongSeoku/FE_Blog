@@ -39,14 +39,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       this.logger.log(`Unauthorized Error ${message}`);
     }
 
-    this.logger.log(
-      'TEST exception',
-      status,
-      exception,
-      message,
-      request.headers,
-    );
-
     response
       .status(status) // 'status' 메서드 호출
       .json({

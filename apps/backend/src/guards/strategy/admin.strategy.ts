@@ -16,10 +16,13 @@ export class AdminStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          if (!request || !request?.cookies) {
+          const authToken = request?.headers?.authorization;
+
+          if (!request || !authToken) {
             return null;
           }
-          const token = request.cookies['accessToken'];
+
+          const token = authToken.split(' ')[1];
           return token;
         },
       ]),

@@ -30,28 +30,17 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) {}
 
-  @Get('csrf-token')
-  async csrfToken(@Req() req: ExpressRequest, @Res() res: Response) {
-    try {
-      const csrfToken = req.csrfToken();
-      res.cookie('XSRF-TOKEN', csrfToken, {
-        httpOnly: true,
-      });
-
-      res.status(HttpStatus.OK).send('CSRF token generate success.');
-    } catch (error) {
-      throw new HttpException(
-        'CSRF token generate fail',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
   @RateLimit({ points: 10, duration: 60 })
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req: AuthenticatedRequest, @Res() res: Response) {
+  async login(@Req() req: AuthenticatedRequest, @Res() res: Response) {
     return this.authService.login(req, res);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  async logout(@Req() req: AuthenticatedRequest, @Res() res: Response) {
+    return this.authService.logout(req, res);
   }
 
   @Post('refresh')
