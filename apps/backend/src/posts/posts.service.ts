@@ -1,10 +1,10 @@
 import { Injectable, Logger, Req } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Posts } from 'src/database/entities/posts.entity';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/post.dto';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
+import * as sanitizeHtml from 'sanitize-html';
 
 @Injectable()
 export class PostsService {
@@ -15,6 +15,12 @@ export class PostsService {
   private readonly logger = new Logger(PostsService.name);
 
   async findAll(): Promise<Posts[]> {
+    this.logger.log(
+      'TEST SANIT TAG',
+      sanitizeHtml.defaults.allowedTags,
+      sanitizeHtml.defaults.allowedAttributes,
+    );
+
     return this.postsRepository
       .createQueryBuilder('post')
       .select('post.postId', 'postId')
@@ -31,11 +37,16 @@ export class PostsService {
     @Req() req: AuthenticatedRequest,
     createPostDto: CreatePostDto,
   ) {
-    this.logger.log('CREATE POST', JSON.stringify(req?.user));
+    const sanitizedBody = sanitizeHtml(createPostDto.body);
+
+    // TODO: category id 검증 (findOne) 로직 추가
+
     const newPost = this.postsRepository.create({
       ...createPostDto,
+      body: sanitizedBody,
       user: req.user,
     });
+
     await this.postsRepository.save(newPost);
 
     return newPost;

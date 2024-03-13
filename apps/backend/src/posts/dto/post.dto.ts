@@ -10,5 +10,5 @@ export class CreatePostDto {
   body: string;
 
   @IsNumber()
-  category_id: number;
+  categoryId: number;
 }

@@ -37,7 +37,13 @@ export class Posts {
   @JoinColumn({ name: 'user_id' })
   user: Users;
 
+  @Column({ name: 'user_id' })
+  userId: number;
+
   @ManyToOne(() => Categories, (category) => category.categoryId)
   @JoinColumn({ name: 'category_id' })
   category: Categories;
+
+  @Column({ name: 'category_id' })
+  categoryId: number;
 }
