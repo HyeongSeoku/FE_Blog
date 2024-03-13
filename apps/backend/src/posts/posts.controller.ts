@@ -4,12 +4,13 @@ import {
   Get,
   Logger,
   Post,
-  Request,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { AdminGuard } from 'src/guards/admin-auth.guard';
 import { CreatePostDto } from './dto/post.dto';
+import { AuthenticatedRequest } from 'src/auth/auth.interface';
 
 @Controller('posts')
 export class PostsController {
@@ -24,8 +25,11 @@ export class PostsController {
 
   @UseGuards(AdminGuard)
   @Post('create')
-  newPost(@Request() req, @Body() createPostDto: CreatePostDto) {
-    this.logger.log('TEST', req?.user);
-    return this.postsService.createPost(createPostDto);
+  newPost(
+    @Req() req: AuthenticatedRequest,
+    @Body() createPostDto: CreatePostDto,
+  ) {
+    this.logger.log('TEST', req.user);
+    return this.postsService.createPost(req, createPostDto);
   }
 }

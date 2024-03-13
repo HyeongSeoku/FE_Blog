@@ -5,10 +5,12 @@ import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Posts } from 'src/database/entities/posts.entity';
+import { AdminGuard } from 'src/guards/admin-auth.guard';
+import { UsersService } from 'src/users/users.service';
 
 @Module({
   imports: [UsersModule, SharedModule, TypeOrmModule.forFeature([Posts])],
-  providers: [PostsService],
+  providers: [AdminGuard, PostsService],
   controllers: [PostsController],
 })
-export default class PostModule {}
+export class PostsModule {}
