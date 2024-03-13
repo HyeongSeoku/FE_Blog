@@ -17,20 +17,14 @@ export class PostsService {
   async findAll(): Promise<Posts[]> {
     return this.postsRepository
       .createQueryBuilder('post')
-      .select([
-        'post.postId',
-        'post.title',
-        'post.body',
-        'post.createdAt',
-        'post.updatedAt',
-        'user.userId',
-      ])
-      .leftJoin('post.user', 'user')
-      .getMany();
-
-    // return this.postsRepository.find({
-    //   relations: ['category'],
-    // });
+      .select('post.postId', 'postId')
+      .addSelect('post.title', 'title')
+      .addSelect('post.body', 'body')
+      .addSelect('post.createdAt', 'createdAt')
+      .addSelect('post.updatedAt', 'updatedAt')
+      .addSelect('user.userId', 'userId') // 외래 키 컬럼만 추가
+      .leftJoin('post.user', 'user') // 여기서는 user 엔티티를 조인하지만, select에는 포함하지 않습니다.
+      .getRawMany();
   }
 
   async createPost(
