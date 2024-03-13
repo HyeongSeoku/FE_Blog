@@ -1,29 +1,40 @@
-import { ExecutionContext, ForbiddenException, Logger } from '@nestjs/common';
+import {
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Observable } from 'rxjs';
+import { UsersService } from 'src/users/users.service';
 
-export class AdminGuard extends AuthGuard('admin') {
+@Injectable()
+export class AdminGuard extends AuthGuard('jwt') {
   private readonly logger = new Logger(AdminGuard.name);
+  constructor(private usersService: UsersService) {
+    super();
+  }
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    this.logger.log('TEST Admin Guard');
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    await super.canActivate(context);
 
-    try {
-      return super.canActivate(context);
-    } catch (e) {
-      this.logger.error('Exception in JwtAuthGuard: ', e);
-      throw e;
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+    if (!user) throw new UnauthorizedException();
+
+    const userData = await this.usersService.findById(user.userId);
+
+    if (!userData || !userData.isAdmin) {
+      throw new UnauthorizedException('Access Denied');
     }
+
+    return true;
   }
 
   handleRequest(err, user, info, context: ExecutionContext) {
     if (err || !user) {
-      // `info`가 `undefined`일 때를 대비한 처리
       const errorMessage = info?.message || 'Authentication error';
       this.logger.error(`Authentication Error: ${err || errorMessage}`);
-      // 적절한 예외 발생
       throw err || new ForbiddenException(errorMessage);
     }
     return user;

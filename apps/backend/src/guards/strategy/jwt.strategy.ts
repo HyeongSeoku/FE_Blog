@@ -14,18 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const publicKey = fs.readFileSync(publicKeyPath, 'utf8');
 
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (request: Request) => {
-          const authToken = request?.headers?.authorization;
-
-          if (!request || !authToken) {
-            return null;
-          }
-
-          const token = authToken.split(' ')[1];
-          return token;
-        },
-      ]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKeyProvider: (request, rawJwtToken, done) => {
         return done(null, publicKey);
