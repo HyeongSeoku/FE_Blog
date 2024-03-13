@@ -3,12 +3,9 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Logger,
   Post,
   Req,
-  Request,
   Res,
   UseGuards,
 } from '@nestjs/common';
