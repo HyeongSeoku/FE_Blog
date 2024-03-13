@@ -32,7 +32,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         : 'Internal Server Error';
 
     if (status === HttpStatus.FORBIDDEN) {
-      this.logger.error(`CSRF error: ${message} - Path: ${request.url}`);
+      this.logger.error(`${message} - Path: ${request.url}`);
     }
 
     if (status === HttpStatus.UNAUTHORIZED) {
