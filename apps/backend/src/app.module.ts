@@ -6,7 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { RefreshTokenModule } from './refresh-token/refresh-token.module';
-import PostModule from './posts/posts.module';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -21,7 +21,7 @@ import PostModule from './posts/posts.module';
     UsersModule,
     AuthModule,
     RefreshTokenModule,
-    PostModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
