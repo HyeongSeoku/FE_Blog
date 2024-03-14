@@ -21,23 +21,23 @@ export class AllExceptionsFilter implements ExceptionFilter {
       return;
     }
 
-    const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+    let status: number;
+    let message: string | object;
 
-    const message =
-      exception instanceof HttpException
-        ? exception.getResponse()
-        : 'Internal Server Error';
-
-    if (status === HttpStatus.FORBIDDEN) {
-      this.logger.error(`${message} - Path: ${request.url}`);
+    if (exception instanceof HttpException) {
+      status = exception.getStatus();
+      message = exception.getResponse();
+    } else if (exception instanceof Error) {
+      // 일반 Error인 경우, 500 상태와 함께 에러 메시지를 설정
+      status = HttpStatus.INTERNAL_SERVER_ERROR;
+      message = exception.message; // Error 객체의 message 사용
+    } else {
+      status = HttpStatus.INTERNAL_SERVER_ERROR;
+      message = 'Internal Server Error';
     }
 
-    if (status === HttpStatus.UNAUTHORIZED) {
-      this.logger.log(`Unauthorized Error ${message}`);
-    }
+    // 로깅 로직을 커스터마이징하여 메시지와 함께 추가 정보를 기록
+    this.logger.error(`[${status}] ${message} - Path: ${request.url}`);
 
     response
       .status(status) // 'status' 메서드 호출
