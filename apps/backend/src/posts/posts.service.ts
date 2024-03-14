@@ -2,11 +2,14 @@ import { Injectable, Logger, Req } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Posts } from 'src/database/entities/posts.entity';
 import { Repository } from 'typeorm';
-import { CreatePostDto } from './dto/post.dto';
+import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
 import * as sanitizeHtml from 'sanitize-html';
 import { Categories } from 'src/database/entities/categories.entity';
-import { FindAllPostParams } from './posts.service.interface';
+import {
+  FindAllPostParams,
+  FindAllPostResponse,
+} from './posts.service.interface';
 
 @Injectable()
 export class PostsService {
@@ -18,7 +21,9 @@ export class PostsService {
   ) {}
   private readonly logger = new Logger(PostsService.name);
 
-  async findAll({ categoryId }: FindAllPostParams): Promise<Posts[]> {
+  async findAll({
+    categoryId,
+  }: FindAllPostParams): Promise<FindAllPostResponse> {
     const queryBuilder = this.postsRepository
       .createQueryBuilder('post')
       .select('post.postId', 'postId')
@@ -37,7 +42,12 @@ export class PostsService {
       });
     }
 
-    return queryBuilder.getRawMany();
+    const postList = await queryBuilder.getRawMany();
+
+    return {
+      list: postList,
+      total: postList.length,
+    };
   }
 
   async createPost(
@@ -64,5 +74,44 @@ export class PostsService {
     await this.postsRepository.save(newPost);
 
     return newPost;
+  }
+
+  async updatePost(postId: number, updatePostDto: UpdatePostDto) {
+    const targetPost = await this.postsRepository.findOne({
+      where: { postId },
+    });
+
+    if (!targetPost) {
+      throw Error('Post id does not exist!');
+    }
+
+    if (typeof updatePostDto.title !== 'undefined' && !updatePostDto.title) {
+      throw Error('Title cannot contain empty values ');
+    }
+
+    if (typeof updatePostDto.body !== 'undefined' && !updatePostDto.body) {
+      throw Error('Body cannot contain empty values ');
+    }
+
+    if (updatePostDto.title) {
+      targetPost.title = updatePostDto.title;
+    }
+    if (updatePostDto.body) {
+      targetPost.body = updatePostDto.body;
+    }
+
+    if (updatePostDto.categoryId) {
+      const category = await this.categoryRepository.findOne({
+        where: { categoryId: updatePostDto.categoryId },
+      });
+
+      if (!category) throw new Error('Category not found!');
+    }
+
+    if (updatePostDto.categoryId) {
+      targetPost.categoryId = updatePostDto.categoryId;
+    }
+
+    return targetPost;
   }
 }

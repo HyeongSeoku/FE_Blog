@@ -12,3 +12,14 @@ export class CreatePostDto {
   @IsNumber()
   categoryId: number;
 }
+
+export class UpdatePostDto {
+  @IsString()
+  title?: string;
+
+  @IsString()
+  body?: string;
+
+  @IsNumber()
+  categoryId?: number;
+}

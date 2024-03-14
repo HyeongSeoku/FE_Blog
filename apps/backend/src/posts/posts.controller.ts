@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   Logger,
+  Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -10,9 +12,8 @@ import {
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { AdminGuard } from 'src/guards/admin-auth.guard';
-import { CreatePostDto } from './dto/post.dto';
+import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
-import { Request } from 'express';
 import { FindAllPostParams } from './posts.service.interface';
 
 @Controller('posts')
@@ -32,7 +33,16 @@ export class PostsController {
     @Req() req: AuthenticatedRequest,
     @Body() createPostDto: CreatePostDto,
   ) {
-    this.logger.log('TEST', req.user);
     return this.postsService.createPost(req, createPostDto);
+  }
+
+  @UseGuards(AdminGuard)
+  @Patch('update/:postId')
+  updatePost(
+    @Req() req: AuthenticatedRequest,
+    @Param('postId') postId: number,
+    @Body() updatePostDto: UpdatePostDto,
+  ) {
+    return this.postsService.updatePost(postId, updatePostDto);
   }
 }
