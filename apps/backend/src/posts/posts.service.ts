@@ -6,6 +6,7 @@ import { CreatePostDto } from './dto/post.dto';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
 import * as sanitizeHtml from 'sanitize-html';
 import { Categories } from 'src/database/entities/categories.entity';
+import { FindAllPostParams } from './posts.service.interface';
 
 @Injectable()
 export class PostsService {
@@ -17,14 +18,8 @@ export class PostsService {
   ) {}
   private readonly logger = new Logger(PostsService.name);
 
-  async findAll(): Promise<Posts[]> {
-    this.logger.log(
-      'TEST SANIT TAG',
-      sanitizeHtml.defaults.allowedTags,
-      sanitizeHtml.defaults.allowedAttributes,
-    );
-
-    return this.postsRepository
+  async findAll({ categoryId }: FindAllPostParams): Promise<Posts[]> {
+    const queryBuilder = this.postsRepository
       .createQueryBuilder('post')
       .select('post.postId', 'postId')
       .addSelect('post.title', 'title')
@@ -33,7 +28,16 @@ export class PostsService {
       .addSelect('post.updatedAt', 'updatedAt')
       .addSelect('user.userId', 'userId') // 외래 키 컬럼만 추가
       .leftJoin('post.user', 'user') // 여기서는 user 엔티티를 조인하지만, select에는 포함하지 않습니다.
-      .getRawMany();
+      .addSelect('category.categoryId', 'categoryId')
+      .leftJoin('post.category', 'category');
+
+    if (categoryId && typeof categoryId !== 'undefined') {
+      queryBuilder.andWhere('category.categoryId = :categoryId', {
+        categoryId,
+      });
+    }
+
+    return queryBuilder.getRawMany();
   }
 
   async createPost(

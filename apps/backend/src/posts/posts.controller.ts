@@ -4,6 +4,7 @@ import {
   Get,
   Logger,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -11,6 +12,7 @@ import { PostsService } from './posts.service';
 import { AdminGuard } from 'src/guards/admin-auth.guard';
 import { CreatePostDto } from './dto/post.dto';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
+import { Request } from 'express';
 
 @Controller('posts')
 export class PostsController {
@@ -19,8 +21,8 @@ export class PostsController {
   constructor(private postsService: PostsService) {}
 
   @Get()
-  getAllPosts() {
-    return this.postsService.findAll();
+  getAllPosts(@Query() query) {
+    return this.postsService.findAll(query);
   }
 
   @UseGuards(AdminGuard)
