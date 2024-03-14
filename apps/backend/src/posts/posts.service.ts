@@ -5,12 +5,15 @@ import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/post.dto';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
 import * as sanitizeHtml from 'sanitize-html';
+import { Categories } from 'src/database/entities/categories.entity';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(Posts)
     private postsRepository: Repository<Posts>,
+    @InjectRepository(Categories)
+    private categoryRepository: Repository<Categories>,
   ) {}
   private readonly logger = new Logger(PostsService.name);
 
@@ -38,8 +41,15 @@ export class PostsService {
     createPostDto: CreatePostDto,
   ) {
     const sanitizedBody = sanitizeHtml(createPostDto.body);
+    const categoryId = createPostDto.categoryId;
 
-    // TODO: category id 검증 (findOne) 로직 추가
+    if (categoryId) {
+      const category = await this.categoryRepository.findOne({
+        where: { categoryId },
+      });
+
+      if (!category) throw new Error('Category not found!');
+    }
 
     const newPost = this.postsRepository.create({
       ...createPostDto,

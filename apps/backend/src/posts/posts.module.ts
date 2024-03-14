@@ -6,9 +6,14 @@ import { PostsService } from './posts.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Posts } from 'src/database/entities/posts.entity';
 import { AdminGuard } from 'src/guards/admin-auth.guard';
+import { Categories } from 'src/database/entities/categories.entity';
 
 @Module({
-  imports: [UsersModule, SharedModule, TypeOrmModule.forFeature([Posts])],
+  imports: [
+    UsersModule,
+    SharedModule,
+    TypeOrmModule.forFeature([Posts, Categories]),
+  ],
   providers: [AdminGuard, PostsService],
   controllers: [PostsController],
 })
