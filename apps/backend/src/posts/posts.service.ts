@@ -1,8 +1,8 @@
-import { Injectable, Logger, Req } from '@nestjs/common';
+import { Injectable, Logger, Param, Req } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Posts } from 'src/database/entities/posts.entity';
 import { Repository } from 'typeorm';
-import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
+import { CreatePostDto, ResponsePostDto, UpdatePostDto } from './dto/post.dto';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
 import * as sanitizeHtml from 'sanitize-html';
 import { Categories } from 'src/database/entities/categories.entity';
@@ -22,7 +22,7 @@ export class PostsService {
   private readonly logger = new Logger(PostsService.name);
 
   async findAll({
-    categoryId,
+    categoryKey,
   }: FindAllPostParams): Promise<FindAllPostResponse> {
     const queryBuilder = this.postsRepository
       .createQueryBuilder('post')
@@ -32,13 +32,15 @@ export class PostsService {
       .addSelect('post.createdAt', 'createdAt')
       .addSelect('post.updatedAt', 'updatedAt')
       .addSelect('user.userId', 'userId') // 외래 키 컬럼만 추가
+      .addSelect('user.username', 'username') // 외래 키 컬럼만 추가
       .leftJoin('post.user', 'user') // 여기서는 user 엔티티를 조인하지만, select에는 포함하지 않습니다.
       .addSelect('category.categoryId', 'categoryId')
+      .addSelect('category.key', 'categoryKey')
       .leftJoin('post.category', 'category');
 
-    if (categoryId && typeof categoryId !== 'undefined') {
-      queryBuilder.andWhere('category.categoryId = :categoryId', {
-        categoryId,
+    if (categoryKey && typeof categoryKey !== 'undefined') {
+      queryBuilder.andWhere('category.key = :categoryKey', {
+        categoryKey,
       });
     }
 
@@ -48,6 +50,29 @@ export class PostsService {
       list: postList,
       total: postList.length,
     };
+  }
+
+  async findOnePost(@Param('postId') postId: number): Promise<ResponsePostDto> {
+    const targetPost = await this.postsRepository.findOne({
+      where: { postId },
+      relations: ['user', 'category'],
+    });
+
+    if (!targetPost) throw Error('Post id does not exist!');
+
+    const response = {
+      ...targetPost,
+      user: {
+        userId: targetPost.user.userId,
+        username: targetPost.user.username,
+      },
+      category: {
+        categoryKey: targetPost.category.key,
+        categoryName: targetPost.category.name,
+      },
+    };
+
+    return response;
   }
 
   async createPost(
@@ -79,6 +104,7 @@ export class PostsService {
   async updatePost(postId: number, updatePostDto: UpdatePostDto) {
     const targetPost = await this.postsRepository.findOne({
       where: { postId },
+      relations: ['category', 'user'],
     });
 
     if (!targetPost) {
@@ -100,18 +126,33 @@ export class PostsService {
       targetPost.body = updatePostDto.body;
     }
 
-    if (updatePostDto.categoryId) {
+    if (updatePostDto.categoryKey) {
       const category = await this.categoryRepository.findOne({
-        where: { categoryId: updatePostDto.categoryId },
+        where: { key: updatePostDto.categoryKey },
       });
 
       if (!category) throw new Error('Category not found!');
     }
 
-    if (updatePostDto.categoryId) {
-      targetPost.categoryId = updatePostDto.categoryId;
-    }
+    await this.postsRepository.save(targetPost);
 
-    return targetPost;
+    const updatedPost = await this.postsRepository.findOne({
+      where: { postId },
+      relations: ['category', 'user'],
+    });
+
+    const response = {
+      ...updatedPost,
+      user: {
+        userId: updatedPost.user.userId,
+        username: updatedPost.user.username,
+      },
+      category: {
+        categoryKey: updatedPost.category.key,
+        categoryName: updatedPost.category.name,
+      },
+    };
+
+    return response;
   }
 }

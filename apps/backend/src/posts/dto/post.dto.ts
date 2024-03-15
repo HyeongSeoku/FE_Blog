@@ -21,5 +21,27 @@ export class UpdatePostDto {
   body?: string;
 
   @IsNumber()
-  categoryId?: number;
+  categoryKey?: string;
+}
+
+export class ResponsePostDto {
+  postId: number;
+
+  title: string;
+
+  body: string;
+
+  createdAt: Date;
+
+  updatedAt: Date;
+
+  user: {
+    userId: number;
+    username: string;
+  };
+
+  category: {
+    categoryKey: string;
+    categoryName: string;
+  };
 }

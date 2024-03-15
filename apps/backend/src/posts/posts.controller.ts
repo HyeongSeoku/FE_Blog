@@ -27,6 +27,11 @@ export class PostsController {
     return this.postsService.findAll(query);
   }
 
+  @Get(':postId')
+  getPost(@Param('postId') postId: number) {
+    return this.postsService.findOnePost(postId);
+  }
+
   @UseGuards(AdminGuard)
   @Post('create')
   newPost(

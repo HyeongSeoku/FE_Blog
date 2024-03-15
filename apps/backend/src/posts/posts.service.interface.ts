@@ -1,7 +1,8 @@
 import { Posts } from 'src/database/entities/posts.entity';
+import { ResponsePostDto } from './dto/post.dto';
 
 export interface FindAllPostParams {
-  categoryId?: number;
+  categoryKey?: string;
 }
 
 export interface FindAllPostResponse {
