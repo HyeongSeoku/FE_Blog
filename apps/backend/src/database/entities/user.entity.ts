@@ -8,7 +8,7 @@ export class Users {
   @Column({ length: 50, unique: true })
   username: string;
 
-  @Column({ length: 255 })
+  @Column({ length: 255, select: false })
   password: string;
 
   @Column({ length: 100, unique: true })
@@ -32,7 +32,7 @@ export class Users {
   lastLogin: Date | null;
 
   @Column({ type: 'tinyint', name: 'is_admin' })
-  private is_admin: number;
+  is_admin: number;
 
   @AfterLoad()
   setIsAdmin() {

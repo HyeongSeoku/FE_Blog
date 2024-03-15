@@ -64,6 +64,15 @@ export class UsersService {
   async findOneByEmail(email: string): Promise<Users | undefined> {
     return this.userRepository.findOne({
       where: { email },
+      select: [
+        'userId',
+        'email',
+        'username',
+        'createdAt',
+        'updatedAt',
+        'password',
+        'is_admin',
+      ],
     });
   }
 
