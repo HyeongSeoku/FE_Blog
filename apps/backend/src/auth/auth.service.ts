@@ -111,7 +111,7 @@ export class AuthService {
           new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
         );
 
-        res.cookie('refreshToken', refreshToken, {
+        res.cookie('refreshToken', newRefreshToken, {
           httpOnly: true,
           expires: new Date(refreshTokenExpires),
         });
