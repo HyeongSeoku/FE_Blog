@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Logger,
   Param,
@@ -15,6 +16,7 @@ import { AdminGuard } from 'src/guards/admin-auth.guard';
 import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
 import { FindAllPostParams } from './posts.service.interface';
+import { OwnerGuard } from 'src/guards/owner.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -41,13 +43,18 @@ export class PostsController {
     return this.postsService.createPost(req, createPostDto);
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(OwnerGuard)
   @Patch('update/:postId')
   updatePost(
-    @Req() req: AuthenticatedRequest,
     @Param('postId') postId: number,
     @Body() updatePostDto: UpdatePostDto,
   ) {
     return this.postsService.updatePost(postId, updatePostDto);
+  }
+
+  @UseGuards(OwnerGuard)
+  @Delete('delete/:postId')
+  deletePost(@Param('postId') postId: number) {
+    return this.postsService.deletePost(postId);
   }
 }

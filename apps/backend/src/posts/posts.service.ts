@@ -1,4 +1,12 @@
-import { Injectable, Logger, Param, Req } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+  Param,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Posts } from 'src/database/entities/posts.entity';
 import { Repository } from 'typeorm';
@@ -10,6 +18,7 @@ import {
   FindAllPostParams,
   FindAllPostResponse,
 } from './posts.service.interface';
+import { Response } from 'express';
 
 @Injectable()
 export class PostsService {
@@ -154,5 +163,15 @@ export class PostsService {
     };
 
     return response;
+  }
+
+  async deletePost(@Param('postId') postId: number) {
+    if (!postId) throw Error('Post id is required');
+    const targetPost = this.postsRepository.findOne({ where: { postId } });
+    if (!targetPost) throw Error('Post does not exist');
+
+    await this.postsRepository.delete(postId);
+
+    throw new HttpException('Post deleted successfully', HttpStatus.OK);
   }
 }
