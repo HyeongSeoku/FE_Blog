@@ -5,7 +5,6 @@ import {
   Logger,
   Param,
   Req,
-  Res,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Posts } from 'src/database/entities/posts.entity';
@@ -18,7 +17,6 @@ import {
   FindAllPostParams,
   FindAllPostResponse,
 } from './posts.service.interface';
-import { Response } from 'express';
 
 @Injectable()
 export class PostsService {
