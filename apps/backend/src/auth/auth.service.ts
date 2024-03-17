@@ -19,7 +19,6 @@ import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
 import { Request, Response } from 'express';
 import {
   ACCESS_TOKEN_EXPIRE,
-  ACCESS_TOKEN_EXPIRE_TIME,
   REFRESH_TOKEN_EXPIRE,
   REFRESH_TOKEN_EXPIRE_TIME,
 } from './auth.constants';
@@ -91,12 +90,12 @@ export class AuthService {
         const payload = { username: decoded.username, sub: decoded.sub };
         const accessToken = this.jwtService.sign(payload, {
           privateKey: privateKey,
-          expiresIn: '60m',
+          expiresIn: ACCESS_TOKEN_EXPIRE,
           algorithm: 'RS256',
         });
         const newRefreshToken = this.jwtService.sign(payload, {
           privateKey: privateKey,
-          expiresIn: '7d',
+          expiresIn: REFRESH_TOKEN_EXPIRE,
           algorithm: 'RS256',
         });
 
@@ -108,24 +107,16 @@ export class AuthService {
           ),
         );
 
-        const accessTokenExpires = new Date().setMinutes(
-          new Date().getMinutes() + ACCESS_TOKEN_EXPIRE_TIME,
-        );
         const refreshTokenExpires = new Date().setDate(
           new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
         );
 
-        res.cookie('accessToken', accessToken, {
-          httpOnly: true,
-          expires: new Date(accessTokenExpires),
-        });
-
-        res.cookie('refreshToken', refreshToken, {
+        res.cookie('refreshToken', newRefreshToken, {
           httpOnly: true,
           expires: new Date(refreshTokenExpires),
         });
 
-        res.status(200).json({ message: 'Token reissue successful' });
+        res.status(200).json({ accessToken });
       } else {
         return res.status(HttpStatus.UNAUTHORIZED).json('Invalid refreshToken');
       }
@@ -159,26 +150,39 @@ export class AuthService {
         new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       );
 
-      const accessTokenExpires = new Date().setMinutes(
-        new Date().getMinutes() + ACCESS_TOKEN_EXPIRE_TIME,
-      );
       const refreshTokenExpires = new Date().setDate(
         new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
       );
-
-      res.cookie('accessToken', accessToken, {
-        httpOnly: true,
-        expires: new Date(accessTokenExpires),
-      });
 
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         expires: new Date(refreshTokenExpires),
       });
 
-      return res.status(200).json({ message: 'Login successful' });
+      return res.status(200).json({ accessToken });
     }
 
     throw new UnauthorizedException();
+  }
+
+  async logout(@Req() req: AuthenticatedRequest, @Res() res: Response) {
+    try {
+      const userId = req.user?.userId;
+      if (!userId)
+        return res
+          .status(HttpStatus.UNAUTHORIZED)
+          .json({ message: 'User not authenticated' });
+
+      await this.refreshTokenService.deleteTokenForUserId(userId);
+      res.cookie('refreshToken', '', { httpOnly: true, expires: new Date(0) });
+
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'Logged out successfully' });
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Logged out failed' });
+    }
   }
 }

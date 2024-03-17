@@ -1,12 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity('categories')
 export class Categories {
-  @PrimaryGeneratedColumn()
-  categoryId: Number;
+  @PrimaryGeneratedColumn({ name: 'category_id' })
+  categoryId: number;
 
-  @Column()
-  name: String;
+  @Column({ unique: true })
+  name: string;
 
   @Column({
     type: 'timestamp',
@@ -21,4 +21,7 @@ export class Categories {
     default: () => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
+
+  @Column({ unique: true })
+  key: string;
 }

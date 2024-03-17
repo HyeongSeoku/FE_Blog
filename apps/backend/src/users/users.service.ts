@@ -1,11 +1,19 @@
 import {
   ConflictException,
+  HttpException,
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  Request,
+  Res,
 } from '@nestjs/common';
-import { CreateUserDto, UserResponseDto } from './dto/user.dto';
+import {
+  ChangePasswordDto,
+  CreateUserDto,
+  UserResponseDto,
+} from './dto/user.dto';
 import { Users } from '../database/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -56,6 +64,15 @@ export class UsersService {
   async findOneByEmail(email: string): Promise<Users | undefined> {
     return this.userRepository.findOne({
       where: { email },
+      select: [
+        'userId',
+        'email',
+        'username',
+        'createdAt',
+        'updatedAt',
+        'password',
+        'is_admin',
+      ],
     });
   }
 
@@ -65,6 +82,38 @@ export class UsersService {
     const user = await this.userRepository.findOne({ where: { userId } });
     const userSafeData = user.toSafeObject();
     return userSafeData;
+  }
+
+  async changePassword(
+    userId: number,
+    changePasswordDto: ChangePasswordDto,
+    @Res() res,
+  ) {
+    const { currentPassword, newPassword } = changePasswordDto;
+
+    const user = await this.userRepository.findOne({ where: { userId } });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const isPasswordMatching = await bcrypt.compare(
+      currentPassword,
+      user.password,
+    );
+
+    if (!isPasswordMatching) {
+      throw new HttpException(
+        'Current password is incorrect',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedNewPassword;
+    await this.userRepository.save(user);
+    res
+      .status(HttpStatus.OK)
+      .json({ message: 'Password successfully changed' });
   }
 
   async delete(userId: number) {

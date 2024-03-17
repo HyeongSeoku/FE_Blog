@@ -10,7 +10,7 @@ import { Posts } from './posts.entity';
 @Entity('comments')
 export class Comments {
   @PrimaryGeneratedColumn()
-  commentId: Number;
+  commentId: number;
 
   @Column({ name: 'created_at' })
   createdAt: Date;
