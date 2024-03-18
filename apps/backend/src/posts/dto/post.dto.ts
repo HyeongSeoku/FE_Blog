@@ -22,7 +22,7 @@ export class CreatePostDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  tagNames: string[];
+  tagNames?: string[];
 }
 
 export class UpdatePostDto {
@@ -34,6 +34,11 @@ export class UpdatePostDto {
 
   @IsNumber()
   categoryKey?: string;
+
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  tagNames?: string[];
 }
 
 export class ResponsePostDto {
