@@ -17,6 +17,7 @@ import {
   FindAllPostParams,
   FindAllPostResponse,
 } from './posts.service.interface';
+import { Tags } from 'src/database/entities/tags.entity';
 
 @Injectable()
 export class PostsService {
@@ -25,11 +26,14 @@ export class PostsService {
     private postsRepository: Repository<Posts>,
     @InjectRepository(Categories)
     private categoryRepository: Repository<Categories>,
+    @InjectRepository(Tags)
+    private tagsRepository: Repository<Tags>,
   ) {}
   private readonly logger = new Logger(PostsService.name);
 
   async findAll({
     categoryKey,
+    tagName,
   }: FindAllPostParams): Promise<FindAllPostResponse> {
     const queryBuilder = this.postsRepository
       .createQueryBuilder('post')
@@ -51,6 +55,12 @@ export class PostsService {
       });
     }
 
+    if (tagName && typeof tagName !== 'undefined') {
+      queryBuilder
+        .leftJoin('post.tags', 'tag') // post 엔티티와 tag 엔티티를 조인
+        .andWhere('tag.name IN (:...tagNames)', { tagNames: tagName });
+    }
+
     const postList = await queryBuilder.getRawMany();
 
     return {
@@ -62,10 +72,15 @@ export class PostsService {
   async findOnePost(@Param('postId') postId: number): Promise<ResponsePostDto> {
     const targetPost = await this.postsRepository.findOne({
       where: { postId },
-      relations: ['user', 'category'],
+      relations: ['user', 'category', 'tags'],
     });
 
     if (!targetPost) throw Error('Post id does not exist!');
+
+    const tags = targetPost.tags.map((tag) => ({
+      tagId: tag.tagId,
+      name: tag.name,
+    }));
 
     const response = {
       ...targetPost,
@@ -77,6 +92,7 @@ export class PostsService {
         categoryKey: targetPost.category.key,
         categoryName: targetPost.category.name,
       },
+      tags,
     };
 
     return response;
@@ -97,10 +113,34 @@ export class PostsService {
       if (!category) throw new Error('Category not found!');
     }
 
+    // 태그 처리
+    let tags = [];
+    if (createPostDto.tagNames && createPostDto.tagNames.length > 0) {
+      this.logger.log(
+        'TEST createPostDto.tagNames',
+        createPostDto.tagNames,
+        createPostDto.tagNames.length,
+      );
+      tags = await Promise.all(
+        createPostDto.tagNames.map(async (tagName) => {
+          let tag = await this.tagsRepository.findOne({
+            where: { name: tagName },
+          });
+          if (!tag) {
+            tag = this.tagsRepository.create({ name: tagName });
+            await this.tagsRepository.save(tag);
+          }
+          return tag;
+        }),
+      );
+    }
+
     const newPost = this.postsRepository.create({
       ...createPostDto,
       body: sanitizedBody,
       user: req.user,
+      category: { categoryId: createPostDto.categoryId }, // categoryId를 category 객체로 변환
+      tags,
     });
 
     await this.postsRepository.save(newPost);

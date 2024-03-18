@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 
 export class CreatePostDto {
   @IsNotEmpty()
@@ -9,8 +15,14 @@ export class CreatePostDto {
   @IsString()
   body: string;
 
+  @IsNotEmpty()
   @IsNumber()
   categoryId: number;
+
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  tagNames: string[];
 }
 
 export class UpdatePostDto {

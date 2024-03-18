@@ -7,12 +7,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Posts } from 'src/database/entities/posts.entity';
 import { AdminGuard } from 'src/guards/admin-auth.guard';
 import { Categories } from 'src/database/entities/categories.entity';
+import { Tags } from 'src/database/entities/tags.entity';
 
 @Module({
   imports: [
     UsersModule,
     SharedModule,
-    TypeOrmModule.forFeature([Posts, Categories]),
+    TypeOrmModule.forFeature([Posts, Categories, Tags]),
   ],
   providers: [AdminGuard, PostsService],
   controllers: [PostsController],
