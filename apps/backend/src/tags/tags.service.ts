@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Tags } from 'src/database/entities/tags.entity';
 import { Repository } from 'typeorm';
 import { CreateTagDto } from './tags.dto';
+import { SuccessResponse } from 'src/shared/response';
 
 @Injectable()
 export class TagsService {
@@ -63,10 +64,16 @@ export class TagsService {
     return targetTag;
   }
 
-  async deleteTag(@Param('tagId') tagId: number) {
+  async deleteTag(tagId: number) {
+    this.logger.log('TEST', tagId);
     const targetTag = await this.tagsRepository.findOne({ where: { tagId } });
 
     if (!targetTag)
       throw new NotFoundException(`Tag with ID ${tagId} not found.`);
+
+    await this.tagsRepository.delete(tagId);
+
+    const response = new SuccessResponse({ message: 'Delete complete' });
+    return response;
   }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -34,5 +35,11 @@ export class TagsController {
   @Patch('update/:tagId')
   updateTag(@Param('tagId') tagId: number, @Body() createTagDto: CreateTagDto) {
     return this.tagsService.updateTag(tagId, createTagDto);
+  }
+
+  @UseGuards(AdminGuard)
+  @Delete('delete/:tagId')
+  deleteTag(@Param('tagId') tagId: number) {
+    return this.tagsService.deleteTag(tagId);
   }
 }
