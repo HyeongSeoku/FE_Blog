@@ -39,19 +39,21 @@ export class PostsService {
   }: FindAllPostParams): Promise<FindAllPostResponse> {
     const queryBuilder = this.postsRepository
       .createQueryBuilder('post')
-      .select('post.postId', 'postId')
-      .addSelect('post.title', 'title')
-      .addSelect('post.body', 'body')
-      .addSelect('post.createdAt', 'createdAt')
-      .addSelect('post.updatedAt', 'updatedAt')
-      .addSelect('user.userId', 'userId') // 외래 키 컬럼만 추가
-      .addSelect('user.username', 'username') // 외래 키 컬럼만 추가
-      .leftJoin('post.user', 'user') // 여기서는 user 엔티티를 조인하지만, select에는 포함하지 않습니다.
-      .addSelect('category.categoryId', 'categoryId')
-      .addSelect('category.key', 'categoryKey')
+      .select([
+        'post.postId',
+        'post.title',
+        'post.body',
+        'post.createdAt',
+        'post.updatedAt',
+        'user.userId',
+        'user.username',
+        'category.categoryId',
+        'category.key',
+        'tags.tagId',
+        'tags.name',
+      ])
+      .leftJoin('post.user', 'user')
       .leftJoin('post.category', 'category')
-      .addSelect('tags.name', 'tagName')
-      .addSelect('tags.tagId', 'tagId')
       .leftJoin('post.tags', 'tags');
 
     if (categoryKey && typeof categoryKey !== 'undefined') {
@@ -62,11 +64,48 @@ export class PostsService {
 
     if (tagName && typeof tagName !== 'undefined') {
       queryBuilder
-        .leftJoin('post.tags', 'tag') // post 엔티티와 tag 엔티티를 조인
-        .andWhere('tag.name IN (:...tagNames)', { tagNames: tagName });
+        .leftJoin('post.tags', 'tag')
+        .andWhere('tag.name = :tagName', { tagName });
     }
 
-    const postList = await queryBuilder.getRawMany();
+    const rawPosts = await queryBuilder.getRawMany();
+
+    const postsById: { [key: number]: any } = {};
+
+    for (const rawPost of rawPosts) {
+      const postId = rawPost.post_post_id;
+
+      if (!postsById[postId]) {
+        postsById[postId] = {
+          postId: postId,
+          title: rawPost.post_title,
+          body: rawPost.post_body,
+          createdAt: rawPost.post_created_at,
+          updatedAt: rawPost.post_updated_at,
+          user: {
+            userId: rawPost.user_userId,
+            username: rawPost.user_username,
+          },
+          category: {
+            categoryId: rawPost.category_category_id,
+            categoryKey: rawPost.category_key,
+          },
+          tags: [],
+        };
+      }
+
+      if (
+        rawPost.tags_tag_id &&
+        !postsById[postId].tags.some((tag) => tag.tagId === rawPost.tags_tag_id)
+      ) {
+        postsById[postId].tags.push({
+          tagId: rawPost.tags_tag_id,
+          name: rawPost.tags_name,
+        });
+      }
+    }
+
+    const postList = Object.values(postsById);
 
     return {
       list: postList,
