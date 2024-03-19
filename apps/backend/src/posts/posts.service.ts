@@ -49,7 +49,10 @@ export class PostsService {
       .leftJoin('post.user', 'user') // 여기서는 user 엔티티를 조인하지만, select에는 포함하지 않습니다.
       .addSelect('category.categoryId', 'categoryId')
       .addSelect('category.key', 'categoryKey')
-      .leftJoin('post.category', 'category');
+      .leftJoin('post.category', 'category')
+      .addSelect('tags.name', 'tagName')
+      .addSelect('tags.tagId', 'tagId')
+      .leftJoin('post.tags', 'tags');
 
     if (categoryKey && typeof categoryKey !== 'undefined') {
       queryBuilder.andWhere('category.key = :categoryKey', {
