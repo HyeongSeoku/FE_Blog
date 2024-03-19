@@ -16,7 +16,7 @@ export class OwnerGuard extends AuthGuard('jwt') {
 
   constructor(
     private usersService: UsersService,
-    private postsSerivce: PostsService,
+    private postsService: PostsService,
   ) {
     super();
   }
@@ -34,7 +34,7 @@ export class OwnerGuard extends AuthGuard('jwt') {
       throw new UnauthorizedException('Access Denied');
     }
 
-    const postData = await this.postsSerivce.findOnePost(request.params.postId);
+    const postData = await this.postsService.findOnePost(request.params.postId);
 
     if (!postData) throw new Error('Post does not exist!');
 

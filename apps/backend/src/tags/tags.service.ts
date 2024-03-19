@@ -25,18 +25,16 @@ export class TagsService {
     return { list, total: list.length };
   }
 
-  async createTag(createTagDto: CreateTagDto) {
+  async getOrCreateTag(createTagDto: CreateTagDto) {
     const { name } = createTagDto;
+    const tagNameLower = name.toLowerCase();
     const existTag = await this.tagsRepository.findOne({
-      where: { name },
+      where: { name: tagNameLower },
     });
 
-    if (existTag)
-      throw new ConflictException(
-        `A tag with the name '${name}' already exists.`,
-      );
+    if (existTag) return existTag;
 
-    const newTag = this.tagsRepository.create({ name });
+    const newTag = this.tagsRepository.create({ name: tagNameLower });
 
     await this.tagsRepository.save(newTag);
 

@@ -2,11 +2,14 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Users } from './user.entity';
 import { Categories } from './categories.entity';
+import { Tags } from './tags.entity';
 
 @Entity('posts')
 export class Posts {
@@ -40,4 +43,12 @@ export class Posts {
   @ManyToOne(() => Categories, (category) => category.categoryId)
   @JoinColumn({ name: 'category_id' })
   category: Categories;
+
+  @ManyToMany((type) => Tags, (tag) => tag.posts)
+  @JoinTable({
+    name: 'posts_tags', // 중간 테이블의 이름
+    joinColumn: { name: 'post_id', referencedColumnName: 'postId' },
+    inverseJoinColumn: { name: 'tag_id', referencedColumnName: 'tagId' },
+  })
+  tags: Tags[];
 }

@@ -17,6 +17,8 @@ import {
   FindAllPostParams,
   FindAllPostResponse,
 } from './posts.service.interface';
+import { Tags } from 'src/database/entities/tags.entity';
+import { TagsService } from 'src/tags/tags.service';
 
 @Injectable()
 export class PostsService {
@@ -25,25 +27,34 @@ export class PostsService {
     private postsRepository: Repository<Posts>,
     @InjectRepository(Categories)
     private categoryRepository: Repository<Categories>,
+    @InjectRepository(Tags)
+    private tagsRepository: Repository<Tags>,
+    private readonly tagsService: TagsService,
   ) {}
   private readonly logger = new Logger(PostsService.name);
 
   async findAll({
     categoryKey,
+    tagName,
   }: FindAllPostParams): Promise<FindAllPostResponse> {
     const queryBuilder = this.postsRepository
       .createQueryBuilder('post')
-      .select('post.postId', 'postId')
-      .addSelect('post.title', 'title')
-      .addSelect('post.body', 'body')
-      .addSelect('post.createdAt', 'createdAt')
-      .addSelect('post.updatedAt', 'updatedAt')
-      .addSelect('user.userId', 'userId') // 외래 키 컬럼만 추가
-      .addSelect('user.username', 'username') // 외래 키 컬럼만 추가
-      .leftJoin('post.user', 'user') // 여기서는 user 엔티티를 조인하지만, select에는 포함하지 않습니다.
-      .addSelect('category.categoryId', 'categoryId')
-      .addSelect('category.key', 'categoryKey')
-      .leftJoin('post.category', 'category');
+      .select([
+        'post.postId',
+        'post.title',
+        'post.body',
+        'post.createdAt',
+        'post.updatedAt',
+        'user.userId',
+        'user.username',
+        'category.categoryId',
+        'category.key',
+        'tags.tagId',
+        'tags.name',
+      ])
+      .leftJoin('post.user', 'user')
+      .leftJoin('post.category', 'category')
+      .leftJoin('post.tags', 'tags');
 
     if (categoryKey && typeof categoryKey !== 'undefined') {
       queryBuilder.andWhere('category.key = :categoryKey', {
@@ -51,7 +62,50 @@ export class PostsService {
       });
     }
 
-    const postList = await queryBuilder.getRawMany();
+    if (tagName && typeof tagName !== 'undefined') {
+      queryBuilder
+        .leftJoin('post.tags', 'tag')
+        .andWhere('tag.name = :tagName', { tagName });
+    }
+
+    const rawPosts = await queryBuilder.getRawMany();
+
+    const postsById: { [key: number]: any } = {};
+
+    for (const rawPost of rawPosts) {
+      const postId = rawPost.post_post_id;
+
+      if (!postsById[postId]) {
+        postsById[postId] = {
+          postId: postId,
+          title: rawPost.post_title,
+          body: rawPost.post_body,
+          createdAt: rawPost.post_created_at,
+          updatedAt: rawPost.post_updated_at,
+          user: {
+            userId: rawPost.user_userId,
+            username: rawPost.user_username,
+          },
+          category: {
+            categoryId: rawPost.category_category_id,
+            categoryKey: rawPost.category_key,
+          },
+          tags: [],
+        };
+      }
+
+      if (
+        rawPost.tags_tag_id &&
+        !postsById[postId].tags.some((tag) => tag.tagId === rawPost.tags_tag_id)
+      ) {
+        postsById[postId].tags.push({
+          tagId: rawPost.tags_tag_id,
+          name: rawPost.tags_name,
+        });
+      }
+    }
+
+    const postList = Object.values(postsById);
 
     return {
       list: postList,
@@ -62,10 +116,15 @@ export class PostsService {
   async findOnePost(@Param('postId') postId: number): Promise<ResponsePostDto> {
     const targetPost = await this.postsRepository.findOne({
       where: { postId },
-      relations: ['user', 'category'],
+      relations: ['user', 'category', 'tags'],
     });
 
     if (!targetPost) throw Error('Post id does not exist!');
+
+    const tags = targetPost.tags.map((tag) => ({
+      tagId: tag.tagId,
+      name: tag.name,
+    }));
 
     const response = {
       ...targetPost,
@@ -77,6 +136,7 @@ export class PostsService {
         categoryKey: targetPost.category.key,
         categoryName: targetPost.category.name,
       },
+      tags,
     };
 
     return response;
@@ -97,10 +157,22 @@ export class PostsService {
       if (!category) throw new Error('Category not found!');
     }
 
+    // 태그 처리
+    let tags = [];
+    if (createPostDto.tagNames && createPostDto.tagNames.length > 0) {
+      tags = await Promise.all(
+        createPostDto.tagNames.map((tagName) =>
+          this.tagsService.getOrCreateTag({ name: tagName }),
+        ),
+      );
+    }
+
     const newPost = this.postsRepository.create({
       ...createPostDto,
       body: sanitizedBody,
       user: req.user,
+      category: { categoryId: createPostDto.categoryId }, // categoryId를 category 객체로 변환
+      tags,
     });
 
     await this.postsRepository.save(newPost);
@@ -126,14 +198,14 @@ export class PostsService {
       throw Error('Body cannot contain empty values ');
     }
 
-    if (updatePostDto.title) {
+    if (updatePostDto?.title) {
       targetPost.title = updatePostDto.title;
     }
-    if (updatePostDto.body) {
+    if (updatePostDto?.body) {
       targetPost.body = updatePostDto.body;
     }
 
-    if (updatePostDto.categoryKey) {
+    if (updatePostDto?.categoryKey) {
       const category = await this.categoryRepository.findOne({
         where: { key: updatePostDto.categoryKey },
       });
@@ -141,11 +213,19 @@ export class PostsService {
       if (!category) throw new Error('Category not found!');
     }
 
+    if (updatePostDto?.tagNames.length) {
+      targetPost.tags = await Promise.all(
+        updatePostDto.tagNames.map((tagName) =>
+          this.tagsService.getOrCreateTag({ name: tagName }),
+        ),
+      );
+    }
+
     await this.postsRepository.save(targetPost);
 
     const updatedPost = await this.postsRepository.findOne({
       where: { postId },
-      relations: ['category', 'user'],
+      relations: ['category', 'user', 'tags'],
     });
 
     const response = {

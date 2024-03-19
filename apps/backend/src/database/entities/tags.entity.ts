@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Posts } from './posts.entity';
 
 @Entity('tags')
 export class Tags {
@@ -21,4 +22,7 @@ export class Tags {
     default: () => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
+
+  @ManyToMany((type) => Posts, (post) => post.tags)
+  posts: Posts[];
 }
