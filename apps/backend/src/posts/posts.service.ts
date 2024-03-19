@@ -18,6 +18,7 @@ import {
   FindAllPostResponse,
 } from './posts.service.interface';
 import { Tags } from 'src/database/entities/tags.entity';
+import { TagsService } from 'src/tags/tags.service';
 
 @Injectable()
 export class PostsService {
@@ -28,6 +29,7 @@ export class PostsService {
     private categoryRepository: Repository<Categories>,
     @InjectRepository(Tags)
     private tagsRepository: Repository<Tags>,
+    private readonly tagsService: TagsService,
   ) {}
   private readonly logger = new Logger(PostsService.name);
 
@@ -116,22 +118,10 @@ export class PostsService {
     // 태그 처리
     let tags = [];
     if (createPostDto.tagNames && createPostDto.tagNames.length > 0) {
-      this.logger.log(
-        'TEST createPostDto.tagNames',
-        createPostDto.tagNames,
-        createPostDto.tagNames.length,
-      );
       tags = await Promise.all(
-        createPostDto.tagNames.map(async (tagName) => {
-          let tag = await this.tagsRepository.findOne({
-            where: { name: tagName },
-          });
-          if (!tag) {
-            tag = this.tagsRepository.create({ name: tagName });
-            await this.tagsRepository.save(tag);
-          }
-          return tag;
-        }),
+        createPostDto.tagNames.map((tagName) =>
+          this.tagsService.getOrCreateTag({ name: tagName }),
+        ),
       );
     }
 
@@ -166,14 +156,14 @@ export class PostsService {
       throw Error('Body cannot contain empty values ');
     }
 
-    if (updatePostDto.title) {
+    if (updatePostDto?.title) {
       targetPost.title = updatePostDto.title;
     }
-    if (updatePostDto.body) {
+    if (updatePostDto?.body) {
       targetPost.body = updatePostDto.body;
     }
 
-    if (updatePostDto.categoryKey) {
+    if (updatePostDto?.categoryKey) {
       const category = await this.categoryRepository.findOne({
         where: { key: updatePostDto.categoryKey },
       });
@@ -181,11 +171,19 @@ export class PostsService {
       if (!category) throw new Error('Category not found!');
     }
 
+    if (updatePostDto?.tagNames.length) {
+      targetPost.tags = await Promise.all(
+        updatePostDto.tagNames.map((tagName) =>
+          this.tagsService.getOrCreateTag({ name: tagName }),
+        ),
+      );
+    }
+
     await this.postsRepository.save(targetPost);
 
     const updatedPost = await this.postsRepository.findOne({
       where: { postId },
-      relations: ['category', 'user'],
+      relations: ['category', 'user', 'tags'],
     });
 
     const response = {

@@ -28,7 +28,7 @@ export class TagsController {
 
   @Post()
   createTag(@Body() createTagDto: CreateTagDto) {
-    return this.tagsService.createTag(createTagDto);
+    return this.tagsService.getOrCreateTag(createTagDto);
   }
 
   @UseGuards(AdminGuard)
