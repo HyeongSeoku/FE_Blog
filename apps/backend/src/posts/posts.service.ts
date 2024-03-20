@@ -17,7 +17,6 @@ import {
   FindAllPostParams,
   FindAllPostResponse,
 } from './posts.service.interface';
-import { Tags } from 'src/database/entities/tags.entity';
 import { TagsService } from 'src/tags/tags.service';
 
 @Injectable()
@@ -27,8 +26,6 @@ export class PostsService {
     private postsRepository: Repository<Posts>,
     @InjectRepository(Categories)
     private categoryRepository: Repository<Categories>,
-    @InjectRepository(Tags)
-    private tagsRepository: Repository<Tags>,
     private readonly tagsService: TagsService,
   ) {}
   private readonly logger = new Logger(PostsService.name);

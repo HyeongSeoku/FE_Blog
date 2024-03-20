@@ -20,5 +20,6 @@ import { TagsService } from 'src/tags/tags.service';
   ],
   providers: [AdminGuard, PostsService, TagsService],
   controllers: [PostsController],
+  exports: [PostsService],
 })
 export class PostsModule {}
