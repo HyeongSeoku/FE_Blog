@@ -14,10 +14,6 @@ export class CreateCommentDto {
   @Length(1, 200)
   content: string;
 
-  @IsNumber()
-  @IsOptional()
-  parentCommentId?: number;
-
   @IsBoolean()
   @IsOptional()
   isAnonymous?: boolean;

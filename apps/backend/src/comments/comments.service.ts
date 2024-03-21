@@ -20,24 +20,14 @@ export class CommentsService {
     req: AuthenticatedRequest,
     createCommentDto: CreateCommentDto,
   ) {
-    const { postId, content, isAnonymous, parentCommentId } = createCommentDto;
+    const { postId, content, isAnonymous } = createCommentDto;
     await this.postsService.findOnePost(postId);
 
     const formattedIsAnonymous = isAnonymous === undefined || !req.user;
 
-    if (parentCommentId) {
-      const targetParentComment = await this.commentsRepository.findOne({
-        where: { commentId: parentCommentId },
-      });
-
-      if (!targetParentComment)
-        throw new Error('Parent comment id does not exist!');
-    }
-
     const newComment = this.commentsRepository.create({
       post: { postId },
       content,
-      parent: parentCommentId ? { commentId: parentCommentId } : null,
       isAnonymous: formattedIsAnonymous,
       user: req.user || null,
     });
@@ -47,6 +37,36 @@ export class CommentsService {
     await this.commentsRepository.save(newComment);
 
     return newComment;
+  }
+
+  async createReplyComment(
+    req: AuthenticatedRequest,
+    parentCommentId: number,
+    createReplyCommentDto: CreateCommentDto,
+  ) {
+    const { postId, isAnonymous, content } = createReplyCommentDto;
+    await this.postsService.findOnePost(postId);
+
+    const targetParentComment = await this.commentsRepository.findOne({
+      where: { commentId: parentCommentId },
+    });
+
+    if (!targetParentComment)
+      throw new Error('Parent comment id does not exist!');
+
+    const formattedIsAnonymous = isAnonymous === undefined || !req.user;
+
+    const newReplyComment = this.commentsRepository.create({
+      post: { postId },
+      content,
+      parent: parentCommentId ? { commentId: parentCommentId } : null,
+      isAnonymous: formattedIsAnonymous,
+      user: req.user || null,
+    });
+
+    await this.commentsRepository.save(newReplyComment);
+
+    return newReplyComment;
   }
 
   async getCommentsWithReplies(postId: number) {

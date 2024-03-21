@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   Logger,
+  Param,
+  ParseIntPipe,
   Post,
   Req,
   UseGuards,
@@ -25,5 +27,19 @@ export class CommentsController {
     @Body() createCommentDto: CreateCommentDto,
   ) {
     return this.commentsService.createComment(req, createCommentDto);
+  }
+
+  @UseGuards(OptionalJwtAuthGuard)
+  @Post('reply/:parentCommentId')
+  createReplyComments(
+    @Req() req: AuthenticatedRequest,
+    @Param('parentCommentId', ParseIntPipe) parentCommentId: number,
+    @Body() createReplycommentDto: CreateCommentDto,
+  ) {
+    return this.commentsService.createReplyComment(
+      req,
+      parentCommentId,
+      createReplycommentDto,
+    );
   }
 }
