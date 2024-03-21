@@ -56,6 +56,6 @@ export class Comments {
   replies: Comments[];
 
   @ManyToOne(() => Comments, (comments) => comments.replies)
-  @JoinColumn({ name: 'parent_comment_id' })
+  @JoinColumn({ name: 'parents_comment_id' })
   parent: Comments;
 }
