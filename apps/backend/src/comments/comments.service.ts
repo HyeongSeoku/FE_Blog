@@ -25,13 +25,24 @@ export class CommentsService {
 
     const formattedIsAnonymous = isAnonymous === undefined || !req.user;
 
+    if (parentCommentId) {
+      const targetParentComment = await this.commentsRepository.findOne({
+        where: { commentId: parentCommentId },
+      });
+
+      if (!targetParentComment)
+        throw new Error('Parent comment id does not exist!');
+    }
+
     const newComment = this.commentsRepository.create({
       post: { postId },
       content,
       parent: parentCommentId ? { commentId: parentCommentId } : null,
       isAnonymous: formattedIsAnonymous,
-      user: req.user,
+      user: req.user || null,
     });
+
+    this.logger.log('TEST NEW COMMENTS', JSON.stringify(newComment));
 
     await this.commentsRepository.save(newComment);
 
