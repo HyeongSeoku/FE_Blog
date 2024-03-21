@@ -28,19 +28,29 @@ export class Comments {
   @JoinColumn({ name: 'post_id' })
   post: Posts;
 
-  @Column({ type: 'tinyint', name: 'is_deleted' })
-  is_deleted: number;
-
-  @AfterLoad()
-  setIsDeleted() {
-    this.isDeleted = this.is_deleted === 1;
-  }
-
+  @Column({
+    type: 'tinyint',
+    name: 'is_deleted',
+    transformer: {
+      to: (value: boolean) => (value ? 1 : 0),
+      from: (value: number) => value === 1,
+    },
+  })
   isDeleted: boolean;
 
-  @ManyToOne(() => Users)
+  @Column({
+    type: 'tinyint',
+    name: 'is_anonymous',
+    transformer: {
+      to: (value: boolean) => (value ? 1 : 0),
+      from: (value: number) => value === 1,
+    },
+  })
+  isAnonymous: boolean;
+
+  @ManyToOne(() => Users, { nullable: true })
   @JoinColumn({ name: 'user_id' })
-  user: Users;
+  user: Users | null;
 
   @OneToMany(() => Comments, (comments) => comments.parent)
   replies: Comments[];
