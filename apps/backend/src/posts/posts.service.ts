@@ -113,7 +113,14 @@ export class PostsService {
   async findOnePost(@Param('postId') postId: number): Promise<ResponsePostDto> {
     const targetPost = await this.postsRepository.findOne({
       where: { postId },
-      relations: ['user', 'category', 'tags', 'comments', 'comments.replies'],
+      relations: [
+        'user',
+        'category',
+        'tags',
+        'comments',
+        'comments.replies',
+        'comments.user',
+      ],
     });
 
     if (!targetPost) throw Error('Post id does not exist!');
