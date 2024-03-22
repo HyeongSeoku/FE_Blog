@@ -11,8 +11,8 @@ import { PostsService } from 'src/posts/posts.service';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
-export class OwnerGuard extends AuthGuard('jwt') {
-  private readonly logger = new Logger(OwnerGuard.name);
+export class PostOwnerGuard extends AuthGuard('jwt') {
+  private readonly logger = new Logger(PostOwnerGuard.name);
 
   constructor(
     private usersService: UsersService,
