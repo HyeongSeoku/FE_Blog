@@ -18,3 +18,9 @@ export class CreateCommentDto {
   @IsOptional()
   isAnonymous?: boolean;
 }
+
+export class UpdateCommentDto {
+  @IsString()
+  @Length(1, 200)
+  content: string;
+}

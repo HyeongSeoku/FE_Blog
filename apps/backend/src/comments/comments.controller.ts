@@ -5,14 +5,16 @@ import {
   Logger,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
-import { CreateCommentDto } from './comments.dto';
+import { CreateCommentDto, UpdateCommentDto } from './comments.dto';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
 import { OptionalJwtAuthGuard } from 'src/guards/optional-jwt-auth.guard';
+import { CommentOwnerGuard } from 'src/guards/comment-owner.guard';
 
 @Controller('comments')
 export class CommentsController {
@@ -41,5 +43,14 @@ export class CommentsController {
       parentCommentId,
       createReplycommentDto,
     );
+  }
+
+  @UseGuards(CommentOwnerGuard)
+  @Patch('update/:commentId')
+  updateComments(
+    @Param('commentId', ParseIntPipe) commentId: number,
+    @Body() updateCommentDto: UpdateCommentDto,
+  ) {
+    return this.commentsService.updateComment(commentId, updateCommentDto);
   }
 }

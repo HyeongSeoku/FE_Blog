@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comments } from 'src/database/entities/comments.entity';
 import { IsNull, Repository } from 'typeorm';
-import { CreateCommentDto } from './comments.dto';
+import { CreateCommentDto, UpdateCommentDto } from './comments.dto';
 import { PostsService } from 'src/posts/posts.service';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
 
@@ -31,8 +31,6 @@ export class CommentsService {
       isAnonymous: formattedIsAnonymous,
       user: req.user || null,
     });
-
-    this.logger.log('TEST NEW COMMENTS', JSON.stringify(newComment));
 
     await this.commentsRepository.save(newComment);
 
@@ -67,6 +65,37 @@ export class CommentsService {
     await this.commentsRepository.save(newReplyComment);
 
     return newReplyComment;
+  }
+
+  async findOneComment(commentId: number) {
+    const targetComment = await this.commentsRepository.findOne({
+      where: { commentId },
+      relations: ['user', 'replies', 'post'],
+    });
+
+    if (!targetComment) throw Error('Comment id does not exist!');
+
+    const response = {
+      ...targetComment,
+    };
+
+    return response;
+  }
+
+  async updateComment(commentId: number, updateCommentDto: UpdateCommentDto) {
+    const targetComment = await this.findOneComment(commentId);
+
+    targetComment.content = updateCommentDto.content;
+
+    await this.commentsRepository.save(targetComment);
+
+    const updatedComment = await this.findOneComment(commentId);
+
+    const response = {
+      ...updatedComment,
+    };
+
+    return response;
   }
 
   async getCommentsWithReplies(postId: number) {
