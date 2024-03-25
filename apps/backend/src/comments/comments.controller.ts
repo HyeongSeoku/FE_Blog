@@ -15,6 +15,7 @@ import { CreateCommentDto, UpdateCommentDto } from './comments.dto';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
 import { OptionalJwtAuthGuard } from 'src/guards/optional-jwt-auth.guard';
 import { CommentOwnerGuard } from 'src/guards/comment-owner.guard';
+import { PostCommentOwnerGuard } from 'src/guards/post-comment-owner.guard';
 
 @Controller('comments')
 export class CommentsController {
@@ -24,7 +25,7 @@ export class CommentsController {
 
   @UseGuards(OptionalJwtAuthGuard)
   @Post()
-  createComments(
+  createComment(
     @Req() req: AuthenticatedRequest,
     @Body() createCommentDto: CreateCommentDto,
   ) {
@@ -33,7 +34,7 @@ export class CommentsController {
 
   @UseGuards(OptionalJwtAuthGuard)
   @Post('reply/:parentCommentId')
-  createReplyComments(
+  createReplyComment(
     @Req() req: AuthenticatedRequest,
     @Param('parentCommentId', ParseIntPipe) parentCommentId: number,
     @Body() createReplycommentDto: CreateCommentDto,
@@ -47,10 +48,19 @@ export class CommentsController {
 
   @UseGuards(CommentOwnerGuard)
   @Patch('update/:commentId')
-  updateComments(
+  updateComment(
     @Param('commentId', ParseIntPipe) commentId: number,
     @Body() updateCommentDto: UpdateCommentDto,
   ) {
     return this.commentsService.updateComment(commentId, updateCommentDto);
+  }
+
+  @UseGuards(PostCommentOwnerGuard)
+  @Patch('delete/:commentId')
+  deleteComment(
+    @Req() req: AuthenticatedRequest,
+    @Param('commentId', ParseIntPipe) commentId: number,
+  ) {
+    return this.commentsService.deleteComment(req, commentId);
   }
 }

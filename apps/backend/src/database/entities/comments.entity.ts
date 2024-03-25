@@ -38,6 +38,9 @@ export class Comments {
   })
   isDeleted: boolean;
 
+  @Column({ name: 'deleted_by', nullable: true, default: () => 'NULL' })
+  deletedBy: number | null;
+
   @Column({
     type: 'tinyint',
     name: 'is_anonymous',

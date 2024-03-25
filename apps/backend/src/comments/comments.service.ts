@@ -70,7 +70,7 @@ export class CommentsService {
   async findOneComment(commentId: number) {
     const targetComment = await this.commentsRepository.findOne({
       where: { commentId },
-      relations: ['user', 'replies', 'post'],
+      relations: ['user', 'replies', 'post', 'post.user'],
     });
 
     if (!targetComment) throw Error('Comment id does not exist!');
@@ -96,6 +96,33 @@ export class CommentsService {
     };
 
     return response;
+  }
+
+  async deleteComment(req: AuthenticatedRequest, commentId: number) {
+    const targetComment = await this.findOneComment(commentId);
+    this.logger.log(
+      'DELETE SERVICE',
+      req.user,
+      JSON.stringify(targetComment),
+      targetComment.user,
+    );
+
+    const isDeletedByPostOwner =
+      req.user.userId !== targetComment?.user?.userId ? req.user.userId : null;
+
+    const deleteCommment: Comments = {
+      ...targetComment,
+      isDeleted: true,
+      deletedBy: isDeletedByPostOwner,
+    };
+
+    await this.commentsRepository.save(deleteCommment);
+
+    const deletedComment = await this.findOneComment(commentId);
+
+    // const { content, ...response } = deletedComment;
+
+    return { ...deletedComment, content: '' };
   }
 
   async getCommentsWithReplies(postId: number) {
