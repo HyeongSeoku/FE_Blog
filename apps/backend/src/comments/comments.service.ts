@@ -100,45 +100,22 @@ export class CommentsService {
 
   async deleteComment(req: AuthenticatedRequest, commentId: number) {
     const targetComment = await this.findOneComment(commentId);
-    this.logger.log(
-      'DELETE SERVICE',
-      req.user,
-      JSON.stringify(targetComment),
-      targetComment.user,
-    );
+    const userId = req?.user?.userId;
 
-    const isDeletedByPostOwner =
-      req.user.userId !== targetComment?.user?.userId ? req.user.userId : null;
+    const deletedBy = targetComment.user?.userId !== userId ? userId : null;
 
     const deleteCommment: Comments = {
       ...targetComment,
       isDeleted: true,
-      deletedBy: isDeletedByPostOwner,
+      deletedBy,
     };
 
     await this.commentsRepository.save(deleteCommment);
 
+    // TODO: 대댓글에 대한 삭제 처리 batch 로직 추가
+
     const deletedComment = await this.findOneComment(commentId);
 
-    // const { content, ...response } = deletedComment;
-
     return { ...deletedComment, content: '' };
-  }
-
-  async getCommentsWithReplies(postId: number) {
-    const comments = await this.commentsRepository.find({
-      where: { post: { postId }, parent: IsNull() }, // 최상위 댓글만 조회
-      relations: ['replies', 'user', 'post'], // 대댓글 관계를 로드
-    });
-
-    const commentsWithReplies = comments.map((comment) => {
-      const replies = comment.replies.filter((reply) => !reply.isDeleted);
-      return {
-        ...comment,
-        replyComment: replies,
-      };
-    });
-
-    return commentsWithReplies;
   }
 }
