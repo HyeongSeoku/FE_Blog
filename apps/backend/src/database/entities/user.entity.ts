@@ -45,4 +45,21 @@ export class Users {
     const { password, userId, ...safeData } = this;
     return safeData;
   }
+
+  public userDefaultInfoResponse(showRole: boolean) {
+    const {
+      password,
+      userId,
+      createdAt,
+      updatedAt,
+      isAdmin,
+      ...userInfoResponse
+    } = this;
+
+    const response = showRole
+      ? { ...userInfoResponse, isAdmin }
+      : userInfoResponse;
+
+    return response;
+  }
 }
