@@ -34,6 +34,7 @@ export class PostsService {
     categoryKey,
     tagName,
   }: FindAllPostParams): Promise<FindAllPostResponse> {
+    // TODO: Paging 추가
     const queryBuilder = this.postsRepository
       .createQueryBuilder('post')
       .select([
@@ -42,71 +43,47 @@ export class PostsService {
         'post.body',
         'post.createdAt',
         'post.updatedAt',
-        'user.userId',
-        'user.username',
-        'category.categoryId',
-        'category.key',
-        'tags.tagId',
-        'tags.name',
       ])
-      .leftJoin('post.user', 'user')
-      .leftJoin('post.category', 'category')
-      .leftJoin('post.tags', 'tags');
+      .leftJoinAndSelect('post.user', 'user')
+      .leftJoinAndSelect('post.category', 'category')
+      .leftJoinAndSelect('post.tags', 'tags')
+      .leftJoinAndSelect('post.comments', 'comments')
+      .leftJoinAndSelect('comments.replies', 'reply');
 
-    if (categoryKey && typeof categoryKey !== 'undefined') {
+    if (categoryKey) {
       queryBuilder.andWhere('category.key = :categoryKey', {
         categoryKey,
       });
     }
 
-    if (tagName && typeof tagName !== 'undefined') {
-      queryBuilder
-        .leftJoin('post.tags', 'tag')
-        .andWhere('tag.name = :tagName', { tagName });
+    if (tagName) {
+      queryBuilder.andWhere('tag.name = :tagName', { tagName });
     }
 
-    const rawPosts = await queryBuilder.getRawMany();
-
-    const postsById: { [key: number]: any } = {};
-
-    for (const rawPost of rawPosts) {
-      const postId = rawPost.post_post_id;
-
-      if (!postsById[postId]) {
-        postsById[postId] = {
-          postId: postId,
-          title: rawPost.post_title,
-          body: rawPost.post_body,
-          createdAt: rawPost.post_created_at,
-          updatedAt: rawPost.post_updated_at,
-          user: {
-            userId: rawPost.user_userId,
-            username: rawPost.user_username,
-          },
-          category: {
-            categoryId: rawPost.category_category_id,
-            categoryKey: rawPost.category_key,
-          },
-          tags: [],
-        };
-      }
-
-      if (
-        rawPost.tags_tag_id &&
-        !postsById[postId].tags.some((tag) => tag.tagId === rawPost.tags_tag_id)
-      ) {
-        postsById[postId].tags.push({
-          tagId: rawPost.tags_tag_id,
-          name: rawPost.tags_name,
-        });
-      }
-    }
-
-    const postList = Object.values(postsById);
+    const posts = await queryBuilder.getMany();
 
     return {
-      list: postList,
-      total: postList.length,
+      list: posts.map((post) => ({
+        ...post,
+        user: {
+          userId: post.user.userId,
+          username: post.user.username,
+        },
+        category: {
+          categoryId: post.category.categoryId,
+          categoryKey: post.category.key,
+        },
+        tags: post.tags.map((tag) => ({
+          tagId: tag.tagId,
+          tagName: tag.name,
+        })),
+        comments: post.comments.map((comment) => ({
+          commentId: comment.commentId,
+          replies: comment.replies,
+          content: comment.content,
+        })),
+      })),
+      total: posts.length,
     };
   }
 
@@ -120,6 +97,8 @@ export class PostsService {
         'comments',
         'comments.replies',
         'comments.user',
+        'comments.post',
+        'comments.parent',
       ],
     });
 
@@ -129,6 +108,14 @@ export class PostsService {
       tagId: tag.tagId,
       name: tag.name,
     }));
+
+    const comments = targetPost.comments
+      .filter((comment) => !comment.parent)
+      .map((comment) => ({
+        ...comment,
+        content: comment.isDeleted ? '' : comment.content,
+        replies: comment.isDeleted ? [] : comment.replies,
+      }));
 
     const response = {
       ...targetPost,
@@ -141,6 +128,8 @@ export class PostsService {
         categoryName: targetPost.category.name,
       },
       tags,
+      comments,
+      commentsLength: comments?.length,
     };
 
     return response;

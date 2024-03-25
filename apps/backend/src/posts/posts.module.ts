@@ -10,6 +10,7 @@ import { Categories } from 'src/database/entities/categories.entity';
 import { Tags } from 'src/database/entities/tags.entity';
 import { TagsModule } from 'src/tags/tags.module';
 import { TagsService } from 'src/tags/tags.service';
+import { PostOwnerGuard } from 'src/guards/postOwner.guard';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { TagsService } from 'src/tags/tags.service';
     TagsModule,
     TypeOrmModule.forFeature([Posts, Categories, Tags]),
   ],
-  providers: [AdminGuard, PostsService, TagsService],
+  providers: [AdminGuard, PostsService, TagsService, PostOwnerGuard],
   controllers: [PostsController],
   exports: [PostsService],
 })
