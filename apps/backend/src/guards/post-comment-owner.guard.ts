@@ -1,44 +1,57 @@
 import {
-  CanActivate,
   ExecutionContext,
-  Injectable,
-  UnauthorizedException,
   ForbiddenException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { Reflector } from '@nestjs/core';
-import { PostOwnerGuard } from './postOwner.guard';
-import { CommentOwnerGuard } from './comment-owner.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { CommentsService } from 'src/comments/comments.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
-export class PostCommentOwnerGuard implements CanActivate {
+export class PostCommentOwnerGuard extends AuthGuard('jwt') {
   constructor(
-    private reflector: Reflector,
-    private postOwnerGuard: PostOwnerGuard,
-    private commentOwnerGuard: CommentOwnerGuard,
-  ) {}
-
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    return this.validateRequest(context);
+    private commentsService: CommentsService,
+    private usersService: UsersService,
+  ) {
+    super();
   }
 
-  async validateRequest(context: ExecutionContext): Promise<boolean> {
-    try {
-      const guardOneResult = await this.postOwnerGuard.canActivate(context);
-      if (guardOneResult) {
-        return true;
-      }
-    } catch (error) {}
+  private logger = new Logger(PostCommentOwnerGuard.name);
 
-    try {
-      const guardTwoResult = await this.commentOwnerGuard.canActivate(context);
-      if (guardTwoResult) {
-        return true;
-      }
-    } catch (error) {}
+  async canActivate(context: ExecutionContext) {
+    await super.canActivate(context);
 
-    throw new ForbiddenException('Access Denied');
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+    const commentId = request.params.commentId;
+
+    if (!user) throw new UnauthorizedException();
+
+    const userData = await this.usersService.findById(user.userId);
+
+    if (!userData) {
+      throw new UnauthorizedException('Access Denied');
+    }
+
+    const commentData = await this.commentsService.findOneComment(commentId);
+
+    const isPostOwner = commentData.post.user.userId === request.user.userId;
+    const isCommentOwner = commentData.user.userId === request.user.userId;
+
+    if (!isPostOwner && !isCommentOwner)
+      throw new ForbiddenException('You are not the owner of the post');
+
+    return true;
+  }
+
+  handleRequest(err, user, info, context: ExecutionContext) {
+    if (err || !user) {
+      const errorMessage = info?.message || 'Authentication error';
+      this.logger.error(`Authentication Error: ${err || errorMessage}`);
+      throw err || new ForbiddenException(errorMessage);
+    }
+    return user;
   }
 }
