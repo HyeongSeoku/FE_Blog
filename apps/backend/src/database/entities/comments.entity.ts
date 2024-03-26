@@ -39,7 +39,7 @@ export class Comments {
   isDeleted: boolean;
 
   @Column({ name: 'deleted_by', nullable: true, default: () => 'NULL' })
-  deletedBy: number | null;
+  deletedBy: string | null;
 
   @Column({
     type: 'tinyint',
@@ -50,6 +50,16 @@ export class Comments {
     },
   })
   isAnonymous: boolean;
+
+  @Column({
+    type: 'tinyint',
+    name: 'is_post_owner',
+    transformer: {
+      to: (value: boolean) => (value ? 1 : 0),
+      from: (value: number) => value === 1,
+    },
+  })
+  isPostOwner: boolean;
 
   @ManyToOne(() => Users, { nullable: true })
   @JoinColumn({ name: 'user_id' })

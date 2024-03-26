@@ -11,11 +11,13 @@ import { CommentOwnerGuard } from 'src/guards/comment-owner.guard';
 import { PostOwnerGuard } from 'src/guards/postOwner.guard';
 import { UsersService } from 'src/users/users.service';
 import { Users } from 'src/database/entities/user.entity';
+import { RefreshTokenModule } from 'src/refresh-token/refresh-token.module';
 
 @Module({
   imports: [
     PostsModule,
     SharedModule,
+    RefreshTokenModule,
     TypeOrmModule.forFeature([Posts, Comments, Users]),
   ],
   controllers: [CommentsController],

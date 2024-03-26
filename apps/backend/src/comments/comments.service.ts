@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comments } from 'src/database/entities/comments.entity';
-import { IsNull, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateCommentDto, UpdateCommentDto } from './comments.dto';
 import { PostsService } from 'src/posts/posts.service';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
@@ -11,7 +11,6 @@ export class CommentsService {
   constructor(
     @InjectRepository(Comments)
     private commentsRepository: Repository<Comments>,
-
     private readonly postsService: PostsService,
   ) {}
   private readonly logger = new Logger(CommentsService.name);
@@ -21,15 +20,17 @@ export class CommentsService {
     createCommentDto: CreateCommentDto,
   ) {
     const { postId, content, isAnonymous } = createCommentDto;
-    await this.postsService.findOnePost(postId);
+    const targetPost = await this.postsService.findOnePost(postId);
 
-    const formattedIsAnonymous = isAnonymous === undefined || !req.user;
+    const formattedIsAnonymous = isAnonymous || !req?.user?.userId;
+    const isPostOwner = targetPost.user.userId === req?.user?.userId;
 
     const newComment = this.commentsRepository.create({
       post: { postId },
       content,
       isAnonymous: formattedIsAnonymous,
       user: req.user || null,
+      isPostOwner,
     });
 
     await this.commentsRepository.save(newComment);
@@ -43,7 +44,7 @@ export class CommentsService {
     createReplyCommentDto: CreateCommentDto,
   ) {
     const { postId, isAnonymous, content } = createReplyCommentDto;
-    await this.postsService.findOnePost(postId);
+    const targetPost = await this.postsService.findOnePost(postId);
 
     const targetParentComment = await this.commentsRepository.findOne({
       where: { commentId: parentCommentId },
@@ -52,7 +53,8 @@ export class CommentsService {
     if (!targetParentComment)
       throw new Error('Parent comment id does not exist!');
 
-    const formattedIsAnonymous = isAnonymous === undefined || !req.user;
+    const formattedIsAnonymous = isAnonymous || !req?.user?.userId;
+    const isPostOwner = targetPost.user.userId === req?.user?.userId;
 
     const newReplyComment = this.commentsRepository.create({
       post: { postId },
@@ -60,6 +62,7 @@ export class CommentsService {
       parent: parentCommentId ? { commentId: parentCommentId } : null,
       isAnonymous: formattedIsAnonymous,
       user: req.user || null,
+      isPostOwner,
     });
 
     await this.commentsRepository.save(newReplyComment);
@@ -102,15 +105,16 @@ export class CommentsService {
     const targetComment = await this.findOneComment(commentId);
     const userId = req?.user?.userId;
 
-    const deletedBy = targetComment.user?.userId !== userId ? userId : null;
+    const deletedBy =
+      targetComment.user?.userId === userId ? 'COMMENT_OWNER' : 'POST_OWNER';
 
-    const deleteCommment: Comments = {
+    const deleteComment: Comments = {
       ...targetComment,
       isDeleted: true,
       deletedBy,
     };
 
-    await this.commentsRepository.save(deleteCommment);
+    await this.commentsRepository.save(deleteComment);
 
     // TODO: 대댓글에 대한 삭제 처리 batch 로직 추가
 
