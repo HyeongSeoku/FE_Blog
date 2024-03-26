@@ -48,7 +48,7 @@ export class PostsService {
       .leftJoinAndSelect('post.category', 'category')
       .leftJoinAndSelect('post.tags', 'tags')
       .leftJoinAndSelect('post.comments', 'comments')
-      .leftJoinAndSelect('comments.replies', 'reply');
+      .leftJoinAndSelect('comments.replies', 'replies');
 
     if (categoryKey) {
       queryBuilder.andWhere('category.key = :categoryKey', {
