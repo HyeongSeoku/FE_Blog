@@ -42,7 +42,7 @@ export class AuthController {
 
   @Post('refresh')
   async refreshTokens(@Req() req: ExpressRequest, @Res() res: Response) {
-    return this.authService.generateNewAccessToken(req, res);
+    return this.authService.generateNewAccessTokenByRefreshToken(req, res);
   }
 
   @RateLimit({ points: 2, duration: 60 })

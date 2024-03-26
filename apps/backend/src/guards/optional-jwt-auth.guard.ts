@@ -17,22 +17,24 @@ export class OptionalJwtAuthGuard extends AuthGuard('jwt') {
       super.canActivate(context) as Promise<boolean> | Observable<boolean>,
     ).pipe(
       catchError((e) => {
-        // 에러 로깅
         this.logger.error('Exception in OptionalJwtAuthGuard: ', e);
-        // 에러가 발생해도 요청을 계속 진행하도록 true 반환
-        return of(true);
+        throw e;
       }),
     );
   }
 
   handleRequest(err, user, info, context: ExecutionContext) {
-    if (err) {
-      if (info && info.name === 'JsonWebTokenError') {
-        this.logger.error(`Authentication Error: ${info.message}`);
-        throw new UnauthorizedException(info.message);
-      }
-      this.logger.log('Proceeding with anonymous access or valid token.');
+    if (
+      info &&
+      (info.name === 'JsonWebTokenError' || info.name === 'TokenExpiredError')
+    ) {
+      this.logger.error(`JWT Authentication Error: ${info.message}`);
+      throw new UnauthorizedException(info.message);
     }
-    return user;
+    if (err) {
+      this.logger.error(`Authentication Error: ${err.message}`);
+    }
+
+    return user || null;
   }
 }
