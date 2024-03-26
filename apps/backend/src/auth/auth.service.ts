@@ -14,7 +14,6 @@ import { Users } from 'src/database/entities/user.entity';
 import { AuthenticatedRequest } from './auth.interface';
 import { UserResponseDto } from 'src/users/dto/user.dto';
 import { ConfigService } from '@nestjs/config';
-import * as fs from 'fs';
 import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
 import { Request, Response } from 'express';
 import {
@@ -22,6 +21,7 @@ import {
   REFRESH_TOKEN_EXPIRE,
   REFRESH_TOKEN_EXPIRE_TIME,
 } from './auth.constants';
+import { SharedService } from 'src/shared/shared.service';
 
 @Injectable()
 export class AuthService {
@@ -30,27 +30,15 @@ export class AuthService {
     private refreshTokenService: RefreshTokenService,
     private usersService: UsersService,
     private jwtService: JwtService,
-    private configService: ConfigService,
+    private sharedService: SharedService,
   ) {}
-
-  getJwtKeys(): { privateKey: string; publicKey: string } {
-    const privateKeyPath = this.configService.get<string>('PRIVATE_KEY_PATH');
-    const publicKeyPath = this.configService.get<string>('PUBLIC_KEY_PATH');
-    const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
-    const publicKey = fs.readFileSync(publicKeyPath, 'utf8');
-
-    return {
-      privateKey,
-      publicKey,
-    };
-  }
 
   async generateToken(
     user: Users,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const payload = { username: user.username, sub: user.userId };
 
-    const { privateKey } = this.getJwtKeys();
+    const { privateKey } = this.sharedService.getJwtKeys();
     const accessToken = await this.jwtService.signAsync(payload, {
       privateKey: privateKey,
       expiresIn: ACCESS_TOKEN_EXPIRE,
@@ -65,61 +53,48 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async validateRefreshToken(token: string): Promise<boolean> {
-    const refreshToken = await this.refreshTokenService.findToken(token);
-    return !!refreshToken;
-  }
-
-  async generateNewAccessToken(@Req() req: Request, @Res() res: Response) {
+  async generateNewAccessTokenByRefreshToken(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     try {
       const refreshToken = req.cookies['refreshToken'];
+      const { privateKey } = this.sharedService.getJwtKeys();
 
-      const isValidRefreshToken = await this.validateRefreshToken(refreshToken);
-      if (!isValidRefreshToken) {
-        return res.status(HttpStatus.UNAUTHORIZED).json('Invalid refreshToken');
+      const newAccessToken =
+        await this.refreshTokenService.generateNewAccessToken(refreshToken);
+
+      if (!newAccessToken) {
+        throw new Error('Unable to generate access token');
       }
 
-      await this.refreshTokenService.deleteToken(refreshToken);
+      const decoded = this.jwtService.decode(refreshToken);
 
-      const { privateKey, publicKey } = this.getJwtKeys();
-
-      const decoded = this.jwtService.verify(refreshToken, {
-        publicKey,
-      });
-      if (decoded && decoded.username && decoded.sub) {
-        const payload = { username: decoded.username, sub: decoded.sub };
-        const accessToken = this.jwtService.sign(payload, {
-          privateKey: privateKey,
-          expiresIn: ACCESS_TOKEN_EXPIRE,
-          algorithm: 'RS256',
-        });
-        const newRefreshToken = this.jwtService.sign(payload, {
+      const newRefreshToken = this.jwtService.sign(
+        { username: decoded.username, sub: decoded.sub },
+        {
           privateKey: privateKey,
           expiresIn: REFRESH_TOKEN_EXPIRE,
           algorithm: 'RS256',
-        });
+        },
+      );
 
-        await this.refreshTokenService.saveToken(
-          newRefreshToken,
-          decoded.sub,
-          new Date(
-            Date.now() + REFRESH_TOKEN_EXPIRE_TIME * 24 * 60 * 60 * 1000,
-          ),
-        );
+      await this.refreshTokenService.saveToken(
+        newRefreshToken,
+        decoded.sub,
+        new Date(Date.now() + REFRESH_TOKEN_EXPIRE_TIME * 24 * 60 * 60 * 1000),
+      );
 
-        const refreshTokenExpires = new Date().setDate(
-          new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
-        );
+      const refreshTokenExpires = new Date().setDate(
+        new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+      );
 
-        res.cookie('refreshToken', newRefreshToken, {
-          httpOnly: true,
-          expires: new Date(refreshTokenExpires),
-        });
+      res.cookie('refreshToken', newRefreshToken, {
+        httpOnly: true,
+        expires: new Date(refreshTokenExpires),
+      });
 
-        res.status(200).json({ accessToken });
-      } else {
-        return res.status(HttpStatus.UNAUTHORIZED).json('Invalid refreshToken');
-      }
+      res.status(200).json({ accessToken: newAccessToken });
     } catch (e) {
       return res.status(HttpStatus.UNAUTHORIZED).json('Invalid refreshToken');
     }
