@@ -19,6 +19,16 @@ export class CreateCommentDto {
   isAnonymous?: boolean;
 }
 
+export class CreateReplyCommentDto {
+  @IsString()
+  @Length(1, 200)
+  content: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isAnonymous?: boolean;
+}
+
 export class UpdateCommentDto {
   @IsString()
   @Length(1, 200)
