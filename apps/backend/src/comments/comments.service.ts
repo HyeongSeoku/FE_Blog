@@ -9,6 +9,7 @@ import {
 } from './comments.dto';
 import { PostsService } from 'src/posts/posts.service';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
+import { COMMENT_DELETE_KEY } from 'src/constants/comment.constants';
 
 @Injectable()
 export class CommentsService {
@@ -120,8 +121,11 @@ export class CommentsService {
     const targetComment = await this.findOneComment(commentId);
     const userId = req?.user?.userId;
 
+    const { COMMENT_OWNER, POST_OWNER, PARENT_COMMENT_DELETED } =
+      COMMENT_DELETE_KEY;
+
     const deletedBy =
-      targetComment.user?.userId === userId ? 'COMMENT_OWNER' : 'POST_OWNER';
+      targetComment.user?.userId === userId ? COMMENT_OWNER : POST_OWNER;
 
     await this.commentsRepository.update(commentId, {
       isDeleted: true,
@@ -132,7 +136,7 @@ export class CommentsService {
       { parent: { commentId } },
       {
         isDeleted: true,
-        deletedBy: 'PARENT_DELETED', // 또는 다른 적절한 값
+        deletedBy: PARENT_COMMENT_DELETED,
       },
     );
 
