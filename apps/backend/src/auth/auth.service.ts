@@ -20,7 +20,7 @@ import {
   ACCESS_TOKEN_EXPIRE,
   REFRESH_TOKEN_EXPIRE,
   REFRESH_TOKEN_EXPIRE_TIME,
-} from './auth.constants';
+} from '../constants/auth.constants';
 import { SharedService } from 'src/shared/shared.service';
 
 @Injectable()

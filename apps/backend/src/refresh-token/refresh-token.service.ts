@@ -5,7 +5,7 @@ import { LessThan, MoreThan, Repository } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { SharedService } from 'src/shared/shared.service';
 import { JwtService } from '@nestjs/jwt';
-import { ACCESS_TOKEN_EXPIRE } from 'src/auth/auth.constants';
+import { ACCESS_TOKEN_EXPIRE } from 'src/constants/auth.constants';
 
 @Injectable()
 export class RefreshTokenService {
