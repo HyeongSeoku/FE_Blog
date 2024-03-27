@@ -10,7 +10,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
-import { CreateCommentDto, UpdateCommentDto } from './comments.dto';
+import {
+  CreateCommentDto,
+  CreateReplyCommentDto,
+  UpdateCommentDto,
+} from './comments.dto';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
 import { OptionalJwtAuthGuard } from 'src/guards/optional-jwt-auth.guard';
 import { CommentOwnerGuard } from 'src/guards/comment-owner.guard';
@@ -36,7 +40,7 @@ export class CommentsController {
   createReplyComment(
     @Req() req: AuthenticatedRequest,
     @Param('parentCommentId', ParseIntPipe) parentCommentId: number,
-    @Body() createReplycommentDto: CreateCommentDto,
+    @Body() createReplycommentDto: CreateReplyCommentDto,
   ) {
     return this.commentsService.createReplyComment(
       req,

@@ -1,8 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comments } from 'src/database/entities/comments.entity';
 import { Repository } from 'typeorm';
-import { CreateCommentDto, UpdateCommentDto } from './comments.dto';
+import {
+  CreateCommentDto,
+  CreateReplyCommentDto,
+  UpdateCommentDto,
+} from './comments.dto';
 import { PostsService } from 'src/posts/posts.service';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
 
@@ -21,6 +25,10 @@ export class CommentsService {
   ) {
     const { postId, content, isAnonymous } = createCommentDto;
     const targetPost = await this.postsService.findOnePost(postId);
+
+    if (!targetPost) {
+      throw new NotFoundException(`Post with ID ${postId} not found`);
+    }
 
     const formattedIsAnonymous = isAnonymous || !req?.user?.userId;
     const isPostOwner = targetPost.user.userId === req?.user?.userId;
@@ -41,14 +49,21 @@ export class CommentsService {
   async createReplyComment(
     req: AuthenticatedRequest,
     parentCommentId: number,
-    createReplyCommentDto: CreateCommentDto,
+    createReplyCommentDto: CreateReplyCommentDto,
   ) {
-    const { postId, isAnonymous, content } = createReplyCommentDto;
-    const targetPost = await this.postsService.findOnePost(postId);
+    const targetParentComment = await this.findOneComment(parentCommentId);
 
-    const targetParentComment = await this.commentsRepository.findOne({
-      where: { commentId: parentCommentId },
-    });
+    const { isAnonymous, content } = createReplyCommentDto;
+
+    const targetPost = await this.postsService.findOnePost(
+      targetParentComment.post.postId,
+    );
+
+    if (!targetPost) {
+      throw new NotFoundException(
+        `Post with ID ${targetParentComment.post.postId} not found`,
+      );
+    }
 
     if (!targetParentComment)
       throw new Error('Parent comment id does not exist!');
@@ -57,7 +72,7 @@ export class CommentsService {
     const isPostOwner = targetPost.user.userId === req?.user?.userId;
 
     const newReplyComment = this.commentsRepository.create({
-      post: { postId },
+      post: { postId: targetPost.postId },
       content,
       parent: parentCommentId ? { commentId: parentCommentId } : null,
       isAnonymous: formattedIsAnonymous,
@@ -108,15 +123,18 @@ export class CommentsService {
     const deletedBy =
       targetComment.user?.userId === userId ? 'COMMENT_OWNER' : 'POST_OWNER';
 
-    const deleteComment: Comments = {
-      ...targetComment,
+    await this.commentsRepository.update(commentId, {
       isDeleted: true,
       deletedBy,
-    };
+    });
 
-    await this.commentsRepository.save(deleteComment);
-
-    // TODO: 대댓글에 대한 삭제 처리 batch 로직 추가
+    await this.commentsRepository.update(
+      { parent: { commentId } },
+      {
+        isDeleted: true,
+        deletedBy: 'PARENT_DELETED', // 또는 다른 적절한 값
+      },
+    );
 
     const deletedComment = await this.findOneComment(commentId);
 
