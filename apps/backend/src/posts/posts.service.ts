@@ -18,6 +18,8 @@ import {
   FindAllPostResponse,
 } from './posts.service.interface';
 import { TagsService } from 'src/tags/tags.service';
+import { Comments } from 'src/database/entities/comments.entity';
+import { COMMENT_DELETE_KEY } from 'src/constants/comment.constants';
 
 @Injectable()
 export class PostsService {
@@ -26,6 +28,8 @@ export class PostsService {
     private postsRepository: Repository<Posts>,
     @InjectRepository(Categories)
     private categoryRepository: Repository<Categories>,
+    @InjectRepository(Comments)
+    private commentsRepository: Repository<Comments>,
     private readonly tagsService: TagsService,
   ) {}
   private readonly logger = new Logger(PostsService.name);
@@ -47,8 +51,16 @@ export class PostsService {
       .leftJoinAndSelect('post.user', 'user')
       .leftJoinAndSelect('post.category', 'category')
       .leftJoinAndSelect('post.tags', 'tags')
-      .leftJoinAndSelect('post.comments', 'comments')
-      .leftJoinAndSelect('comments.replies', 'replies');
+      .leftJoin('post.comments', 'comments')
+      .addSelect([
+        'comments.commentId',
+        'comments.content',
+        'comments.isDeleted',
+        'comments.isPostOwner',
+      ])
+      .leftJoinAndSelect('comments.replies', 'replies')
+      .leftJoinAndSelect('comments.parent', 'parent')
+      .leftJoinAndSelect('replies.user', 'repliesUser');
 
     if (categoryKey) {
       queryBuilder.andWhere('category.key = :categoryKey', {
@@ -77,11 +89,13 @@ export class PostsService {
           tagId: tag.tagId,
           tagName: tag.name,
         })),
-        comments: post.comments.map((comment) => ({
-          commentId: comment.commentId,
-          replies: comment.replies,
-          content: comment.content,
-        })),
+        comments: post.comments
+          .filter((comment) => !comment.parent)
+          .map((comment) => ({
+            commentId: comment.commentId,
+            content: comment.isDeleted ? '' : comment.content,
+            replies: comment.isDeleted ? [] : comment.replies,
+          })),
       })),
       total: posts.length,
     };
@@ -99,6 +113,7 @@ export class PostsService {
         'comments.user',
         'comments.post',
         'comments.parent',
+        'comments.replies.user',
       ],
     });
 
@@ -241,6 +256,12 @@ export class PostsService {
     const targetPost = this.postsRepository.findOne({ where: { postId } });
     if (!targetPost) throw Error('Post does not exist');
 
+    await this.commentsRepository.update(
+      {
+        post: { postId },
+      },
+      { isDeleted: true, deletedBy: COMMENT_DELETE_KEY.POST_DELETED },
+    );
     await this.postsRepository.delete(postId);
 
     throw new HttpException('Post deleted successfully', HttpStatus.OK);
