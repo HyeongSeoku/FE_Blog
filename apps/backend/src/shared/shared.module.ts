@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import * as fs from 'fs';
+import { SharedService } from './shared.service';
 
 @Global()
 @Module({
@@ -28,7 +29,7 @@ import * as fs from 'fs';
       },
     }),
   ],
-
-  exports: [JwtModule, PassportModule],
+  providers: [SharedService],
+  exports: [JwtModule, PassportModule, SharedService],
 })
 export default class SharedModule {}

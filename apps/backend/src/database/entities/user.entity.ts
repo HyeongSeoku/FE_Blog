@@ -1,4 +1,4 @@
-import { AfterLoad, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class Users {
@@ -31,18 +31,35 @@ export class Users {
   @Column({ name: 'last_login', type: 'timestamp', nullable: true })
   lastLogin: Date | null;
 
-  @Column({ type: 'tinyint', name: 'is_admin' })
-  is_admin: number;
-
-  @AfterLoad()
-  setIsAdmin() {
-    this.isAdmin = this.is_admin === 1;
-  }
-
+  @Column({
+    type: 'tinyint',
+    name: 'is_admin',
+    transformer: {
+      to: (value: boolean) => (value ? 1 : 0),
+      from: (value: number) => value === 1,
+    },
+  })
   isAdmin: boolean;
 
   public toSafeObject() {
-    const { is_admin, password, userId, ...safeData } = this;
+    const { password, userId, ...safeData } = this;
     return safeData;
+  }
+
+  public userDefaultInfoResponse(showRole: boolean) {
+    const {
+      password,
+      userId,
+      createdAt,
+      updatedAt,
+      isAdmin,
+      ...userInfoResponse
+    } = this;
+
+    const response = showRole
+      ? { ...userInfoResponse, isAdmin }
+      : userInfoResponse;
+
+    return response;
   }
 }

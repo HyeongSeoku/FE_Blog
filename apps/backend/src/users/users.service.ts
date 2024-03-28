@@ -71,7 +71,7 @@ export class UsersService {
         'createdAt',
         'updatedAt',
         'password',
-        'is_admin',
+        'isAdmin',
       ],
     });
   }

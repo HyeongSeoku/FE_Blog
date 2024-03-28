@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ConflictException,
   Injectable,
   Logger,
   NotFoundException,
@@ -63,7 +62,6 @@ export class TagsService {
   }
 
   async deleteTag(tagId: number) {
-    this.logger.log('TEST', tagId);
     const targetTag = await this.tagsRepository.findOne({ where: { tagId } });
 
     if (!targetTag)

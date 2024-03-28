@@ -5,11 +5,13 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Users } from './user.entity';
 import { Categories } from './categories.entity';
 import { Tags } from './tags.entity';
+import { Comments } from './comments.entity';
 
 @Entity('posts')
 export class Posts {
@@ -51,4 +53,10 @@ export class Posts {
     inverseJoinColumn: { name: 'tag_id', referencedColumnName: 'tagId' },
   })
   tags: Tags[];
+
+  @OneToMany(() => Comments, (comment) => comment.post, {
+    cascade: true, // 포스트를 저장할 때 코멘트도 같이 저장하고 싶다면
+    eager: false, // 자동으로 코멘트를 로드하고 싶지 않다면 false로 설정
+  })
+  comments: Comments[];
 }

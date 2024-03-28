@@ -17,8 +17,9 @@ import {
   FindAllPostParams,
   FindAllPostResponse,
 } from './posts.service.interface';
-import { Tags } from 'src/database/entities/tags.entity';
 import { TagsService } from 'src/tags/tags.service';
+import { Comments } from 'src/database/entities/comments.entity';
+import { COMMENT_DELETE_KEY } from 'src/constants/comment.constants';
 
 @Injectable()
 export class PostsService {
@@ -27,8 +28,8 @@ export class PostsService {
     private postsRepository: Repository<Posts>,
     @InjectRepository(Categories)
     private categoryRepository: Repository<Categories>,
-    @InjectRepository(Tags)
-    private tagsRepository: Repository<Tags>,
+    @InjectRepository(Comments)
+    private commentsRepository: Repository<Comments>,
     private readonly tagsService: TagsService,
   ) {}
   private readonly logger = new Logger(PostsService.name);
@@ -37,6 +38,7 @@ export class PostsService {
     categoryKey,
     tagName,
   }: FindAllPostParams): Promise<FindAllPostResponse> {
+    // TODO: Paging 추가
     const queryBuilder = this.postsRepository
       .createQueryBuilder('post')
       .select([
@@ -45,78 +47,74 @@ export class PostsService {
         'post.body',
         'post.createdAt',
         'post.updatedAt',
-        'user.userId',
-        'user.username',
-        'category.categoryId',
-        'category.key',
-        'tags.tagId',
-        'tags.name',
       ])
-      .leftJoin('post.user', 'user')
-      .leftJoin('post.category', 'category')
-      .leftJoin('post.tags', 'tags');
+      .leftJoinAndSelect('post.user', 'user')
+      .leftJoinAndSelect('post.category', 'category')
+      .leftJoinAndSelect('post.tags', 'tags')
+      .leftJoin('post.comments', 'comments')
+      .addSelect([
+        'comments.commentId',
+        'comments.content',
+        'comments.isDeleted',
+        'comments.isPostOwner',
+      ])
+      .leftJoinAndSelect('comments.replies', 'replies')
+      .leftJoinAndSelect('comments.parent', 'parent')
+      .leftJoinAndSelect('replies.user', 'repliesUser');
 
-    if (categoryKey && typeof categoryKey !== 'undefined') {
+    if (categoryKey) {
       queryBuilder.andWhere('category.key = :categoryKey', {
         categoryKey,
       });
     }
 
-    if (tagName && typeof tagName !== 'undefined') {
-      queryBuilder
-        .leftJoin('post.tags', 'tag')
-        .andWhere('tag.name = :tagName', { tagName });
+    if (tagName) {
+      queryBuilder.andWhere('tag.name = :tagName', { tagName });
     }
 
-    const rawPosts = await queryBuilder.getRawMany();
-
-    const postsById: { [key: number]: any } = {};
-
-    for (const rawPost of rawPosts) {
-      const postId = rawPost.post_post_id;
-
-      if (!postsById[postId]) {
-        postsById[postId] = {
-          postId: postId,
-          title: rawPost.post_title,
-          body: rawPost.post_body,
-          createdAt: rawPost.post_created_at,
-          updatedAt: rawPost.post_updated_at,
-          user: {
-            userId: rawPost.user_userId,
-            username: rawPost.user_username,
-          },
-          category: {
-            categoryId: rawPost.category_category_id,
-            categoryKey: rawPost.category_key,
-          },
-          tags: [],
-        };
-      }
-
-      if (
-        rawPost.tags_tag_id &&
-        !postsById[postId].tags.some((tag) => tag.tagId === rawPost.tags_tag_id)
-      ) {
-        postsById[postId].tags.push({
-          tagId: rawPost.tags_tag_id,
-          name: rawPost.tags_name,
-        });
-      }
-    }
-
-    const postList = Object.values(postsById);
+    const posts = await queryBuilder.getMany();
 
     return {
-      list: postList,
-      total: postList.length,
+      list: posts.map((post) => ({
+        ...post,
+        user: {
+          userId: post.user.userId,
+          username: post.user.username,
+        },
+        category: {
+          categoryId: post.category.categoryId,
+          categoryKey: post.category.key,
+        },
+        tags: post.tags.map((tag) => ({
+          tagId: tag.tagId,
+          tagName: tag.name,
+        })),
+        comments: post.comments
+          .filter((comment) => !comment.parent)
+          .map((comment) => ({
+            commentId: comment.commentId,
+            content: comment.isDeleted ? '' : comment.content,
+            replies: comment.isDeleted ? [] : comment.replies,
+          })),
+      })),
+      total: posts.length,
     };
   }
 
-  async findOnePost(@Param('postId') postId: number): Promise<ResponsePostDto> {
+  async findOnePost(postId: number): Promise<ResponsePostDto> {
     const targetPost = await this.postsRepository.findOne({
       where: { postId },
-      relations: ['user', 'category', 'tags'],
+      relations: [
+        'user',
+        'category',
+        'tags',
+        'comments',
+        'comments.replies',
+        'comments.user',
+        'comments.post',
+        'comments.parent',
+        'comments.replies.user',
+      ],
     });
 
     if (!targetPost) throw Error('Post id does not exist!');
@@ -125,6 +123,14 @@ export class PostsService {
       tagId: tag.tagId,
       name: tag.name,
     }));
+
+    const comments = targetPost.comments
+      .filter((comment) => !comment.parent)
+      .map((comment) => ({
+        ...comment,
+        content: comment.isDeleted ? '' : comment.content,
+        replies: comment.isDeleted ? [] : comment.replies,
+      }));
 
     const response = {
       ...targetPost,
@@ -137,6 +143,8 @@ export class PostsService {
         categoryName: targetPost.category.name,
       },
       tags,
+      comments,
+      commentsLength: comments?.length,
     };
 
     return response;
@@ -243,11 +251,16 @@ export class PostsService {
     return response;
   }
 
-  async deletePost(@Param('postId') postId: number) {
+  async deletePost(postId: number) {
     if (!postId) throw Error('Post id is required');
-    const targetPost = this.postsRepository.findOne({ where: { postId } });
+    const targetPost = await this.findOnePost(postId);
+
     if (!targetPost) throw Error('Post does not exist');
 
+    //hard delete
+    await this.commentsRepository.delete({
+      post: { postId },
+    });
     await this.postsRepository.delete(postId);
 
     throw new HttpException('Post deleted successfully', HttpStatus.OK);

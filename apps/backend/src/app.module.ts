@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { RefreshTokenModule } from './refresh-token/refresh-token.module';
 import { PostsModule } from './posts/posts.module';
 import { TagsModule } from './tags/tags.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { TagsModule } from './tags/tags.module';
     RefreshTokenModule,
     PostsModule,
     TagsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
