@@ -12,7 +12,7 @@ export interface FindAllPostResponse {
 }
 
 export interface PostsResponse {
-  postId: number;
+  postId: string;
   title: string;
   body: string;
   createdAt: Date;

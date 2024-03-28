@@ -30,7 +30,7 @@ export class PostsController {
   }
 
   @Get(':postId')
-  getPost(@Param('postId') postId: number) {
+  getPost(@Param('postId') postId: string) {
     return this.postsService.findOnePost(postId);
   }
 
@@ -46,7 +46,7 @@ export class PostsController {
   @UseGuards(PostOwnerGuard)
   @Patch('update/:postId')
   updatePost(
-    @Param('postId') postId: number,
+    @Param('postId') postId: string,
     @Body() updatePostDto: UpdatePostDto,
   ) {
     return this.postsService.updatePost(postId, updatePostDto);
@@ -54,7 +54,7 @@ export class PostsController {
 
   @UseGuards(PostOwnerGuard)
   @Delete('delete/:postId')
-  deletePost(@Param('postId') postId: number) {
+  deletePost(@Param('postId') postId: string) {
     return this.postsService.deletePost(postId);
   }
 }

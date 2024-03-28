@@ -8,7 +8,7 @@ import {
 
 export class CreateCommentDto {
   @IsNumber()
-  postId: number;
+  postId: string;
 
   @IsString()
   @Length(1, 200)
