@@ -53,7 +53,7 @@ export class ResponsePostDto {
   updatedAt: Date;
 
   user: {
-    userId: number;
+    userId: string;
     username: string;
   };
 

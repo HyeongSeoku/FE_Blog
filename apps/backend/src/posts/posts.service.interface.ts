@@ -18,7 +18,7 @@ export interface PostsResponse {
   createdAt: Date;
   updatedAt: Date;
   user: {
-    userId: number;
+    userId: string;
     username: string;
   };
   category: {

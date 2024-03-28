@@ -33,7 +33,7 @@ export class RefreshTokenService {
 
   async saveToken(
     token: string,
-    userId: number,
+    userId: string,
     expiryDate: Date,
   ): Promise<RefreshToken> {
     const refreshToken = this.refreshTokenRepository.create({
@@ -48,7 +48,7 @@ export class RefreshTokenService {
     await this.refreshTokenRepository.delete({ token });
   }
 
-  async deleteTokenForUserId(userId: number): Promise<void> {
+  async deleteTokenForUserId(userId: string): Promise<void> {
     await this.refreshTokenRepository
       .createQueryBuilder()
       .delete()
