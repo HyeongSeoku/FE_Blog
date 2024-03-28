@@ -4,10 +4,6 @@ import {
   IsNotEmpty,
   IsEmail,
   Matches,
-  IsDate,
-  IsBoolean,
-  isNumber,
-  IsNumber,
 } from 'class-validator';
 import { Users } from 'src/database/entities/user.entity';
 
@@ -32,7 +28,7 @@ export class CreateUserDto {
 
 /** 유저 응답 DTO */
 export class UserResponseDto {
-  userId: number;
+  userId: string;
   username: string;
 
   email: string;

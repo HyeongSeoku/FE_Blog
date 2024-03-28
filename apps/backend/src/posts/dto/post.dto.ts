@@ -42,7 +42,7 @@ export class UpdatePostDto {
 }
 
 export class ResponsePostDto {
-  postId: number;
+  postId: string;
 
   title: string;
 
@@ -53,7 +53,7 @@ export class ResponsePostDto {
   updatedAt: Date;
 
   user: {
-    userId: number;
+    userId: string;
     username: string;
   };
 

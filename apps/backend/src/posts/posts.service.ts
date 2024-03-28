@@ -101,7 +101,7 @@ export class PostsService {
     };
   }
 
-  async findOnePost(postId: number): Promise<ResponsePostDto> {
+  async findOnePost(postId: string): Promise<ResponsePostDto> {
     const targetPost = await this.postsRepository.findOne({
       where: { postId },
       relations: [
@@ -188,7 +188,7 @@ export class PostsService {
     return newPost;
   }
 
-  async updatePost(postId: number, updatePostDto: UpdatePostDto) {
+  async updatePost(postId: string, updatePostDto: UpdatePostDto) {
     const targetPost = await this.postsRepository.findOne({
       where: { postId },
       relations: ['category', 'user'],
@@ -251,7 +251,7 @@ export class PostsService {
     return response;
   }
 
-  async deletePost(postId: number) {
+  async deletePost(postId: string) {
     if (!postId) throw Error('Post id is required');
     const targetPost = await this.findOnePost(postId);
 

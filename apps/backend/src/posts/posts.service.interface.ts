@@ -12,13 +12,13 @@ export interface FindAllPostResponse {
 }
 
 export interface PostsResponse {
-  postId: number;
+  postId: string;
   title: string;
   body: string;
   createdAt: Date;
   updatedAt: Date;
   user: {
-    userId: number;
+    userId: string;
     username: string;
   };
   category: {

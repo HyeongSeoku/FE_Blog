@@ -77,7 +77,7 @@ export class UsersService {
   }
 
   async findById(
-    userId: number,
+    userId: string,
   ): Promise<Omit<UserResponseDto, 'userId'> | undefined> {
     const user = await this.userRepository.findOne({ where: { userId } });
     const userSafeData = user.toSafeObject();
@@ -85,7 +85,7 @@ export class UsersService {
   }
 
   async changePassword(
-    userId: number,
+    userId: string,
     changePasswordDto: ChangePasswordDto,
     @Res() res,
   ) {
@@ -116,7 +116,7 @@ export class UsersService {
       .json({ message: 'Password successfully changed' });
   }
 
-  async delete(userId: number) {
+  async delete(userId: string) {
     this.logger.log(`Delete user called: ${userId}`);
 
     const result = await this.userRepository.delete(userId);
