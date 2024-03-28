@@ -101,7 +101,7 @@ export class PostsService {
     };
   }
 
-  async findOnePost(@Param('postId') postId: number): Promise<ResponsePostDto> {
+  async findOnePost(postId: number): Promise<ResponsePostDto> {
     const targetPost = await this.postsRepository.findOne({
       where: { postId },
       relations: [
@@ -251,17 +251,16 @@ export class PostsService {
     return response;
   }
 
-  async deletePost(@Param('postId') postId: number) {
+  async deletePost(postId: number) {
     if (!postId) throw Error('Post id is required');
-    const targetPost = this.postsRepository.findOne({ where: { postId } });
+    const targetPost = await this.findOnePost(postId);
+
     if (!targetPost) throw Error('Post does not exist');
 
-    await this.commentsRepository.update(
-      {
-        post: { postId },
-      },
-      { isDeleted: true, deletedBy: COMMENT_DELETE_KEY.POST_DELETED },
-    );
+    //hard delete
+    await this.commentsRepository.delete({
+      post: { postId },
+    });
     await this.postsRepository.delete(postId);
 
     throw new HttpException('Post deleted successfully', HttpStatus.OK);
