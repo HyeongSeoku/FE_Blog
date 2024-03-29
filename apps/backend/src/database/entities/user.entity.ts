@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Followers } from './followers.entity';
 
 @Entity('users')
 export class Users {
@@ -40,6 +41,14 @@ export class Users {
     },
   })
   isAdmin: boolean;
+
+  // 팔로워 관계
+  @OneToMany(() => Followers, (follower) => follower.followee)
+  followers: Followers[];
+
+  // 팔로잉 관계
+  @OneToMany(() => Followers, (follower) => follower.follower)
+  following: Followers[];
 
   public toSafeObject() {
     const { password, userId, ...safeData } = this;
