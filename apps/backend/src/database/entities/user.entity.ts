@@ -43,11 +43,11 @@ export class Users {
   isAdmin: boolean;
 
   // 팔로워 관계
-  @OneToMany(() => Followers, (follower) => follower.followee)
+  @OneToMany(() => Followers, (follower) => follower.follower)
   followers: Followers[];
 
   // 팔로잉 관계
-  @OneToMany(() => Followers, (follower) => follower.follower)
+  @OneToMany(() => Followers, (follower) => follower.following)
   following: Followers[];
 
   public toSafeObject() {
