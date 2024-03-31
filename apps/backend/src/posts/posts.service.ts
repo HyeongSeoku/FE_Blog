@@ -19,7 +19,6 @@ import {
 } from './posts.service.interface';
 import { TagsService } from 'src/tags/tags.service';
 import { Comments } from 'src/database/entities/comments.entity';
-import { COMMENT_DELETE_KEY } from 'src/constants/comment.constants';
 
 @Injectable()
 export class PostsService {
