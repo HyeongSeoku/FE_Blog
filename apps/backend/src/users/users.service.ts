@@ -92,7 +92,12 @@ export class UsersService {
   ) {
     const { currentPassword, newPassword } = changePasswordDto;
 
-    const user = await this.userRepository.findOne({ where: { userId } });
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.userId = :userId', { userId })
+      .addSelect('user.password')
+      .getOne();
+
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
