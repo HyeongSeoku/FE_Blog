@@ -25,7 +25,7 @@ export class Users {
   @Column({
     name: 'updated_at',
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
 
