@@ -70,10 +70,6 @@ export class AuthController {
     @Body() changePasswordDto: ChangePasswordDto,
     @Res() res,
   ): Promise<void> {
-    return await this.usersService.changePassword(
-      req.user.userId,
-      changePasswordDto,
-      res,
-    );
+    return await this.usersService.changePassword(req, changePasswordDto, res);
   }
 }

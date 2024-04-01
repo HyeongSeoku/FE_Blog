@@ -19,6 +19,8 @@ import { Users } from '../database/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
+import { AuthenticatedRequest } from 'src/auth/auth.interface';
 
 @Injectable()
 export class UsersService {
@@ -26,6 +28,7 @@ export class UsersService {
   constructor(
     @InjectRepository(Users)
     private userRepository: Repository<Users>,
+    private refreshTokenService: RefreshTokenService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<Users> {
@@ -86,10 +89,11 @@ export class UsersService {
   }
 
   async changePassword(
-    userId: string,
+    req: AuthenticatedRequest,
     changePasswordDto: ChangePasswordDto,
     @Res() res,
   ) {
+    const userId = req?.user?.userId;
     const { currentPassword, newPassword } = changePasswordDto;
 
     const user = await this.userRepository
@@ -116,10 +120,15 @@ export class UsersService {
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedNewPassword;
+    user.updatedAt = new Date();
+
+    const refreshToken = req.cookies['refreshToken'];
+    await this.refreshTokenService.deleteToken(refreshToken);
+
     await this.userRepository.save(user);
     res
       .status(HttpStatus.OK)
-      .json({ message: 'Password successfully changed' });
+      .json({ message: 'Password successfully changed', accessToken: '' });
   }
 
   async delete(userId: string) {
