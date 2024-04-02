@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   HttpException,
   HttpStatus,
@@ -125,5 +126,16 @@ export class UsersService {
     }
     this.logger.log(`Delete user successful: ${userId}`);
     return null;
+  }
+
+  async userInfo(username: string) {
+    const targetUser = await this.userRepository.findOne({
+      where: { username },
+      relations: ['followers', 'following'],
+    });
+
+    if (!targetUser) throw new BadRequestException('User does not exist');
+
+    return targetUser;
   }
 }

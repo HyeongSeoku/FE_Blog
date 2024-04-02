@@ -9,6 +9,7 @@ import { RefreshTokenModule } from './refresh-token/refresh-token.module';
 import { PostsModule } from './posts/posts.module';
 import { TagsModule } from './tags/tags.module';
 import { CommentsModule } from './comments/comments.module';
+import { FollowersModule } from './followers/followers.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CommentsModule } from './comments/comments.module';
     PostsModule,
     TagsModule,
     CommentsModule,
+    FollowersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
