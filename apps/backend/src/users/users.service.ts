@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -13,6 +14,7 @@ import {
 import {
   ChangePasswordDto,
   CreateUserDto,
+  UpdateUserDto,
   UserResponseDto,
 } from './dto/user.dto';
 import { Users } from '../database/entities/user.entity';
@@ -84,6 +86,8 @@ export class UsersService {
     userId: string,
   ): Promise<Omit<UserResponseDto, 'userId'> | undefined> {
     const user = await this.userRepository.findOne({ where: { userId } });
+
+    if (!user) throw new BadRequestException(`${userId} is not valid user`);
     const userSafeData = user.toSafeObject();
     return userSafeData;
   }
@@ -129,6 +133,22 @@ export class UsersService {
     res
       .status(HttpStatus.OK)
       .json({ message: 'Password successfully changed', accessToken: '' });
+  }
+
+  async update(userId: string, updateUserDto: UpdateUserDto) {
+    const targetUser = await this.userRepository.findOne({ where: { userId } });
+
+    if (!targetUser)
+      throw new BadRequestException(`${userId} is not valid user`);
+
+    if (targetUser.userId !== userId)
+      throw new ForbiddenException(`access denied`);
+
+    const { username } = updateUserDto;
+    targetUser.username = username;
+
+    await this.userRepository.save(targetUser);
+    return targetUser;
   }
 
   async delete(userId: string) {

@@ -4,6 +4,8 @@ import {
   Delete,
   Get,
   Logger,
+  Param,
+  Patch,
   Post,
   Req,
   Res,
@@ -11,7 +13,11 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
-import { ChangePasswordDto, CreateUserDto } from 'src/users/dto/user.dto';
+import {
+  ChangePasswordDto,
+  CreateUserDto,
+  UpdateUserDto,
+} from 'src/users/dto/user.dto';
 import { UsersService } from 'src/users/users.service';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AuthenticatedRequest } from './auth.interface';
@@ -66,10 +72,19 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('change-password')
   async changePassword(
-    @Req() req,
+    @Req() req: AuthenticatedRequest,
     @Body() changePasswordDto: ChangePasswordDto,
     @Res() res,
   ): Promise<void> {
     return await this.usersService.changePassword(req, changePasswordDto, res);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('update')
+  async updateUser(
+    @Req() req: AuthenticatedRequest,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return await this.usersService.update(req?.user.userId, updateUserDto);
   }
 }
