@@ -1,5 +1,4 @@
 import {
-  HttpException,
   HttpStatus,
   Injectable,
   Logger,
@@ -13,7 +12,6 @@ import * as bcrypt from 'bcrypt';
 import { Users } from 'src/database/entities/user.entity';
 import { AuthenticatedRequest } from './auth.interface';
 import { UserResponseDto } from 'src/users/dto/user.dto';
-import { ConfigService } from '@nestjs/config';
 import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
 import { Request, Response } from 'express';
 import {
@@ -22,6 +20,8 @@ import {
   REFRESH_TOKEN_EXPIRE_TIME,
 } from '../constants/auth.constants';
 import { SharedService } from 'src/shared/shared.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +31,8 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private sharedService: SharedService,
+    @InjectRepository(Users)
+    private usersRepository: Repository<Users>,
   ) {}
 
   async generateToken(
@@ -116,6 +118,10 @@ export class AuthService {
     if ('userId' in req.user) {
       const { accessToken, refreshToken } = await this.generateToken(req.user);
 
+      const lastLogin = new Date();
+
+      await this.usersRepository.update(req.user.userId, { lastLogin });
+
       await this.refreshTokenService.deleteTokenForUserId(req.user.userId);
 
       // 새 리프레시 토큰을 데이터베이스에 저장
@@ -134,7 +140,7 @@ export class AuthService {
         expires: new Date(refreshTokenExpires),
       });
 
-      return res.status(200).json({ accessToken });
+      return res.status(200).json({ accessToken, lastLogin });
     }
 
     throw new UnauthorizedException();

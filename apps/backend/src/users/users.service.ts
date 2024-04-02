@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -13,12 +14,15 @@ import {
 import {
   ChangePasswordDto,
   CreateUserDto,
+  UpdateUserDto,
   UserResponseDto,
 } from './dto/user.dto';
 import { Users } from '../database/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
+import { AuthenticatedRequest } from 'src/auth/auth.interface';
 
 @Injectable()
 export class UsersService {
@@ -26,6 +30,7 @@ export class UsersService {
   constructor(
     @InjectRepository(Users)
     private userRepository: Repository<Users>,
+    private refreshTokenService: RefreshTokenService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<Users> {
@@ -81,18 +86,26 @@ export class UsersService {
     userId: string,
   ): Promise<Omit<UserResponseDto, 'userId'> | undefined> {
     const user = await this.userRepository.findOne({ where: { userId } });
+
+    if (!user) throw new BadRequestException(`${userId} is not valid user`);
     const userSafeData = user.toSafeObject();
     return userSafeData;
   }
 
   async changePassword(
-    userId: string,
+    req: AuthenticatedRequest,
     changePasswordDto: ChangePasswordDto,
     @Res() res,
   ) {
+    const userId = req?.user?.userId;
     const { currentPassword, newPassword } = changePasswordDto;
 
-    const user = await this.userRepository.findOne({ where: { userId } });
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.userId = :userId', { userId })
+      .addSelect('user.password')
+      .getOne();
+
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
@@ -111,10 +124,31 @@ export class UsersService {
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedNewPassword;
+    user.updatedAt = new Date();
+
+    const refreshToken = req.cookies['refreshToken'];
+    await this.refreshTokenService.deleteToken(refreshToken);
+
     await this.userRepository.save(user);
     res
       .status(HttpStatus.OK)
-      .json({ message: 'Password successfully changed' });
+      .json({ message: 'Password successfully changed', accessToken: '' });
+  }
+
+  async update(userId: string, updateUserDto: UpdateUserDto) {
+    const targetUser = await this.userRepository.findOne({ where: { userId } });
+
+    if (!targetUser)
+      throw new BadRequestException(`${userId} is not valid user`);
+
+    if (targetUser.userId !== userId)
+      throw new ForbiddenException(`access denied`);
+
+    const { username } = updateUserDto;
+    targetUser.username = username;
+
+    await this.userRepository.save(targetUser);
+    return targetUser;
   }
 
   async delete(userId: string) {
