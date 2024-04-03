@@ -12,6 +12,7 @@ import { Users } from './user.entity';
 import { Categories } from './categories.entity';
 import { Tags } from './tags.entity';
 import { Comments } from './comments.entity';
+import { Views } from './views.entity';
 
 @Entity('posts')
 export class Posts {
@@ -59,4 +60,7 @@ export class Posts {
     eager: false, // 자동으로 코멘트를 로드하고 싶지 않다면 false로 설정
   })
   comments: Comments[];
+
+  @OneToMany(() => Views, (view) => view.posts)
+  views: Views[];
 }
