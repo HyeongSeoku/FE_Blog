@@ -42,13 +42,26 @@ export class ViewsService {
   async createPostView(postId: string) {
     if (!postId) throw new BadRequestException('postId is required');
 
-    const targetView = await this.findViewsByPostId(postId);
+    const targetView = await this.viewsRepository.findOne({
+      where: { postId },
+    });
 
     if (targetView) throw new ConflictException(`${postId} views is exist`);
 
-    const newView = this.viewsRepository.create({ postId });
+    const newView = this.viewsRepository.create({ postId, viewCount: 0 });
     await this.viewsRepository.save(newView);
 
-    return;
+    return newView;
+  }
+
+  async deletePostView(postId: string) {
+    if (!postId) throw new BadRequestException('postId is required');
+
+    const targetView = await this.findViewsByPostId(postId);
+
+    await this.viewsRepository.delete({
+      postId: targetView.postId,
+      viewId: targetView.viewId,
+    });
   }
 }

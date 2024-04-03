@@ -65,7 +65,8 @@ export class PostsService {
       ])
       .leftJoinAndSelect('comments.replies', 'replies')
       .leftJoinAndSelect('comments.parent', 'parent')
-      .leftJoinAndSelect('replies.user', 'repliesUser');
+      .leftJoinAndSelect('replies.user', 'repliesUser')
+      .leftJoinAndSelect('post.views', 'views');
 
     if (categoryKey) {
       queryBuilder.andWhere('category.key = :categoryKey', {
@@ -80,7 +81,7 @@ export class PostsService {
     const posts = await queryBuilder.getMany();
 
     return {
-      list: posts.map((post) => ({
+      list: posts.map(({ views, ...post }) => ({
         ...post,
         user: {
           userId: post.user.userId,
@@ -101,6 +102,7 @@ export class PostsService {
             content: comment.isDeleted ? '' : comment.content,
             replies: comment.isDeleted ? [] : comment.replies,
           })),
+        viewCount: views?.viewCount,
       })),
       total: posts.length,
     };
@@ -119,6 +121,7 @@ export class PostsService {
         'comments.post',
         'comments.parent',
         'comments.replies.user',
+        'views',
       ],
     });
 
@@ -137,8 +140,11 @@ export class PostsService {
         replies: comment.isDeleted ? [] : comment.replies,
       }));
 
+    const { viewId, postId: viewPostId, ...viewResponse } = targetPost.views;
+
+    const { views, ...result } = targetPost;
     const response = {
-      ...targetPost,
+      ...result,
       user: {
         userId: targetPost.user.userId,
         username: targetPost.user.username,
@@ -150,6 +156,7 @@ export class PostsService {
       tags,
       comments,
       commentsLength: comments?.length,
+      ...viewResponse,
     };
 
     return response;
@@ -190,9 +197,10 @@ export class PostsService {
 
     await this.postsRepository.save(newPost);
 
-    await this.viewsService.createPostView(newPost.postId);
+    const newView = await this.viewsService.createPostView(newPost.postId);
+    const response = { ...newPost, viewCount: newView.viewCount };
 
-    return newPost;
+    return response;
   }
 
   async updatePost(postId: string, updatePostDto: UpdatePostDto) {
@@ -268,6 +276,7 @@ export class PostsService {
     await this.commentsRepository.delete({
       post: { postId },
     });
+    await this.viewsService.deletePostView(postId);
     await this.postsRepository.delete(postId);
 
     throw new HttpException('Post deleted successfully', HttpStatus.OK);

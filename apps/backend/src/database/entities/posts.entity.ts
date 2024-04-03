@@ -6,6 +6,7 @@ import {
   ManyToMany,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Users } from './user.entity';
@@ -61,6 +62,6 @@ export class Posts {
   })
   comments: Comments[];
 
-  @OneToMany(() => Views, (view) => view.posts)
-  views: Views[];
+  @OneToOne(() => Views, (view) => view.posts)
+  views: Views;
 }
