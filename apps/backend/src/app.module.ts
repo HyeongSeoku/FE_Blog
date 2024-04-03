@@ -10,6 +10,7 @@ import { PostsModule } from './posts/posts.module';
 import { TagsModule } from './tags/tags.module';
 import { CommentsModule } from './comments/comments.module';
 import { FollowersModule } from './followers/followers.module';
+import { ViewsModule } from './views/views.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { FollowersModule } from './followers/followers.module';
     TagsModule,
     CommentsModule,
     FollowersModule,
+    ViewsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

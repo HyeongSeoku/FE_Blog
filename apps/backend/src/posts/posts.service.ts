@@ -1,10 +1,13 @@
 import {
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   Logger,
+  NotFoundException,
   Param,
   Req,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Posts } from 'src/database/entities/posts.entity';
@@ -19,6 +22,7 @@ import {
 } from './posts.service.interface';
 import { TagsService } from 'src/tags/tags.service';
 import { Comments } from 'src/database/entities/comments.entity';
+import { ViewsService } from 'src/views/views.service';
 
 @Injectable()
 export class PostsService {
@@ -30,6 +34,8 @@ export class PostsService {
     @InjectRepository(Comments)
     private commentsRepository: Repository<Comments>,
     private readonly tagsService: TagsService,
+    @Inject(forwardRef(() => ViewsService))
+    private viewsService: ViewsService,
   ) {}
   private readonly logger = new Logger(PostsService.name);
 
@@ -161,7 +167,7 @@ export class PostsService {
         where: { categoryId },
       });
 
-      if (!category) throw new Error('Category not found!');
+      if (!category) throw new NotFoundException('Category not found!');
     }
 
     // 태그 처리
@@ -183,6 +189,8 @@ export class PostsService {
     });
 
     await this.postsRepository.save(newPost);
+
+    await this.viewsService.createPostView(newPost.postId);
 
     return newPost;
   }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import SharedModule from 'src/shared/shared.module';
 import { UsersModule } from 'src/users/users.module';
 import { PostsController } from './posts.controller';
@@ -12,12 +12,14 @@ import { TagsModule } from 'src/tags/tags.module';
 import { TagsService } from 'src/tags/tags.service';
 import { PostOwnerGuard } from 'src/guards/postOwner.guard';
 import { Comments } from 'src/database/entities/comments.entity';
+import { ViewsModule } from 'src/views/views.module';
 
 @Module({
   imports: [
     UsersModule,
     SharedModule,
     TagsModule,
+    forwardRef(() => ViewsModule),
     TypeOrmModule.forFeature([Posts, Categories, Tags, Comments]),
   ],
   providers: [AdminGuard, PostsService, TagsService, PostOwnerGuard],

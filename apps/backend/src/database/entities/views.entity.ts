@@ -11,4 +11,7 @@ export class Views {
 
   @ManyToOne(() => Posts, (post) => post.views)
   posts: Posts;
+
+  @Column({ name: 'post_id' })
+  postId: string;
 }
