@@ -38,7 +38,7 @@ export class PostCommentOwnerGuard extends AuthGuard('jwt') {
     const commentData = await this.commentsService.findOneComment(commentId);
 
     const isPostOwner = commentData.post.user.userId === request.user.userId;
-    const isCommentOwner = commentData.user.userId === request.user.userId;
+    const isCommentOwner = commentData?.user?.userId === request.user.userId;
 
     if (!isPostOwner && !isCommentOwner)
       throw new ForbiddenException('You are not the owner of the post');
@@ -52,6 +52,7 @@ export class PostCommentOwnerGuard extends AuthGuard('jwt') {
       this.logger.error(`Authentication Error: ${err || errorMessage}`);
       throw err || new ForbiddenException(errorMessage);
     }
+
     return user;
   }
 }
