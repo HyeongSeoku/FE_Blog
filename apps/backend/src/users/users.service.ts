@@ -18,7 +18,7 @@ import {
   UserResponseDto,
 } from './dto/user.dto';
 import { Users } from '../database/entities/user.entity';
-import * as bcrypt from 'bcrypt';
+import { hash, compare } from 'bcryptjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
@@ -50,7 +50,7 @@ export class UsersService {
       throw new ConflictException('Email already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const hashedPassword = await hash(createUserDto.password, 10);
     try {
       const user = this.userRepository.create({
         ...createUserDto,
@@ -110,10 +110,7 @@ export class UsersService {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
-    const isPasswordMatching = await bcrypt.compare(
-      currentPassword,
-      user.password,
-    );
+    const isPasswordMatching = await compare(currentPassword, user.password);
 
     if (!isPasswordMatching) {
       throw new HttpException(
@@ -122,7 +119,7 @@ export class UsersService {
       );
     }
 
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    const hashedNewPassword = await hash(newPassword, 10);
     user.password = hashedNewPassword;
     user.updatedAt = new Date();
 
