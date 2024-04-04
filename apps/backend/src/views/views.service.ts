@@ -34,9 +34,22 @@ export class ViewsService {
   }
 
   async updatePostViewCount(postId: string) {
-    const targetPost = await this.postsService.findOnePost(postId);
+    await this.postsService.findOnePost(postId);
 
-    const targetView = this.findViewsByPostId(postId);
+    await this.viewsRepository
+      .createQueryBuilder()
+      .update(Views)
+      .set({
+        viewCount: () => 'view_count + 1 ',
+      })
+      .where('postId= :postId', { postId })
+      .execute();
+
+    const updatedViews = await this.viewsRepository.findOne({
+      where: { postId },
+    });
+
+    return updatedViews;
   }
 
   async createPostView(postId: string) {
