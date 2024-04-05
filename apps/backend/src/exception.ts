@@ -5,6 +5,7 @@ import {
   HttpException,
   Logger,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -21,21 +22,38 @@ export class AllExceptionsFilter implements ExceptionFilter {
       return;
     }
 
-    let status: number;
-    let message: string | object;
+    const isInstanceOfError = (variable: unknown): variable is Error => {
+      return variable instanceof Error;
+    };
+
+    const isInstanceOfHttpException = (
+      variable: unknown,
+    ): variable is HttpException => {
+      return variable instanceof HttpException;
+    };
+
+    const status = isInstanceOfHttpException(exception)
+      ? exception.getStatus()
+      : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    let message = isInstanceOfError(exception)
+      ? exception.message
+      : 'Internal Server Error';
 
     if (exception instanceof HttpException) {
-      status = exception.getStatus();
-      message = exception.getResponse();
-    } else if (exception instanceof Error) {
-      status = HttpStatus.INTERNAL_SERVER_ERROR;
-      message = exception.message;
-    } else {
-      status = HttpStatus.INTERNAL_SERVER_ERROR;
-      message = 'Internal Server Error';
+      if (exception instanceof NotFoundException) {
+        message = `${request.url} Path is Not valid`;
+      }
     }
 
-    this.logger.error(`[${status}] ${message} - Path: ${request.url}`);
+    this.logger.error(
+      JSON.stringify({
+        statusCode: status,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        message: message,
+      }),
+    );
 
     response.status(status).json({
       statusCode: status,
