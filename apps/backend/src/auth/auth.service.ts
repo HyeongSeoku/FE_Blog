@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
+import { compareSync } from 'bcryptjs';
 import { Users } from 'src/database/entities/user.entity';
 import { AuthenticatedRequest } from './auth.interface';
 import { UserResponseDto } from 'src/users/dto/user.dto';
@@ -108,7 +108,7 @@ export class AuthService {
   ): Promise<UserResponseDto> {
     const user = await this.usersService.findOneByEmail(email);
 
-    if (user && bcrypt.compareSync(password, user.password)) {
+    if (user && compareSync(password, user.password)) {
       return new UserResponseDto(user);
     }
     return null;
