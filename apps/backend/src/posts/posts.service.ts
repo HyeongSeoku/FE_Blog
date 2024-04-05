@@ -62,11 +62,14 @@ export class PostsService {
         'comments.content',
         'comments.isDeleted',
         'comments.isPostOwner',
+        'comments.createdAt',
       ])
       .leftJoinAndSelect('comments.replies', 'replies')
       .leftJoinAndSelect('comments.parent', 'parent')
       .leftJoinAndSelect('replies.user', 'repliesUser')
-      .leftJoinAndSelect('post.views', 'views');
+      .leftJoinAndSelect('post.views', 'views')
+      .orderBy('post.createdAt', 'DESC')
+      .addOrderBy('comments.createdAt', 'DESC');
 
     if (categoryKey) {
       queryBuilder.andWhere('category.key = :categoryKey', {
@@ -140,7 +143,11 @@ export class PostsService {
         replies: comment.isDeleted ? [] : comment.replies,
       }));
 
-    const { viewId, postId: viewPostId, ...viewResponse } = targetPost.views;
+    const {
+      viewId,
+      postId: viewPostId,
+      ...viewResponse
+    } = targetPost.views ?? {};
 
     const { views, ...result } = targetPost;
     const response = {
@@ -179,7 +186,7 @@ export class PostsService {
 
     // 태그 처리
     let tags = [];
-    if (createPostDto.tagNames && createPostDto.tagNames.length > 0) {
+    if (createPostDto?.tagNames?.length > 0) {
       tags = await Promise.all(
         createPostDto.tagNames.map((tagName) =>
           this.tagsService.getOrCreateTag({ name: tagName }),
@@ -236,7 +243,7 @@ export class PostsService {
       if (!category) throw new Error('Category not found!');
     }
 
-    if (updatePostDto?.tagNames.length) {
+    if (updatePostDto?.tagNames?.length) {
       targetPost.tags = await Promise.all(
         updatePostDto.tagNames.map((tagName) =>
           this.tagsService.getOrCreateTag({ name: tagName }),
