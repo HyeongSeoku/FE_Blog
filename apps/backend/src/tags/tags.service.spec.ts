@@ -3,6 +3,7 @@ import { TagsService } from './tags.service';
 
 describe('TagsService', () => {
   let service: TagsService;
+  const mockTagsRepository = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
