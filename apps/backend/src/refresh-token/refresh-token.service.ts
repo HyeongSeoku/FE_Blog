@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RefreshToken } from 'src/database/entities/refreshToken.entity';
 import { LessThan, MoreThan, Repository } from 'typeorm';
@@ -15,6 +15,8 @@ export class RefreshTokenService {
     private jwtService: JwtService,
     private sharedService: SharedService,
   ) {}
+
+  private logger = new Logger(RefreshTokenService.name);
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handleCron() {

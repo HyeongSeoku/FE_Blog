@@ -2,8 +2,6 @@ import {
   HttpStatus,
   Injectable,
   Logger,
-  Req,
-  Res,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
@@ -55,10 +53,7 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async generateNewAccessTokenByRefreshToken(
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
+  async generateNewAccessTokenByRefreshToken(req: Request, res: Response) {
     try {
       const refreshToken = req.cookies['refreshToken'];
       const { privateKey } = this.sharedService.getJwtKeys();
@@ -114,7 +109,7 @@ export class AuthService {
     return null;
   }
 
-  async login(@Req() req: AuthenticatedRequest, @Res() res: Response) {
+  async login(req: AuthenticatedRequest, res: Response) {
     if ('userId' in req.user) {
       const { accessToken, refreshToken } = await this.generateToken(req.user);
 
@@ -146,7 +141,7 @@ export class AuthService {
     throw new UnauthorizedException();
   }
 
-  async logout(@Req() req: AuthenticatedRequest, @Res() res: Response) {
+  async logout(req: AuthenticatedRequest, res: Response) {
     try {
       const userId = req.user?.userId;
       if (!userId)
@@ -165,5 +160,9 @@ export class AuthService {
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: 'Logged out failed' });
     }
+
+    // return res
+    //   .status(HttpStatus.OK)
+    //   .json({ message: 'Logged out successfully' });
   }
 }
