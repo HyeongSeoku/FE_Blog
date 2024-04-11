@@ -42,7 +42,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     if (exception instanceof HttpException) {
       if (exception instanceof NotFoundException) {
-        message = `${request.url} Path is Not valid`;
+        message = exception.message || `${request.url} Path is Not valid`;
       }
     }
 
