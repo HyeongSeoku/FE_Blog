@@ -56,7 +56,7 @@ describe('UsersService', () => {
       mockUsersRepository.create.mockResolvedValue(createUserDto);
       mockUsersRepository.save.mockResolvedValue(createUserDto);
 
-      expect(await service.create(createUserDto)).toEqual(createUserDto);
+      expect(await service.createUser(createUserDto)).toEqual(createUserDto);
       expect(userRepository.create).toHaveBeenCalledWith(createUserDto);
       expect(userRepository.save).toHaveBeenCalledWith(createUserDto);
     });
@@ -65,7 +65,7 @@ describe('UsersService', () => {
       mockUsersRepository.findOne.mockResolvedValueOnce(new Users());
 
       await expect(
-        service.create({
+        service.createUser({
           username: 'testUser',
           email: 'test@test.com',
           password: 'password',
