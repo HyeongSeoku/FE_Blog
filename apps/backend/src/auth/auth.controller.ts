@@ -34,6 +34,10 @@ import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
 @Controller('auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
+  private omitPassword(user: UserResponseDto): Partial<Users> {
+    const { password, ...result } = user;
+    return result;
+  }
 
   constructor(
     private authService: AuthService,
@@ -92,7 +96,7 @@ export class AuthController {
 
   @Post('refresh')
   async refreshTokens(@Req() req: ExpressRequest, @Res() res: Response) {
-    const refreshToken = req.cookies?.REFRESH_TOKEN_KEY;
+    const refreshToken = req.cookies[REFRESH_TOKEN_KEY];
     if (!refreshToken) throw new NotFoundException('refreshToken is not exist');
 
     const generateResult =
@@ -154,7 +158,7 @@ export class AuthController {
     @Res() res: Response,
   ): Promise<void> {
     const userId = req.user.userId;
-    const refreshToken = req.cookies?.REFRESH_TOKEN_KEY;
+    const refreshToken = req.cookies[REFRESH_TOKEN_KEY];
 
     await this.usersService.changePassword(
       userId,
@@ -177,10 +181,5 @@ export class AuthController {
     @Res() res: Response,
   ) {
     return await this.usersService.update(req?.user.userId, updateUserDto);
-  }
-
-  private omitPassword(user: UserResponseDto): Partial<Users> {
-    const { password, ...result } = user;
-    return result;
   }
 }

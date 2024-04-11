@@ -20,8 +20,6 @@ import { hash, compare } from 'bcryptjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
-import { AuthenticatedRequest } from 'src/auth/auth.interface';
-import { REFRESH_TOKEN_KEY } from 'src/constants/cookie.constants';
 
 @Injectable()
 export class UsersService {
