@@ -8,8 +8,6 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
-  Request,
-  Res,
 } from '@nestjs/common';
 import {
   ChangePasswordDto,
@@ -23,6 +21,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
 import { AuthenticatedRequest } from 'src/auth/auth.interface';
+import { REFRESH_TOKEN_KEY } from 'src/constants/cookie.constants';
 
 @Injectable()
 export class UsersService {
@@ -33,9 +32,20 @@ export class UsersService {
     private refreshTokenService: RefreshTokenService,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<Users> {
+  async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+    const { username, email } = createUserDto;
+    await this.checkUserExistence(username, email);
+
+    const hashedPassword = await hash(createUserDto.password, 10);
+    const user = this.createUserEntity(createUserDto, hashedPassword);
+    await this.saveUser(user);
+
+    return { ...user, password: undefined };
+  }
+
+  private async checkUserExistence(username: string, email: string) {
     const existingUserByUsername = await this.userRepository.findOne({
-      where: { username: createUserDto.username },
+      where: { username: username },
     });
 
     if (existingUserByUsername) {
@@ -43,28 +53,29 @@ export class UsersService {
     }
 
     const existingUserByEmail = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
+      where: { email: email },
     });
 
     if (existingUserByEmail) {
       throw new ConflictException('Email already exists');
     }
+  }
 
-    const hashedPassword = await hash(createUserDto.password, 10);
-    try {
-      const user = this.userRepository.create({
-        ...createUserDto,
-        password: hashedPassword,
-      });
+  private createUserEntity(
+    createUserDto: CreateUserDto,
+    hashedPassword: string,
+  ): Users {
+    const user = this.userRepository.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
 
-      await this.userRepository.save(user);
+    return user;
+  }
 
-      delete user.password;
-
-      return user;
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to create user');
-    }
+  private async saveUser(user: Users): Promise<void> {
+    await this.userRepository.save(user);
+    return;
   }
 
   async findOneByEmail(email: string): Promise<Users | undefined> {
@@ -82,22 +93,21 @@ export class UsersService {
     });
   }
 
-  async findById(
-    userId: string,
-  ): Promise<Omit<UserResponseDto, 'userId'> | undefined> {
-    const user = await this.userRepository.findOne({ where: { userId } });
-
-    if (!user) throw new BadRequestException(`${userId} is not valid user`);
-    const userSafeData = user.toSafeObject();
-    return userSafeData;
+  async findById(userId: string): Promise<UserResponseDto | null> {
+    try {
+      const user = await this.userRepository.findOne({ where: { userId } });
+      if (!user) return null;
+      return { ...user, password: undefined };
+    } catch (e) {
+      return null;
+    }
   }
 
   async changePassword(
-    req: AuthenticatedRequest,
+    userId: string,
+    refreshToken: string,
     changePasswordDto: ChangePasswordDto,
-    @Res() res,
-  ) {
-    const userId = req?.user?.userId;
+  ): Promise<boolean> {
     const { currentPassword, newPassword } = changePasswordDto;
 
     const user = await this.userRepository
@@ -123,13 +133,8 @@ export class UsersService {
     user.password = hashedNewPassword;
     user.updatedAt = new Date();
 
-    const refreshToken = req.cookies['refreshToken'];
-    await this.refreshTokenService.deleteToken(refreshToken);
-
     await this.userRepository.save(user);
-    res
-      .status(HttpStatus.OK)
-      .json({ message: 'Password successfully changed', accessToken: '' });
+    return true;
   }
 
   async update(userId: string, updateUserDto: UpdateUserDto) {
@@ -148,15 +153,16 @@ export class UsersService {
     return targetUser;
   }
 
-  async delete(userId: string) {
-    this.logger.log(`Delete user called: ${userId}`);
-
-    const result = await this.userRepository.delete(userId);
-    if (result.affected === 0) {
-      throw new NotFoundException(`User with ID "${userId}" not found`);
+  async deleteUser(userId: string) {
+    try {
+      const result = await this.userRepository.delete(userId);
+      if (result.affected === 0) {
+        throw new NotFoundException(`User with ID "${userId}" not found`);
+      }
+      return null;
+    } catch (e) {
+      throw new InternalServerErrorException('Delete User Fail');
     }
-    this.logger.log(`Delete user successful: ${userId}`);
-    return null;
   }
 
   async userInfo(username: string) {

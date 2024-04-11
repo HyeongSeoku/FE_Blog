@@ -40,8 +40,7 @@ export class UserResponseDto {
   lastLogin: Date;
 
   isAdmin: boolean;
-
-  // password는 제거하고 응답 반환
+  password: undefined;
 
   constructor(user: Users) {
     this.userId = user.userId;
@@ -51,6 +50,7 @@ export class UserResponseDto {
     this.updatedAt = user.updatedAt;
     this.lastLogin = user.lastLogin;
     this.isAdmin = user.isAdmin;
+    this.password = undefined;
   }
 }
 
