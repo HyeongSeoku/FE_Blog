@@ -39,6 +39,10 @@ describe('AuthController', () => {
     logout: jest.fn().mockResolvedValue(undefined),
   };
 
+  const mockRefreshTokenService = {
+    deleteTokenForUserId: jest.fn().mockResolvedValue(true),
+  };
+
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
@@ -59,9 +63,7 @@ describe('AuthController', () => {
         },
         {
           provide: RefreshTokenService,
-          useValue: {
-            deleteTokenForUserId: jest.fn().mockResolvedValue(undefined),
-          },
+          useValue: mockRefreshTokenService,
         },
       ],
     }).compile();
@@ -81,8 +83,10 @@ describe('AuthController', () => {
 
   describe('logout', () => {
     it('should return 200 OK with success message on successful logout', async () => {
+      const VALID_USER_ID = 'VALID_USER_ID';
+
       const mockReq = {
-        user: { userId: 'testUserId' },
+        user: { userId: VALID_USER_ID },
       } as AuthenticatedRequest;
       const mockRes = {
         status: jest.fn().mockReturnThis(),
@@ -94,7 +98,7 @@ describe('AuthController', () => {
 
       await authController.logout(mockReq, mockRes);
 
-      expect(mockAuthService.logout).toHaveBeenCalledWith('testUserId');
+      expect(mockAuthService.logout).toHaveBeenCalledWith(VALID_USER_ID);
       expect(mockRes.cookie).toHaveBeenCalledWith(
         'refreshToken',
         '',
@@ -103,6 +107,45 @@ describe('AuthController', () => {
       expect(mockRes.status).toHaveBeenCalledWith(200);
       expect(mockRes.json).toHaveBeenCalledWith({
         message: 'Logged out successfully',
+      });
+    });
+
+    it('should return 401 with fail message on userId is empty', async () => {
+      const mockReq = {
+        user: { userId: '' },
+      } as AuthenticatedRequest;
+      const mockRes = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+        cookie: jest.fn(),
+      } as unknown as Response;
+
+      await authController.logout(mockReq, mockRes);
+      expect(mockAuthService.logout).toHaveBeenCalledTimes(0);
+      expect(mockRes.status).toHaveBeenCalledWith(401);
+      expect(mockRes.json).toHaveBeenCalledWith({
+        message: 'User not authenticated',
+      });
+    });
+
+    it('should return 500 Internal Server Error if logout fails', async () => {
+      const INVALID_USER_ID = 'INVALID_USER_ID';
+      const mockReq = {
+        user: { userId: INVALID_USER_ID },
+      } as AuthenticatedRequest;
+      const mockRes = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+        cookie: jest.fn(),
+      } as unknown as Response;
+
+      mockAuthService.logout.mockResolvedValue(false);
+
+      await authController.logout(mockReq, mockRes);
+      expect(mockAuthService.logout).toHaveBeenCalledWith(INVALID_USER_ID);
+      expect(mockRes.status).toHaveBeenCalledWith(500);
+      expect(mockRes.json).toHaveBeenCalledWith({
+        message: 'Logged out failed',
       });
     });
   });
