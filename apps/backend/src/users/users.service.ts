@@ -19,7 +19,6 @@ import { Users } from '../database/entities/user.entity';
 import { hash, compare } from 'bcryptjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
 
 @Injectable()
 export class UsersService {
@@ -27,7 +26,6 @@ export class UsersService {
   constructor(
     @InjectRepository(Users)
     private userRepository: Repository<Users>,
-    private refreshTokenService: RefreshTokenService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
@@ -169,7 +167,7 @@ export class UsersService {
       relations: ['followers', 'following'],
     });
 
-    if (!targetUser) throw new BadRequestException('User does not exist');
+    if (!targetUser) return null;
 
     return targetUser;
   }
