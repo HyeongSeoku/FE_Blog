@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import * as fs from 'fs';
 import { SharedService } from './shared.service';
+import { RS256_ALGORITHM } from 'src/constants/auth.constants';
 
 @Global()
 @Module({
@@ -24,7 +25,7 @@ import { SharedService } from './shared.service';
           ),
           signOptions: {
             expiresIn: configService.get('JWT_EXPIRATION_TIME'),
-            algorithm: 'RS256',
+            algorithm: RS256_ALGORITHM,
           },
         };
       },

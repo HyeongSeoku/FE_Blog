@@ -9,6 +9,7 @@ import {
   ACCESS_TOKEN_EXPIRE,
   REFRESH_TOKEN_EXPIRE,
   REFRESH_TOKEN_EXPIRE_TIME,
+  RS256_ALGORITHM,
 } from '../constants/auth.constants';
 import { SharedService } from 'src/shared/shared.service';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -35,12 +36,12 @@ export class AuthService {
     const accessToken = await this.jwtService.signAsync(payload, {
       privateKey: privateKey,
       expiresIn: ACCESS_TOKEN_EXPIRE,
-      algorithm: 'RS256',
+      algorithm: RS256_ALGORITHM,
     });
     const refreshToken = await this.jwtService.signAsync(payload, {
       privateKey: privateKey,
       expiresIn: REFRESH_TOKEN_EXPIRE,
-      algorithm: 'RS256',
+      algorithm: RS256_ALGORITHM,
     });
 
     return { accessToken, refreshToken };
@@ -66,7 +67,7 @@ export class AuthService {
         {
           privateKey: privateKey,
           expiresIn: REFRESH_TOKEN_EXPIRE,
-          algorithm: 'RS256',
+          algorithm: RS256_ALGORITHM,
         },
       );
 

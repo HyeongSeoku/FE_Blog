@@ -5,7 +5,10 @@ import { LessThan, MoreThan, Repository } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { SharedService } from 'src/shared/shared.service';
 import { JwtService } from '@nestjs/jwt';
-import { ACCESS_TOKEN_EXPIRE } from 'src/constants/auth.constants';
+import {
+  ACCESS_TOKEN_EXPIRE,
+  RS256_ALGORITHM,
+} from 'src/constants/auth.constants';
 
 @Injectable()
 export class RefreshTokenService {
@@ -83,7 +86,7 @@ export class RefreshTokenService {
         const accessToken = this.jwtService.sign(payload, {
           privateKey: privateKey,
           expiresIn: ACCESS_TOKEN_EXPIRE,
-          algorithm: 'RS256',
+          algorithm: RS256_ALGORITHM,
         });
 
         return accessToken;
