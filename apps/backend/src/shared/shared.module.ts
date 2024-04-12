@@ -8,6 +8,7 @@ import { SharedService } from './shared.service';
 @Global()
 @Module({
   imports: [
+    ConfigModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
