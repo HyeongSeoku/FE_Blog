@@ -123,7 +123,7 @@ export class AuthService {
 
   async logout(userId: string): Promise<boolean> {
     try {
-      if (!userId) await this.refreshTokenService.deleteTokenForUserId(userId);
+      if (userId) await this.refreshTokenService.deleteTokenForUserId(userId);
       return true;
     } catch (error) {
       return false;
