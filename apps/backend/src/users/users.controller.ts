@@ -1,4 +1,10 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -7,6 +13,11 @@ export class UsersController {
 
   @Get('info/:username')
   async getUserInfo(@Param('username') username: string) {
-    return this.usersService.userInfo(username);
+    if (!username) throw new BadRequestException('username is required');
+    const targetUserData = await this.usersService.userInfo(username);
+
+    if (!targetUserData) throw new NotFoundException('User does not exist');
+
+    return targetUserData;
   }
 }
