@@ -77,7 +77,7 @@ export class AuthController {
         .status(HttpStatus.UNAUTHORIZED)
         .json({ message: 'User not authenticated' });
 
-    const result = this.authService.logout(userId);
+    const result = await this.authService.logout(userId);
 
     if (result) {
       res.cookie(REFRESH_TOKEN_KEY, '', {
