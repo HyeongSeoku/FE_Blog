@@ -1,62 +1,102 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
-import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Users } from '../database/entities/user.entity';
-
-type MockType<T> = {
-  [P in keyof T]?: jest.Mock<{}>;
-};
+import { Repository } from 'typeorm';
+import {
+  ConflictException,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { RefreshTokenService } from '../refresh-token/refresh-token.service';
+import { RefreshToken } from 'src/database/entities/refreshToken.entity';
 
 describe('UsersService', () => {
   let service: UsersService;
-  let mockUsersRepository: MockType<Repository<Users>>;
+  let userRepository: Repository<Users>;
 
-  const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
-    () => ({
-      create: jest.fn((entity) => entity),
-      save: jest.fn((entity) =>
-        Promise.resolve({ ...entity, userId: Date.now() }),
-      ),
-    }),
-  );
+  const mockUsersRepository = {
+    create: jest.fn(),
+    save: jest.fn(),
+    findOne: jest.fn(),
+    delete: jest.fn(),
+  };
+
+  const mockRefreshTokenService = {
+    deleteToken: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
+        { provide: getRepositoryToken(Users), useValue: mockUsersRepository },
+        RefreshTokenService,
         {
-          provide: getRepositoryToken(Users),
-          useFactory: repositoryMockFactory,
+          provide: getRepositoryToken(RefreshToken),
+          useValue: mockRefreshTokenService,
         },
       ],
     }).compile();
 
     service = module.get<UsersService>(UsersService);
-    mockUsersRepository = module.get<MockType<Repository<Users>>>(
-      getRepositoryToken(Users),
-    );
+    userRepository = module.get<Repository<Users>>(getRepositoryToken(Users));
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a new user record and return that', async () => {
-    const createUserDto = {
-      username: 'test',
-      password: 'test',
-      email: 'test@test.com',
-    };
+  describe('create', () => {
+    it('should successfully create a user', async () => {
+      const createUserDto = {
+        username: 'testUser',
+        email: 'test@test.com',
+        password: 'password',
+      };
+      mockUsersRepository.create.mockResolvedValue(createUserDto);
+      mockUsersRepository.save.mockResolvedValue(createUserDto);
 
-    const createdUser = await service.create(createUserDto);
+      expect(await service.createUser(createUserDto)).toEqual(createUserDto);
+      expect(userRepository.create).toHaveBeenCalledWith(createUserDto);
+      expect(userRepository.save).toHaveBeenCalledWith(createUserDto);
+    });
 
-    expect(createdUser.username).toEqual(createUserDto.username);
-    expect(createdUser.email).toEqual(createUserDto.email);
+    it('should throw a conflict exception if username exists', async () => {
+      mockUsersRepository.findOne.mockResolvedValueOnce(new Users());
 
-    // 비밀번호 필드를 제거한 createUserDto로 검증
-    delete createUserDto.password;
-    expect(mockUsersRepository.create).toHaveBeenCalledWith(createUserDto); // create가 호출되었는지 검증
-    expect(mockUsersRepository.save).toHaveBeenCalled(); // save가 호출되었는지 검증
+      await expect(
+        service.createUser({
+          username: 'testUser',
+          email: 'test@test.com',
+          password: 'password',
+        }),
+      ).rejects.toThrow(ConflictException);
+    });
   });
+
+  describe('findById', () => {
+    it('should return a user if found', async () => {
+      const userId = 'someUserId';
+      const expectedUser = {
+        userId,
+        username: 'testUser',
+        email: 'test@test.com',
+      };
+      mockUsersRepository.findOne.mockResolvedValue(expectedUser);
+
+      const result = await service.findById(userId);
+      expect(result).toEqual(expectedUser);
+      expect(userRepository.findOne).toHaveBeenCalledWith({
+        where: { userId },
+      });
+    });
+
+    it('should throw an exception if user is not found', async () => {
+      mockUsersRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.findById('invalidUserId')).rejects.toThrow();
+    });
+  });
+
+  // 다른 메소드들에 대한 테스트 케이스도 비슷한 패턴으로 작성할 수 있습니다.
 });

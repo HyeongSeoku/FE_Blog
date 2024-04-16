@@ -3,12 +3,14 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Logger,
-  Param,
+  NotFoundException,
   Patch,
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -17,56 +19,135 @@ import {
   ChangePasswordDto,
   CreateUserDto,
   UpdateUserDto,
+  UserResponseDto,
 } from 'src/users/dto/user.dto';
 import { UsersService } from 'src/users/users.service';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AuthenticatedRequest } from './auth.interface';
 import { RateLimit } from 'nestjs-rate-limiter';
 import { Request as ExpressRequest, Response } from 'express';
+import { REFRESH_TOKEN_EXPIRE_TIME } from 'src/constants/auth.constants';
+import { REFRESH_TOKEN_KEY } from 'src/constants/cookie.constants';
+import { Users } from 'src/database/entities/user.entity';
+import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
 
 @Controller('auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
+  private omitPassword(user: UserResponseDto): Partial<Users> {
+    const { password, ...result } = user;
+    return result;
+  }
 
   constructor(
     private authService: AuthService,
     private readonly usersService: UsersService,
+    private readonly refreshTokenService: RefreshTokenService,
   ) {}
 
   @RateLimit({ points: 10, duration: 60 })
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Req() req: AuthenticatedRequest, @Res() res: Response) {
-    return this.authService.login(req, res);
+    const { user } = req;
+
+    const loginResult = await this.authService.login(user);
+    if (!loginResult) throw new UnauthorizedException('Login failed');
+
+    const { accessToken, lastLogin, refreshToken } = loginResult;
+
+    const refreshTokenExpires = new Date().setDate(
+      new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+    );
+
+    res.cookie(REFRESH_TOKEN_KEY, refreshToken, {
+      httpOnly: true,
+      expires: new Date(refreshTokenExpires),
+    });
+
+    return res.status(200).json({ accessToken, lastLogin });
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   async logout(@Req() req: AuthenticatedRequest, @Res() res: Response) {
-    return this.authService.logout(req, res);
+    const userId = req?.user?.userId;
+    if (!userId)
+      return res
+        .status(HttpStatus.UNAUTHORIZED)
+        .json({ message: 'User not authenticated' });
+
+    const result = await this.authService.logout(userId);
+
+    if (result) {
+      res.cookie(REFRESH_TOKEN_KEY, '', {
+        httpOnly: true,
+        expires: new Date(0),
+      });
+      return res
+        .status(HttpStatus.OK)
+        .json({ message: 'Logged out successfully' });
+    } else {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Logged out failed' });
+    }
   }
 
   @Post('refresh')
   async refreshTokens(@Req() req: ExpressRequest, @Res() res: Response) {
-    return this.authService.generateNewAccessTokenByRefreshToken(req, res);
+    const refreshToken = req.cookies[REFRESH_TOKEN_KEY];
+    if (!refreshToken) throw new NotFoundException('refreshToken is not exist');
+
+    const generateResult =
+      await this.authService.generateNewAccessTokenByRefreshToken(refreshToken);
+
+    if (!generateResult)
+      throw new UnauthorizedException('Invalid refreshToken');
+
+    const { newAccessToken, newRefreshToken } = generateResult;
+
+    const refreshTokenExpires = new Date().setDate(
+      new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+    );
+
+    res.cookie(REFRESH_TOKEN_KEY, newRefreshToken, {
+      httpOnly: true,
+      expires: new Date(refreshTokenExpires),
+    });
+
+    return res.status(200).json({ accessToken: newAccessToken });
   }
 
   @RateLimit({ points: 2, duration: 60 })
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+    const user = await this.usersService.createUser(createUserDto);
+    return { user: this.omitPassword(user) };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getProfile(@Req() req: AuthenticatedRequest) {
-    return await this.usersService.findById(req.user.userId);
+    const { userId } = req?.user;
+    const userData = await this.usersService.findById(userId);
+
+    const { password, ...result } = userData;
+    if (!userData)
+      throw new UnauthorizedException(`${userId} is not valid user`);
+    return result;
   }
 
+  //FIXME: 유효하지 않은 유저에 대해 LocalAuthGuard 내에서 에러 로그 및 반환값 처리 필요
   @UseGuards(LocalAuthGuard)
   @Delete('withdrawal')
-  async deleteUser(@Req() req): Promise<void> {
-    await this.usersService.delete(req.user.id);
+  async deleteUser(
+    @Req() req: AuthenticatedRequest,
+    @Res() res: Response,
+  ): Promise<void> {
+    const userId = req.user?.userId;
+    await this.usersService.deleteUser(userId);
+    res.status(HttpStatus.OK).json({ message: 'delete user success' });
   }
 
   @UseGuards(JwtAuthGuard)
@@ -74,9 +155,22 @@ export class AuthController {
   async changePassword(
     @Req() req: AuthenticatedRequest,
     @Body() changePasswordDto: ChangePasswordDto,
-    @Res() res,
+    @Res() res: Response,
   ): Promise<void> {
-    return await this.usersService.changePassword(req, changePasswordDto, res);
+    const userId = req.user.userId;
+    const refreshToken = req.cookies[REFRESH_TOKEN_KEY];
+
+    await this.usersService.changePassword(
+      userId,
+      refreshToken,
+      changePasswordDto,
+    );
+
+    await this.refreshTokenService.deleteToken(refreshToken);
+
+    res
+      .status(HttpStatus.OK)
+      .json({ message: 'Password successfully changed', accessToken: '' });
   }
 
   @UseGuards(JwtAuthGuard)
@@ -84,6 +178,7 @@ export class AuthController {
   async updateUser(
     @Req() req: AuthenticatedRequest,
     @Body() updateUserDto: UpdateUserDto,
+    @Res() res: Response,
   ) {
     return await this.usersService.update(req?.user.userId, updateUserDto);
   }

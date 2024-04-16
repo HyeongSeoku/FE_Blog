@@ -1,23 +1,15 @@
-import {
-  HttpStatus,
-  Injectable,
-  Logger,
-  Req,
-  Res,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcryptjs';
 import { Users } from 'src/database/entities/user.entity';
-import { AuthenticatedRequest } from './auth.interface';
 import { UserResponseDto } from 'src/users/dto/user.dto';
 import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
-import { Request, Response } from 'express';
 import {
   ACCESS_TOKEN_EXPIRE,
   REFRESH_TOKEN_EXPIRE,
   REFRESH_TOKEN_EXPIRE_TIME,
+  RS256_ALGORITHM,
 } from '../constants/auth.constants';
 import { SharedService } from 'src/shared/shared.service';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -44,23 +36,21 @@ export class AuthService {
     const accessToken = await this.jwtService.signAsync(payload, {
       privateKey: privateKey,
       expiresIn: ACCESS_TOKEN_EXPIRE,
-      algorithm: 'RS256',
+      algorithm: RS256_ALGORITHM,
     });
     const refreshToken = await this.jwtService.signAsync(payload, {
       privateKey: privateKey,
       expiresIn: REFRESH_TOKEN_EXPIRE,
-      algorithm: 'RS256',
+      algorithm: RS256_ALGORITHM,
     });
 
     return { accessToken, refreshToken };
   }
 
   async generateNewAccessTokenByRefreshToken(
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
+    refreshToken: string,
+  ): Promise<{ newRefreshToken: string; newAccessToken: string } | null> {
     try {
-      const refreshToken = req.cookies['refreshToken'];
       const { privateKey } = this.sharedService.getJwtKeys();
 
       const newAccessToken =
@@ -77,7 +67,7 @@ export class AuthService {
         {
           privateKey: privateKey,
           expiresIn: REFRESH_TOKEN_EXPIRE,
-          algorithm: 'RS256',
+          algorithm: RS256_ALGORITHM,
         },
       );
 
@@ -87,18 +77,9 @@ export class AuthService {
         new Date(Date.now() + REFRESH_TOKEN_EXPIRE_TIME * 24 * 60 * 60 * 1000),
       );
 
-      const refreshTokenExpires = new Date().setDate(
-        new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
-      );
-
-      res.cookie('refreshToken', newRefreshToken, {
-        httpOnly: true,
-        expires: new Date(refreshTokenExpires),
-      });
-
-      res.status(200).json({ accessToken: newAccessToken });
+      return { newRefreshToken, newAccessToken };
     } catch (e) {
-      return res.status(HttpStatus.UNAUTHORIZED).json('Invalid refreshToken');
+      return null;
     }
   }
 
@@ -114,56 +95,39 @@ export class AuthService {
     return null;
   }
 
-  async login(@Req() req: AuthenticatedRequest, @Res() res: Response) {
-    if ('userId' in req.user) {
-      const { accessToken, refreshToken } = await this.generateToken(req.user);
+  async login(user: Users): Promise<{
+    accessToken: string;
+    refreshToken: string;
+    lastLogin: Date;
+  } | null> {
+    try {
+      const { accessToken, refreshToken } = await this.generateToken(user);
 
       const lastLogin = new Date();
 
-      await this.usersRepository.update(req.user.userId, { lastLogin });
+      await this.usersRepository.update(user.userId, { lastLogin });
 
-      await this.refreshTokenService.deleteTokenForUserId(req.user.userId);
+      await this.refreshTokenService.deleteTokenForUserId(user.userId);
 
       // 새 리프레시 토큰을 데이터베이스에 저장
       await this.refreshTokenService.saveToken(
         refreshToken,
-        req.user.userId,
+        user.userId,
         new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       );
 
-      const refreshTokenExpires = new Date().setDate(
-        new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
-      );
-
-      res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        expires: new Date(refreshTokenExpires),
-      });
-
-      return res.status(200).json({ accessToken, lastLogin });
+      return { accessToken, refreshToken, lastLogin };
+    } catch (e) {
+      return null;
     }
-
-    throw new UnauthorizedException();
   }
 
-  async logout(@Req() req: AuthenticatedRequest, @Res() res: Response) {
+  async logout(userId: string): Promise<boolean> {
     try {
-      const userId = req.user?.userId;
-      if (!userId)
-        return res
-          .status(HttpStatus.UNAUTHORIZED)
-          .json({ message: 'User not authenticated' });
-
-      await this.refreshTokenService.deleteTokenForUserId(userId);
-      res.cookie('refreshToken', '', { httpOnly: true, expires: new Date(0) });
-
-      return res
-        .status(HttpStatus.OK)
-        .json({ message: 'Logged out successfully' });
+      if (userId) await this.refreshTokenService.deleteTokenForUserId(userId);
+      return true;
     } catch (error) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: 'Logged out failed' });
+      return false;
     }
   }
 }

@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
+import { RS256_ALGORITHM } from 'src/constants/auth.constants';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -18,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKeyProvider: (request, rawJwtToken, done) => {
         return done(null, publicKey);
       },
-      algorithms: ['RS256'],
+      algorithms: [RS256_ALGORITHM],
     });
   }
 

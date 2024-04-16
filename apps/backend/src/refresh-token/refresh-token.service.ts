@@ -1,11 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RefreshToken } from 'src/database/entities/refreshToken.entity';
 import { LessThan, MoreThan, Repository } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { SharedService } from 'src/shared/shared.service';
 import { JwtService } from '@nestjs/jwt';
-import { ACCESS_TOKEN_EXPIRE } from 'src/constants/auth.constants';
+import {
+  ACCESS_TOKEN_EXPIRE,
+  RS256_ALGORITHM,
+} from 'src/constants/auth.constants';
 
 @Injectable()
 export class RefreshTokenService {
@@ -15,6 +18,8 @@ export class RefreshTokenService {
     private jwtService: JwtService,
     private sharedService: SharedService,
   ) {}
+
+  private logger = new Logger(RefreshTokenService.name);
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handleCron() {
@@ -81,7 +86,7 @@ export class RefreshTokenService {
         const accessToken = this.jwtService.sign(payload, {
           privateKey: privateKey,
           expiresIn: ACCESS_TOKEN_EXPIRE,
-          algorithm: 'RS256',
+          algorithm: RS256_ALGORITHM,
         });
 
         return accessToken;

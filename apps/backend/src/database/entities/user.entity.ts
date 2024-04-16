@@ -49,26 +49,4 @@ export class Users {
   // 팔로잉 관계
   @OneToMany(() => Followers, (follower) => follower.following)
   following: Followers[];
-
-  public toSafeObject() {
-    const { password, userId, ...safeData } = this;
-    return safeData;
-  }
-
-  public userDefaultInfoResponse(showRole: boolean) {
-    const {
-      password,
-      userId,
-      createdAt,
-      updatedAt,
-      isAdmin,
-      ...userInfoResponse
-    } = this;
-
-    const response = showRole
-      ? { ...userInfoResponse, isAdmin }
-      : userInfoResponse;
-
-    return response;
-  }
 }
