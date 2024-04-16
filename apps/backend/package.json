@@ -8,9 +8,9 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "create-test-env": "echo 'DB_HOST=localhost\nDB_USER=root\nDB_USERNAME=username\nDB_PASSWORD=secret\nDB_DATABASE=test_db\nPRIVATE_KEY_PATH=private_key_path\nPUBLIC_KEY_PATH=public_key_path' > .env.test",
-    "create-dev-env": "echo 'DB_HOST=localhost\nDB_USER=root\nDB_USERNAME=username\nDB_PASSWORD=s1mpl3\nDB_DATABASE=database\nPRIVATE_KEY_PATH=private_key_path\nPUBLIC_KEY_PATH=public_key_path' > .env.development",
-    "create-prod-env": "echo 'DB_HOST=localhost\nDB_USER=root\nDB_USERNAME=username\nDB_PASSWORD=s1mpl3\nDB_DATABASE=database\nPRIVATE_KEY_PATH=private_key_path\nPUBLIC_KEY_PATH=public_key_path' > .env.production",
+    "create-test-env": "echo 'MYSQL_DATABASE=\nMYSQL_ROOT_PASSWORD=\nNODE_ENV=\nDB_HOST=localhost\nDB_USER=root\nDB_USERNAME=username\nDB_PASSWORD=secret\nDB_DATABASE=test_db\nPRIVATE_KEY_PATH=private_key_path\nPUBLIC_KEY_PATH=public_key_path' > .env.test",
+    "create-dev-env": "echo 'MYSQL_DATABASE=\nMYSQL_ROOT_PASSWORD=\nNODE_ENV=\nDB_HOST=localhost\nDB_USER=root\nDB_USERNAME=username\nDB_PASSWORD=s1mpl3\nDB_DATABASE=database\nPRIVATE_KEY_PATH=private_key_path\nPUBLIC_KEY_PATH=public_key_path' > .env.development",
+    "create-prod-env": "echo 'MYSQL_DATABASE=\nMYSQL_ROOT_PASSWORD=\nNODE_ENV=\nDB_HOST=localhost\nDB_USER=root\nDB_USERNAME=username\nDB_PASSWORD=s1mpl3\nDB_DATABASE=database\nPRIVATE_KEY_PATH=private_key_path\nPUBLIC_KEY_PATH=public_key_path' > .env.production",
     "generate-rsa-keys": "mkdir -p cert && openssl genpkey -algorithm RSA -out cert/private_key.pem -pkeyopt rsa_keygen_bits:2048 && openssl rsa -pubout -in cert/private_key.pem -out cert/public_key.pem",
     "dev": "docker-compose -f docker.compose.dev.yml up",
     "dev:down": "docker-compose -f docker.compose.dev.yml down",
