@@ -1,11 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
-import { UsersModule } from './users.module';
 import { UsersService } from './users.service';
-import { RefreshTokenModule } from 'src/refresh-token/refresh-token.module';
-import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { Users } from 'src/database/entities/user.entity';
-import { DatabaseModule } from 'src/database/database.module';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('UsersController', () => {
