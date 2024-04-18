@@ -4,10 +4,12 @@ FROM node:16-alpine as builder
 # 작업 디렉토리를 설정합니다.
 WORKDIR /usr/src/backend
 
-# package.json과 yarn.lock 파일을 컨테이너에 복사합니다.
+
+# package.json과 npm.lock 파일을 컨테이너에 복사합니다.
 COPY package*.json ./
 RUN npm install
 COPY . .
+
 # NestJS 프로젝트를 빌드합니다.
 RUN npm run build
 
@@ -20,9 +22,7 @@ WORKDIR /usr/src/backend
 # 빌드 단계에서 생성된 node_modules 와 빌드 파일만 복사합니다.
 COPY --from=builder /usr/src/backend/node_modules ./node_modules
 COPY --from=builder /usr/src/backend/dist ./dist
-
-# 환경 변수를 설정합니다. 프로덕션 모드로 설정하는 것이 일반적입니다.
-ENV NODE_ENV=production
+COPY --from=builder /usr/src/backend/cert ./cert
 
 # 애플리케이션을 실행하는 포트를 노출합니다.
 EXPOSE 3000
