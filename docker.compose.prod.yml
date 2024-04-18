@@ -1,1 +1,21 @@
-prod
+version: "3.8"
+services:
+  backend:
+    build: ./apps/backend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./apps/backend/.env.production
+    depends_on:
+      - db-prod
+  db-prod:
+    image: mysql:5.7
+    platform: linux/x86_64
+    env_file:
+      - ./apps/backend/.env.production
+    ports:
+      - "3306:3306"
+    volumes:
+      - prod-mysql-data:/var/lib/mysql
+volumes:
+  prod-mysql-data:
