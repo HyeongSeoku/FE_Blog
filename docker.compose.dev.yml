@@ -9,7 +9,8 @@ services:
     depends_on:
       - db
   db:
-    image: mysql:5.7
+    image: mysql
+    platform: linux/x86_64
     env_file:
       - ./apps/backend/.env.development
     ports:
