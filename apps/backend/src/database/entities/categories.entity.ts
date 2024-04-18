@@ -22,6 +22,6 @@ export class Categories {
   })
   updatedAt: Date;
 
-  @Column({ unique: true })
-  key: string;
+  @Column({ unique: true, name: 'category_key' })
+  categoryKey: string;
 }

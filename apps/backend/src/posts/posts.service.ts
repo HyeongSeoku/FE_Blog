@@ -92,7 +92,7 @@ export class PostsService {
         },
         category: {
           categoryId: post.category.categoryId,
-          categoryKey: post.category.key,
+          categoryKey: post.category.categoryKey,
         },
         tags: post.tags.map((tag) => ({
           tagId: tag.tagId,
@@ -157,7 +157,7 @@ export class PostsService {
         username: targetPost.user.username,
       },
       category: {
-        categoryKey: targetPost.category.key,
+        categoryKey: targetPost.category.categoryKey,
         categoryName: targetPost.category.name,
       },
       tags,
@@ -237,7 +237,7 @@ export class PostsService {
 
     if (updatePostDto?.categoryKey) {
       const category = await this.categoryRepository.findOne({
-        where: { key: updatePostDto.categoryKey },
+        where: { categoryKey: updatePostDto.categoryKey },
       });
 
       if (!category) throw new Error('Category not found!');
@@ -265,7 +265,7 @@ export class PostsService {
         username: updatedPost.user.username,
       },
       category: {
-        categoryKey: updatedPost.category.key,
+        categoryKey: updatedPost.category.categoryKey,
         categoryName: updatedPost.category.name,
       },
     };
