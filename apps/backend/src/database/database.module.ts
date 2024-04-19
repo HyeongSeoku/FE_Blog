@@ -19,6 +19,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         migrationsRun: true, // 애플리케이션 시작 시 마이그레이션 자동 실행
         synchronize: false, // 엔티티와 데이터베이스 스키마 자동 동기화 비활성화
         extra: {
+          // FIXME: 객체 형태로 수정되어야함.
           ssl: process.env.NODE_ENV === 'production', // SSL 활성화 여부를 환경에 따라 결정
         },
       }),
