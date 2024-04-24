@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  backend:
+    build: ./apps/backend
+    ports:
+      - "3001:3000"
+    env_file:
+      - ./apps/backend/.env.development
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: mysql
+    platform: linux/x86_64
+    env_file:
+      - ./apps/backend/.env.development
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql-data:

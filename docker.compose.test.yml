@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  backend:
+    build: ./apps/backend
+    ports:
+      - "3002:3000"
+    env_file:
+      - ./apps/backend/.env.test
+    depends_on:
+      - db-test
+  db-test:
+    image: mysql
+    platform: linux/x86_64
+    env_file:
+      - ./apps/backend/.env.test
+    ports:
+      - "3308:3306"
+    volumes:
+      - test-mysql-data:/var/lib/mysql
+volumes:
+  test-mysql-data:
