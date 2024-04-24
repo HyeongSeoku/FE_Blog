@@ -38,12 +38,6 @@ describe('DatabaseModule', () => {
     const configService = module.get<ConfigService>(ConfigService);
     const typeOrmOptions = await module.get('TypeOrmModuleOptions');
 
-    console.log(
-      'TESTSETSET',
-      typeOrmOptions.host,
-      configService.get('DB_HOST'),
-    );
-
     expect(typeOrmOptions).toBeDefined();
     expect(typeOrmOptions.type).toEqual('mysql');
     expect(typeOrmOptions.host).toEqual(configService.get('DB_HOST'));
