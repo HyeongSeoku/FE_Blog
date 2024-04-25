@@ -128,7 +128,9 @@ export class PostsService {
       ],
     });
 
-    if (!targetPost) throw Error('Post id does not exist!');
+    if (!targetPost) {
+      return null;
+    }
 
     const tags = targetPost.tags.map((tag) => ({
       tagId: tag.tagId,
