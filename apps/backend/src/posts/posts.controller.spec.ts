@@ -176,14 +176,22 @@ describe('PostsController', () => {
 
     it('/GET postId: get invalid post id', async () => {
       const expectedData = MOCK_POSTS.find(
-        ({ postId }) => postId === VALID_POST_ID,
+        ({ postId }) => postId === INVALID_POST_ID,
       );
       mockPostsService.findOnePost.mockResolvedValue(expectedData);
 
-      const result = await controller.getPost(VALID_POST_ID);
+      const errorMessage = 'Post id does not exist!';
 
-      expect(mockPostsService.findOnePost).toHaveBeenCalledWith(VALID_POST_ID);
-      expect(result).toEqual(expectedData);
+      try {
+        await controller.getPost(INVALID_POST_ID);
+      } catch (e) {
+        expect(e).toBeInstanceOf(NotFoundException);
+        expect(e.response).toEqual({
+          error: 'Not Found',
+          statusCode: 404,
+          message: errorMessage,
+        });
+      }
     });
   });
 });
