@@ -24,7 +24,7 @@ export class PostsController {
 
   constructor(private postsService: PostsService) {}
 
-  @Get()
+  @Get('list')
   getAllPosts(@Query() query: FindAllPostParams) {
     return this.postsService.findAll(query);
   }
