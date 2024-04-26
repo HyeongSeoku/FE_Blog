@@ -160,11 +160,7 @@ export class AuthController {
     const userId = req.user.userId;
     const refreshToken = req.cookies[REFRESH_TOKEN_KEY];
 
-    await this.usersService.changePassword(
-      userId,
-      refreshToken,
-      changePasswordDto,
-    );
+    await this.usersService.changePassword(userId, changePasswordDto);
 
     await this.refreshTokenService.deleteToken(refreshToken);
 

@@ -26,6 +26,20 @@ export class CreateUserDto {
   email: string;
 }
 
+export class CreateUserGithubDto {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(4)
+  username: string;
+
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  githubId: string;
+}
+
 /** 유저 응답 DTO */
 export class UserResponseDto {
   userId: string;

@@ -12,6 +12,7 @@ import {
 import {
   ChangePasswordDto,
   CreateUserDto,
+  CreateUserGithubDto,
   UpdateUserDto,
   UserResponseDto,
 } from './dto/user.dto';
@@ -27,6 +28,21 @@ export class UsersService {
     @InjectRepository(Users)
     private userRepository: Repository<Users>,
   ) {}
+
+  async findOrCreateUser(githubProfile: any): Promise<Users> {
+    const { id: githubId, username, emails } = githubProfile;
+    const email = emails[0].value; // GitHub 프로필에서 이메일 주소 가져오기
+
+    let user = await this.findOneByGithubId(githubId);
+
+    if (!user) {
+      // 사용자가 존재하지 않으면 새로운 사용자 생성
+      const createUserGithubDto = { username, email, githubId };
+      user = await this.createUserFromGithub(createUserGithubDto);
+    }
+
+    return user;
+  }
 
   async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
     const { username, email } = createUserDto;
@@ -57,6 +73,11 @@ export class UsersService {
     }
   }
 
+  // FIXME: 해당 부분 이어서 수정
+  async createUserFromGithub(
+    createUserGithubDto: CreateUserGithubDto,
+  ): Promise<any> {}
+
   private createUserEntity(
     createUserDto: CreateUserDto,
     hashedPassword: string,
@@ -74,6 +95,23 @@ export class UsersService {
     return;
   }
 
+  async findOneByGithubId(githubId: string): Promise<Users | undefined> {
+    return this.userRepository.findOne({
+      where: { githubId },
+      select: [
+        'userId',
+        'email',
+        'username',
+        'createdAt',
+        'updatedAt',
+        'password',
+        'isAdmin',
+        'githubId',
+        'githubImgUrl',
+      ],
+    });
+  }
+
   async findOneByEmail(email: string): Promise<Users | undefined> {
     return this.userRepository.findOne({
       where: { email },
@@ -85,6 +123,8 @@ export class UsersService {
         'updatedAt',
         'password',
         'isAdmin',
+        'githubId',
+        'githubImgUrl',
       ],
     });
   }
@@ -101,7 +141,6 @@ export class UsersService {
 
   async changePassword(
     userId: string,
-    refreshToken: string,
     changePasswordDto: ChangePasswordDto,
   ): Promise<boolean> {
     const { currentPassword, newPassword } = changePasswordDto;
