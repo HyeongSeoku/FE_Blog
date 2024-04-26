@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Logger,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -24,14 +25,18 @@ export class PostsController {
 
   constructor(private postsService: PostsService) {}
 
-  @Get()
+  @Get('list')
   getAllPosts(@Query() query: FindAllPostParams) {
     return this.postsService.findAll(query);
   }
 
   @Get(':postId')
-  getPost(@Param('postId') postId: string) {
-    return this.postsService.findOnePost(postId);
+  async getPost(@Param('postId') postId: string) {
+    const targetPost = await this.postsService.findOnePost(postId);
+
+    if (!targetPost) throw new NotFoundException('Post id does not exist!');
+
+    return targetPost;
   }
 
   @UseGuards(AdminGuard)

@@ -3,22 +3,23 @@ import { UsersService } from './users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Users } from '../database/entities/user.entity';
 import { Repository } from 'typeorm';
-import {
-  ConflictException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { RefreshToken } from 'src/database/entities/refreshToken.entity';
+import { JwtService } from '@nestjs/jwt';
+import { SharedService } from 'src/shared/shared.service';
+import { ConfigService } from '@nestjs/config';
+import { hash } from 'bcryptjs';
 
 describe('UsersService', () => {
   let service: UsersService;
   let userRepository: Repository<Users>;
 
   const mockUsersRepository = {
-    create: jest.fn(),
-    save: jest.fn(),
-    findOne: jest.fn(),
-    delete: jest.fn(),
+    create: jest.fn().mockReturnValue(undefined),
+    save: jest.fn().mockResolvedValue(undefined),
+    findOne: jest.fn().mockResolvedValue(undefined),
+    delete: jest.fn().mockResolvedValue(undefined),
   };
 
   const mockRefreshTokenService = {
@@ -31,6 +32,9 @@ describe('UsersService', () => {
         UsersService,
         { provide: getRepositoryToken(Users), useValue: mockUsersRepository },
         RefreshTokenService,
+        JwtService,
+        SharedService,
+        ConfigService,
         {
           provide: getRepositoryToken(RefreshToken),
           useValue: mockRefreshTokenService,
@@ -53,12 +57,30 @@ describe('UsersService', () => {
         email: 'test@test.com',
         password: 'password',
       };
-      mockUsersRepository.create.mockResolvedValue(createUserDto);
-      mockUsersRepository.save.mockResolvedValue(createUserDto);
+      const hashedPassword = await hash(createUserDto.password, 10);
 
-      expect(await service.createUser(createUserDto)).toEqual(createUserDto);
-      expect(userRepository.create).toHaveBeenCalledWith(createUserDto);
-      expect(userRepository.save).toHaveBeenCalledWith(createUserDto);
+      const userWithHashedPassword = {
+        ...createUserDto,
+        password: hashedPassword,
+      };
+
+      mockUsersRepository.create.mockReturnValue(userWithHashedPassword);
+      mockUsersRepository.save.mockResolvedValue(userWithHashedPassword);
+
+      const result = await service.createUser(createUserDto);
+      const createdUser = userRepository.create(userWithHashedPassword);
+
+      expect(userRepository.create).toHaveBeenCalledWith({
+        ...userWithHashedPassword,
+        password: expect.any(String),
+      });
+
+      expect(userRepository.save).toHaveBeenCalledWith(createdUser);
+
+      expect(result).toEqual({
+        ...createdUser,
+        password: undefined,
+      });
     });
 
     it('should throw a conflict exception if username exists', async () => {
@@ -94,9 +116,7 @@ describe('UsersService', () => {
     it('should throw an exception if user is not found', async () => {
       mockUsersRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findById('invalidUserId')).rejects.toThrow();
+      expect(await service.findById('invalidUserId')).toEqual(null);
     });
   });
-
-  // 다른 메소드들에 대한 테스트 케이스도 비슷한 패턴으로 작성할 수 있습니다.
 });

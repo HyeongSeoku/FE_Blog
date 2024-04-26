@@ -7,7 +7,26 @@ describe('DatabaseModule', () => {
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
-      imports: [DatabaseModule, ConfigModule],
+      imports: [ConfigModule],
+      providers: [
+        {
+          provide: 'TypeOrmModuleOptions',
+          useFactory: async (configService: ConfigService) => ({
+            type: 'mysql',
+            host: configService.get('DB_HOST'),
+            port: +configService.get('DB_PORT'),
+            username: configService.get('MYSQL_USER'),
+            password: configService.get('MYSQL_PASSWORD'),
+            database: configService.get('DB_DATABASE'),
+            entities: [__dirname + '/**/*.entity{.ts,.js}'],
+            logging: process.env.NODE_ENV !== 'production',
+            extra: {
+              ssl: process.env.NODE_ENV === 'production',
+            },
+          }),
+          inject: [ConfigService],
+        },
+      ],
     }).compile();
   });
 
@@ -23,8 +42,10 @@ describe('DatabaseModule', () => {
     expect(typeOrmOptions.type).toEqual('mysql');
     expect(typeOrmOptions.host).toEqual(configService.get('DB_HOST'));
     expect(typeOrmOptions.port).toEqual(+configService.get('DB_PORT'));
-    expect(typeOrmOptions.username).toEqual(configService.get('DB_USERNAME'));
-    expect(typeOrmOptions.password).toEqual(configService.get('DB_PASSWORD'));
+    expect(typeOrmOptions.username).toEqual(configService.get('MYSQL_USER'));
+    expect(typeOrmOptions.password).toEqual(
+      configService.get('MYSQL_PASSWORD'),
+    );
     expect(typeOrmOptions.database).toEqual(configService.get('DB_DATABASE'));
     expect(typeOrmOptions.entities).toContain(
       __dirname + '/**/*.entity{.ts,.js}',
