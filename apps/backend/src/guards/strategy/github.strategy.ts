@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-github';
+import { GithubUserDto } from 'src/users/dto/user.dto';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -21,15 +22,18 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
     done: Function,
   ) {
     try {
-      //FIXME: githubAccessToken 저장 필요 (추후 사용자 정보 업데이트를 위해)
-
       const { id, emails, photos, profileUrl, username } = profile;
-      const user = await this.usersService.findOrCreateUserByGithub({
+      const githubDto: GithubUserDto = {
         githubId: id,
         email: emails[0].value, // GitHub 프로필에서 이메일 주소 가져오기
         profileImg: photos[0].value,
         username,
-      });
+      };
+
+      const user = await this.usersService.findOrCreateUserByGithub(
+        githubDto,
+        githubAccessToken,
+      );
       done(null, user);
     } catch (error) {
       done(error, false);

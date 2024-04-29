@@ -31,19 +31,20 @@ export class UsersService {
   ) {}
 
   //FIXME: 해당 부분 완성 필요
-  async findOrCreateUserByGithub({
-    githubId,
-    username,
-    email,
-    profileImg,
-  }: GithubUserDto): Promise<Users> {
+  async findOrCreateUserByGithub(
+    githubDto: GithubUserDto,
+    githubAccessToken: string,
+  ): Promise<Users> {
+    const { githubId, username, email, profileImg } = githubDto;
     let user = await this.findOneByGithubId(githubId);
 
     if (!user) {
       // 사용자가 존재하지 않으면 새로운 사용자 생성
-      const createUserGithubDto = { username, email, githubId };
+      const createUserGithubDto = { username, email, githubId, profileImg };
       user = await this.createUserFromGithub(createUserGithubDto);
     }
+
+    //FIXME: githubAccessToken 저장 필요 (추후 사용자 정보 업데이트를 위해) controller 단에서 처리 해야할 듯
 
     return user;
   }
