@@ -13,6 +13,7 @@ import {
   ChangePasswordDto,
   CreateUserDto,
   CreateUserGithubDto,
+  GithubUserDto,
   UpdateUserDto,
   UserResponseDto,
 } from './dto/user.dto';
@@ -29,10 +30,13 @@ export class UsersService {
     private userRepository: Repository<Users>,
   ) {}
 
-  async findOrCreateUser(githubProfile: any): Promise<Users> {
-    const { id: githubId, username, emails } = githubProfile;
-    const email = emails[0].value; // GitHub 프로필에서 이메일 주소 가져오기
-
+  //FIXME: 해당 부분 완성 필요
+  async findOrCreateUserByGithub({
+    githubId,
+    username,
+    email,
+    profileImg,
+  }: GithubUserDto): Promise<Users> {
     let user = await this.findOneByGithubId(githubId);
 
     if (!user) {

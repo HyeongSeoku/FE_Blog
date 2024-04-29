@@ -89,3 +89,10 @@ export class ChangePasswordDto {
 export class UpdateUserDto {
   username: string;
 }
+
+export class GithubUserDto {
+  githubId: string;
+  username: string;
+  profileImg?: string;
+  email: string;
+}
