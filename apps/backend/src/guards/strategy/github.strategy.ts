@@ -10,29 +10,31 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
     super({
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: `${process.env.BASE_URL}/github/callback`,
+      callbackURL: `${process.env.BASE_URL}/auth/github/callback`,
       scope: ['user:email'],
     });
   }
 
   async validate(
     githubAccessToken: string,
-    refreshToken: string,
+    githubRefreshToken: string,
     profile: Profile,
     done: Function,
   ) {
     try {
       const { id, emails, photos, profileUrl, username } = profile;
       const githubDto: GithubUserDto = {
-        githubId: id,
         email: emails[0].value, // GitHub 프로필에서 이메일 주소 가져오기
-        profileImg: photos[0].value,
         username,
+        githubId: id,
+        githubImgUrl: photos[0].value,
+        githubProfileUrl: profileUrl,
       };
 
       const user = await this.usersService.findOrCreateUserByGithub(
         githubDto,
         githubAccessToken,
+        githubRefreshToken,
       );
       done(null, user);
     } catch (error) {

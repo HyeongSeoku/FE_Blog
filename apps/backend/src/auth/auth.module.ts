@@ -9,6 +9,7 @@ import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import SharedModule from 'src/shared/shared.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from 'src/database/entities/user.entity';
+import { GithubAuthGuard } from 'src/guards/github-auth.guard';
 
 @Module({
   imports: [
@@ -17,7 +18,13 @@ import { Users } from 'src/database/entities/user.entity';
     SharedModule,
     TypeOrmModule.forFeature([Users]),
   ],
-  providers: [AuthService, JwtStrategy, JwtAuthGuard, LocalStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    JwtAuthGuard,
+    LocalStrategy,
+    GithubAuthGuard,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}

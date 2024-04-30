@@ -26,20 +26,6 @@ export class CreateUserDto {
   email: string;
 }
 
-export class CreateUserGithubDto {
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(4)
-  username: string;
-
-  @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  githubId: string;
-}
-
 /** 유저 응답 DTO */
 export class UserResponseDto {
   userId: string;
@@ -89,10 +75,22 @@ export class ChangePasswordDto {
 export class UpdateUserDto {
   username: string;
 }
-
 export class GithubUserDto {
+  @IsString()
+  @IsNotEmpty()
   githubId: string;
+
+  @IsString()
+  @IsNotEmpty()
   username: string;
-  profileImg?: string;
+
+  @IsString()
+  githubImgUrl?: string;
+
+  @IsString()
+  githubProfileUrl: string;
+
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
 }

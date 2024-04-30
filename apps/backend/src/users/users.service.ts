@@ -12,7 +12,6 @@ import {
 import {
   ChangePasswordDto,
   CreateUserDto,
-  CreateUserGithubDto,
   GithubUserDto,
   UpdateUserDto,
   UserResponseDto,
@@ -21,6 +20,7 @@ import { Users } from '../database/entities/user.entity';
 import { hash, compare } from 'bcryptjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { FindOrCreateUserByGithubResponse } from './users.service.interface';
 
 @Injectable()
 export class UsersService {
@@ -34,19 +34,27 @@ export class UsersService {
   async findOrCreateUserByGithub(
     githubDto: GithubUserDto,
     githubAccessToken: string,
-  ): Promise<Users> {
-    const { githubId, username, email, profileImg } = githubDto;
+    githubRefreshToken: string,
+  ): Promise<FindOrCreateUserByGithubResponse> {
+    const { githubId, username, email, githubProfileUrl, githubImgUrl } =
+      githubDto;
     let user = await this.findOneByGithubId(githubId);
 
     if (!user) {
       // 사용자가 존재하지 않으면 새로운 사용자 생성
-      const createUserGithubDto = { username, email, githubId, profileImg };
-      user = await this.createUserFromGithub(createUserGithubDto);
+      const createUserGithubDto = {
+        username,
+        email,
+        githubId,
+        githubProfileUrl,
+        githubImgUrl,
+      };
+      user = this.createUserFromGithub(createUserGithubDto);
     }
 
-    //FIXME: githubAccessToken 저장 필요 (추후 사용자 정보 업데이트를 위해) controller 단에서 처리 해야할 듯
+    await this.userRepository.save(user);
 
-    return user;
+    return { user, githubAccessToken, githubRefreshToken };
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
@@ -78,10 +86,10 @@ export class UsersService {
     }
   }
 
-  // FIXME: 해당 부분 이어서 수정
-  async createUserFromGithub(
-    createUserGithubDto: CreateUserGithubDto,
-  ): Promise<any> {}
+  createUserFromGithub(createUserGithubDto: GithubUserDto): Users {
+    const user = this.userRepository.create(createUserGithubDto);
+    return user;
+  }
 
   private createUserEntity(
     createUserDto: CreateUserDto,
