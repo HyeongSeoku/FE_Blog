@@ -10,6 +10,7 @@ import SharedModule from 'src/shared/shared.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from 'src/database/entities/user.entity';
 import { GithubAuthGuard } from 'src/guards/github-auth.guard';
+import { GithubStrategy } from 'src/guards/strategy/github.strategy';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { GithubAuthGuard } from 'src/guards/github-auth.guard';
     JwtStrategy,
     JwtAuthGuard,
     LocalStrategy,
+    GithubStrategy,
     GithubAuthGuard,
   ],
   controllers: [AuthController],

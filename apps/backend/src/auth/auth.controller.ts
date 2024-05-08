@@ -181,12 +181,6 @@ export class AuthController {
   }
 
   @UseGuards(GithubAuthGuard)
-  @Get('github/login')
-  async githubLogin() {
-    //FIXME: githubAccessToken 저장 필요 (추후 사용자 정보 업데이트를 위해) controller 단에서 처리 해야할 듯
-  }
-
-  @UseGuards(GithubAuthGuard)
   @Get('github/callback')
   async githubAuthRedirect(
     @Req() req: AuthenticatedRequest,
@@ -201,7 +195,11 @@ export class AuthController {
       const { accessToken, refreshToken } =
         await this.authService.generateToken(req.user);
       // 토큰을 전달하는 프론트엔드 경로로 리다이렉트
-      res.redirect(`/success?token=${accessToken}`);
+
+      console.log('TEST', accessToken);
+      res.redirect(
+        `${process.env.FE_BASE_URL}/github-login/success?token=${accessToken}`,
+      );
     }
   }
 }

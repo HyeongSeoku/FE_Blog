@@ -10,8 +10,8 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
     super({
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: `${process.env.BASE_URL}/auth/github/callback`,
-      scope: ['user:email'],
+      callbackURL: `${process.env.BE_BASE_URL}/auth/github/callback`,
+      scope: 'user:email',
     });
   }
 
@@ -24,10 +24,10 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
     try {
       const { id, emails, photos, profileUrl, username } = profile;
       const githubDto: GithubUserDto = {
-        email: emails[0].value, // GitHub 프로필에서 이메일 주소 가져오기
+        email: emails?.[0]?.value ?? '', // GitHub 프로필에서 이메일 주소 가져오기
         username,
         githubId: id,
-        githubImgUrl: photos[0].value,
+        githubImgUrl: photos?.[0]?.value ?? '',
         githubProfileUrl: profileUrl,
       };
 
