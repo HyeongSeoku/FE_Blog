@@ -1,49 +1,48 @@
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
-import {
-  BadRequestError,
-  DefaultError,
-  ForbiddenError,
-  NotFoundError,
-  UnauthorizedError,
-} from "./error";
+interface FetchOptions extends RequestInit {
+  headers?: Record<string, string>;
+}
 
-const createAxios = (requestConfig: AxiosRequestConfig): AxiosInstance => {
-  const axiosInstance = axios.create({
+const isServer = typeof window === "undefined";
+
+// 환경 변수 설정에 따라 baseUrl 결정
+const API_BASE_URL = isServer
+  ? import.meta.env.VITE_SERVER_API_BASE_URL // 서버 사이드 URL
+  : import.meta.env.VITE_CLIENT_API_BASE_URL; // 클라이언트 사이드 URL
+
+/**
+ * 범용 API 호출 함수
+ * @param path API 경로
+ * @param options 추가 fetch 설정
+ */
+export async function fetchData(path: string, options: FetchOptions = {}) {
+  const url = `${API_BASE_URL}${path}`;
+
+  const defaultOptions = {
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
     },
-    baseURL: requestConfig.baseURL,
-  });
+  };
 
-  axiosInstance.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      const status = error?.response?.status;
-      const errorData: AxiosError = error.response?.data;
+  const finalOptions = {
+    ...defaultOptions,
+    ...options,
+    headers: {
+      ...defaultOptions.headers,
+      ...options?.headers,
+    },
+  };
 
-      switch (status) {
-        case 400:
-          throw BadRequestError(errorData);
-        // TODO: 각 케이스 대응 필요
-        case 401:
-          throw UnauthorizedError(errorData);
-        case 403:
-          throw ForbiddenError(errorData);
-        case 404:
-          throw NotFoundError();
-        default:
-          DefaultError(errorData);
-          return Promise.reject(errorData || error);
-      }
+  try {
+    const response = await fetch(url, finalOptions);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  );
 
-  console.log("METAT", import.meta.env.VITE_API_BASE_URL);
-  return axiosInstance;
-};
-
-// const axiosClient = createAxios({ baseURL: import.meta.env.VITE_API_BASE_URL });
-const axiosClient = createAxios({ baseURL: "/api" });
-
-export default axiosClient;
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+}

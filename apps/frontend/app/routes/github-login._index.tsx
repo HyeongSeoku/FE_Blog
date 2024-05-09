@@ -14,13 +14,12 @@ export default function GithubLoginPage() {
   useEffect(() => {
     // state 값을 생성하여 상태에 저장
     const newState = uuidv4();
-    console.log("TEST", newState);
     setState(newState);
     localStorage.setItem("oauth_state", newState);
   }, []);
 
   const handleGithubLogin = async () => {
-    window.location.href = `https://github.com/login/oauth/authorize?client_id=${import.meta.env.VITE_GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${import.meta.env.VITE_API_BASE_URL}/auth/github/callback`)}&scope=user:email&state=${state}`;
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${import.meta.env.VITE_GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${import.meta.env.VITE_SERVER_API_BASE_URL}/auth/github/callback`)}&scope=user:email&state=${state}`;
   };
 
   return (
