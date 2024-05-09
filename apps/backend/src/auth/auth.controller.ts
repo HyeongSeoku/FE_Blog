@@ -195,8 +195,6 @@ export class AuthController {
       const { accessToken, refreshToken } =
         await this.authService.generateToken(req.user);
       // 토큰을 전달하는 프론트엔드 경로로 리다이렉트
-
-      console.log('TEST', accessToken);
       res.redirect(
         `${process.env.FE_BASE_URL}/github-login/success?token=${accessToken}`,
       );
