@@ -30,6 +30,7 @@ import { REFRESH_TOKEN_EXPIRE_TIME } from 'src/constants/auth.constants';
 import { REFRESH_TOKEN_KEY } from 'src/constants/cookie.constants';
 import { Users } from 'src/database/entities/user.entity';
 import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
+import { GithubAuthGuard } from 'src/guards/github-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -160,11 +161,7 @@ export class AuthController {
     const userId = req.user.userId;
     const refreshToken = req.cookies[REFRESH_TOKEN_KEY];
 
-    await this.usersService.changePassword(
-      userId,
-      refreshToken,
-      changePasswordDto,
-    );
+    await this.usersService.changePassword(userId, changePasswordDto);
 
     await this.refreshTokenService.deleteToken(refreshToken);
 
@@ -181,5 +178,26 @@ export class AuthController {
     @Res() res: Response,
   ) {
     return await this.usersService.update(req?.user.userId, updateUserDto);
+  }
+
+  @UseGuards(GithubAuthGuard)
+  @Get('github/callback')
+  async githubAuthRedirect(
+    @Req() req: AuthenticatedRequest,
+    @Res() res: Response,
+  ) {
+    // 성공적인 인증 후 사용자 객체는 요청에 첨부됩니다.
+    // 이제 세션을 생성하거나 JWT를 발급할 수 있습니다.
+    if (!req.user) {
+      res.redirect('/login'); // 로그인 실패를 처리하는 프론트엔드 경로로 리다이렉트
+    } else {
+      // 사용자에게 토큰을 발급하는 방법을 가정하고 있습니다.
+      const { accessToken, refreshToken } =
+        await this.authService.generateToken(req.user);
+      // 토큰을 전달하는 프론트엔드 경로로 리다이렉트
+      res.redirect(
+        `${process.env.FE_BASE_URL}/github-login/success?token=${accessToken}`,
+      );
+    }
   }
 }

@@ -10,7 +10,10 @@ export class MyInitialMigration1713431504399 implements MigrationInterface {
                   email VARCHAR(100) NOT NULL,
                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                   last_login TIMESTAMP NULL,
-                  password VARCHAR(256) NOT NULL,
+                  password VARCHAR(255) NOT NULL,
+                  github_id VARCHAR(255) NOT NULL,
+                  github_img_url VARCHAR(255),
+                  github_profile_url VARCHAR(255),
                   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                   is_admin TINYINT DEFAULT 0
               )
