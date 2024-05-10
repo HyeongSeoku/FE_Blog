@@ -40,7 +40,6 @@ export default function GithubLoginSuccessPage() {
       <h2>로그인 성공 페이지</h2>
       <div>{token}</div>
       <div>{userProfile.username}</div>
-      <div>{userProfile}</div>
       <Link to="/">홈으로</Link>
     </div>
   );
