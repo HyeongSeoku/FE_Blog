@@ -12,6 +12,7 @@ import {
 import {
   ChangePasswordDto,
   CreateUserDto,
+  GithubUserDto,
   UpdateUserDto,
   UserResponseDto,
 } from './dto/user.dto';
@@ -19,6 +20,7 @@ import { Users } from '../database/entities/user.entity';
 import { hash, compare } from 'bcryptjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { FindOrCreateUserByGithubResponse } from './users.service.interface';
 
 @Injectable()
 export class UsersService {
@@ -27,6 +29,33 @@ export class UsersService {
     @InjectRepository(Users)
     private userRepository: Repository<Users>,
   ) {}
+
+  //FIXME: 해당 부분 완성 필요
+  async findOrCreateUserByGithub(
+    githubDto: GithubUserDto,
+    githubAccessToken: string,
+    githubRefreshToken: string,
+  ): Promise<FindOrCreateUserByGithubResponse> {
+    const { githubId, username, email, githubProfileUrl, githubImgUrl } =
+      githubDto;
+    let user = await this.findOneByGithubId(githubId);
+
+    if (!user) {
+      // 사용자가 존재하지 않으면 새로운 사용자 생성
+      const createUserGithubDto = {
+        username,
+        email,
+        githubId,
+        githubProfileUrl,
+        githubImgUrl,
+      };
+      user = this.createUserFromGithub(createUserGithubDto);
+    }
+
+    await this.userRepository.save(user);
+
+    return { user, githubAccessToken, githubRefreshToken };
+  }
 
   async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
     const { username, email } = createUserDto;
@@ -57,6 +86,11 @@ export class UsersService {
     }
   }
 
+  createUserFromGithub(createUserGithubDto: GithubUserDto): Users {
+    const user = this.userRepository.create(createUserGithubDto);
+    return user;
+  }
+
   private createUserEntity(
     createUserDto: CreateUserDto,
     hashedPassword: string,
@@ -74,6 +108,23 @@ export class UsersService {
     return;
   }
 
+  async findOneByGithubId(githubId: string): Promise<Users | undefined> {
+    return this.userRepository.findOne({
+      where: { githubId },
+      select: [
+        'userId',
+        'email',
+        'username',
+        'createdAt',
+        'updatedAt',
+        'password',
+        'isAdmin',
+        'githubId',
+        'githubImgUrl',
+      ],
+    });
+  }
+
   async findOneByEmail(email: string): Promise<Users | undefined> {
     return this.userRepository.findOne({
       where: { email },
@@ -85,6 +136,8 @@ export class UsersService {
         'updatedAt',
         'password',
         'isAdmin',
+        'githubId',
+        'githubImgUrl',
       ],
     });
   }
@@ -101,7 +154,6 @@ export class UsersService {
 
   async changePassword(
     userId: string,
-    refreshToken: string,
     changePasswordDto: ChangePasswordDto,
   ): Promise<boolean> {
     const { currentPassword, newPassword } = changePasswordDto;

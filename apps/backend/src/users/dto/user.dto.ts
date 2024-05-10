@@ -75,3 +75,22 @@ export class ChangePasswordDto {
 export class UpdateUserDto {
   username: string;
 }
+export class GithubUserDto {
+  @IsString()
+  @IsNotEmpty()
+  githubId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  username: string;
+
+  @IsString()
+  githubImgUrl?: string;
+
+  @IsString()
+  githubProfileUrl: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+}
