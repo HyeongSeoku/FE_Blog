@@ -8,21 +8,21 @@ import {
   Param,
   Req,
   forwardRef,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Posts } from 'src/database/entities/posts.entity';
-import { Repository } from 'typeorm';
-import { CreatePostDto, ResponsePostDto, UpdatePostDto } from './dto/post.dto';
-import { AuthenticatedRequest } from 'src/auth/auth.interface';
-import * as sanitizeHtml from 'sanitize-html';
-import { Categories } from 'src/database/entities/categories.entity';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Posts } from "src/database/entities/posts.entity";
+import { Repository } from "typeorm";
+import { CreatePostDto, ResponsePostDto, UpdatePostDto } from "./dto/post.dto";
+import { AuthenticatedRequest } from "src/auth/auth.interface";
+import * as sanitizeHtml from "sanitize-html";
+import { Categories } from "src/database/entities/categories.entity";
 import {
   FindAllPostParams,
   FindAllPostResponse,
-} from './posts.service.interface';
-import { TagsService } from 'src/tags/tags.service';
-import { Comments } from 'src/database/entities/comments.entity';
-import { ViewsService } from 'src/views/views.service';
+} from "./posts.service.interface";
+import { TagsService } from "src/tags/tags.service";
+import { Comments } from "src/database/entities/comments.entity";
+import { ViewsService } from "src/views/views.service";
 
 @Injectable()
 export class PostsService {
@@ -45,40 +45,40 @@ export class PostsService {
   }: FindAllPostParams): Promise<FindAllPostResponse> {
     // TODO: Paging 추가
     const queryBuilder = this.postsRepository
-      .createQueryBuilder('post')
+      .createQueryBuilder("post")
       .select([
-        'post.postId',
-        'post.title',
-        'post.body',
-        'post.createdAt',
-        'post.updatedAt',
+        "post.postId",
+        "post.title",
+        "post.body",
+        "post.createdAt",
+        "post.updatedAt",
       ])
-      .leftJoinAndSelect('post.user', 'user')
-      .leftJoinAndSelect('post.category', 'category')
-      .leftJoinAndSelect('post.tags', 'tags')
-      .leftJoin('post.comments', 'comments')
+      .leftJoinAndSelect("post.user", "user")
+      .leftJoinAndSelect("post.category", "category")
+      .leftJoinAndSelect("post.tags", "tags")
+      .leftJoin("post.comments", "comments")
       .addSelect([
-        'comments.commentId',
-        'comments.content',
-        'comments.isDeleted',
-        'comments.isPostOwner',
-        'comments.createdAt',
+        "comments.commentId",
+        "comments.content",
+        "comments.isDeleted",
+        "comments.isPostOwner",
+        "comments.createdAt",
       ])
-      .leftJoinAndSelect('comments.replies', 'replies')
-      .leftJoinAndSelect('comments.parent', 'parent')
-      .leftJoinAndSelect('replies.user', 'repliesUser')
-      .leftJoinAndSelect('post.views', 'views')
-      .orderBy('post.createdAt', 'DESC')
-      .addOrderBy('comments.createdAt', 'DESC');
+      .leftJoinAndSelect("comments.replies", "replies")
+      .leftJoinAndSelect("comments.parent", "parent")
+      .leftJoinAndSelect("replies.user", "repliesUser")
+      .leftJoinAndSelect("post.views", "views")
+      .orderBy("post.createdAt", "DESC")
+      .addOrderBy("comments.createdAt", "DESC");
 
     if (categoryKey) {
-      queryBuilder.andWhere('category.key = :categoryKey', {
+      queryBuilder.andWhere("category.key = :categoryKey", {
         categoryKey,
       });
     }
 
     if (tagName) {
-      queryBuilder.andWhere('tag.name = :tagName', { tagName });
+      queryBuilder.andWhere("tag.name = :tagName", { tagName });
     }
 
     const posts = await queryBuilder.getMany();
@@ -102,7 +102,7 @@ export class PostsService {
           .filter((comment) => !comment.parent)
           .map((comment) => ({
             commentId: comment.commentId,
-            content: comment.isDeleted ? '' : comment.content,
+            content: comment.isDeleted ? "" : comment.content,
             replies: comment.isDeleted ? [] : comment.replies,
           })),
         viewCount: views?.viewCount,
@@ -115,16 +115,16 @@ export class PostsService {
     const targetPost = await this.postsRepository.findOne({
       where: { postId },
       relations: [
-        'user',
-        'category',
-        'tags',
-        'comments',
-        'comments.replies',
-        'comments.user',
-        'comments.post',
-        'comments.parent',
-        'comments.replies.user',
-        'views',
+        "user",
+        "category",
+        "tags",
+        "comments",
+        "comments.replies",
+        "comments.user",
+        "comments.post",
+        "comments.parent",
+        "comments.replies.user",
+        "views",
       ],
     });
 
@@ -141,7 +141,7 @@ export class PostsService {
       .filter((comment) => !comment.parent)
       .map((comment) => ({
         ...comment,
-        content: comment.isDeleted ? '' : comment.content,
+        content: comment.isDeleted ? "" : comment.content,
         replies: comment.isDeleted ? [] : comment.replies,
       }));
 
@@ -183,7 +183,7 @@ export class PostsService {
         where: { categoryId },
       });
 
-      if (!category) throw new NotFoundException('Category not found!');
+      if (!category) throw new NotFoundException("Category not found!");
     }
 
     // 태그 처리
@@ -215,19 +215,19 @@ export class PostsService {
   async updatePost(postId: string, updatePostDto: UpdatePostDto) {
     const targetPost = await this.postsRepository.findOne({
       where: { postId },
-      relations: ['category', 'user'],
+      relations: ["category", "user"],
     });
 
     if (!targetPost) {
-      throw Error('Post id does not exist!');
+      throw Error("Post id does not exist!");
     }
 
-    if (typeof updatePostDto.title !== 'undefined' && !updatePostDto.title) {
-      throw Error('Title cannot contain empty values ');
+    if (typeof updatePostDto.title !== "undefined" && !updatePostDto.title) {
+      throw Error("Title cannot contain empty values ");
     }
 
-    if (typeof updatePostDto.body !== 'undefined' && !updatePostDto.body) {
-      throw Error('Body cannot contain empty values ');
+    if (typeof updatePostDto.body !== "undefined" && !updatePostDto.body) {
+      throw Error("Body cannot contain empty values ");
     }
 
     if (updatePostDto?.title) {
@@ -242,7 +242,7 @@ export class PostsService {
         where: { categoryKey: updatePostDto.categoryKey },
       });
 
-      if (!category) throw new Error('Category not found!');
+      if (!category) throw new Error("Category not found!");
     }
 
     if (updatePostDto?.tagNames?.length) {
@@ -257,7 +257,7 @@ export class PostsService {
 
     const updatedPost = await this.postsRepository.findOne({
       where: { postId },
-      relations: ['category', 'user', 'tags'],
+      relations: ["category", "user", "tags"],
     });
 
     const response = {
@@ -276,10 +276,10 @@ export class PostsService {
   }
 
   async deletePost(postId: string) {
-    if (!postId) throw Error('Post id is required');
+    if (!postId) throw Error("Post id is required");
     const targetPost = await this.findOnePost(postId);
 
-    if (!targetPost) throw Error('Post does not exist');
+    if (!targetPost) throw Error("Post does not exist");
 
     //hard delete
     await this.commentsRepository.delete({
@@ -288,6 +288,6 @@ export class PostsService {
     await this.viewsService.deletePostView(postId);
     await this.postsRepository.delete(postId);
 
-    throw new HttpException('Post deleted successfully', HttpStatus.OK);
+    throw new HttpException("Post deleted successfully", HttpStatus.OK);
   }
 }

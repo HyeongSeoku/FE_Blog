@@ -1,5 +1,5 @@
-import { Comments } from 'src/database/entities/comments.entity';
-import { Posts } from 'src/database/entities/posts.entity';
+import { Comments } from "src/database/entities/comments.entity";
+import { Posts } from "src/database/entities/posts.entity";
 
 export interface FindAllPostParams {
   categoryKey?: string;

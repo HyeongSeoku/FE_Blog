@@ -4,12 +4,12 @@ import {
   Logger,
   NotFoundException,
   Param,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Tags } from 'src/database/entities/tags.entity';
-import { Repository } from 'typeorm';
-import { CreateTagDto } from './tags.dto';
-import { SuccessResponse } from 'src/shared/response';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Tags } from "src/database/entities/tags.entity";
+import { Repository } from "typeorm";
+import { CreateTagDto } from "./tags.dto";
+import { SuccessResponse } from "src/shared/response";
 
 @Injectable()
 export class TagsService {
@@ -40,18 +40,18 @@ export class TagsService {
     return newTag;
   }
 
-  async updateTag(@Param('tagId') tagId: number, createTagDto: CreateTagDto) {
+  async updateTag(@Param("tagId") tagId: number, createTagDto: CreateTagDto) {
     const { name } = createTagDto;
     const targetTag = await this.tagsRepository.findOne({ where: { tagId } });
 
     if (!targetTag)
       throw new NotFoundException(`Tag with ID ${tagId} not found.`);
 
-    if (!name) throw new BadRequestException('Name field is required.');
+    if (!name) throw new BadRequestException("Name field is required.");
 
     if (name === targetTag.name)
       throw new BadRequestException(
-        'The new name must be different from the current name.',
+        "The new name must be different from the current name.",
       );
 
     if (name) {
@@ -69,7 +69,7 @@ export class TagsService {
 
     await this.tagsRepository.delete(tagId);
 
-    const response = new SuccessResponse({ message: 'Delete complete' });
+    const response = new SuccessResponse({ message: "Delete complete" });
     return response;
   }
 }

@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ViewsService } from './views.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Views } from 'src/database/entities/views.entity';
-import { PostsService } from 'src/posts/posts.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { ViewsService } from "./views.service";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { Views } from "src/database/entities/views.entity";
+import { PostsService } from "src/posts/posts.service";
 
-describe('ViewsService', () => {
+describe("ViewsService", () => {
   let service: ViewsService;
 
   const mockViewsRepository = {
@@ -29,7 +29,7 @@ describe('ViewsService', () => {
     service = module.get<ViewsService>(ViewsService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

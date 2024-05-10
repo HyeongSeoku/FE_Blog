@@ -1,11 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CommentsController } from './comments.controller';
-import { UsersService } from 'src/users/users.service';
-import { CommentsService } from './comments.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Users } from 'src/database/entities/user.entity';
+import { Test, TestingModule } from "@nestjs/testing";
+import { CommentsController } from "./comments.controller";
+import { UsersService } from "src/users/users.service";
+import { CommentsService } from "./comments.service";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { Users } from "src/database/entities/user.entity";
 
-describe('CommentsController', () => {
+describe("CommentsController", () => {
   let controller: CommentsController;
 
   const mockCommentsService = jest.fn();
@@ -24,7 +24,7 @@ describe('CommentsController', () => {
     controller = module.get<CommentsController>(CommentsController);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });

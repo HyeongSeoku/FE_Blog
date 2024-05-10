@@ -6,18 +6,18 @@ import {
   Post,
   Req,
   UseGuards,
-} from '@nestjs/common';
-import { FollowersService } from './followers.service';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { AuthenticatedRequest } from 'src/auth/auth.interface';
-import { FollowDto } from './followers.dto';
+} from "@nestjs/common";
+import { FollowersService } from "./followers.service";
+import { JwtAuthGuard } from "src/guards/jwt-auth.guard";
+import { AuthenticatedRequest } from "src/auth/auth.interface";
+import { FollowDto } from "./followers.dto";
 
-@Controller('followers')
+@Controller("followers")
 export class FollowersController {
   constructor(private followsService: FollowersService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post('follow')
+  @Post("follow")
   async followUser(
     @Req() req: AuthenticatedRequest,
     @Body() followDto: FollowDto,
@@ -26,7 +26,7 @@ export class FollowersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('unfollow')
+  @Delete("unfollow")
   async unfollowUser(
     @Req() req: AuthenticatedRequest,
     @Body() followDto: FollowDto,

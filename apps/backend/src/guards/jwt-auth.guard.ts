@@ -2,17 +2,17 @@ import {
   ExecutionContext,
   Logger,
   UnauthorizedException,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+} from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
 
-export class JwtAuthGuard extends AuthGuard('jwt') {
+export class JwtAuthGuard extends AuthGuard("jwt") {
   private readonly logger = new Logger(JwtAuthGuard.name);
 
   canActivate(context: ExecutionContext) {
     try {
       return super.canActivate(context);
     } catch (e) {
-      this.logger.error('Exception in JwtAuthGuard: ', e);
+      this.logger.error("Exception in JwtAuthGuard: ", e);
       throw e;
     }
   }

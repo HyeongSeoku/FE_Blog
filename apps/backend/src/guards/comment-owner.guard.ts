@@ -4,12 +4,12 @@ import {
   Injectable,
   Logger,
   UnauthorizedException,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { CommentsService } from 'src/comments/comments.service';
+} from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { CommentsService } from "src/comments/comments.service";
 
 @Injectable()
-export class CommentOwnerGuard extends AuthGuard('jwt') {
+export class CommentOwnerGuard extends AuthGuard("jwt") {
   constructor(private commentsService: CommentsService) {
     super();
   }
@@ -31,7 +31,7 @@ export class CommentOwnerGuard extends AuthGuard('jwt') {
 
       if (isCommentOwner) return true;
 
-      throw new ForbiddenException('You are not the owner of the comment');
+      throw new ForbiddenException("You are not the owner of the comment");
     }
   }
 
