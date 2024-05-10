@@ -1,5 +1,6 @@
-import { LoaderFunction, MetaFunction } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { LoaderFunction, MetaFunction, redirect } from "@remix-run/node";
+import { Link, useLoaderData, useNavigate } from "@remix-run/react";
+import { useEffect } from "react";
 import { getUserProfile } from "server/user";
 
 // 정의된 데이터 타입
@@ -23,23 +24,26 @@ export const loader: LoaderFunction = async ({ request }) => {
     throw new Response("Token is required", { status: 401 });
   }
   try {
-    const userProfile = await getUserProfile(token);
+    const { data: userProfile, error } = await getUserProfile(token);
+
+    if (error !== null) {
+      throw redirect("/");
+    }
 
     return { token, userProfile };
   } catch (error) {
-    console.error("Failed to fetch user profile:", error);
-    throw new Response("Failed to fetch user profile", { status: 500 });
+    throw redirect("/");
   }
 };
 
 export default function GithubLoginSuccessPage() {
-  const { token, userProfile } = useLoaderData<LoaderData>(); // 로더 함수에서 반환된 데이터 사용
+  const { token, userProfile } = useLoaderData<LoaderData>();
 
   return (
     <div>
       <h2>로그인 성공 페이지</h2>
       <div>{token}</div>
-      <div>{userProfile.username}</div>
+      <div>{userProfile?.username}</div>
       <Link to="/">홈으로</Link>
     </div>
   );
