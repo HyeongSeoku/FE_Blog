@@ -194,6 +194,16 @@ export class AuthController {
       // 사용자에게 토큰을 발급하는 방법을 가정하고 있습니다.
       const { accessToken, refreshToken } =
         await this.authService.generateToken(req.user);
+
+      const refreshTokenExpires = new Date().setDate(
+        new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+      );
+
+      res.cookie(REFRESH_TOKEN_KEY, refreshToken, {
+        httpOnly: true,
+        expires: new Date(refreshTokenExpires),
+      });
+
       // 토큰을 전달하는 프론트엔드 경로로 리다이렉트
       res.redirect(
         `${process.env.FE_BASE_URL}/github-login/success?token=${accessToken}`,
