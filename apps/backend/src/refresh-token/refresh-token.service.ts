@@ -1,14 +1,14 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { RefreshToken } from 'src/database/entities/refreshToken.entity';
-import { LessThan, MoreThan, Repository } from 'typeorm';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import { SharedService } from 'src/shared/shared.service';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable, Logger } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { RefreshToken } from "src/database/entities/refreshToken.entity";
+import { LessThan, MoreThan, Repository } from "typeorm";
+import { Cron, CronExpression } from "@nestjs/schedule";
+import { SharedService } from "src/shared/shared.service";
+import { JwtService } from "@nestjs/jwt";
 import {
   ACCESS_TOKEN_EXPIRE,
   RS256_ALGORITHM,
-} from 'src/constants/auth.constants';
+} from "src/constants/auth.constants";
 
 @Injectable()
 export class RefreshTokenService {
@@ -32,7 +32,7 @@ export class RefreshTokenService {
   async findToken(token: string): Promise<RefreshToken | null> {
     return this.refreshTokenRepository.findOne({
       where: { token, expiryDate: MoreThan(new Date()) },
-      relations: ['users'],
+      relations: ["users"],
     });
   }
 
@@ -58,7 +58,7 @@ export class RefreshTokenService {
       .createQueryBuilder()
       .delete()
       .from(RefreshToken)
-      .where('userId = :userId', { userId })
+      .where("userId = :userId", { userId })
       .execute();
   }
 
@@ -71,7 +71,7 @@ export class RefreshTokenService {
     try {
       const isValidRefreshToken = await this.validateRefreshToken(refreshToken);
       if (!isValidRefreshToken) {
-        throw new Error('Invalid refreshToken');
+        throw new Error("Invalid refreshToken");
       }
 
       await this.deleteToken(refreshToken);

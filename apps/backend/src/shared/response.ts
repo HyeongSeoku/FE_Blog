@@ -5,7 +5,7 @@ export interface SuccessResponseConstructor {
 export class SuccessResponse {
   message: string;
 
-  constructor({ message = 'Success' }: SuccessResponseConstructor) {
+  constructor({ message = "Success" }: SuccessResponseConstructor) {
     this.message = message;
   }
 }

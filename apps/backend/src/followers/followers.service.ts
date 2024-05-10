@@ -1,9 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Followers } from 'src/database/entities/followers.entity';
-import { UsersService } from 'src/users/users.service';
-import { Repository } from 'typeorm';
-import { FollowDto } from './followers.dto';
+import { BadRequestException, Injectable, Logger } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Followers } from "src/database/entities/followers.entity";
+import { UsersService } from "src/users/users.service";
+import { Repository } from "typeorm";
+import { FollowDto } from "./followers.dto";
 
 @Injectable()
 export class FollowersService {
@@ -17,11 +17,11 @@ export class FollowersService {
   async following(userId: string, followDto: FollowDto) {
     const { followingId } = followDto;
 
-    if (!followingId) throw new BadRequestException('follwingId is required');
+    if (!followingId) throw new BadRequestException("follwingId is required");
 
     if (userId === followingId)
       throw new BadRequestException(
-        'Invalid action. A user cannot follow their own account',
+        "Invalid action. A user cannot follow their own account",
       );
 
     const targetUser = await this.usersService.findById(followingId);
@@ -50,11 +50,11 @@ export class FollowersService {
   async unFollowing(userId: string, followDto: FollowDto) {
     const { followingId } = followDto;
 
-    if (!followingId) throw new BadRequestException('follwingId is required');
+    if (!followingId) throw new BadRequestException("follwingId is required");
 
     if (userId === followingId)
       throw new BadRequestException(
-        'Invalid action. A user cannot unfollow their own account',
+        "Invalid action. A user cannot unfollow their own account",
       );
 
     const targetUser = await this.usersService.findById(followingId);

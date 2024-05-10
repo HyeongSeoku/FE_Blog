@@ -1,19 +1,19 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
-import { JwtService } from '@nestjs/jwt';
-import { compareSync } from 'bcryptjs';
-import { Users } from 'src/database/entities/user.entity';
-import { UserResponseDto } from 'src/users/dto/user.dto';
-import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
+import { Injectable, Logger } from "@nestjs/common";
+import { UsersService } from "src/users/users.service";
+import { JwtService } from "@nestjs/jwt";
+import { compareSync } from "bcryptjs";
+import { Users } from "src/database/entities/user.entity";
+import { UserResponseDto } from "src/users/dto/user.dto";
+import { RefreshTokenService } from "src/refresh-token/refresh-token.service";
 import {
   ACCESS_TOKEN_EXPIRE,
   REFRESH_TOKEN_EXPIRE,
   REFRESH_TOKEN_EXPIRE_TIME,
   RS256_ALGORITHM,
-} from '../constants/auth.constants';
-import { SharedService } from 'src/shared/shared.service';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+} from "../constants/auth.constants";
+import { SharedService } from "src/shared/shared.service";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class AuthService {
@@ -57,7 +57,7 @@ export class AuthService {
         await this.refreshTokenService.generateNewAccessToken(refreshToken);
 
       if (!newAccessToken) {
-        throw new Error('Unable to generate access token');
+        throw new Error("Unable to generate access token");
       }
 
       const decoded = this.jwtService.decode(refreshToken);

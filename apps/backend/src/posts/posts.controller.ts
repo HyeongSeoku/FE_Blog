@@ -11,36 +11,36 @@ import {
   Query,
   Req,
   UseGuards,
-} from '@nestjs/common';
-import { PostsService } from './posts.service';
-import { AdminGuard } from 'src/guards/admin-auth.guard';
-import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
-import { AuthenticatedRequest } from 'src/auth/auth.interface';
-import { FindAllPostParams } from './posts.service.interface';
-import { PostOwnerGuard } from 'src/guards/postOwner.guard';
+} from "@nestjs/common";
+import { PostsService } from "./posts.service";
+import { AdminGuard } from "src/guards/admin-auth.guard";
+import { CreatePostDto, UpdatePostDto } from "./dto/post.dto";
+import { AuthenticatedRequest } from "src/auth/auth.interface";
+import { FindAllPostParams } from "./posts.service.interface";
+import { PostOwnerGuard } from "src/guards/postOwner.guard";
 
-@Controller('posts')
+@Controller("posts")
 export class PostsController {
   private readonly logger = new Logger(PostsController.name);
 
   constructor(private postsService: PostsService) {}
 
-  @Get('list')
+  @Get("list")
   getAllPosts(@Query() query: FindAllPostParams) {
     return this.postsService.findAll(query);
   }
 
-  @Get(':postId')
-  async getPost(@Param('postId') postId: string) {
+  @Get(":postId")
+  async getPost(@Param("postId") postId: string) {
     const targetPost = await this.postsService.findOnePost(postId);
 
-    if (!targetPost) throw new NotFoundException('Post id does not exist!');
+    if (!targetPost) throw new NotFoundException("Post id does not exist!");
 
     return targetPost;
   }
 
   @UseGuards(AdminGuard)
-  @Post('create')
+  @Post("create")
   newPost(
     @Req() req: AuthenticatedRequest,
     @Body() createPostDto: CreatePostDto,
@@ -49,17 +49,17 @@ export class PostsController {
   }
 
   @UseGuards(PostOwnerGuard)
-  @Patch('update/:postId')
+  @Patch("update/:postId")
   updatePost(
-    @Param('postId') postId: string,
+    @Param("postId") postId: string,
     @Body() updatePostDto: UpdatePostDto,
   ) {
     return this.postsService.updatePost(postId, updatePostDto);
   }
 
   @UseGuards(PostOwnerGuard)
-  @Delete('delete/:postId')
-  deletePost(@Param('postId') postId: string) {
+  @Delete("delete/:postId")
+  deletePost(@Param("postId") postId: string) {
     return this.postsService.deletePost(postId);
   }
 }

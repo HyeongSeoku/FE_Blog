@@ -4,8 +4,8 @@ import {
   IsNotEmpty,
   IsEmail,
   Matches,
-} from 'class-validator';
-import { Users } from 'src/database/entities/user.entity';
+} from "class-validator";
+import { Users } from "src/database/entities/user.entity";
 
 /** 유저 생성 DTO */
 export class CreateUserDto {
@@ -18,7 +18,7 @@ export class CreateUserDto {
   @IsString()
   @MinLength(8)
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'Password too weak',
+    message: "Password too weak",
   })
   password: string;
 

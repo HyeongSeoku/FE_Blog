@@ -6,8 +6,8 @@ import {
   Logger,
   HttpStatus,
   NotFoundException,
-} from '@nestjs/common';
-import { Response } from 'express';
+} from "@nestjs/common";
+import { Response } from "express";
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -38,7 +38,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     let message = isInstanceOfError(exception)
       ? exception.message
-      : 'Internal Server Error';
+      : "Internal Server Error";
 
     if (exception instanceof HttpException) {
       if (exception instanceof NotFoundException) {

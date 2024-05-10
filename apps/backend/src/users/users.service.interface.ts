@@ -1,4 +1,4 @@
-import { Users } from 'src/database/entities/user.entity';
+import { Users } from "src/database/entities/user.entity";
 
 export interface FindOrCreateUserByGithubResponse {
   user: Users;

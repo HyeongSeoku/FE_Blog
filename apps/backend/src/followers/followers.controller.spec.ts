@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { FollowersController } from './followers.controller';
-import { FollowersService } from './followers.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { FollowersController } from "./followers.controller";
+import { FollowersService } from "./followers.service";
 
-describe('FollowersController', () => {
+describe("FollowersController", () => {
   let controller: FollowersController;
 
   const mockFollowersService = {
@@ -21,7 +21,7 @@ describe('FollowersController', () => {
     controller = module.get<FollowersController>(FollowersController);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });
