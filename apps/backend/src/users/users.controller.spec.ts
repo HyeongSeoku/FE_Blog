@@ -1,11 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Users } from 'src/database/entities/user.entity';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from "@nestjs/testing";
+import { UsersController } from "./users.controller";
+import { UsersService } from "./users.service";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { Users } from "src/database/entities/user.entity";
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 
-describe('UsersController', () => {
+describe("UsersController", () => {
   let usersController: UsersController;
   let usersService: UsersService;
   const mockUsersService = {
@@ -37,20 +37,20 @@ describe('UsersController', () => {
     usersService = module.get<UsersService>(UsersService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(usersController).toBeDefined();
   });
 
-  it('GET info valid user name', async () => {
-    const VALID_USER_NAME = 'VALID_USER_NAME';
+  it("GET info valid user name", async () => {
+    const VALID_USER_NAME = "VALID_USER_NAME";
 
     const mockValidResult = {
-      userId: 'VALID_USER_ID',
+      userId: "VALID_USER_ID",
       username: VALID_USER_NAME,
-      email: 'VALID@email.com',
-      createdAt: '2024-04-01T04:17:30.000Z',
-      updatedAt: '2024-04-11T07:38:30.000Z',
-      lastLogin: '2024-04-12T02:55:14.000Z',
+      email: "VALID@email.com",
+      createdAt: "2024-04-01T04:17:30.000Z",
+      updatedAt: "2024-04-11T07:38:30.000Z",
+      lastLogin: "2024-04-12T02:55:14.000Z",
       isAdmin: false,
       followers: [],
       following: [],
@@ -63,11 +63,11 @@ describe('UsersController', () => {
     expect(result).toEqual(mockValidResult);
   });
 
-  it('GET info empty username', async () => {
-    const EMPTY_USER_NAME = '';
+  it("GET info empty username", async () => {
+    const EMPTY_USER_NAME = "";
     const FAIL_RESPONSE = {
-      error: 'Bad Request',
-      message: 'username is required',
+      error: "Bad Request",
+      message: "username is required",
       statusCode: 400,
     };
 
@@ -80,11 +80,11 @@ describe('UsersController', () => {
     }
   });
 
-  it('GET info user does not exist', async () => {
-    const INVALID_USER_NAME = 'INVALID_USER_NAME';
+  it("GET info user does not exist", async () => {
+    const INVALID_USER_NAME = "INVALID_USER_NAME";
     const FAIL_NOT_FOUND_RESPONSE = {
-      error: 'Not Found',
-      message: 'User does not exist',
+      error: "Not Found",
+      message: "User does not exist",
       statusCode: 404,
     };
 

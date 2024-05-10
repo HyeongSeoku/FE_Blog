@@ -1,15 +1,15 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Comments } from 'src/database/entities/comments.entity';
-import { Repository } from 'typeorm';
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Comments } from "src/database/entities/comments.entity";
+import { Repository } from "typeorm";
 import {
   CreateCommentDto,
   CreateReplyCommentDto,
   UpdateCommentDto,
-} from './comments.dto';
-import { PostsService } from 'src/posts/posts.service';
-import { AuthenticatedRequest } from 'src/auth/auth.interface';
-import { COMMENT_DELETE_KEY } from 'src/constants/comment.constants';
+} from "./comments.dto";
+import { PostsService } from "src/posts/posts.service";
+import { AuthenticatedRequest } from "src/auth/auth.interface";
+import { COMMENT_DELETE_KEY } from "src/constants/comment.constants";
 
 @Injectable()
 export class CommentsService {
@@ -67,7 +67,7 @@ export class CommentsService {
     }
 
     if (!targetParentComment)
-      throw new Error('Parent comment id does not exist!');
+      throw new Error("Parent comment id does not exist!");
 
     const formattedIsAnonymous = isAnonymous || !req?.user?.userId;
     const isPostOwner = targetPost.user.userId === req?.user?.userId;
@@ -89,10 +89,10 @@ export class CommentsService {
   async findOneComment(commentId: number) {
     const targetComment = await this.commentsRepository.findOne({
       where: { commentId },
-      relations: ['user', 'replies', 'post', 'post.user'],
+      relations: ["user", "replies", "post", "post.user"],
     });
 
-    if (!targetComment) throw Error('Comment id does not exist!');
+    if (!targetComment) throw Error("Comment id does not exist!");
 
     const response = {
       ...targetComment,
@@ -142,6 +142,6 @@ export class CommentsService {
 
     const deletedComment = await this.findOneComment(commentId);
 
-    return { ...deletedComment, content: '' };
+    return { ...deletedComment, content: "" };
   }
 }

@@ -8,19 +8,19 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import {
   ChangePasswordDto,
   CreateUserDto,
   GithubUserDto,
   UpdateUserDto,
   UserResponseDto,
-} from './dto/user.dto';
-import { Users } from '../database/entities/user.entity';
-import { hash, compare } from 'bcryptjs';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { FindOrCreateUserByGithubResponse } from './users.service.interface';
+} from "./dto/user.dto";
+import { Users } from "../database/entities/user.entity";
+import { hash, compare } from "bcryptjs";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { FindOrCreateUserByGithubResponse } from "./users.service.interface";
 
 @Injectable()
 export class UsersService {
@@ -74,7 +74,7 @@ export class UsersService {
     });
 
     if (existingUserByUsername) {
-      throw new ConflictException('Username already exists');
+      throw new ConflictException("Username already exists");
     }
 
     const existingUserByEmail = await this.userRepository.findOne({
@@ -82,7 +82,7 @@ export class UsersService {
     });
 
     if (existingUserByEmail) {
-      throw new ConflictException('Email already exists');
+      throw new ConflictException("Email already exists");
     }
   }
 
@@ -112,15 +112,15 @@ export class UsersService {
     return this.userRepository.findOne({
       where: { githubId },
       select: [
-        'userId',
-        'email',
-        'username',
-        'createdAt',
-        'updatedAt',
-        'password',
-        'isAdmin',
-        'githubId',
-        'githubImgUrl',
+        "userId",
+        "email",
+        "username",
+        "createdAt",
+        "updatedAt",
+        "password",
+        "isAdmin",
+        "githubId",
+        "githubImgUrl",
       ],
     });
   }
@@ -129,15 +129,15 @@ export class UsersService {
     return this.userRepository.findOne({
       where: { email },
       select: [
-        'userId',
-        'email',
-        'username',
-        'createdAt',
-        'updatedAt',
-        'password',
-        'isAdmin',
-        'githubId',
-        'githubImgUrl',
+        "userId",
+        "email",
+        "username",
+        "createdAt",
+        "updatedAt",
+        "password",
+        "isAdmin",
+        "githubId",
+        "githubImgUrl",
       ],
     });
   }
@@ -159,20 +159,20 @@ export class UsersService {
     const { currentPassword, newPassword } = changePasswordDto;
 
     const user = await this.userRepository
-      .createQueryBuilder('user')
-      .where('user.userId = :userId', { userId })
-      .addSelect('user.password')
+      .createQueryBuilder("user")
+      .where("user.userId = :userId", { userId })
+      .addSelect("user.password")
       .getOne();
 
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new HttpException("User not found", HttpStatus.NOT_FOUND);
     }
 
     const isPasswordMatching = await compare(currentPassword, user.password);
 
     if (!isPasswordMatching) {
       throw new HttpException(
-        'Current password is incorrect',
+        "Current password is incorrect",
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -209,14 +209,14 @@ export class UsersService {
       }
       return null;
     } catch (e) {
-      throw new InternalServerErrorException('Delete User Fail');
+      throw new InternalServerErrorException("Delete User Fail");
     }
   }
 
   async userInfo(username: string) {
     const targetUser = await this.userRepository.findOne({
       where: { username },
-      relations: ['followers', 'following'],
+      relations: ["followers", "following"],
     });
 
     if (!targetUser) return null;

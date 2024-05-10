@@ -1,17 +1,17 @@
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as fs from 'fs';
-import { RS256_ALGORITHM } from 'src/constants/auth.constants';
+import { ExtractJwt, Strategy } from "passport-jwt";
+import { PassportStrategy } from "@nestjs/passport";
+import { Injectable, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import * as fs from "fs";
+import { RS256_ALGORITHM } from "src/constants/auth.constants";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   private readonly logger = new Logger(JwtStrategy.name);
 
   constructor(private configService: ConfigService) {
-    const publicKeyPath = configService.get<string>('PUBLIC_KEY_PATH');
-    const publicKey = fs.readFileSync(publicKeyPath, 'utf8');
+    const publicKeyPath = configService.get<string>("PUBLIC_KEY_PATH");
+    const publicKey = fs.readFileSync(publicKeyPath, "utf8");
 
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

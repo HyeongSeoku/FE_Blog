@@ -6,11 +6,11 @@ import {
   Logger,
   NotFoundException,
   forwardRef,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Views } from 'src/database/entities/views.entity';
-import { PostsService } from 'src/posts/posts.service';
-import { Repository } from 'typeorm';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Views } from "src/database/entities/views.entity";
+import { PostsService } from "src/posts/posts.service";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class ViewsService {
@@ -26,7 +26,7 @@ export class ViewsService {
   async findViewsByPostId(postId: string) {
     const targetView = await this.viewsRepository.findOne({
       where: { postId },
-      relations: ['posts'],
+      relations: ["posts"],
     });
     if (!targetView) throw new NotFoundException(`${postId} views not exist`);
 
@@ -40,9 +40,9 @@ export class ViewsService {
       .createQueryBuilder()
       .update(Views)
       .set({
-        viewCount: () => 'view_count + 1 ',
+        viewCount: () => "view_count + 1 ",
       })
-      .where('postId= :postId', { postId })
+      .where("postId= :postId", { postId })
       .execute();
 
     const updatedViews = await this.viewsRepository.findOne({
@@ -53,7 +53,7 @@ export class ViewsService {
   }
 
   async createPostView(postId: string) {
-    if (!postId) throw new BadRequestException('postId is required');
+    if (!postId) throw new BadRequestException("postId is required");
 
     const targetView = await this.viewsRepository.findOne({
       where: { postId },
@@ -68,7 +68,7 @@ export class ViewsService {
   }
 
   async deletePostView(postId: string) {
-    if (!postId) throw new BadRequestException('postId is required');
+    if (!postId) throw new BadRequestException("postId is required");
 
     const targetView = await this.findViewsByPostId(postId);
 

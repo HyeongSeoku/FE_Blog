@@ -1,9 +1,9 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Followers } from './followers.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Followers } from "./followers.entity";
 
-@Entity('users')
+@Entity("users")
 export class Users {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   userId: string;
 
   @Column({ length: 50, unique: true })
@@ -16,25 +16,25 @@ export class Users {
   email: string;
 
   @Column({
-    name: 'created_at',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
+    name: "created_at",
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
   })
   createdAt: Date;
 
   @Column({
-    name: 'updated_at',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
+    name: "updated_at",
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
   })
   updatedAt: Date;
 
-  @Column({ name: 'last_login', type: 'timestamp', nullable: true })
+  @Column({ name: "last_login", type: "timestamp", nullable: true })
   lastLogin: Date | null;
 
   @Column({
-    type: 'tinyint',
-    name: 'is_admin',
+    type: "tinyint",
+    name: "is_admin",
     transformer: {
       to: (value: boolean) => (value ? 1 : 0),
       from: (value: number) => value === 1,
@@ -42,13 +42,13 @@ export class Users {
   })
   isAdmin: boolean;
 
-  @Column({ name: 'github_id', length: 255, nullable: false })
+  @Column({ name: "github_id", length: 255, nullable: false })
   githubId: string;
 
-  @Column({ name: 'github_img_url', length: 255, nullable: true })
+  @Column({ name: "github_img_url", length: 255, nullable: true })
   githubImgUrl: string;
 
-  @Column({ name: 'github_profile_url', length: 255 })
+  @Column({ name: "github_profile_url", length: 255 })
   githubProfileUrl: string;
 
   // 팔로워 관계

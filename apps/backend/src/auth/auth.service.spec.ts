@@ -1,29 +1,29 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
-import { JwtService } from '@nestjs/jwt';
-import { SharedService } from 'src/shared/shared.service';
-import { Users } from 'src/database/entities/user.entity';
-import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
-import { UsersService } from 'src/users/users.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { Test, TestingModule } from "@nestjs/testing";
+import { AuthService } from "./auth.service";
+import { JwtService } from "@nestjs/jwt";
+import { SharedService } from "src/shared/shared.service";
+import { Users } from "src/database/entities/user.entity";
+import { RefreshTokenService } from "src/refresh-token/refresh-token.service";
+import { UsersService } from "src/users/users.service";
+import { getRepositoryToken } from "@nestjs/typeorm";
 import {
   ACCESS_TOKEN_EXPIRE,
   REFRESH_TOKEN_EXPIRE,
   RS256_ALGORITHM,
-} from 'src/constants/auth.constants';
+} from "src/constants/auth.constants";
 
-describe('AuthService', () => {
+describe("AuthService", () => {
   let service: AuthService;
   let jwtService: JwtService;
   let sharedService: SharedService;
 
-  const MOCK_PRIVATE_KEY = 'MOCK_PRIVATE_KEY';
-  const MOCK_ACCESS_TOKEN = 'MOCK_ACCESS_TOKEN';
-  const MOCK_REFRESH_TOKEN = 'MOCK_REFRESH_TOKEN';
-  const TEST_USER_NAME = 'TEST_USER_NAME';
-  const TEST_USER_ID = 'TEST_USER_ID';
-  const TEST_USER_EMAIL = 'EMAIL@TEST.COM';
-  const TEST_USER_PASSWORD = 'TEST_USER_PASSWORD';
+  const MOCK_PRIVATE_KEY = "MOCK_PRIVATE_KEY";
+  const MOCK_ACCESS_TOKEN = "MOCK_ACCESS_TOKEN";
+  const MOCK_REFRESH_TOKEN = "MOCK_REFRESH_TOKEN";
+  const TEST_USER_NAME = "TEST_USER_NAME";
+  const TEST_USER_ID = "TEST_USER_ID";
+  const TEST_USER_EMAIL = "EMAIL@TEST.COM";
+  const TEST_USER_PASSWORD = "TEST_USER_PASSWORD";
 
   const mockJwtService = {
     signAsync: jest.fn((payload, options) => {
@@ -68,11 +68,11 @@ describe('AuthService', () => {
     sharedService = module.get<SharedService>(SharedService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  it('generateToken create valid tokens', async () => {
+  it("generateToken create valid tokens", async () => {
     const mockUser: Users = {
       userId: TEST_USER_ID,
       username: TEST_USER_NAME,

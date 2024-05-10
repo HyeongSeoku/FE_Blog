@@ -8,16 +8,16 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Users } from './user.entity';
-import { Categories } from './categories.entity';
-import { Tags } from './tags.entity';
-import { Comments } from './comments.entity';
-import { Views } from './views.entity';
+} from "typeorm";
+import { Users } from "./user.entity";
+import { Categories } from "./categories.entity";
+import { Tags } from "./tags.entity";
+import { Comments } from "./comments.entity";
+import { Views } from "./views.entity";
 
-@Entity('posts')
+@Entity("posts")
 export class Posts {
-  @PrimaryGeneratedColumn('uuid', { name: 'post_id' })
+  @PrimaryGeneratedColumn("uuid", { name: "post_id" })
   postId: string;
 
   @Column()
@@ -27,32 +27,32 @@ export class Posts {
   body: string;
 
   @Column({
-    type: 'timestamp',
-    name: 'created_at',
-    default: () => 'CURRENT_TIMESTAMP',
+    type: "timestamp",
+    name: "created_at",
+    default: () => "CURRENT_TIMESTAMP",
   })
   createdAt: Date;
 
   @Column({
-    type: 'timestamp',
-    name: 'updated_at',
-    default: () => 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+    type: "timestamp",
+    name: "updated_at",
+    default: () => "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
   })
   updatedAt: Date;
 
   @ManyToOne(() => Users, (users) => users.userId)
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: "user_id" })
   user: Users;
 
   @ManyToOne(() => Categories, (category) => category.categoryId)
-  @JoinColumn({ name: 'category_id' })
+  @JoinColumn({ name: "category_id" })
   category: Categories;
 
   @ManyToMany((type) => Tags, (tag) => tag.posts)
   @JoinTable({
-    name: 'posts_tags', // 중간 테이블의 이름
-    joinColumn: { name: 'post_id', referencedColumnName: 'postId' },
-    inverseJoinColumn: { name: 'tag_id', referencedColumnName: 'tagId' },
+    name: "posts_tags", // 중간 테이블의 이름
+    joinColumn: { name: "post_id", referencedColumnName: "postId" },
+    inverseJoinColumn: { name: "tag_id", referencedColumnName: "tagId" },
   })
   tags: Tags[];
 

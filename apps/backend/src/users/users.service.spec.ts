@@ -1,17 +1,17 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from './users.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Users } from '../database/entities/user.entity';
-import { Repository } from 'typeorm';
-import { ConflictException } from '@nestjs/common';
-import { RefreshTokenService } from '../refresh-token/refresh-token.service';
-import { RefreshToken } from 'src/database/entities/refreshToken.entity';
-import { JwtService } from '@nestjs/jwt';
-import { SharedService } from 'src/shared/shared.service';
-import { ConfigService } from '@nestjs/config';
-import { hash } from 'bcryptjs';
+import { Test, TestingModule } from "@nestjs/testing";
+import { UsersService } from "./users.service";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { Users } from "../database/entities/user.entity";
+import { Repository } from "typeorm";
+import { ConflictException } from "@nestjs/common";
+import { RefreshTokenService } from "../refresh-token/refresh-token.service";
+import { RefreshToken } from "src/database/entities/refreshToken.entity";
+import { JwtService } from "@nestjs/jwt";
+import { SharedService } from "src/shared/shared.service";
+import { ConfigService } from "@nestjs/config";
+import { hash } from "bcryptjs";
 
-describe('UsersService', () => {
+describe("UsersService", () => {
   let service: UsersService;
   let userRepository: Repository<Users>;
 
@@ -46,16 +46,16 @@ describe('UsersService', () => {
     userRepository = module.get<Repository<Users>>(getRepositoryToken(Users));
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('create', () => {
-    it('should successfully create a user', async () => {
+  describe("create", () => {
+    it("should successfully create a user", async () => {
       const createUserDto = {
-        username: 'testUser',
-        email: 'test@test.com',
-        password: 'password',
+        username: "testUser",
+        email: "test@test.com",
+        password: "password",
       };
       const hashedPassword = await hash(createUserDto.password, 10);
 
@@ -83,26 +83,26 @@ describe('UsersService', () => {
       });
     });
 
-    it('should throw a conflict exception if username exists', async () => {
+    it("should throw a conflict exception if username exists", async () => {
       mockUsersRepository.findOne.mockResolvedValueOnce(new Users());
 
       await expect(
         service.createUser({
-          username: 'testUser',
-          email: 'test@test.com',
-          password: 'password',
+          username: "testUser",
+          email: "test@test.com",
+          password: "password",
         }),
       ).rejects.toThrow(ConflictException);
     });
   });
 
-  describe('findById', () => {
-    it('should return a user if found', async () => {
-      const userId = 'someUserId';
+  describe("findById", () => {
+    it("should return a user if found", async () => {
+      const userId = "someUserId";
       const expectedUser = {
         userId,
-        username: 'testUser',
-        email: 'test@test.com',
+        username: "testUser",
+        email: "test@test.com",
       };
       mockUsersRepository.findOne.mockResolvedValue(expectedUser);
 
@@ -113,10 +113,10 @@ describe('UsersService', () => {
       });
     });
 
-    it('should throw an exception if user is not found', async () => {
+    it("should throw an exception if user is not found", async () => {
       mockUsersRepository.findOne.mockResolvedValue(null);
 
-      expect(await service.findById('invalidUserId')).toEqual(null);
+      expect(await service.findById("invalidUserId")).toEqual(null);
     });
   });
 });
