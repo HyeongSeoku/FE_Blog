@@ -1,9 +1,7 @@
 import { LoaderFunction, MetaFunction, redirect } from "@remix-run/node";
-import { Link, useLoaderData, useNavigate } from "@remix-run/react";
-import { useEffect } from "react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { getUserProfile } from "server/user";
 
-// 정의된 데이터 타입
 interface LoaderData {
   token: string;
   userProfile: any;

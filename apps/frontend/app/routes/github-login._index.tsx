@@ -1,7 +1,6 @@
 import { MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { getGithubAuthUrl } from "server/user";
-
 export const meta: MetaFunction = () => {
   return [{ title: "login" }, { name: "login", content: "login" }];
 };

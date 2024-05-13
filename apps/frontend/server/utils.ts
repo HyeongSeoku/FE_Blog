@@ -26,11 +26,12 @@ export async function fetchData(
 ): Promise<{ data?: any; error: ErrorProps | null }> {
   const url = `${API_BASE_URL}${path}`;
 
-  const defaultOptions = {
+  const defaultOptions: RequestInit = {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   };
 
   const finalOptions = {
@@ -38,7 +39,7 @@ export async function fetchData(
     ...options,
     headers: {
       ...defaultOptions.headers,
-      ...options?.headers,
+      ...options.headers,
     },
   };
   try {
