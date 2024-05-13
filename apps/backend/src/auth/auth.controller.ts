@@ -3,11 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   HttpStatus,
   Logger,
   NotFoundException,
   Patch,
   Post,
+  Query,
   Req,
   Res,
   UnauthorizedException,
@@ -31,6 +33,9 @@ import { REFRESH_TOKEN_KEY } from "src/constants/cookie.constants";
 import { Users } from "src/database/entities/user.entity";
 import { RefreshTokenService } from "src/refresh-token/refresh-token.service";
 import { GithubAuthGuard } from "src/guards/github-auth.guard";
+import { v4 as uuidv4 } from "uuid";
+import { isProdMode } from "src/utils/env";
+import { clearCookie } from "src/utils/cookie";
 
 @Controller("auth")
 export class AuthController {
@@ -175,9 +180,24 @@ export class AuthController {
   async updateUser(
     @Req() req: AuthenticatedRequest,
     @Body() updateUserDto: UpdateUserDto,
-    @Res() res: Response,
   ) {
     return await this.usersService.update(req?.user.userId, updateUserDto);
+  }
+
+  @Get("github/login")
+  //NOTE: { passthrough: true }옵션 없으면 무한 로딩 걸릴 수 있음
+  async githubAuthLogin(@Res({ passthrough: true }) res: Response) {
+    const oauth_state = uuidv4();
+
+    res.cookie("github_oauth_state", oauth_state, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      path: "/",
+    });
+
+    const githubOauthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${process.env.BE_BASE_URL}/auth/github/callback`)}&scope=user:email&state=${oauth_state}`;
+    return { url: githubOauthUrl };
   }
 
   @UseGuards(GithubAuthGuard)
@@ -185,7 +205,20 @@ export class AuthController {
   async githubAuthRedirect(
     @Req() req: AuthenticatedRequest,
     @Res() res: Response,
+    @Query("state") queryState: string,
   ) {
+    const oauthCookieState = req.cookies["github_oauth_state"];
+
+    if (queryState !== oauthCookieState) {
+      clearCookie(res, "github_oauth_state");
+      throw new HttpException(
+        "유효하지 않은 요청이 감지되었습니다.",
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    clearCookie(res, "github_oauth_state");
+
     if (!req.user) {
       res.redirect("/login");
     } else {
