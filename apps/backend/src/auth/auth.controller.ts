@@ -191,8 +191,8 @@ export class AuthController {
 
     res.cookie("github_oauth_state", oauth_state, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      secure: isProdMode,
+      sameSite: isProdMode ? "strict" : "lax",
       path: "/",
     });
 
