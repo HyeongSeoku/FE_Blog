@@ -27,7 +27,7 @@ import { UsersService } from "src/users/users.service";
 import { JwtAuthGuard } from "../guards/jwt-auth.guard";
 import { AuthenticatedRequest } from "./auth.interface";
 import { RateLimit } from "nestjs-rate-limiter";
-import { Request as ExpressRequest, Response } from "express";
+import { Request as ExpressRequest, Request, Response } from "express";
 import { REFRESH_TOKEN_EXPIRE_TIME } from "src/constants/auth.constants";
 import { REFRESH_TOKEN_KEY } from "src/constants/cookie.constants";
 import { Users } from "src/database/entities/user.entity";
@@ -36,6 +36,7 @@ import { GithubAuthGuard } from "src/guards/github-auth.guard";
 import { v4 as uuidv4 } from "uuid";
 import { isProdMode } from "src/utils/env";
 import { clearCookie } from "src/utils/cookie";
+import { FindOrCreateUserByGithubResponse } from "src/users/users.service.interface";
 
 @Controller("auth")
 export class AuthController {
@@ -203,7 +204,7 @@ export class AuthController {
   @UseGuards(GithubAuthGuard)
   @Get("github/callback")
   async githubAuthRedirect(
-    @Req() req: AuthenticatedRequest,
+    @Req() req: Request,
     @Res() res: Response,
     @Query("state") queryState: string,
   ) {
@@ -211,6 +212,8 @@ export class AuthController {
 
     if (queryState !== oauthCookieState) {
       clearCookie(res, "github_oauth_state");
+
+      //FIXME: 프론트로 redirect되진 않음
       throw new HttpException(
         "유효하지 않은 요청이 감지되었습니다.",
         HttpStatus.FORBIDDEN,
@@ -220,10 +223,17 @@ export class AuthController {
     clearCookie(res, "github_oauth_state");
 
     if (!req.user) {
-      res.redirect("/login");
+      res.redirect("/github-login");
     } else {
+      const githubData = req.user as FindOrCreateUserByGithubResponse;
+
       const { accessToken, refreshToken } =
-        await this.authService.generateToken(req.user);
+        await this.authService.generateToken(githubData.user);
+
+      if (!accessToken)
+        res.redirect(
+          `${process.env.FE_BASE_URL}/github-login?error=badRequest`,
+        );
 
       const refreshTokenExpires = new Date().setDate(
         new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,

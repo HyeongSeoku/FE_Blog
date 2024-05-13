@@ -30,6 +30,9 @@ export class AuthService {
   async generateToken(
     user: Users,
   ): Promise<{ accessToken: string; refreshToken: string }> {
+    if (!user.username || !user.userId) {
+      return { accessToken: "", refreshToken: "" };
+    }
     const payload = { username: user.username, sub: user.userId };
 
     const { privateKey } = this.sharedService.getJwtKeys();

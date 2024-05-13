@@ -3,6 +3,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Profile, Strategy } from "passport-github";
 import { GithubUserDto } from "src/users/dto/user.dto";
 import { UsersService } from "src/users/users.service";
+import { FindOrCreateUserByGithubResponse } from "src/users/users.service.interface";
 
 @Injectable()
 export class GithubStrategy extends PassportStrategy(Strategy, "github") {
@@ -19,7 +20,10 @@ export class GithubStrategy extends PassportStrategy(Strategy, "github") {
     githubAccessToken: string,
     githubRefreshToken: string,
     profile: Profile,
-    done: Function,
+    done: (
+      error: null,
+      user: FindOrCreateUserByGithubResponse | boolean,
+    ) => void,
   ) {
     try {
       const { id, emails, photos, profileUrl, username } = profile;
