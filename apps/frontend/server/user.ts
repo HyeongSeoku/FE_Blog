@@ -6,3 +6,8 @@ export const getUserProfile = async (accessToken: string) => {
   });
   return userProfile;
 };
+
+export const getGithubAuthUrl = async () => {
+  const result = await fetchData("/auth/github/login");
+  return result;
+};
