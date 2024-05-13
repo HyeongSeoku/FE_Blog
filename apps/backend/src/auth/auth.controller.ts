@@ -3,11 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   HttpStatus,
   Logger,
   NotFoundException,
   Patch,
   Post,
+  Query,
   Req,
   Res,
   UnauthorizedException,
@@ -31,6 +33,9 @@ import { REFRESH_TOKEN_KEY } from "src/constants/cookie.constants";
 import { Users } from "src/database/entities/user.entity";
 import { RefreshTokenService } from "src/refresh-token/refresh-token.service";
 import { GithubAuthGuard } from "src/guards/github-auth.guard";
+import { v4 as uuidv4 } from "uuid";
+import { isProdMode } from "src/utils/env";
+import { clearCookie } from "src/utils/cookie";
 
 @Controller("auth")
 export class AuthController {
@@ -175,9 +180,24 @@ export class AuthController {
   async updateUser(
     @Req() req: AuthenticatedRequest,
     @Body() updateUserDto: UpdateUserDto,
-    @Res() res: Response,
   ) {
     return await this.usersService.update(req?.user.userId, updateUserDto);
+  }
+
+  @Get("github/login")
+  //NOTE: { passthrough: true }옵션 없으면 무한 로딩 걸릴 수 있음
+  async githubAuthLogin(@Res({ passthrough: true }) res: Response) {
+    const oauth_state = uuidv4();
+
+    res.cookie("github_oauth_state", oauth_state, {
+      httpOnly: true,
+      secure: isProdMode,
+      sameSite: isProdMode ? "strict" : "lax",
+      path: "/",
+    });
+
+    const githubOauthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${process.env.BE_BASE_URL}/auth/github/callback`)}&scope=user:email&state=${oauth_state}`;
+    return { url: githubOauthUrl };
   }
 
   @UseGuards(GithubAuthGuard)
@@ -185,16 +205,35 @@ export class AuthController {
   async githubAuthRedirect(
     @Req() req: AuthenticatedRequest,
     @Res() res: Response,
+    @Query("state") queryState: string,
   ) {
-    // 성공적인 인증 후 사용자 객체는 요청에 첨부됩니다.
-    // 이제 세션을 생성하거나 JWT를 발급할 수 있습니다.
+    const oauthCookieState = req.cookies["github_oauth_state"];
+
+    if (queryState !== oauthCookieState) {
+      clearCookie(res, "github_oauth_state");
+      throw new HttpException(
+        "유효하지 않은 요청이 감지되었습니다.",
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    clearCookie(res, "github_oauth_state");
+
     if (!req.user) {
-      res.redirect("/login"); // 로그인 실패를 처리하는 프론트엔드 경로로 리다이렉트
+      res.redirect("/login");
     } else {
-      // 사용자에게 토큰을 발급하는 방법을 가정하고 있습니다.
       const { accessToken, refreshToken } =
         await this.authService.generateToken(req.user);
-      // 토큰을 전달하는 프론트엔드 경로로 리다이렉트
+
+      const refreshTokenExpires = new Date().setDate(
+        new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+      );
+
+      res.cookie(REFRESH_TOKEN_KEY, refreshToken, {
+        httpOnly: true,
+        expires: new Date(refreshTokenExpires),
+      });
+
       res.redirect(
         `${process.env.FE_BASE_URL}/github-login/success?token=${accessToken}`,
       );
