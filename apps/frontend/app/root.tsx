@@ -1,3 +1,4 @@
+import { LoaderFunction } from "@remix-run/node";
 import {
   Links,
   Meta,
@@ -5,10 +6,33 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { ACCESS_TOKEN_KEY } from "constants/cookie.constants";
+import { parse } from "cookie";
+import { getUserProfile } from "server/user";
+
+const isLoginRequired = (pathname: string) => {
+  const protectRoutes = ["/write", "/setting", "login-success"];
+  return protectRoutes.some((route) => pathname.startsWith(route));
+};
 
 export const links = () => [
   { rel: "stylesheet", href: "/styles/tailwind.css" },
 ];
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const url = new URL(request.url);
+  const pathname = url.pathname;
+  if (isLoginRequired(pathname)) {
+    const cookieHeader = request.headers.get("Cookie");
+    const cookies = parse(cookieHeader || "");
+
+    const accessToken = cookies[ACCESS_TOKEN_KEY];
+
+    const { data: userData, error } = await getUserProfile(accessToken);
+
+    return { isLoginPage: true, userData };
+  }
+};
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
