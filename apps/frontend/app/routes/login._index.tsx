@@ -5,7 +5,7 @@ export const meta: MetaFunction = () => {
   return [{ title: "login" }, { name: "login", content: "login" }];
 };
 
-export default function GithubLoginPage() {
+export default function LoginPage() {
   const handleGithubLogin = async () => {
     const { data, error } = await getGithubAuthUrl();
     if (!data?.url || error) {
