@@ -133,4 +133,29 @@ export class AuthService {
       return false;
     }
   }
+
+  async githubLogin(user: Users): Promise<{
+    accessToken: string;
+    refreshToken: string;
+  } | null> {
+    try {
+      const { accessToken, refreshToken } = await this.generateToken(user);
+
+      const lastLogin = new Date();
+
+      await this.usersRepository.update(user.userId, { lastLogin });
+
+      await this.refreshTokenService.deleteTokenForUserId(user.userId);
+
+      await this.refreshTokenService.saveToken(
+        refreshToken,
+        user.userId,
+        new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      );
+
+      return { accessToken, refreshToken };
+    } catch (e) {
+      return null;
+    }
+  }
 }

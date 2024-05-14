@@ -23,19 +23,25 @@ import {
   UpdateUserDto,
   UserResponseDto,
 } from "src/users/dto/user.dto";
+import {
+  REFRESH_TOKEN_KEY,
+  ACCESS_TOKEN_KEY,
+  GITHUB_OAUTH_KEY,
+} from "src/constants/cookie.constants";
 import { UsersService } from "src/users/users.service";
 import { JwtAuthGuard } from "../guards/jwt-auth.guard";
 import { AuthenticatedRequest } from "./auth.interface";
 import { RateLimit } from "nestjs-rate-limiter";
 import { Request as ExpressRequest, Request, Response } from "express";
-import { REFRESH_TOKEN_EXPIRE_TIME } from "src/constants/auth.constants";
-import { REFRESH_TOKEN_KEY } from "src/constants/cookie.constants";
+import {
+  ACCESS_TOKEN_EXPIRE_TIME,
+  REFRESH_TOKEN_EXPIRE_TIME,
+} from "src/constants/auth.constants";
 import { Users } from "src/database/entities/user.entity";
 import { RefreshTokenService } from "src/refresh-token/refresh-token.service";
 import { GithubAuthGuard } from "src/guards/github-auth.guard";
 import { v4 as uuidv4 } from "uuid";
-import { isProdMode } from "src/utils/env";
-import { clearCookie } from "src/utils/cookie";
+import { clearCookie, setCookie } from "src/utils/cookie";
 import { FindOrCreateUserByGithubResponse } from "src/users/users.service.interface";
 
 @Controller("auth")
@@ -63,13 +69,13 @@ export class AuthController {
 
     const { accessToken, lastLogin, refreshToken } = loginResult;
 
-    const refreshTokenExpires = new Date().setDate(
-      new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+    const refreshTokenExpires = new Date();
+    refreshTokenExpires.setDate(
+      refreshTokenExpires.getDate() + REFRESH_TOKEN_EXPIRE_TIME,
     );
 
-    res.cookie(REFRESH_TOKEN_KEY, refreshToken, {
-      httpOnly: true,
-      expires: new Date(refreshTokenExpires),
+    setCookie(res, REFRESH_TOKEN_KEY, refreshToken, {
+      expires: refreshTokenExpires,
     });
 
     return res.status(200).json({ accessToken, lastLogin });
@@ -87,10 +93,8 @@ export class AuthController {
     const result = await this.authService.logout(userId);
 
     if (result) {
-      res.cookie(REFRESH_TOKEN_KEY, "", {
-        httpOnly: true,
-        expires: new Date(0),
-      });
+      setCookie(res, REFRESH_TOKEN_KEY, "", { expires: new Date(0) });
+
       return res
         .status(HttpStatus.OK)
         .json({ message: "Logged out successfully" });
@@ -118,8 +122,7 @@ export class AuthController {
       new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
     );
 
-    res.cookie(REFRESH_TOKEN_KEY, newRefreshToken, {
-      httpOnly: true,
+    setCookie(res, REFRESH_TOKEN_KEY, newRefreshToken, {
       expires: new Date(refreshTokenExpires),
     });
 
@@ -189,13 +192,7 @@ export class AuthController {
   //NOTE: { passthrough: true }옵션 없으면 무한 로딩 걸릴 수 있음
   async githubAuthLogin(@Res({ passthrough: true }) res: Response) {
     const oauth_state = uuidv4();
-
-    res.cookie("github_oauth_state", oauth_state, {
-      httpOnly: true,
-      secure: isProdMode,
-      sameSite: isProdMode ? "strict" : "lax",
-      path: "/",
-    });
+    setCookie(res, GITHUB_OAUTH_KEY, oauth_state);
 
     const githubOauthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${process.env.BE_BASE_URL}/auth/github/callback`)}&scope=user:email&state=${oauth_state}`;
     return { url: githubOauthUrl };
@@ -208,10 +205,10 @@ export class AuthController {
     @Res() res: Response,
     @Query("state") queryState: string,
   ) {
-    const oauthCookieState = req.cookies["github_oauth_state"];
+    const oauthCookieState = req.cookies[GITHUB_OAUTH_KEY];
 
     if (queryState !== oauthCookieState) {
-      clearCookie(res, "github_oauth_state");
+      clearCookie(res, GITHUB_OAUTH_KEY);
 
       //FIXME: 프론트로 redirect되진 않음
       throw new HttpException(
@@ -220,32 +217,39 @@ export class AuthController {
       );
     }
 
-    clearCookie(res, "github_oauth_state");
+    clearCookie(res, GITHUB_OAUTH_KEY);
+    const githubData = req.user as FindOrCreateUserByGithubResponse;
 
-    if (!req.user) {
-      res.redirect("/github-login");
+    if (!githubData.user) {
+      res.redirect("/login");
     } else {
-      const githubData = req.user as FindOrCreateUserByGithubResponse;
-
-      const { accessToken, refreshToken } =
-        await this.authService.generateToken(githubData.user);
-
-      if (!accessToken)
-        res.redirect(
-          `${process.env.FE_BASE_URL}/github-login?error=badRequest`,
-        );
-
-      const refreshTokenExpires = new Date().setDate(
-        new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+      const { accessToken, refreshToken } = await this.authService.githubLogin(
+        githubData.user,
       );
 
-      res.cookie(REFRESH_TOKEN_KEY, refreshToken, {
-        httpOnly: true,
-        expires: new Date(refreshTokenExpires),
+      if (!accessToken)
+        res.redirect(`${process.env.FE_BASE_URL}/login?error=badRequest`);
+
+      const accessTokenExpires = new Date();
+      accessTokenExpires.setDate(
+        accessTokenExpires.getDate() + ACCESS_TOKEN_EXPIRE_TIME,
+      );
+
+      setCookie(res, ACCESS_TOKEN_KEY, accessToken, {
+        expires: accessTokenExpires,
+      });
+
+      const refreshTokenExpires = new Date();
+      refreshTokenExpires.setDate(
+        refreshTokenExpires.getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+      );
+
+      setCookie(res, REFRESH_TOKEN_KEY, refreshToken, {
+        expires: refreshTokenExpires,
       });
 
       res.redirect(
-        `${process.env.FE_BASE_URL}/github-login/success?token=${accessToken}`,
+        `${process.env.FE_BASE_URL}/login/success?token=${accessToken}`,
       );
     }
   }
