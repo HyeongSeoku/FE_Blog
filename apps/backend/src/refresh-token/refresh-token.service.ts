@@ -54,12 +54,17 @@ export class RefreshTokenService {
   }
 
   async deleteTokenForUserId(userId: string): Promise<void> {
-    await this.refreshTokenRepository
-      .createQueryBuilder()
-      .delete()
-      .from(RefreshToken)
-      .where("userId = :userId", { userId })
-      .execute();
+    try {
+      await this.refreshTokenRepository
+        .createQueryBuilder()
+        .delete()
+        .from(RefreshToken)
+        .where("userId = :userId", { userId })
+        .execute();
+    } catch (error) {
+      console.error("Error deleting token for user ID:", userId, error);
+      throw error;
+    }
   }
 
   async validateRefreshToken(token: string): Promise<boolean> {
