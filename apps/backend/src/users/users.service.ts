@@ -223,4 +223,16 @@ export class UsersService {
 
     return targetUser;
   }
+
+  async fetchUserProfile(userId: string) {
+    const userData = await this.findById(userId);
+    if (!userData) {
+      throw new HttpException(
+        `${userId}는 유효한 사용자가 아닙니다`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const { password, ...result } = userData;
+    return result;
+  }
 }
