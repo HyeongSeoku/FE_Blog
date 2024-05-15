@@ -30,8 +30,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 
     const { data: userData, error } = await getUserProfile(accessToken);
 
+    // if(!userData || error){
+
+    // }
+
     return { isLoginPage: true, userData };
   }
+
+  return { isLoginPage: false };
 };
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {

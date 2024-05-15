@@ -32,8 +32,6 @@ export const loader: LoaderFunction = async ({ request }) => {
       throw redirect("/");
     }
 
-    // 로그인 상태 업데이트 & throw redirect("/");
-
     return { accessToken };
   } catch (error) {
     throw redirect("/");
