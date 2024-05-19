@@ -221,7 +221,8 @@ export class AuthController {
     const githubData = req.user as FindOrCreateUserByGithubResponse;
 
     if (!githubData.user) {
-      res.redirect("/login");
+      console.log("TESTSETSET", githubData);
+      // res.redirect("/login");
     } else {
       const { accessToken, refreshToken } = await this.authService.githubLogin(
         githubData.user,
