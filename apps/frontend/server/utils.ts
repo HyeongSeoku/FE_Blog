@@ -23,13 +23,16 @@ const API_BASE_URL = isServer
 export async function fetchData(
   path: string,
   options: FetchOptions = {},
+  request?: Request,
 ): Promise<{ data?: any; error: ErrorProps | null }> {
   const url = `${API_BASE_URL}${path}`;
+  const serverCookies = request?.headers?.get("Cookie");
 
   const defaultOptions: RequestInit = {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+      Cookie: serverCookies || "",
     },
     credentials: "include",
   };

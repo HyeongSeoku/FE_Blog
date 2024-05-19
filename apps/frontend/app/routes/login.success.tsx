@@ -26,7 +26,10 @@ export const loader: LoaderFunction = async ({ request }) => {
     throw new Response("Token is required", { status: 401 });
   }
   try {
-    const { data: userProfile, error } = await getUserProfile(accessToken);
+    const { data: userProfile, error } = await getUserProfile(
+      `${accessToken}d`,
+      request,
+    );
 
     if (error !== null) {
       throw redirect("/");
