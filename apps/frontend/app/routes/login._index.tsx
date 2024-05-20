@@ -7,14 +7,18 @@ export const meta: MetaFunction = () => {
 
 export default function LoginPage() {
   const handleGithubLogin = async () => {
-    const { data, error } = await getGithubAuthUrl();
-    if (!data?.url || error) {
-      // FIXME: 임시 오류 처리
-      alert("오류 발생");
-      return;
+    try {
+      const { data, error } = await getGithubAuthUrl();
+      if (!data?.url || error) {
+        // FIXME: 임시 오류 처리
+        console.log("TEST", data?.url, error);
+        alert("오류 발생");
+        return;
+      }
+      window.location.href = data.url;
+    } catch (e) {
+      console.error("Error fetching GitHub auth URL:", e);
     }
-
-    window.location.href = data.url;
   };
 
   return (

@@ -32,6 +32,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     );
 
     if (error !== null) {
+      console.log("TESTSETSET ERROR", error, userProfile);
       throw redirect("/");
     }
 
