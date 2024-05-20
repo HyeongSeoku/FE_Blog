@@ -138,14 +138,26 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get("me")
-  async getProfile(@Req() req: AuthenticatedRequest) {
-    const { userId } = req?.user;
+  async getProfile(
+    @Req() req: AuthenticatedRequest,
+    @Res() response: Response,
+  ) {
+    const user = req.user;
+
+    if (user.error) {
+      // 오류가 있는 경우 적절한 응답 반환
+      return response.status(401).json({ message: user.error });
+    }
+
+    const { userId } = user;
     const userData = await this.usersService.findById(userId);
 
+    if (!userData) {
+      throw new UnauthorizedException(`${userId} is not a valid user`);
+    }
+
     const { password, ...result } = userData;
-    if (!userData)
-      throw new UnauthorizedException(`${userId} is not valid user`);
-    return result;
+    return response.status(200).json(result);
   }
 
   //FIXME: 유효하지 않은 유저에 대해 LocalAuthGuard 내에서 에러 로그 및 반환값 처리 필요
@@ -225,6 +237,13 @@ export class AuthController {
       // res.redirect("/login");
     } else {
       const { accessToken, refreshToken } = await this.authService.githubLogin(
+        githubData.user,
+      );
+
+      console.log(
+        "TEST GITHUB ACCESSTOKEN",
+        accessToken,
+        refreshToken,
         githubData.user,
       );
 
