@@ -68,8 +68,8 @@ export class RefreshTokenService {
   }
 
   async validateRefreshToken(token: string): Promise<boolean> {
-    const refreshToken = await this.findToken(token);
-    return !!refreshToken;
+    const targetRefreshToken = await this.findToken(token);
+    return !!targetRefreshToken;
   }
 
   async generateNewAccessToken(refreshToken: string): Promise<string | null> {
