@@ -1,7 +1,6 @@
-import { LoaderFunction, MetaFunction, redirect } from "@remix-run/node";
+import { LoaderFunction, MetaFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { ACCESS_TOKEN_KEY } from "constants/cookie.constants";
-import { getUserProfile } from "server/user";
 import { parse } from "cookie";
 
 interface LoaderData {
@@ -25,30 +24,13 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (!accessToken) {
     throw new Response("Token is required", { status: 401 });
   }
-  try {
-    const { data: userProfile, error } = await getUserProfile(
-      `${accessToken}d`,
-      request,
-    );
-
-    if (error !== null) {
-      console.log("TESTSETSET ERROR", error, userProfile);
-      throw redirect("/");
-    }
-
-    return { accessToken };
-  } catch (error) {
-    throw redirect("/");
-  }
+  return { accessToken };
 };
 
 export default function GithubLoginSuccessPage() {
-  const { accessToken } = useLoaderData<LoaderData>();
-
   return (
     <div>
       <h2>로그인 성공 페이지</h2>
-      <div>{accessToken}</div>
       <Link to="/">홈으로</Link>
     </div>
   );
