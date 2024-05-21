@@ -39,7 +39,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     const accessToken = cookies[ACCESS_TOKEN_KEY];
 
     const { data: userData, error } = await getUserProfile(
-      `${accessToken}d`,
+      accessToken,
       request,
     );
 
@@ -53,14 +53,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
   const { hasLoginError } = useLoaderData<RootLoaderData>();
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (hasLoginError) {
       alert("로그인이 필요합니다");
-      navigator("/");
+      navigate("/");
     }
-  }, []);
+  }, [hasLoginError, navigate]);
 
   return (
     <html lang="en">
