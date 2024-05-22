@@ -1,7 +1,6 @@
 import { fetchData } from "./utils";
 
 export const getUserProfile = async (accessToken: string, req?: Request) => {
-  console.log("FE", req?.headers?.get("Cookie"));
   const userProfile = await fetchData(
     "/auth/me",
     {

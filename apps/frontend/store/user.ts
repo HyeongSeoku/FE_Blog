@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-interface UserProps {
+export interface UserProps {
   userId: string;
   username: string;
   email: string;
@@ -15,7 +15,7 @@ interface UserProps {
   following: string[];
 }
 
-const initUser: UserProps = {
+export const initUser: UserProps = {
   userId: "",
   username: "",
   email: "",
@@ -30,9 +30,14 @@ const initUser: UserProps = {
   following: [],
 };
 
-const useUserStore = create((set) => ({
-  ...initUser,
-  setUser: (userData: UserProps) => set(userData),
+interface UserState {
+  user: UserProps;
+  setUser: (userData: UserProps) => void;
+}
+
+const useUserStore = create<UserState>((set) => ({
+  user: initUser,
+  setUser: (userData: UserProps) => set({ user: userData }),
 }));
 
 export default useUserStore;
