@@ -260,9 +260,7 @@ export class AuthController {
         expires: refreshTokenExpires,
       });
 
-      res.redirect(
-        `${process.env.FE_BASE_URL}/login/success?token=${accessToken}`,
-      );
+      res.redirect(`${process.env.FE_BASE_URL}/login/success`);
     }
   }
 }
