@@ -7,28 +7,24 @@ import {
   ScrollRestoration,
   useLoaderData,
   useNavigate,
-  useRouteError,
-  isRouteErrorResponse,
+  useMatches,
 } from "@remix-run/react";
 import { ACCESS_TOKEN_KEY } from "constants/cookie.constants";
 import { parse } from "cookie";
 import { useEffect } from "react";
 import { getUserProfile } from "server/user";
-import useUserStore, { UserProps } from "store/user";
+import useUserStore from "store/user";
 import NotFound from "./routes/404";
+import DefaultLayout from "./layout/defaultLayout";
+import { Handle } from "./types/handle";
+import { Error } from "./types/error";
 
 interface RootLoaderData {
   isLoginPage: boolean;
   userData?: any;
   hasLoginError?: boolean;
-  loginError?: boolean;
-}
-
-interface LayoutProps {
-  children: React.ReactNode;
-  hasLoginError?: boolean;
-  userData?: UserProps;
-  loginError?: any;
+  loginError?: Error;
+  metaTitle?: string;
 }
 
 const isLoginRequired = (pathname: string) => {
@@ -40,11 +36,12 @@ export const links = () => [
   { rel: "stylesheet", href: "/styles/tailwind.css" },
 ];
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({ data }) => {
+  const { metaTitle } = (data as RootLoaderData) || {};
   return [
     { charset: "utf-8" },
-    { title: "Remix App" },
-    { viewport: "width=device-width, initial-scale=1" },
+    { title: metaTitle || "Remix App" },
+    { name: "viewport", content: "width=device-width, initial-scale=1" },
   ];
 };
 
@@ -66,7 +63,13 @@ export const loader: LoaderFunction = async ({ request }) => {
     const hasLoginError = !userData || !!error;
     const loginError = error;
 
-    return { isLoginPage: true, userData, hasLoginError, loginError };
+    return {
+      isLoginPage: true,
+      userData,
+      hasLoginError,
+      loginError,
+      metaTitle: "Login Required",
+    };
   }
 
   return {
@@ -74,24 +77,25 @@ export const loader: LoaderFunction = async ({ request }) => {
     hasLoginError: false,
     userData: null,
     loginError: null,
+    metaTitle: "Remix TEST",
   };
 };
 
-export function Document({
-  children,
-  title,
-}: {
-  children: React.ReactNode;
-  title?: string;
-}) {
+export function Document({ children }: { children: React.ReactNode }) {
+  const matches = useMatches();
+  const lastMatch = matches[matches.length - 1] as
+    | { handle: Handle }
+    | undefined;
+  const metaTitle = lastMatch?.handle?.metaTitle || "Remix App";
+
   return (
-    <html lang="ko">
+    <html lang="ko-kr">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        {title ? <title>{title}</title> : null}
+        <title>{metaTitle}</title>
       </head>
       <body>
         {children}
@@ -102,7 +106,23 @@ export function Document({
   );
 }
 
-export const Layout = ({ children, userData, hasLoginError }: LayoutProps) => {
+export function ErrorBoundary() {
+  return (
+    <Document>
+      <DefaultLayout>
+        <NotFound />
+      </DefaultLayout>
+    </Document>
+  );
+}
+
+export default function App() {
+  const { hasLoginError, userData, loginError } =
+    useLoaderData<RootLoaderData>() || {};
+  const matches = useMatches();
+  const lastMatch = matches[matches.length - 1] as { handle: Handle };
+  const Layout = lastMatch?.handle?.Layout || DefaultLayout;
+
   const navigate = useNavigate();
 
   const setUser = useUserStore((state) => state.setUser);
@@ -113,36 +133,15 @@ export const Layout = ({ children, userData, hasLoginError }: LayoutProps) => {
     }
 
     if (hasLoginError) {
-      alert("로그인이 필요합니다.");
+      alert(`로그인이 필요합니다. 에러 사유 : ${loginError?.message}`);
+      console.warn(loginError?.message);
       navigate("/");
     }
   }, [userData, hasLoginError, navigate, setUser]);
 
-  return <>{children}</>;
-};
-
-export function ErrorBoundary() {
-  const error = useRouteError();
-  return (
-    <Document title="Error">
-      <Layout>
-        <NotFound />
-      </Layout>
-    </Document>
-  );
-}
-
-export default function App() {
-  const { hasLoginError, userData, loginError } =
-    useLoaderData<RootLoaderData>() || {};
-
   return (
     <Document>
-      <Layout
-        hasLoginError={hasLoginError}
-        userData={userData}
-        loginError={loginError}
-      >
+      <Layout>
         <Outlet />
       </Layout>
     </Document>
