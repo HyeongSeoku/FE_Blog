@@ -11,7 +11,6 @@ export default function LoginPage() {
       const { data, error } = await getGithubAuthUrl();
       if (!data?.url || error) {
         // FIXME: 임시 오류 처리
-        console.log("TEST", data?.url, error);
         alert("오류 발생");
         return;
       }
