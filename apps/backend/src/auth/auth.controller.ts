@@ -243,8 +243,8 @@ export class AuthController {
         res.redirect(`${process.env.FE_BASE_URL}/login?error=badRequest`);
 
       const accessTokenExpires = new Date();
-      accessTokenExpires.setDate(
-        accessTokenExpires.getDate() + ACCESS_TOKEN_EXPIRE_TIME,
+      accessTokenExpires.setMinutes(
+        accessTokenExpires.getMinutes() + ACCESS_TOKEN_EXPIRE_TIME,
       );
 
       setCookie(res, ACCESS_TOKEN_KEY, accessToken, {
