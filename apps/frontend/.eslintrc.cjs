@@ -7,5 +7,5 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: [".eslintrc.cjs", "postcss.config.js"],
+  ignorePatterns: [".eslintrc.cjs", "*.config.js", "*.config.ts"],
 };

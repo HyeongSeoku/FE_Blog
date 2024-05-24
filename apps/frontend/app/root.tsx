@@ -1,4 +1,4 @@
-import { LoaderFunction, MetaFunction } from "@remix-run/node";
+import { LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
 import {
   Links,
   Meta,
@@ -18,6 +18,7 @@ import NotFound from "./routes/404";
 import DefaultLayout from "./layout/defaultLayout";
 import { Handle } from "./types/handle";
 import { Error } from "./types/error";
+import styles from "./styles/tailwind.css?url";
 
 interface RootLoaderData {
   isLoginPage: boolean;
@@ -32,9 +33,7 @@ const isLoginRequired = (pathname: string) => {
   return protectRoutes.some((route) => pathname.startsWith(route));
 };
 
-export const links = () => [
-  { rel: "stylesheet", href: "/styles/tailwind.css" },
-];
+export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
 export const meta: MetaFunction = ({ data }) => {
   const { metaTitle } = (data as RootLoaderData) || {};
