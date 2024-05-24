@@ -6,9 +6,16 @@ import {
 } from "@nestjs/common";
 import { AuthGuard } from "./auth.guard";
 import { AuthService } from "src/auth/auth.service";
-import { REFRESH_TOKEN_KEY } from "src/constants/cookie.constants";
-import { parseCookies } from "src/utils/cookie";
+import {
+  ACCESS_TOKEN_KEY,
+  REFRESH_TOKEN_KEY,
+} from "src/constants/cookie.constants";
+import { parseCookies, setCookie } from "src/utils/cookie";
 import { JwtService } from "@nestjs/jwt";
+import {
+  ACCESS_TOKEN_EXPIRE_TIME,
+  REFRESH_TOKEN_EXPIRE_TIME,
+} from "src/constants/auth.constants";
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard {
@@ -46,13 +53,32 @@ export class JwtAuthGuard extends AuthGuard {
         }
 
         // 새로 발급된 토큰으로 인증 시도
-        const { newAccessToken } =
+        const { newAccessToken, newRefreshToken } =
           await this.authService.generateNewAccessTokenByRefreshToken(
             refreshToken,
           );
 
         // 요청 헤더에 새로운 액세스 토큰 설정
         request.headers.authorization = `Bearer ${newAccessToken}`;
+
+        // 토큰 쿠키에 재 저장
+        const accessTokenExpires = new Date();
+        accessTokenExpires.setMinutes(
+          accessTokenExpires.getMinutes() + ACCESS_TOKEN_EXPIRE_TIME,
+        );
+
+        setCookie(request, ACCESS_TOKEN_KEY, newAccessToken, {
+          expires: accessTokenExpires,
+        });
+
+        const refreshTokenExpires = new Date();
+        refreshTokenExpires.setDate(
+          refreshTokenExpires.getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+        );
+
+        setCookie(request, REFRESH_TOKEN_KEY, newRefreshToken, {
+          expires: refreshTokenExpires,
+        });
 
         // 새 토큰으로 다시 인증 시도
         return await super.canActivate(context);
