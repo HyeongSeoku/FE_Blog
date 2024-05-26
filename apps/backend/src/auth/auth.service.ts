@@ -74,6 +74,11 @@ export class AuthService {
         },
       );
 
+      this.logger.log(
+        "REFRESH SERVICE NEW ACCESSTOKEN BY REFRESHTOKEN",
+        newRefreshToken,
+      );
+
       await this.refreshTokenService.saveToken(
         newRefreshToken,
         decoded.sub,

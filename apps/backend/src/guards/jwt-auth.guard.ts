@@ -61,24 +61,13 @@ export class JwtAuthGuard extends AuthGuard {
         // 요청 헤더에 새로운 액세스 토큰 설정
         request.headers.authorization = `Bearer ${newAccessToken}`;
 
-        // 토큰 쿠키에 재 저장
-        const accessTokenExpires = new Date();
-        accessTokenExpires.setMinutes(
-          accessTokenExpires.getMinutes() + ACCESS_TOKEN_EXPIRE_TIME,
-        );
+        //요청에 쿠키 반환
+        request.newTokens = {
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken,
+        };
 
-        setCookie(request, ACCESS_TOKEN_KEY, newAccessToken, {
-          expires: accessTokenExpires,
-        });
-
-        const refreshTokenExpires = new Date();
-        refreshTokenExpires.setDate(
-          refreshTokenExpires.getDate() + REFRESH_TOKEN_EXPIRE_TIME,
-        );
-
-        setCookie(request, REFRESH_TOKEN_KEY, newRefreshToken, {
-          expires: refreshTokenExpires,
-        });
+        this.logger.log("JWT GUARD REFERSH_TOKEN", newRefreshToken);
 
         // 새 토큰으로 다시 인증 시도
         return await super.canActivate(context);

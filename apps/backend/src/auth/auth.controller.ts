@@ -139,10 +139,10 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get("me")
   async getProfile(
-    @Req() req: AuthenticatedRequest,
+    @Req() request: AuthenticatedRequest,
     @Res() response: Response,
   ) {
-    const user = req.user;
+    const user = request.user;
 
     if (user.error) {
       // 오류가 있는 경우 적절한 응답 반환
@@ -156,6 +156,35 @@ export class AuthController {
       throw new UnauthorizedException(`${userId} is not a valid user`);
     }
 
+    if (request.newTokens) {
+      const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+        request.newTokens;
+
+      // 토큰 쿠키에 재 저장
+      const accessTokenExpires = new Date();
+      accessTokenExpires.setMinutes(
+        accessTokenExpires.getMinutes() + ACCESS_TOKEN_EXPIRE_TIME,
+      );
+
+      setCookie(response, ACCESS_TOKEN_KEY, newAccessToken, {
+        expires: accessTokenExpires,
+      });
+
+      const refreshTokenExpires = new Date();
+      refreshTokenExpires.setDate(
+        refreshTokenExpires.getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+      );
+
+      setCookie(response, REFRESH_TOKEN_KEY, newRefreshToken, {
+        expires: refreshTokenExpires,
+      });
+
+      this.logger.log(
+        "TEST ME",
+        request.newTokens.accessToken,
+        request.newTokens.refreshToken,
+      );
+    }
     const { password, ...result } = userData;
     return response.status(200).json(result);
   }
@@ -255,6 +284,8 @@ export class AuthController {
       refreshTokenExpires.setDate(
         refreshTokenExpires.getDate() + REFRESH_TOKEN_EXPIRE_TIME,
       );
+
+      this.logger.log("GITHUB LOGIN REFRESH_TOKEN", refreshToken);
 
       setCookie(res, REFRESH_TOKEN_KEY, refreshToken, {
         expires: refreshTokenExpires,

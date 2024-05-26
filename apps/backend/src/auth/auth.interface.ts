@@ -7,4 +7,5 @@ export interface AuthenticatedUser extends Users {
 
 export interface AuthenticatedRequest extends Request {
   user: AuthenticatedUser;
+  newTokens?: { accessToken: string; refreshToken: string };
 }

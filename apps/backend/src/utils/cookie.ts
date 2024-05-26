@@ -1,5 +1,7 @@
 import { Response } from "express";
 import { isProdMode } from "./env";
+import { Logger } from "@nestjs/common";
+const logger = new Logger("setCookie");
 
 interface CookieOptions {
   httpOnly?: boolean;
@@ -18,6 +20,13 @@ export const clearCookie = (response: Response, cookieName: string) => {
   });
 };
 
+export const deleteCookie = (res: Response, key: string): void => {
+  res.cookie(key, "", {
+    expires: new Date(0),
+    httpOnly: true,
+  });
+};
+
 export const setCookie = (
   res: Response,
   key: string,
@@ -31,6 +40,13 @@ export const setCookie = (
     sameSite = isProdMode ? "strict" : "lax",
     path = "/",
   } = options;
+  logger.log(
+    `Setting cookie: ${key} = ${value}`,
+    `secure:${secure}`,
+    `sameSite:${sameSite}`,
+  );
+
+  deleteCookie(res, key);
 
   res.cookie(key, value, {
     httpOnly,
