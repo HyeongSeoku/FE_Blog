@@ -24,7 +24,11 @@ export async function fetchData(
   path: string,
   options: FetchOptions = {},
   request?: Request,
-): Promise<{ data?: any; error: ErrorProps | null }> {
+): Promise<{
+  data?: any;
+  error: ErrorProps | null;
+  setCookieHeaders: string[] | null;
+}> {
   const url = `${API_BASE_URL}${path}`;
   const serverCookies = request?.headers?.get("Cookie");
 
@@ -47,15 +51,30 @@ export async function fetchData(
   };
   try {
     const response = await fetch(url, finalOptions);
+
     const responseData = await response.json();
 
+    // 모든 헤더를 배열로 변환
+    const allHeaders = [...response.headers.entries()];
+    // Set-Cookie 헤더만 필터링
+    const setCookieHeaders = allHeaders
+      .filter(([key]) => key.toLowerCase() === "set-cookie")
+      .map(([, value]) => value);
+
+    console.log("TEST setCookieHeaders", setCookieHeaders);
+    console.log("TEST allHeaders", allHeaders);
+
     if (!response.ok) {
-      return { data: null, error: responseData as ErrorProps };
+      return {
+        data: null,
+        error: responseData as ErrorProps,
+        setCookieHeaders: null,
+      };
     }
 
-    return { data: responseData, error: null };
+    return { data: responseData, error: null, setCookieHeaders };
   } catch (error) {
     console.error("Error fetching data:", error);
-    return { data: null, error: null };
+    return { data: null, error: null, setCookieHeaders: null };
   }
 }

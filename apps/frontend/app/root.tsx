@@ -1,4 +1,9 @@
-import { LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
+import {
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+  json,
+} from "@remix-run/node";
 import {
   Links,
   Meta,
@@ -10,7 +15,6 @@ import {
   useMatches,
 } from "@remix-run/react";
 import { ACCESS_TOKEN_KEY } from "constants/cookie.constants";
-import { parse } from "cookie";
 import { useEffect } from "react";
 import { getUserProfile } from "server/user";
 import useUserStore from "store/user";
@@ -19,6 +23,7 @@ import DefaultLayout from "./layout/defaultLayout";
 import { Handle } from "./types/handle";
 import { Error } from "./types/error";
 import styles from "./styles/tailwind.css?url";
+import { parseCookies } from "utils/cookies";
 
 interface RootLoaderData {
   isLoginPage: boolean;
@@ -26,6 +31,7 @@ interface RootLoaderData {
   hasLoginError?: boolean;
   loginError?: Error;
   metaTitle?: string;
+  setCookieHeaders: string[] | null;
 }
 
 const isLoginRequired = (pathname: string) => {
@@ -44,40 +50,101 @@ export const meta: MetaFunction = ({ data }) => {
   ];
 };
 
+// export const loader: LoaderFunction = async ({ request }) => {
+//   const cookies = parseCookies(request.headers.get("Cookie") || "");
+
+//   const url = new URL(request.url);
+//   const pathname = url.pathname;
+
+//   if (isLoginRequired(pathname)) {
+//     const accessToken = cookies[ACCESS_TOKEN_KEY];
+
+//     const {
+//       data: userData,
+//       error,
+//       setCookieHeaders,
+//     } = await getUserProfile(accessToken, request);
+
+//     const hasLoginError = !userData || !!error;
+//     const loginError = error;
+
+//     return {
+//       isLoginPage: true,
+//       userData,
+//       hasLoginError,
+//       loginError,
+//       metaTitle: "Login Required",
+//       cookies,
+//       setCookieHeaders,
+//     };
+//   }
+
+//   return {
+//     isLoginPage: false,
+//     hasLoginError: false,
+//     userData: null,
+//     loginError: null,
+//     metaTitle: "Remix TEST",
+//     cookies,
+//     setCookieHeaders: null,
+//   };
+// };
+
 export const loader: LoaderFunction = async ({ request }) => {
+  const cookies = parseCookies(request.headers.get("Cookie") || "");
+
   const url = new URL(request.url);
   const pathname = url.pathname;
 
   if (isLoginRequired(pathname)) {
-    const cookieHeader = request.headers.get("Cookie");
-    const cookies = parse(cookieHeader || "");
-
     const accessToken = cookies[ACCESS_TOKEN_KEY];
 
-    const { data: userData, error } = await getUserProfile(
-      accessToken,
-      request,
-    );
+    const {
+      data: userData,
+      error,
+      setCookieHeaders,
+    } = await getUserProfile(accessToken, request);
 
     const hasLoginError = !userData || !!error;
     const loginError = error;
 
-    return {
-      isLoginPage: true,
-      userData,
-      hasLoginError,
-      loginError,
-      metaTitle: "Login Required",
-    };
+    const headers = new Headers();
+    if (setCookieHeaders) {
+      setCookieHeaders.forEach((cookie) => {
+        headers.append("Set-Cookie", cookie);
+      });
+    }
+
+    return json(
+      {
+        isLoginPage: true,
+        userData,
+        hasLoginError,
+        loginError,
+        metaTitle: "Login Required",
+        cookies,
+      },
+      {
+        headers,
+      },
+    );
   }
 
-  return {
-    isLoginPage: false,
-    hasLoginError: false,
-    userData: null,
-    loginError: null,
-    metaTitle: "Remix TEST",
-  };
+  return json(
+    {
+      isLoginPage: false,
+      hasLoginError: false,
+      userData: null,
+      loginError: null,
+      metaTitle: "Remix TEST",
+      cookies,
+    },
+    {
+      headers: {
+        "Set-Cookie": "",
+      },
+    },
+  );
 };
 
 export function Document({ children }: { children: React.ReactNode }) {
@@ -116,11 +183,27 @@ export function ErrorBoundary() {
 }
 
 export default function App() {
-  const { hasLoginError, userData, loginError } =
+  const { hasLoginError, userData, loginError, setCookieHeaders } =
     useLoaderData<RootLoaderData>() || {};
   const matches = useMatches();
   const lastMatch = matches[matches.length - 1] as { handle: Handle };
   const Layout = lastMatch?.handle?.Layout || DefaultLayout;
+
+  const fetchUserDataClient = () => {};
+
+  useEffect(() => {
+    if (setCookieHeaders) {
+      setCookieHeaders.forEach((cookie) => {
+        document.cookie = cookie;
+      });
+    }
+    console.log(
+      "COOKIE TEST:",
+      document.cookie,
+      "setCookieHeaders",
+      setCookieHeaders,
+    );
+  }, [setCookieHeaders]);
 
   const navigate = useNavigate();
 
