@@ -40,13 +40,6 @@ export const setCookie = (
     sameSite = isProdMode ? "strict" : "lax",
     path = "/",
   } = options;
-  logger.log(
-    `Setting cookie: ${key} = ${value}`,
-    `secure:${secure}`,
-    `sameSite:${sameSite}`,
-  );
-
-  deleteCookie(res, key);
 
   res.cookie(key, value, {
     httpOnly,

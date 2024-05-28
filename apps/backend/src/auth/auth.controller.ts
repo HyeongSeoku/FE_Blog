@@ -146,14 +146,17 @@ export class AuthController {
 
     if (user.error) {
       // 오류가 있는 경우 적절한 응답 반환
-      return response.status(401).json({ message: user.error });
+      return response.status(200).json({ message: user.error });
     }
 
     const { userId } = user;
     const userData = await this.usersService.findById(userId);
 
     if (!userData) {
-      throw new UnauthorizedException(`${userId} is not a valid user`);
+      // throw new UnauthorizedException(`${userId} is not a valid user`);
+      return response
+        .status(200)
+        .json({ message: `${userId} is not a valid user` });
     }
 
     if (request.newTokens) {
@@ -185,6 +188,13 @@ export class AuthController {
         request.newTokens.refreshToken,
       );
     }
+
+    // 응답 헤더 확인
+    console.log(
+      "ME RESPONSE Headers : ",
+      JSON.stringify(response.getHeaders()),
+    );
+
     const { password, ...result } = userData;
     return response.status(200).json(result);
   }
@@ -268,8 +278,9 @@ export class AuthController {
         githubData.user,
       );
 
-      if (!accessToken)
+      if (!accessToken) {
         res.redirect(`${process.env.FE_BASE_URL}/login?error=badRequest`);
+      }
 
       const accessTokenExpires = new Date();
       accessTokenExpires.setMinutes(

@@ -10,13 +10,8 @@ import {
   ACCESS_TOKEN_KEY,
   REFRESH_TOKEN_KEY,
 } from "src/constants/cookie.constants";
-import { parseCookies, setCookie } from "src/utils/cookie";
+import { parseCookies } from "src/utils/cookie";
 import { JwtService } from "@nestjs/jwt";
-import {
-  ACCESS_TOKEN_EXPIRE_TIME,
-  REFRESH_TOKEN_EXPIRE_TIME,
-} from "src/constants/auth.constants";
-
 @Injectable()
 export class JwtAuthGuard extends AuthGuard {
   private readonly logger = new Logger(JwtAuthGuard.name);
