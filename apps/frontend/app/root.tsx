@@ -19,11 +19,12 @@ import NotFound from "./routes/404";
 import DefaultLayout from "./layout/defaultLayout";
 import { Handle } from "./types/handle";
 import styles from "./styles/tailwind.css?url";
-import { ssrRequestUser } from "utils/auth";
+import { loaderCheckUser } from "utils/auth";
 import useUserStore, { UserProps } from "store/user";
 import { useEffect } from "react";
 import { getUserProfile } from "server/user";
 import { deepEqual } from "utils/object";
+import { isLoginRequired } from "utils/route";
 
 interface RootLoaderData {
   isLoginPage: boolean;
@@ -31,11 +32,6 @@ interface RootLoaderData {
   user?: UserProps;
   setCookieHeaders: string[] | null;
 }
-
-const isLoginRequired = (pathname: string) => {
-  const protectRoutes = ["/write", "/setting", "/login/success"];
-  return protectRoutes.some((route) => pathname.startsWith(route));
-};
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
@@ -51,20 +47,8 @@ export const meta: MetaFunction = ({ data }) => {
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const pathname = url.pathname;
-  let user = null;
 
-  const headers = new Headers();
-
-  if (isLoginRequired(pathname)) {
-    const { user: userData, setCookieHeaders } = await ssrRequestUser(request);
-    user = userData;
-
-    if (setCookieHeaders) {
-      setCookieHeaders.forEach((cookie) => {
-        headers.append("Set-Cookie", cookie);
-      });
-    }
-  }
+  const { user, headers } = await loaderCheckUser(request);
 
   return json(
     {
