@@ -11,26 +11,24 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
-  useNavigate,
+  useLocation,
   useMatches,
+  useNavigate,
 } from "@remix-run/react";
-import { ACCESS_TOKEN_KEY } from "constants/cookie.constants";
-import { useEffect } from "react";
-import { getUserProfile } from "server/user";
-import useUserStore from "store/user";
 import NotFound from "./routes/404";
 import DefaultLayout from "./layout/defaultLayout";
 import { Handle } from "./types/handle";
-import { Error } from "./types/error";
 import styles from "./styles/tailwind.css?url";
-import { parseCookies } from "utils/cookies";
+import { ssrRequestUser } from "utils/auth";
+import useUserStore, { UserProps } from "store/user";
+import { useEffect } from "react";
+import { getUserProfile } from "server/user";
+import { deepEqual } from "utils/object";
 
 interface RootLoaderData {
   isLoginPage: boolean;
-  userData?: any;
-  hasLoginError?: boolean;
-  loginError?: Error;
   metaTitle?: string;
+  user?: UserProps;
   setCookieHeaders: string[] | null;
 }
 
@@ -50,100 +48,31 @@ export const meta: MetaFunction = ({ data }) => {
   ];
 };
 
-// export const loader: LoaderFunction = async ({ request }) => {
-//   const cookies = parseCookies(request.headers.get("Cookie") || "");
-
-//   const url = new URL(request.url);
-//   const pathname = url.pathname;
-
-//   if (isLoginRequired(pathname)) {
-//     const accessToken = cookies[ACCESS_TOKEN_KEY];
-
-//     const {
-//       data: userData,
-//       error,
-//       setCookieHeaders,
-//     } = await getUserProfile(accessToken, request);
-
-//     const hasLoginError = !userData || !!error;
-//     const loginError = error;
-
-//     return {
-//       isLoginPage: true,
-//       userData,
-//       hasLoginError,
-//       loginError,
-//       metaTitle: "Login Required",
-//       cookies,
-//       setCookieHeaders,
-//     };
-//   }
-
-//   return {
-//     isLoginPage: false,
-//     hasLoginError: false,
-//     userData: null,
-//     loginError: null,
-//     metaTitle: "Remix TEST",
-//     cookies,
-//     setCookieHeaders: null,
-//   };
-// };
-
 export const loader: LoaderFunction = async ({ request }) => {
-  const cookies = parseCookies(request.headers.get("Cookie") || "");
-
   const url = new URL(request.url);
   const pathname = url.pathname;
+  let user = null;
+
+  const headers = new Headers();
 
   if (isLoginRequired(pathname)) {
-    const accessToken = cookies[ACCESS_TOKEN_KEY];
+    const { user: userData, setCookieHeaders } = await ssrRequestUser(request);
+    user = userData;
 
-    const {
-      data: userData,
-      error,
-      setCookieHeaders,
-    } = await getUserProfile(accessToken, request);
-
-    const hasLoginError = !userData || !!error;
-    const loginError = error;
-
-    const headers = new Headers();
     if (setCookieHeaders) {
       setCookieHeaders.forEach((cookie) => {
         headers.append("Set-Cookie", cookie);
       });
     }
-
-    return json(
-      {
-        isLoginPage: true,
-        userData,
-        hasLoginError,
-        loginError,
-        metaTitle: "Login Required",
-        cookies,
-      },
-      {
-        headers,
-      },
-    );
   }
 
   return json(
     {
-      isLoginPage: false,
-      hasLoginError: false,
-      userData: null,
-      loginError: null,
-      metaTitle: "Remix TEST",
-      cookies,
+      isLoginPage: true,
+      metaTitle: isLoginRequired(pathname) ? "Login Required" : "Remix TEST",
+      user,
     },
-    {
-      headers: {
-        "Set-Cookie": "",
-      },
-    },
+    { headers },
   );
 };
 
@@ -183,43 +112,38 @@ export function ErrorBoundary() {
 }
 
 export default function App() {
-  const { hasLoginError, userData, loginError, setCookieHeaders } =
-    useLoaderData<RootLoaderData>() || {};
   const matches = useMatches();
   const lastMatch = matches[matches.length - 1] as { handle: Handle };
   const Layout = lastMatch?.handle?.Layout || DefaultLayout;
 
-  const fetchUserDataClient = () => {};
+  const { user } = useLoaderData<RootLoaderData>();
 
-  useEffect(() => {
-    if (setCookieHeaders) {
-      setCookieHeaders.forEach((cookie) => {
-        document.cookie = cookie;
-      });
-    }
-    console.log(
-      "COOKIE TEST:",
-      document.cookie,
-      "setCookieHeaders",
-      setCookieHeaders,
-    );
-  }, [setCookieHeaders]);
-
+  const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { setUserStore, userStore } = useUserStore();
 
-  const setUser = useUserStore((state) => state.setUser);
+  const checkUser = async () => {
+    const { data: userData, error } = await getUserProfile();
+    if (userData && !deepEqual(userStore, userData)) {
+      setUserStore(userData);
+    }
+
+    if (error || !userData) {
+      navigate("/login");
+    }
+  };
 
   useEffect(() => {
-    if (userData) {
-      setUser(userData);
+    if (user) {
+      setUserStore(user);
     }
+  }, [user, setUserStore]);
 
-    if (hasLoginError) {
-      alert(`로그인이 필요합니다. 에러 사유 : ${loginError?.message}`);
-      console.warn(loginError?.message);
-      navigate("/");
+  useEffect(() => {
+    if (isLoginRequired(pathname)) {
+      checkUser();
     }
-  }, [userData, hasLoginError, navigate, setUser]);
+  }, [pathname]);
 
   return (
     <Document>
