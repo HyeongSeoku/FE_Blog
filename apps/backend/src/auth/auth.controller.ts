@@ -149,7 +149,7 @@ export class AuthController {
       return response.status(200).json({ message: user.error });
     }
 
-    const { userId } = user;
+    const { sub: userId } = user;
     const userData = await this.usersService.findById(userId);
 
     if (!userData) {

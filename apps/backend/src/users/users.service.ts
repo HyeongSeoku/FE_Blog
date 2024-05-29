@@ -144,7 +144,10 @@ export class UsersService {
 
   async findById(userId: string): Promise<UserResponseDto | null> {
     try {
-      const user = await this.userRepository.findOne({ where: { userId } });
+      if (!userId) return null;
+      const user = await this.userRepository.findOne({
+        where: { userId },
+      });
       if (!user) return null;
       return { ...user, password: undefined };
     } catch (e) {
