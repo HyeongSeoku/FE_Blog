@@ -27,7 +27,15 @@ export class JwtAuthGuard extends AuthGuard {
     const request = context.switchToHttp().getRequest();
 
     try {
-      // 기존 토큰으로 인증 시도
+      const cookies = parseCookies(request.headers.cookie);
+      const accessToken = cookies[ACCESS_TOKEN_KEY];
+
+      if (!accessToken) {
+        throw new UnauthorizedException("No access token found");
+      }
+
+      request.headers.authorization = `Bearer ${accessToken}`;
+
       return await super.canActivate(context);
     } catch (error) {
       this.logger.warn(
@@ -38,7 +46,6 @@ export class JwtAuthGuard extends AuthGuard {
         },
       );
 
-      // 토큰 인증 실패 시 토큰 재발급 시도
       try {
         const parsedCookie = parseCookies(request.headers.cookie);
         const refreshToken = parsedCookie[REFRESH_TOKEN_KEY];
@@ -47,27 +54,21 @@ export class JwtAuthGuard extends AuthGuard {
           throw new UnauthorizedException("No valid token");
         }
 
-        // 새로 발급된 토큰으로 인증 시도
         const { newAccessToken, newRefreshToken } =
           await this.authService.generateNewAccessTokenByRefreshToken(
             refreshToken,
           );
 
-        // 요청 헤더에 새로운 액세스 토큰 설정
         request.headers.authorization = `Bearer ${newAccessToken}`;
 
-        //요청에 쿠키 반환
         request.newTokens = {
           accessToken: newAccessToken,
           refreshToken: newRefreshToken,
         };
 
-        this.logger.log("JWT GUARD REFERSH_TOKEN", newRefreshToken);
-
         // 새 토큰으로 다시 인증 시도
         return await super.canActivate(context);
       } catch (refreshError) {
-        // 재발급 과정에서 발생한 오류 처리
         this.logger.error("Error refreshing token", {
           message: refreshError.message,
           stack: refreshError.stack,
