@@ -4,9 +4,9 @@ export interface UserProps {
   userId: string;
   username: string;
   email: string;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-  lastLogin: Date | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  lastLogin: string | null;
   isAdmin: boolean;
   githubId: string;
   githubImgUrl: string;
@@ -31,13 +31,13 @@ export const initUser: UserProps = {
 };
 
 interface UserState {
-  user: UserProps;
-  setUser: (userData: UserProps) => void;
+  userStore: UserProps;
+  setUserStore: (userData: UserProps) => void;
 }
 
 const useUserStore = create<UserState>((set) => ({
-  user: initUser,
-  setUser: (userData: UserProps) => set({ user: userData }),
+  userStore: initUser,
+  setUserStore: (userData: UserProps) => set({ userStore: userData }),
 }));
 
 export default useUserStore;
