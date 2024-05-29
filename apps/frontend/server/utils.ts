@@ -1,12 +1,7 @@
-interface FetchOptions extends RequestInit {
-  headers?: Record<string, string>;
-}
+import { FetchDataResponse } from "~/types/api";
 
-interface ErrorProps {
-  statusCode: number;
-  timeStamp?: string;
-  path?: string;
-  message?: string;
+export interface FetchOptions extends RequestInit {
+  headers?: Record<string, string>;
 }
 
 const isServer = typeof window === "undefined";
@@ -22,13 +17,9 @@ const API_BASE_URL = isServer
  */
 export async function fetchData(
   path: string,
-  options: FetchOptions = {},
+  options?: FetchOptions,
   request?: Request,
-): Promise<{
-  data?: any;
-  error: ErrorProps | null;
-  setCookieHeaders: string[] | null;
-}> {
+): Promise<FetchDataResponse> {
   const url = `${API_BASE_URL}${path}`;
   const serverCookies = request?.headers?.get("Cookie");
 
@@ -46,7 +37,7 @@ export async function fetchData(
     ...options,
     headers: {
       ...defaultOptions.headers,
-      ...options.headers,
+      ...options?.headers,
     },
   };
   try {
@@ -61,13 +52,10 @@ export async function fetchData(
       .filter(([key]) => key.toLowerCase() === "set-cookie")
       .map(([, value]) => value);
 
-    console.log("TEST setCookieHeaders", setCookieHeaders);
-    console.log("TEST allHeaders", allHeaders);
-
     if (!response.ok) {
       return {
         data: null,
-        error: responseData as ErrorProps,
+        error: responseData,
         setCookieHeaders: null,
       };
     }
