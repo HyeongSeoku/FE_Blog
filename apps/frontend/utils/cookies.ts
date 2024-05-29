@@ -1,4 +1,5 @@
-export const parseCookies = (cookieHeader: string) => {
+export const parseCookies = (request: Request) => {
+  const cookieHeader = request.headers.get("Cookie");
   const cookies: Record<string, string> = {};
   if (cookieHeader) {
     cookieHeader.split(";").forEach((cookie) => {
