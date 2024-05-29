@@ -181,19 +181,7 @@ export class AuthController {
       setCookie(response, REFRESH_TOKEN_KEY, newRefreshToken, {
         expires: refreshTokenExpires,
       });
-
-      this.logger.log(
-        "TEST ME",
-        request.newTokens.accessToken,
-        request.newTokens.refreshToken,
-      );
     }
-
-    // 응답 헤더 확인
-    console.log(
-      "ME RESPONSE Headers : ",
-      JSON.stringify(response.getHeaders()),
-    );
 
     const { password, ...result } = userData;
     return response.status(200).json(result);
@@ -295,8 +283,6 @@ export class AuthController {
       refreshTokenExpires.setDate(
         refreshTokenExpires.getDate() + REFRESH_TOKEN_EXPIRE_TIME,
       );
-
-      this.logger.log("GITHUB LOGIN REFRESH_TOKEN", refreshToken);
 
       setCookie(res, REFRESH_TOKEN_KEY, refreshToken, {
         expires: refreshTokenExpires,
