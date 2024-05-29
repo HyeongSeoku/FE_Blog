@@ -1,24 +1,20 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
+import useUserStore from "store/user";
 
 export default function Write() {
   const [markdown, setMarkdown] = useState("");
+  const { userStore } = useUserStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    console.log("TESTSETSETSET", e.target.value);
     setMarkdown(e.target.value);
   };
 
-  console.log("TEST WRITE");
-
-  useEffect(() => {
-    console.log("TEST CHANGE", markdown);
-  }, [markdown]);
-
   return (
     <div className="container mx-auto p-4">
+      <div>{userStore.username}</div>
       <h1 className="text-3xl font-bold mb-4">글 작성</h1>
       <div className="flex flex-col md:flex-row">
         <div className="w-full md:w-1/2 p-2">
