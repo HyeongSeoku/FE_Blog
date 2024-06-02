@@ -2,12 +2,10 @@ import { getUserProfile } from "server/user";
 import { redirect } from "@remix-run/node";
 import { isLoginRequired } from "./route";
 
-// export const isLoginRequired = (pathname: string) => {
-//   const protectRoutes = ["/write", "/setting", "/login/success"];
-//   return protectRoutes.some((route) => pathname.startsWith(route));
-// };
-
-export const ssrRequestUser = async (request: Request) => {
+export const ssrRequestUser = async (
+  request: Request,
+  isAdminPage: boolean,
+) => {
   const cookieHeader = request.headers.get("Cookie");
 
   const {
@@ -20,19 +18,31 @@ export const ssrRequestUser = async (request: Request) => {
   );
 
   if (!user || error) {
-    throw redirect("/login");
+    throw redirect("/login?failStatus=400");
+  }
+
+  if (isAdminPage) {
+    if (!user?.isAdmin) {
+      throw redirect("/login?failStatus=403");
+    }
   }
   return { user, setCookieHeaders };
 };
 
-export async function loaderCheckUser(request: Request) {
+export async function loaderCheckUser(
+  request: Request,
+  isAdminPage: boolean = false,
+) {
   const url = new URL(request.url);
   const pathname = url.pathname;
   let user = null;
   const headers = new Headers();
 
   if (isLoginRequired(pathname)) {
-    const { user: userData, setCookieHeaders } = await ssrRequestUser(request);
+    const { user: userData, setCookieHeaders } = await ssrRequestUser(
+      request,
+      isAdminPage,
+    );
     user = userData;
 
     if (setCookieHeaders) {
