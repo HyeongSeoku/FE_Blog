@@ -233,7 +233,7 @@ export class AuthController {
     const oauth_state = uuidv4();
     setCookie(res, GITHUB_OAUTH_KEY, oauth_state);
 
-    const githubOauthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${process.env.BE_BASE_URL}/auth/github/callback`)}&scope=user:email&state=${oauth_state}`;
+    const githubOauthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${process.env.BE_BASE_URL}/auth/github/callback`)}&scope=user:email&state=${oauth_state}&prompt=consent`;
     return { url: githubOauthUrl };
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import axios from "axios";
 import { Profile, Strategy } from "passport-github";
@@ -8,12 +8,15 @@ import { FindOrCreateUserByGithubResponse } from "src/users/users.service.interf
 
 @Injectable()
 export class GithubStrategy extends PassportStrategy(Strategy, "github") {
+  private readonly logger = new Logger(GithubStrategy.name);
+
   constructor(private usersService: UsersService) {
     super({
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       callbackURL: `${process.env.BE_BASE_URL}/auth/github/callback`,
       scope: "user:email",
+      prompt: "consent",
     });
   }
 
