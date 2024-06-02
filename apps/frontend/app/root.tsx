@@ -10,10 +10,12 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  isRouteErrorResponse,
   useLoaderData,
   useLocation,
   useMatches,
   useNavigate,
+  useRouteError,
 } from "@remix-run/react";
 import NotFound from "./routes/404";
 import DefaultLayout from "./layout/defaultLayout";
@@ -86,13 +88,20 @@ export function Document({ children }: { children: React.ReactNode }) {
 }
 
 export function ErrorBoundary() {
-  return (
-    <Document>
-      <DefaultLayout>
-        <NotFound />
-      </DefaultLayout>
-    </Document>
-  );
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    // Handle known errors
+    if (error.status === 404) {
+      return (
+        <Document>
+          <DefaultLayout>
+            <NotFound />
+          </DefaultLayout>
+        </Document>
+      );
+    }
+  }
 }
 
 export default function App() {
