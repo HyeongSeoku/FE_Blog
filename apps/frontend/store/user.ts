@@ -33,11 +33,13 @@ export const initUser: UserProps = {
 interface UserState {
   userStore: UserProps;
   setUserStore: (userData: UserProps) => void;
+  initializeUserStore: () => void;
 }
 
 const useUserStore = create<UserState>((set) => ({
   userStore: initUser,
   setUserStore: (userData: UserProps) => set({ userStore: userData }),
+  initializeUserStore: () => set({ userStore: initUser }),
 }));
 
 export default useUserStore;

@@ -107,6 +107,8 @@ export function ErrorBoundary() {
 export default function App() {
   const matches = useMatches();
   const lastMatch = matches[matches.length - 1] as { handle: Handle };
+  const headerType = lastMatch?.handle?.headerType || "";
+
   const Layout = lastMatch?.handle?.Layout || DefaultLayout;
 
   const { user } = useLoaderData<RootLoaderData>();
@@ -140,7 +142,7 @@ export default function App() {
 
   return (
     <Document>
-      <Layout>
+      <Layout headerType={headerType}>
         <Outlet />
       </Layout>
     </Document>

@@ -1,10 +1,26 @@
-import { LoaderFunction, json } from "@remix-run/node";
+import { LoaderFunction, MetaFunction, json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import useUserStore from "store/user";
 import { loaderCheckUser } from "utils/auth";
+import useSyncUserStore from "~/hooks/useSyncUserStore";
+import { Handle } from "~/types/handle";
+import { AuthLoaderData } from "~/types/shared";
+
+export const meta: MetaFunction = () => {
+  return [
+    { charset: "utf-8" },
+    { title: "글 작성 페이지" },
+    { name: "viewport", content: "width=device-width, initial-scale=1" },
+  ];
+};
+
+export const handle: Handle = {
+  headerType: "BACK",
+};
 
 export const loader: LoaderFunction = async ({ request }) => {
   const { user, headers } = await loaderCheckUser(request, true);
@@ -19,8 +35,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Write() {
   const [markdown, setMarkdown] = useState("");
+  const { user } = useLoaderData<AuthLoaderData>();
   const { userStore } = useUserStore();
+
   const contentEditableRef = useRef<HTMLDivElement>(null);
+
+  useSyncUserStore(user);
 
   const handleChange = (e: React.SyntheticEvent) => {
     const target = e.target as HTMLDivElement;
