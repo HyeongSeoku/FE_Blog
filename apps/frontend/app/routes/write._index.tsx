@@ -48,7 +48,7 @@ export default function Write() {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container">
       <div>{userStore.username}</div>
       <div>{userStore.isAdmin}</div>
       <h1 className="text-3xl font-bold mb-4">글 작성</h1>
