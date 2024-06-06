@@ -1,0 +1,26 @@
+.hamburger-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  align-items: flex-start;
+  margin-left: auto;
+}
+
+.hamburger-container:hover .hamburger-line:last-child {
+  width: 1rem;
+  transition: width 0.3;
+}
+
+.hamburger-line {
+  width: 1.7rem;
+  height: 0.3rem;
+  transition: width 0.3s;
+  background-color: #000;
+  border-radius: 2rem;
+}
+
+.open-hamburger-last-line {
+  width: 1rem;
+  transition: width 0.3s;
+}
