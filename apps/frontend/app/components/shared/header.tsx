@@ -1,11 +1,13 @@
 import { useNavigate } from "@remix-run/react";
-import backIconSrc from "../../../image/back_icon.svg";
 import { ReactNode } from "react";
 import BackButton from "./backButton";
+import HamburgerButton from "./HamburgerButton";
 export interface HeaderProps {
-  headerType: string;
+  headerType: HeaderType;
   children?: ReactNode;
 }
+
+export type HeaderType = "DEFAULT" | "BACK" | "NONE";
 
 const Header = ({ headerType, children }: HeaderProps) => {
   const navigate = useNavigate();
@@ -14,17 +16,15 @@ const Header = ({ headerType, children }: HeaderProps) => {
     navigate("/");
   };
 
-  const handleBackButton = () => {
-    navigate(-1);
-  };
-
   return (
     <header className="flex pb-2 w-full">
-      {headerType !== "BACK" && (
+      {headerType === "DEFAULT" && (
         <button onClick={handleLogoButton}>LOGO</button>
       )}
       {headerType === "BACK" && <BackButton />}
       {children && <>{children}</>}
+
+      <HamburgerButton />
     </header>
   );
 };

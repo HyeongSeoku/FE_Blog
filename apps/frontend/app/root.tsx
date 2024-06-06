@@ -107,7 +107,7 @@ export function ErrorBoundary() {
 export default function App() {
   const matches = useMatches();
   const lastMatch = matches[matches.length - 1] as { handle: Handle };
-  const headerType = lastMatch?.handle?.headerType || "";
+  const headerType = lastMatch?.handle?.headerType || "DEFAULT";
 
   const Layout = lastMatch?.handle?.Layout || DefaultLayout;
 

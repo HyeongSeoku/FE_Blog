@@ -18,7 +18,10 @@ const BackButton = ({ customClassName = "", onBackClick }: BackButtonProps) => {
   };
 
   return (
-    <button className={`flex w-8 ${customClassName}`}>
+    <button
+      className={`flex w-3 ${customClassName}`}
+      onClick={handleBackButton}
+    >
       <img className="w-full" src={backIconSrc} />
     </button>
   );
