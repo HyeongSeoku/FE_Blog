@@ -27,7 +27,6 @@ export default function LoginPage() {
         <button onClick={handleGithubLogin}>github으로 로그인</button>
       </div>
       <Link to="/">홈으로</Link>
-      <Link to="/github-login/success">성공 페이지로</Link>
     </div>
   );
 }

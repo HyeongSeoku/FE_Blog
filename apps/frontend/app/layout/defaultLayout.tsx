@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
-import Header from "~/components/shared/header";
+import Header, { HeaderType } from "~/components/shared/header";
 
 export interface DefaultLayoutProps {
   children: ReactNode;
-  headerType?: string;
+  headerType?: HeaderType;
 }
 
 const DefaultLayout = ({
@@ -11,7 +11,7 @@ const DefaultLayout = ({
   headerType = "DEFAULT",
 }: DefaultLayoutProps) => {
   return (
-    <div className="py-2 max-w-7xl mx-auto">
+    <div className="py-2 px-4 max-w-7xl mx-auto">
       <Header headerType={headerType}></Header>
       <section className="">{children}</section>
     </div>
