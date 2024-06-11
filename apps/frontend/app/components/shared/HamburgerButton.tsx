@@ -18,41 +18,62 @@ const HamburgerButton = () => {
 
   return (
     <>
-      <button className="hamburger-container" onClick={toggleMenu}>
-        <div className={"hamburger-line"}></div>
-        <div className={"hamburger-line"}></div>
-        <div
-          className={`hamburger-line ${isOpen && "open-hamburger-last-line"}`}
-        ></div>
-      </button>
+      {!isOpen && (
+        <button className="hamburger-container" onClick={toggleMenu}>
+          <div className={"hamburger-line"}></div>
+          <div className={"hamburger-line"}></div>
+          <div className={`hamburger-line`}></div>
+        </button>
+      )}
+
       <div
-        className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-20 transition-opacity duration-300 z-5 ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-        onClick={toggleMenu}
-      ></div>
-      <div
-        className={`fixed top-0 right-0 w-1/3 h-fit bg-white transition-transform duration-300 z-10  ${isOpen ? "transform translate-x-0 visible" : "transform translate-x-full invisible"}`}
+        className={`fixed top-0 left-0 w-full h-full flex flex-col bg-white shadow-lg transition-all duration-300 transform ${
+          isOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
+        }`}
+        style={{ transitionProperty: "opacity, transform" }}
       >
+        {isOpen && (
+          <button className="py-2 px-4 ml-auto" onClick={toggleMenu}>
+            X
+          </button>
+        )}
         <nav>
-          <ul>
-            <li>
-              <Link to="/" onClick={handleLinkClick}>
+          <ul
+            className={`flex flex-col transition-opacity duration-300 ${
+              isOpen ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <li className="px-4 py-2 cursor-pointer flex">
+              <Link to="/" className="w-full h-full" onClick={handleLinkClick}>
                 Home
               </Link>
             </li>
-            <li>
-              <Link to="/about" onClick={handleLinkClick}>
-                About
-              </Link>
-            </li>
             {userStore.isAdmin && (
-              <li>
-                <Link to="/write" onClick={handleLinkClick}>
+              <li className="px-4 py-2 cursor-pointer flex">
+                <Link
+                  to="/write"
+                  className="w-full h-full"
+                  onClick={handleLinkClick}
+                >
                   Write
                 </Link>
               </li>
             )}
-            <li>
-              <Link to="/login" onClick={handleLinkClick}>
+            <li className="px-4 py-2 cursor-pointer flex">
+              <Link
+                to="/about"
+                className="w-full h-full"
+                onClick={handleLinkClick}
+              >
+                About
+              </Link>
+            </li>
+            <li className="px-4 py-2 cursor-pointer flex">
+              <Link
+                to="/login"
+                className="w-full h-full"
+                onClick={handleLinkClick}
+              >
                 Login
               </Link>
             </li>
