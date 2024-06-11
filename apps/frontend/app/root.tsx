@@ -26,7 +26,7 @@ import useUserStore, { UserProps } from "store/user";
 import { useEffect } from "react";
 import { getUserProfile } from "server/user";
 import { deepEqual } from "utils/object";
-import { isLoginRequired } from "utils/route";
+import { isLoginRequired, isRootRoute } from "utils/route";
 
 interface RootLoaderData {
   isLoginPage: boolean;
@@ -135,7 +135,7 @@ export default function App() {
   }, [user, setUserStore]);
 
   useEffect(() => {
-    if (isLoginRequired(pathname)) {
+    if (isLoginRequired(pathname) || isRootRoute(pathname)) {
       checkUser();
     }
   }, [pathname]);
