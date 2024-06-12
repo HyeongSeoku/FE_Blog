@@ -40,12 +40,12 @@ export class MyInitialMigration1713431504399 implements MigrationInterface {
     await queryRunner.query(`
               CREATE TABLE IF NOT EXISTS refresh_token (
                   token_id INT AUTO_INCREMENT PRIMARY KEY,
-                  user_id VARCHAR(36) NOT NULL,
-                  token VARCHAR(200) NOT NULL,
+                  userId VARCHAR(36) NOT NULL,
+                  token TEXT NOT NULL,
                   expiry_date TIMESTAMP,
                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                  FOREIGN KEY (user_id) REFERENCES users(userId)
+                  FOREIGN KEY (userId) REFERENCES users(userId)
               )
           `);
 

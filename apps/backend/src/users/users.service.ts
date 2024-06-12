@@ -144,7 +144,10 @@ export class UsersService {
 
   async findById(userId: string): Promise<UserResponseDto | null> {
     try {
-      const user = await this.userRepository.findOne({ where: { userId } });
+      if (!userId) return null;
+      const user = await this.userRepository.findOne({
+        where: { userId },
+      });
       if (!user) return null;
       return { ...user, password: undefined };
     } catch (e) {
@@ -222,5 +225,17 @@ export class UsersService {
     if (!targetUser) return null;
 
     return targetUser;
+  }
+
+  async fetchUserProfile(userId: string) {
+    const userData = await this.findById(userId);
+    if (!userData) {
+      throw new HttpException(
+        `${userId}는 유효한 사용자가 아닙니다`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const { password, ...result } = userData;
+    return result;
   }
 }

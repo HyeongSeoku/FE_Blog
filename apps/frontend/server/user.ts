@@ -1,14 +1,20 @@
-import { fetchData } from "./utils";
+import { FetchDataResponse } from "~/types/api";
+import { FetchOptions, fetchData } from "./utils";
+import { UserProps } from "store/user";
 
-export const getUserProfile = async (accessToken: string) => {
-  try {
-    const userProfile = await fetchData("/auth/me", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+interface GetUserProfileResponse extends FetchDataResponse {
+  data: UserProps | null;
+}
 
-    // console.log("User Profile:", userProfile);
-    return userProfile;
-  } catch (error) {
-    console.error("Failed to load user profile:", error);
-  }
+export const getUserProfile = async (
+  options?: FetchOptions,
+  req?: Request,
+): Promise<GetUserProfileResponse> => {
+  const userProfile = await fetchData("/auth/me", options, req);
+  return userProfile;
+};
+
+export const getGithubAuthUrl = async () => {
+  const result = await fetchData("/auth/github/login");
+  return result;
 };
