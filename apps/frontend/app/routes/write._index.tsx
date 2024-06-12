@@ -34,6 +34,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function Write() {
+  const [title, setTitle] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [tag, setTage] = useState("");
   const [markdown, setMarkdown] = useState("");
   const { user } = useLoaderData<AuthLoaderData>();
   const { userStore } = useUserStore();
