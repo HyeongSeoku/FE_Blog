@@ -12,7 +12,7 @@ export class RefreshToken {
   @PrimaryGeneratedColumn({ name: "token_id" })
   tokenId: number;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column({ type: "text" })
   token: string;
 
   @Column({ type: "timestamp", name: "expiry_date" })

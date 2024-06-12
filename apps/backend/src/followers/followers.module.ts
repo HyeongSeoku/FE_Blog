@@ -4,9 +4,10 @@ import { FollowersService } from "./followers.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Followers } from "src/database/entities/followers.entity";
 import { UsersModule } from "src/users/users.module";
+import { AuthModule } from "src/auth/auth.module";
 
 @Module({
-  imports: [UsersModule, TypeOrmModule.forFeature([Followers])],
+  imports: [UsersModule, AuthModule, TypeOrmModule.forFeature([Followers])],
   controllers: [FollowersController],
   providers: [FollowersService],
 })

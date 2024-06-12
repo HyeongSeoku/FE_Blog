@@ -30,6 +30,9 @@ export class AuthService {
   async generateToken(
     user: Users,
   ): Promise<{ accessToken: string; refreshToken: string }> {
+    if (!user.username || !user.userId) {
+      return { accessToken: "", refreshToken: "" };
+    }
     const payload = { username: user.username, sub: user.userId };
 
     const { privateKey } = this.sharedService.getJwtKeys();
@@ -128,6 +131,31 @@ export class AuthService {
       return true;
     } catch (error) {
       return false;
+    }
+  }
+
+  async githubLogin(user: Users): Promise<{
+    accessToken: string;
+    refreshToken: string;
+  } | null> {
+    try {
+      const { accessToken, refreshToken } = await this.generateToken(user);
+
+      const lastLogin = new Date();
+
+      await this.usersRepository.update(user.userId, { lastLogin });
+
+      await this.refreshTokenService.deleteTokenForUserId(user.userId);
+
+      await this.refreshTokenService.saveToken(
+        refreshToken,
+        user.userId,
+        new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      );
+
+      return { accessToken, refreshToken };
+    } catch (e) {
+      return null;
     }
   }
 }

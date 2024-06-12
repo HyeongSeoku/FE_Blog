@@ -11,6 +11,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Users } from "src/database/entities/user.entity";
 import { GithubAuthGuard } from "src/guards/github-auth.guard";
 import { GithubStrategy } from "src/guards/strategy/github.strategy";
+import { AuthGuard } from "src/guards/auth.guard";
 
 @Module({
   imports: [
@@ -23,10 +24,12 @@ import { GithubStrategy } from "src/guards/strategy/github.strategy";
     AuthService,
     JwtStrategy,
     JwtAuthGuard,
+    AuthGuard,
     LocalStrategy,
     GithubStrategy,
     GithubAuthGuard,
   ],
+  exports: [AuthService, JwtAuthGuard],
   controllers: [AuthController],
 })
 export class AuthModule {}
