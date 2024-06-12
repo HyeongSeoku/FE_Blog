@@ -3,11 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   HttpStatus,
   Logger,
   NotFoundException,
   Patch,
   Post,
+  Query,
   Req,
   Res,
   UnauthorizedException,
@@ -21,16 +23,26 @@ import {
   UpdateUserDto,
   UserResponseDto,
 } from "src/users/dto/user.dto";
+import {
+  REFRESH_TOKEN_KEY,
+  ACCESS_TOKEN_KEY,
+  GITHUB_OAUTH_KEY,
+} from "src/constants/cookie.constants";
 import { UsersService } from "src/users/users.service";
 import { JwtAuthGuard } from "../guards/jwt-auth.guard";
 import { AuthenticatedRequest } from "./auth.interface";
 import { RateLimit } from "nestjs-rate-limiter";
-import { Request as ExpressRequest, Response } from "express";
-import { REFRESH_TOKEN_EXPIRE_TIME } from "src/constants/auth.constants";
-import { REFRESH_TOKEN_KEY } from "src/constants/cookie.constants";
+import { Request as ExpressRequest, Request, Response } from "express";
+import {
+  ACCESS_TOKEN_EXPIRE_TIME,
+  REFRESH_TOKEN_EXPIRE_TIME,
+} from "src/constants/auth.constants";
 import { Users } from "src/database/entities/user.entity";
 import { RefreshTokenService } from "src/refresh-token/refresh-token.service";
 import { GithubAuthGuard } from "src/guards/github-auth.guard";
+import { v4 as uuidv4 } from "uuid";
+import { clearCookie, setCookie } from "src/utils/cookie";
+import { FindOrCreateUserByGithubResponse } from "src/users/users.service.interface";
 
 @Controller("auth")
 export class AuthController {
@@ -57,13 +69,13 @@ export class AuthController {
 
     const { accessToken, lastLogin, refreshToken } = loginResult;
 
-    const refreshTokenExpires = new Date().setDate(
-      new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+    const refreshTokenExpires = new Date();
+    refreshTokenExpires.setDate(
+      refreshTokenExpires.getDate() + REFRESH_TOKEN_EXPIRE_TIME,
     );
 
-    res.cookie(REFRESH_TOKEN_KEY, refreshToken, {
-      httpOnly: true,
-      expires: new Date(refreshTokenExpires),
+    setCookie(res, REFRESH_TOKEN_KEY, refreshToken, {
+      expires: refreshTokenExpires,
     });
 
     return res.status(200).json({ accessToken, lastLogin });
@@ -81,10 +93,8 @@ export class AuthController {
     const result = await this.authService.logout(userId);
 
     if (result) {
-      res.cookie(REFRESH_TOKEN_KEY, "", {
-        httpOnly: true,
-        expires: new Date(0),
-      });
+      setCookie(res, REFRESH_TOKEN_KEY, "", { expires: new Date(0) });
+
       return res
         .status(HttpStatus.OK)
         .json({ message: "Logged out successfully" });
@@ -112,8 +122,7 @@ export class AuthController {
       new Date().getDate() + REFRESH_TOKEN_EXPIRE_TIME,
     );
 
-    res.cookie(REFRESH_TOKEN_KEY, newRefreshToken, {
-      httpOnly: true,
+    setCookie(res, REFRESH_TOKEN_KEY, newRefreshToken, {
       expires: new Date(refreshTokenExpires),
     });
 
@@ -129,14 +138,53 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get("me")
-  async getProfile(@Req() req: AuthenticatedRequest) {
-    const { userId } = req?.user;
+  async getProfile(
+    @Req() request: AuthenticatedRequest,
+    @Res() response: Response,
+  ) {
+    const user = request.user;
+
+    if (user.error) {
+      // 오류가 있는 경우 적절한 응답 반환
+      return response.status(200).json({ message: user.error });
+    }
+
+    const { sub: userId } = user;
     const userData = await this.usersService.findById(userId);
 
+    if (!userData) {
+      // throw new UnauthorizedException(`${userId} is not a valid user`);
+      return response
+        .status(200)
+        .json({ message: `${userId} is not a valid user` });
+    }
+
+    if (request.newTokens) {
+      const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+        request.newTokens;
+
+      // 토큰 쿠키에 재 저장
+      const accessTokenExpires = new Date();
+      accessTokenExpires.setMinutes(
+        accessTokenExpires.getMinutes() + ACCESS_TOKEN_EXPIRE_TIME,
+      );
+
+      setCookie(response, ACCESS_TOKEN_KEY, newAccessToken, {
+        expires: accessTokenExpires,
+      });
+
+      const refreshTokenExpires = new Date();
+      refreshTokenExpires.setDate(
+        refreshTokenExpires.getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+      );
+
+      setCookie(response, REFRESH_TOKEN_KEY, newRefreshToken, {
+        expires: refreshTokenExpires,
+      });
+    }
+
     const { password, ...result } = userData;
-    if (!userData)
-      throw new UnauthorizedException(`${userId} is not valid user`);
-    return result;
+    return response.status(200).json(result);
   }
 
   //FIXME: 유효하지 않은 유저에 대해 LocalAuthGuard 내에서 에러 로그 및 반환값 처리 필요
@@ -175,29 +223,72 @@ export class AuthController {
   async updateUser(
     @Req() req: AuthenticatedRequest,
     @Body() updateUserDto: UpdateUserDto,
-    @Res() res: Response,
   ) {
     return await this.usersService.update(req?.user.userId, updateUserDto);
+  }
+
+  @Get("github/login")
+  //NOTE: { passthrough: true }옵션 없으면 무한 로딩 걸릴 수 있음
+  async githubAuthLogin(@Res({ passthrough: true }) res: Response) {
+    const oauth_state = uuidv4();
+    setCookie(res, GITHUB_OAUTH_KEY, oauth_state);
+
+    const githubOauthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${process.env.BE_BASE_URL}/auth/github/callback`)}&scope=user:email&state=${oauth_state}&prompt=consent`;
+    return { url: githubOauthUrl };
   }
 
   @UseGuards(GithubAuthGuard)
   @Get("github/callback")
   async githubAuthRedirect(
-    @Req() req: AuthenticatedRequest,
+    @Req() req: Request,
     @Res() res: Response,
+    @Query("state") queryState: string,
   ) {
-    // 성공적인 인증 후 사용자 객체는 요청에 첨부됩니다.
-    // 이제 세션을 생성하거나 JWT를 발급할 수 있습니다.
-    if (!req.user) {
-      res.redirect("/login"); // 로그인 실패를 처리하는 프론트엔드 경로로 리다이렉트
-    } else {
-      // 사용자에게 토큰을 발급하는 방법을 가정하고 있습니다.
-      const { accessToken, refreshToken } =
-        await this.authService.generateToken(req.user);
-      // 토큰을 전달하는 프론트엔드 경로로 리다이렉트
-      res.redirect(
-        `${process.env.FE_BASE_URL}/github-login/success?token=${accessToken}`,
+    const oauthCookieState = req.cookies[GITHUB_OAUTH_KEY];
+
+    if (queryState !== oauthCookieState) {
+      clearCookie(res, GITHUB_OAUTH_KEY);
+
+      //FIXME: 프론트로 redirect되진 않음
+      throw new HttpException(
+        "유효하지 않은 요청이 감지되었습니다.",
+        HttpStatus.FORBIDDEN,
       );
+    }
+
+    clearCookie(res, GITHUB_OAUTH_KEY);
+    const githubData = req.user as FindOrCreateUserByGithubResponse;
+
+    if (!githubData.user) {
+      // res.redirect("/login");
+    } else {
+      const { accessToken, refreshToken } = await this.authService.githubLogin(
+        githubData.user,
+      );
+
+      if (!accessToken) {
+        res.redirect(`${process.env.FE_BASE_URL}/login?error=badRequest`);
+      }
+
+      const accessTokenExpires = new Date();
+      accessTokenExpires.setMinutes(
+        accessTokenExpires.getMinutes() + ACCESS_TOKEN_EXPIRE_TIME,
+      );
+
+      setCookie(res, ACCESS_TOKEN_KEY, accessToken, {
+        expires: accessTokenExpires,
+      });
+
+      const refreshTokenExpires = new Date();
+      refreshTokenExpires.setDate(
+        refreshTokenExpires.getDate() + REFRESH_TOKEN_EXPIRE_TIME,
+      );
+
+      setCookie(res, REFRESH_TOKEN_KEY, refreshToken, {
+        expires: refreshTokenExpires,
+      });
+
+      res.redirect(`${process.env.FE_BASE_URL}/login/success`);
     }
   }
 }
