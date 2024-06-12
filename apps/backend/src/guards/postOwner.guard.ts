@@ -5,20 +5,21 @@ import {
   Logger,
   UnauthorizedException,
 } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
-import { Observable } from "rxjs";
 import { PostsService } from "src/posts/posts.service";
 import { UsersService } from "src/users/users.service";
+import { AuthGuard } from "./auth.guard";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
-export class PostOwnerGuard extends AuthGuard("jwt") {
+export class PostOwnerGuard extends AuthGuard {
   private readonly logger = new Logger(PostOwnerGuard.name);
 
   constructor(
     private usersService: UsersService,
     private postsService: PostsService,
+    protected readonly jwtService: JwtService,
   ) {
-    super();
+    super(jwtService);
   }
   async canActivate(context: ExecutionContext) {
     await super.canActivate(context);

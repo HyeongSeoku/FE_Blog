@@ -5,17 +5,19 @@ import {
   Logger,
   UnauthorizedException,
 } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
 import { CommentsService } from "src/comments/comments.service";
 import { UsersService } from "src/users/users.service";
+import { AuthGuard } from "./auth.guard";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
-export class PostCommentOwnerGuard extends AuthGuard("jwt") {
+export class PostCommentOwnerGuard extends AuthGuard {
   constructor(
     private commentsService: CommentsService,
     private usersService: UsersService,
+    protected readonly jwtService: JwtService,
   ) {
-    super();
+    super(jwtService);
   }
 
   private logger = new Logger(PostCommentOwnerGuard.name);
