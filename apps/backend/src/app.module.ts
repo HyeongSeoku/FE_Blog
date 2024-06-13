@@ -10,6 +10,7 @@ import { TagsModule } from "./tags/tags.module";
 import { CommentsModule } from "./comments/comments.module";
 import { FollowersModule } from "./followers/followers.module";
 import { ViewsModule } from "./views/views.module";
+import { CategoryModule } from "./category/category.module";
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ViewsModule } from "./views/views.module";
     CommentsModule,
     FollowersModule,
     ViewsModule,
+    CategoryModule,
   ],
   providers: [AppService],
 })
