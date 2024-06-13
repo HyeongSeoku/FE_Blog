@@ -29,7 +29,7 @@ export class PostOwnerGuard extends AuthGuard {
 
     if (!user) throw new UnauthorizedException();
 
-    const userData = await this.usersService.findById(user.userId);
+    const userData = await this.usersService.findById(user.sub);
 
     if (!userData) {
       throw new UnauthorizedException("Access Denied");
@@ -39,7 +39,7 @@ export class PostOwnerGuard extends AuthGuard {
 
     if (!postData) throw new Error("Post does not exist!");
 
-    if (postData.user.userId !== user.userId)
+    if (postData.user.userId !== user.sub)
       throw new ForbiddenException("You are not Owner");
 
     return true;

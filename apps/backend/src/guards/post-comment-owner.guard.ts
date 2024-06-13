@@ -31,7 +31,7 @@ export class PostCommentOwnerGuard extends AuthGuard {
 
     if (!user) throw new UnauthorizedException();
 
-    const userData = await this.usersService.findById(user.userId);
+    const userData = await this.usersService.findById(user.sub);
 
     if (!userData) {
       throw new UnauthorizedException("Access Denied");
@@ -39,8 +39,8 @@ export class PostCommentOwnerGuard extends AuthGuard {
 
     const commentData = await this.commentsService.findOneComment(commentId);
 
-    const isPostOwner = commentData.post.user.userId === request.user.userId;
-    const isCommentOwner = commentData?.user?.userId === request.user.userId;
+    const isPostOwner = commentData.post.user.userId === user.sub;
+    const isCommentOwner = commentData?.user?.userId === user.sub;
 
     if (!isPostOwner && !isCommentOwner)
       throw new ForbiddenException("You are not the owner of the post");

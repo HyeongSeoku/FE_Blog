@@ -26,7 +26,9 @@ export class AdminGuard extends AuthGuard {
     const user = request.user;
     if (!user) throw new UnauthorizedException();
 
-    const userData = await this.usersService.findById(user.userId);
+    const userData = await this.usersService.findById(user.sub);
+
+    this.logger.log("TEST ADMIN", request.user);
 
     if (!userData || !userData.isAdmin) {
       throw new UnauthorizedException("Access Denied");

@@ -31,7 +31,7 @@ export class CommentOwnerGuard extends AuthGuard {
       const commentData = await this.commentsService.findOneComment(commentId);
 
       const isCommentOwner =
-        commentData.user && commentData.user.userId === user.userId;
+        commentData.user && commentData.user.userId === user.sub;
 
       if (isCommentOwner) return true;
 
