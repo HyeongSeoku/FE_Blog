@@ -4,11 +4,16 @@ import { useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
+import { getBasicInfoPost } from "server/posts";
 import useUserStore from "store/user";
 import { loaderCheckUser } from "utils/auth";
 import useSyncUserStore from "~/hooks/useSyncUserStore";
 import { Handle } from "~/types/handle";
 import { AuthLoaderData } from "~/types/shared";
+
+export interface WriteLoaderData extends AuthLoaderData {
+  basicInfoData: any;
+}
 
 export const meta: MetaFunction = () => {
   return [
@@ -23,11 +28,18 @@ export const handle: Handle = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
+  const cookieHeader = request.headers.get("Cookie");
+
   const { user, headers } = await loaderCheckUser(request, true);
+  const { data: basicInfoData, error } = await getBasicInfoPost(
+    { headers: { cookies: cookieHeader || "" } },
+    request,
+  );
 
   return json(
     {
       user,
+      basicInfoData,
     },
     { headers },
   );
@@ -38,7 +50,8 @@ export default function Write() {
   const [categoryId, setCategoryId] = useState("");
   const [tag, setTage] = useState("");
   const [markdown, setMarkdown] = useState("");
-  const { user } = useLoaderData<AuthLoaderData>();
+  const { user, basicInfoData } = useLoaderData<WriteLoaderData>();
+
   const { userStore } = useUserStore();
 
   const contentEditableRef = useRef<HTMLDivElement>(null);
