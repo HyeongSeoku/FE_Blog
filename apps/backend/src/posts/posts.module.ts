@@ -13,6 +13,7 @@ import { TagsService } from "src/tags/tags.service";
 import { PostOwnerGuard } from "src/guards/postOwner.guard";
 import { Comments } from "src/database/entities/comments.entity";
 import { ViewsModule } from "src/views/views.module";
+import { CategoryService } from "src/category/category.service";
 
 @Module({
   imports: [
@@ -22,7 +23,13 @@ import { ViewsModule } from "src/views/views.module";
     forwardRef(() => ViewsModule),
     TypeOrmModule.forFeature([Posts, Categories, Tags, Comments]),
   ],
-  providers: [AdminGuard, PostsService, TagsService, PostOwnerGuard],
+  providers: [
+    AdminGuard,
+    PostsService,
+    TagsService,
+    PostOwnerGuard,
+    CategoryService,
+  ],
   controllers: [PostsController],
   exports: [PostsService],
 })

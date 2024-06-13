@@ -7,6 +7,10 @@ export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   @UseGuards(AdminGuard)
-  @Get("/list")
-  async getCategoryList() {}
+  @Get("list")
+  async getCategoryList() {
+    const categoryList = this.categoryService.getCategoryList();
+
+    return categoryList;
+  }
 }

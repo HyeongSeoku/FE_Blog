@@ -5,7 +5,6 @@ import {
   Injectable,
   Logger,
   NotFoundException,
-  Param,
   Req,
   forwardRef,
 } from "@nestjs/common";
@@ -23,6 +22,7 @@ import {
 import { TagsService } from "src/tags/tags.service";
 import { Comments } from "src/database/entities/comments.entity";
 import { ViewsService } from "src/views/views.service";
+import { CategoryService } from "src/category/category.service";
 
 @Injectable()
 export class PostsService {
@@ -36,6 +36,7 @@ export class PostsService {
     private readonly tagsService: TagsService,
     @Inject(forwardRef(() => ViewsService))
     private viewsService: ViewsService,
+    private categoryService: CategoryService,
   ) {}
   private readonly logger = new Logger(PostsService.name);
 
@@ -289,5 +290,14 @@ export class PostsService {
     await this.postsRepository.delete(postId);
 
     throw new HttpException("Post deleted successfully", HttpStatus.OK);
+  }
+
+  async basicInfoCreatePost() {
+    const categoryList = await this.categoryService.getCategoryList();
+
+    //TODO: 추후 임시 저장 데이터 등 추가 예정
+    const tempPost = [];
+
+    return { categoryList, tempPost };
   }
 }
