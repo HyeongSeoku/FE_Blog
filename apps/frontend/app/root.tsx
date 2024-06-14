@@ -27,12 +27,18 @@ import { useEffect } from "react";
 import { getUserProfile } from "server/user";
 import { deepEqual } from "utils/object";
 import { isLoginRequired, isRootRoute } from "utils/route";
+import {
+  ACCESS_TOKEN_KEY,
+  REFRESH_TOKEN_KEY,
+} from "constants/cookie.constants";
+import { parseCookies } from "utils/cookies";
 
 interface RootLoaderData {
   isLoginPage: boolean;
   metaTitle?: string;
   user?: UserProps;
   setCookieHeaders: string[] | null;
+  hasLoginToken: boolean;
 }
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
@@ -49,14 +55,20 @@ export const meta: MetaFunction = ({ data }) => {
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const pathname = url.pathname;
+  const cookies = parseCookies(request);
 
-  const { user, headers } = await loaderCheckUser(request);
+  const hasLoginToken = cookies[ACCESS_TOKEN_KEY] || cookies[REFRESH_TOKEN_KEY];
+
+  const { user, headers } = hasLoginToken
+    ? await loaderCheckUser(request)
+    : { user: null, headers: request.headers };
 
   return json(
     {
       isLoginPage: true,
       metaTitle: isLoginRequired(pathname) ? "Login Required" : "Remix TEST",
       user,
+      hasLoginToken,
     },
     { headers },
   );
@@ -111,7 +123,7 @@ export default function App() {
 
   const Layout = lastMatch?.handle?.Layout || DefaultLayout;
 
-  const { user } = useLoaderData<RootLoaderData>();
+  const { user, hasLoginToken } = useLoaderData<RootLoaderData>();
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -135,10 +147,10 @@ export default function App() {
   }, [user, setUserStore]);
 
   useEffect(() => {
-    if (isLoginRequired(pathname) || isRootRoute(pathname)) {
+    if (isLoginRequired(pathname) || (isRootRoute(pathname) && hasLoginToken)) {
       checkUser();
     }
-  }, [pathname]);
+  }, [pathname, hasLoginToken]);
 
   return (
     <Document>

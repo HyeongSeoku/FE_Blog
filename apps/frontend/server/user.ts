@@ -7,8 +7,8 @@ interface GetUserProfileResponse extends FetchDataResponse {
 }
 
 export const getUserProfile = async (
-  options?: FetchOptions,
   req?: Request,
+  options?: FetchOptions,
 ): Promise<GetUserProfileResponse> => {
   const userProfile = await fetchData("/auth/me", options, req);
   return userProfile;

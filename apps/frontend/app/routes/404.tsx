@@ -1,6 +1,10 @@
 import { Link } from "@remix-run/react";
 import NoneLayout from "~/layout/noneLayout";
 import { Handle } from "~/types/handle";
+import styles from "../styles/tailwind.css?url";
+import { LinksFunction } from "@remix-run/node";
+
+export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
 export default function NotFound() {
   return (

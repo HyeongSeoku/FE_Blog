@@ -28,13 +28,8 @@ export const handle: Handle = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const cookieHeader = request.headers.get("Cookie");
-
   const { user, headers } = await loaderCheckUser(request, true);
-  const { data: basicInfoData, error } = await getBasicInfoPost(
-    { headers: { cookies: cookieHeader || "" } },
-    request,
-  );
+  const { data: basicInfoData, error } = await getBasicInfoPost(request);
 
   return json(
     {
@@ -51,6 +46,8 @@ export default function Write() {
   const [tag, setTage] = useState("");
   const [markdown, setMarkdown] = useState("");
   const { user, basicInfoData } = useLoaderData<WriteLoaderData>();
+
+  console.log("TEST ", basicInfoData);
 
   const { userStore } = useUserStore();
 

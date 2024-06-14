@@ -6,16 +6,7 @@ export const ssrRequestUser = async (
   request: Request,
   isAdminPage: boolean,
 ) => {
-  const cookieHeader = request.headers.get("Cookie");
-
-  const {
-    data: user,
-    error,
-    setCookieHeaders,
-  } = await getUserProfile(
-    { headers: { cookies: cookieHeader || "" } },
-    request,
-  );
+  const { data: user, error, setCookieHeaders } = await getUserProfile(request);
 
   if (!user || error) {
     throw redirect("/login?failStatus=400");

@@ -6,8 +6,8 @@ export const postCreatePost = async (options?: FetchOptions) => {
 };
 
 export const getBasicInfoPost = async (
-  options?: FetchOptions,
   req?: Request,
+  options?: FetchOptions,
 ) => {
   const basicInfo = await fetchData("/posts/basic-info", options, req);
   return basicInfo;

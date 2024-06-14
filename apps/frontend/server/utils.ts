@@ -23,11 +23,13 @@ export async function fetchData(
   const url = `${API_BASE_URL}${path}`;
   const serverCookies = request?.headers?.get("Cookie");
 
+  console.log("TEST FETCH DATA", serverCookies);
+
   const defaultOptions: RequestInit = {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Cookie: serverCookies || "",
+      cookie: serverCookies || "",
     },
     credentials: "include",
   };
@@ -41,6 +43,7 @@ export async function fetchData(
     },
   };
   try {
+    isServer && console.log("TESTESTSET defaultOptions", defaultOptions);
     const response = await fetch(url, finalOptions);
 
     const responseData = await response.json();
