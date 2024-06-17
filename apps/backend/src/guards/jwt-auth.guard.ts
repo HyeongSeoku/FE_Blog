@@ -67,8 +67,9 @@ export class JwtAuthGuard extends AuthGuard {
         // 새 토큰으로 다시 인증 시도
         return await super.canActivate(context);
       } catch (refreshError) {
-        response.clearCookie(ACCESS_TOKEN_KEY);
-        response.clearCookie(REFRESH_TOKEN_KEY);
+        //FIXME: 수정필요
+        // response.clearCookie(ACCESS_TOKEN_KEY);
+        // response.clearCookie(REFRESH_TOKEN_KEY);
         logger.error("Error refreshing token", {
           message: refreshError.message,
           stack: refreshError.stack,
