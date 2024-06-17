@@ -294,10 +294,11 @@ export class PostsService {
 
   async basicInfoCreatePost() {
     const categoryList = await this.categoryService.getCategoryList();
+    const tagList = await this.tagsService.getAllTags();
 
     //TODO: 추후 임시 저장 데이터 등 추가 예정
     const tempPost = [];
 
-    return { categoryList, tempPost };
+    return { categoryList, tempPost, tagList };
   }
 }
