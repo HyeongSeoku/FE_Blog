@@ -1,4 +1,8 @@
 import type { Config } from "tailwindcss";
+import fs from "fs";
+import path from "path";
+import postcss from "postcss";
+import tailwindcss from "tailwindcss";
 
 export default {
   content: ["./app/**/*.{js,jsx,ts,tsx}"],
@@ -12,8 +16,10 @@ export default {
   plugins: [
     function ({
       addUtilities,
+      addBase,
     }: {
       addUtilities: (utilities: Record<string, Record<string, string>>) => void;
+      addBase: (baseStyles: Record<string, Record<string, string>>) => void;
     }) {
       const newUtilities = {
         ".scrollbar-thin": {
@@ -22,10 +28,50 @@ export default {
         ".scrollbar-none": {
           "scrollbar-width": "none",
         },
-        // 추가적인 스크롤바 스타일링이 필요하다면 여기에 추가합니다.
       };
 
       addUtilities(newUtilities);
+
+      // markdown.css 파일 읽어오기
+      const markdownCSSPath = path.resolve(
+        __dirname,
+        "./app/styles/markdown.css",
+      );
+      const markdownCSS = fs.readFileSync(markdownCSSPath, "utf-8");
+
+      // CSS 문자열을 JavaScript 객체로 변환하여 추가
+      parseAndApplyCSS(markdownCSS)
+        .then((markdownStyles) => {
+          addBase(markdownStyles);
+        })
+        .catch((err) => {
+          console.error("Error processing CSS:", err);
+        });
     },
   ],
 } satisfies Config;
+
+async function parseAndApplyCSS(
+  cssString: string,
+): Promise<Record<string, Record<string, string>>> {
+  const styles: Record<string, Record<string, string>> = {};
+
+  try {
+    const result = await postcss([tailwindcss]).process(cssString, {
+      from: undefined,
+    });
+
+    result.root.walkRules((rule) => {
+      const selector = rule.selector;
+      const rules: Record<string, string> = {};
+      rule.walkDecls((decl) => {
+        rules[decl.prop] = decl.value;
+      });
+      styles[selector] = rules;
+    });
+  } catch (error) {
+    console.error("Failed to parse CSS:", error);
+  }
+
+  return styles;
+}

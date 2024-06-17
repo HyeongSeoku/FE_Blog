@@ -1,8 +1,3 @@
-/* 기본 글꼴 스타일 */
-body {
-  @apply font-sans;
-}
-
 /* 제목 스타일 */
 h1 {
   @apply text-3xl font-bold mt-6 mb-4;
