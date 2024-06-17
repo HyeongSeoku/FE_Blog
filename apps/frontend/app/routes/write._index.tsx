@@ -1,6 +1,13 @@
 import { LoaderFunction, MetaFunction, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { useRef, useState } from "react";
+import {
+  ChangeEvent,
+  MouseEvent,
+  SyntheticEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
@@ -42,12 +49,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Write() {
   const [title, setTitle] = useState("");
-  const [categoryId, setCategoryId] = useState("");
+  const [categoryKey, setCategoryKey] = useState("");
   const [tag, setTage] = useState("");
   const [markdown, setMarkdown] = useState("");
   const { user, basicInfoData } = useLoaderData<WriteLoaderData>();
 
-  console.log("TEST ", basicInfoData);
+  console.log("Tes basicInfoData", basicInfoData);
 
   const { userStore } = useUserStore();
 
@@ -55,31 +62,94 @@ export default function Write() {
 
   useSyncUserStore(user);
 
-  const handleChange = (e: React.SyntheticEvent) => {
+  const handleChange = (e: SyntheticEvent) => {
     const target = e.target as HTMLDivElement;
     setMarkdown(target.innerText);
   };
 
+  const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setTitle(value);
+  };
+
+  const handleChangeCategory = (e: MouseEvent<HTMLButtonElement>) => {
+    const { value } = e.currentTarget;
+    setCategoryKey(value);
+  };
+
+  const handleSubmitPost = () => {
+    const ERROR_OBJ = {
+      title: "제목",
+      markdown: "본문",
+      categoryKey: "카테고리",
+    };
+    if (!title) {
+      alert(`${ERROR_OBJ.title}을 입력해주세요.`);
+      return;
+    }
+    if (!markdown) {
+      alert(`${ERROR_OBJ.markdown}을 입력해주세요.`);
+      return;
+    }
+    if (!categoryKey) {
+      alert(`${ERROR_OBJ.categoryKey}을 입력해주세요.`);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    console.log("TEST", categoryKey);
+  }, [categoryKey]);
+
   return (
     <div className="container">
-      <div>{userStore.username}</div>
-      <div>{userStore.isAdmin}</div>
       <h1 className="text-3xl font-bold mb-4">글 작성</h1>
-      <div className="flex flex-col md:flex-row">
-        <div
-          ref={contentEditableRef}
-          contentEditable
-          className="w-full h-96 p-2 border border-gray-300 rounded overflow-y-auto"
-          onInput={handleChange}
-        ></div>
-        <div className="w-full h-96 p-2 border border-gray-300 rounded overflow-y-auto">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeHighlight]}
-          >
-            {markdown}
-          </ReactMarkdown>
+      {/* FORM 영역 */}
+      <div>
+        <h2>제목</h2>
+        <input value={title} onChange={handleChangeTitle} placeholder="제목" />
+
+        <div>
+          <div>카테고리</div>
+          {basicInfoData?.categoryList.map(
+            ({ categoryId, name, categoryKey }) => (
+              <button
+                key={categoryKey}
+                value={categoryKey}
+                onClick={handleChangeCategory}
+              >
+                {name}
+              </button>
+            ),
+          )}
         </div>
+
+        <div>
+          <div>태그</div>
+          {basicInfoData?.tagList.map(() => {})}
+        </div>
+
+        <h2>본문</h2>
+        <div className="flex flex-col md:flex-row">
+          <div
+            ref={contentEditableRef}
+            contentEditable
+            className="w-full h-96 p-2 border border-gray-300 rounded overflow-y-auto"
+            onInput={handleChange}
+          ></div>
+          <div className="w-full h-96 p-2 border border-gray-300 rounded overflow-y-auto">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeHighlight]}
+            >
+              {markdown}
+            </ReactMarkdown>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <button onClick={handleSubmitPost}>제출</button>
       </div>
     </div>
   );
