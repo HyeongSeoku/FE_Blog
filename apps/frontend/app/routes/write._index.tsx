@@ -2,6 +2,7 @@ import { LoaderFunction, MetaFunction, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import {
   ChangeEvent,
+  KeyboardEvent,
   MouseEvent,
   SyntheticEvent,
   useEffect,
@@ -14,6 +15,7 @@ import remarkGfm from "remark-gfm";
 import { getBasicInfoPost } from "server/posts";
 import useUserStore from "store/user";
 import { loaderCheckUser } from "utils/auth";
+import AutoComplete from "~/components/shared/AutoComplete";
 import useSyncUserStore from "~/hooks/useSyncUserStore";
 import { Handle } from "~/types/handle";
 import { AuthLoaderData } from "~/types/shared";
@@ -50,7 +52,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Write() {
   const [title, setTitle] = useState("");
   const [categoryKey, setCategoryKey] = useState("");
-  const [tag, setTage] = useState("");
+  const [tagList, setTagList] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState("");
   const [markdown, setMarkdown] = useState("");
   const { user, basicInfoData } = useLoaderData<WriteLoaderData>();
 
@@ -75,6 +78,27 @@ export default function Write() {
   const handleChangeCategory = (e: MouseEvent<HTMLButtonElement>) => {
     const { value } = e.currentTarget;
     setCategoryKey(value);
+  };
+
+  const handleChangeNewTag = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setNewTag(value);
+  };
+
+  const handleKeyPressNewTag = (e: KeyboardEvent<HTMLInputElement>) => {
+    const { key } = e;
+
+    if (key === "Enter") {
+      e.preventDefault();
+      if (newTag) setTagList((current) => [...current, newTag]);
+      setNewTag("");
+    }
+  };
+
+  const handleAddTag = (tag: string) => {
+    if (!tagList.includes(tag)) {
+      setTagList((current) => [...current, tag]);
+    }
   };
 
   const handleSubmitPost = () => {
@@ -111,7 +135,7 @@ export default function Write() {
 
         <div>
           <div>카테고리</div>
-          {basicInfoData?.categoryList.map(
+          {basicInfoData?.categoryList?.map(
             ({ categoryId, name, categoryKey }) => (
               <button
                 key={categoryKey}
@@ -126,7 +150,15 @@ export default function Write() {
 
         <div>
           <div>태그</div>
-          {basicInfoData?.tagList.map(() => {})}
+          {tagList.map((tag, index) => (
+            <div key={index}>{tag}</div>
+          ))}
+          <AutoComplete
+            suggestions={
+              basicInfoData?.tagList?.list?.map((item) => item?.name) || []
+            }
+            onAddTag={handleAddTag}
+          />
         </div>
 
         <h2>본문</h2>
