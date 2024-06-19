@@ -60,6 +60,7 @@ export default function Write() {
   console.log("Tes basicInfoData", basicInfoData);
 
   const { userStore } = useUserStore();
+  const DUMMY_TAG_LIST = ["React", "Next.js", "Redux", "Nest.js"];
 
   const contentEditableRef = useRef<HTMLDivElement>(null);
 
@@ -78,21 +79,6 @@ export default function Write() {
   const handleChangeCategory = (e: MouseEvent<HTMLButtonElement>) => {
     const { value } = e.currentTarget;
     setCategoryKey(value);
-  };
-
-  const handleChangeNewTag = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setNewTag(value);
-  };
-
-  const handleKeyPressNewTag = (e: KeyboardEvent<HTMLInputElement>) => {
-    const { key } = e;
-
-    if (key === "Enter") {
-      e.preventDefault();
-      if (newTag) setTagList((current) => [...current, newTag]);
-      setNewTag("");
-    }
   };
 
   const handleAddTag = (tag: string) => {
@@ -155,9 +141,13 @@ export default function Write() {
           ))}
           <AutoComplete
             suggestions={
-              basicInfoData?.tagList?.list?.map((item) => item?.name) || []
+              // basicInfoData?.tagList?.list?.map((item) => item?.name) || []
+              DUMMY_TAG_LIST
             }
-            onAddTag={handleAddTag}
+            onSelectSuggestion={handleAddTag}
+            inputValue={newTag}
+            setInputValue={setNewTag}
+            allowCustomEntries={true}
           />
         </div>
 
