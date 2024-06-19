@@ -1,72 +1,94 @@
-import { ChangeEvent, KeyboardEvent, MouseEvent, useState } from "react";
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  MouseEvent,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import classNames from "classnames";
 
 interface AutoCompleteProps {
   suggestions: string[];
   onSelectSuggestion: (suggestion: string) => void;
-  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  inputValue: string;
+  setInputValue: (value: SetStateAction<string>) => void;
+  allowCustomEntries?: boolean;
 }
 
 const AutoComplete = ({
   suggestions,
   onSelectSuggestion,
+  inputValue,
+  setInputValue,
+  allowCustomEntries = false,
 }: AutoCompleteProps) => {
-  const [inputValue, setInputValue] = useState("");
-  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
-  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+
+  useEffect(() => {
+    console.log("TEST activeSuggestionIndex", activeSuggestionIndex);
+  }, [activeSuggestionIndex]);
+
+  const filteredSuggestions = useMemo(() => {
+    if (!inputValue) return [];
+    const input = inputValue.replace(/\s+/g, "").toLowerCase();
+    return suggestions.filter((suggestion) =>
+      suggestion.replace(/\s+/g, "").toLowerCase().includes(input),
+    );
+  }, [inputValue, suggestions]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const userInput = e.currentTarget.value;
-    setInputValue(userInput);
-    setFilteredSuggestions(
-      suggestions.filter(
-        (suggestion) =>
-          suggestion.toLowerCase().indexOf(userInput.toLowerCase()) > -1,
-      ),
-    );
-    setActiveSuggestionIndex(0);
-    setShowSuggestions(true);
+    const { value } = e.target;
+    setInputValue(value.trim());
+    setActiveSuggestionIndex(-1);
+  };
+
+  const handleClick = (e: MouseEvent<HTMLElement>) => {
+    const value = e.currentTarget.innerText;
+    setInputValue(value);
+    onSelectSuggestion(value);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      e.preventDefault();
-      if (filteredSuggestions.length > 0) {
-        onSelectSuggestion(filteredSuggestions[activeSuggestionIndex]);
-        setInputValue("");
-        setFilteredSuggestions([]);
-        setShowSuggestions(false);
-      }
-    } else if (e.key === "ArrowUp") {
-      if (activeSuggestionIndex === 0) {
+      if (activeSuggestionIndex === -1) {
+        if (allowCustomEntries) {
+          onSelectSuggestion(inputValue);
+          setInputValue("");
+        }
+
         return;
       }
+
+      setInputValue(filteredSuggestions[activeSuggestionIndex]);
+      onSelectSuggestion(filteredSuggestions[activeSuggestionIndex]);
+      //   setShowSuggestions(false);
+      return;
+    }
+    if (e.key === "ArrowUp") {
+      if (activeSuggestionIndex === -1) return;
       setActiveSuggestionIndex(activeSuggestionIndex - 1);
-    } else if (e.key === "ArrowDown") {
-      if (activeSuggestionIndex - 1 === filteredSuggestions.length) {
-        return;
-      }
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      if (activeSuggestionIndex === filteredSuggestions.length - 1) return;
       setActiveSuggestionIndex(activeSuggestionIndex + 1);
+      return;
     }
   };
-
-  const handleClick = (e: MouseEvent<HTMLLIElement, MouseEvent>) => {
-    onSelectSuggestion(e.currentTarget.innerText);
-    setInputValue("");
-    setFilteredSuggestions([]);
-    setShowSuggestions(false);
-  };
-
   const SuggestionsListComponent = () => {
     return filteredSuggestions.length ? (
       <ul className="suggestions">
         {filteredSuggestions.map((suggestion, index) => {
-          let className;
-          if (index === activeSuggestionIndex) {
-            className = "suggestion-active";
-          }
           return (
-            <li className={className} key={suggestion} onClick={handleClick}>
+            <li
+              className={classNames("p-2 cursor-pointer", {
+                "bg-gray-200 text-blue-500": index === activeSuggestionIndex,
+              })}
+              key={suggestion}
+              onClick={handleClick}
+            >
               {suggestion}
             </li>
           );
@@ -85,7 +107,7 @@ const AutoComplete = ({
         onKeyDown={handleKeyDown}
         value={inputValue}
       />
-      {showSuggestions && inputValue && <SuggestionsListComponent />}
+      {inputValue && <SuggestionsListComponent />}
     </div>
   );
 };
