@@ -26,10 +26,6 @@ const AutoComplete = ({
 }: AutoCompleteProps) => {
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
 
-  useEffect(() => {
-    console.log("TEST activeSuggestionIndex", activeSuggestionIndex);
-  }, [activeSuggestionIndex]);
-
   const filteredSuggestions = useMemo(() => {
     if (!inputValue) return [];
     const input = inputValue.replace(/\s+/g, "").toLowerCase();
@@ -63,7 +59,6 @@ const AutoComplete = ({
 
       setInputValue(filteredSuggestions[activeSuggestionIndex]);
       onSelectSuggestion(filteredSuggestions[activeSuggestionIndex]);
-      //   setShowSuggestions(false);
       return;
     }
     if (e.key === "ArrowUp") {
