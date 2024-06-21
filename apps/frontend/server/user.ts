@@ -1,6 +1,6 @@
 import { FetchDataResponse } from "~/types/api";
 import { FetchOptions, fetchData } from "./utils";
-import { UserProps } from "store/user";
+import { UserProps } from "~/types/user";
 
 interface GetUserProfileResponse extends FetchDataResponse {
   data: UserProps | null;
