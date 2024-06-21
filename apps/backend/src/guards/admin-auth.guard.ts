@@ -22,7 +22,7 @@ export class AdminGuard extends JwtAuthGuard {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    await super.canActivate(context);
+    const result = (await super.canActivate(context)) as boolean;
 
     const request = context.switchToHttp().getRequest();
     const user = request.user;
@@ -30,21 +30,27 @@ export class AdminGuard extends JwtAuthGuard {
 
     const userData = await this.usersService.findById(user.sub);
 
-    if (!userData || !userData.isAdmin) {
+    if (!userData?.isAdmin) {
       throw new UnauthorizedException("Access Denied");
     }
 
-    return true;
+    const handleRequestResult = this.handleRequest(null, user, null, context);
+    request.user = handleRequestResult;
+
+    return result;
   }
 
   handleRequest(err, user, info, context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
+    const userFormatting = { ...user, userId: user.sub };
 
     if (err || !user) {
       const errorMessage = info?.message || "Authentication error";
       this.logger.error(`Authentication Error: ${err || errorMessage}`);
       throw err || new ForbiddenException(errorMessage);
     }
-    return user;
+    request.user = userFormatting;
+
+    return userFormatting;
   }
 }
