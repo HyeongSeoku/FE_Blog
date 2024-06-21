@@ -81,6 +81,7 @@ export class JwtAuthGuard extends AuthGuard {
 
   handleRequest(err, user, info, context: ExecutionContext) {
     const logger = new Logger(JwtAuthGuard.name);
+    const userFormatting = { ...user, userId: user.sub };
 
     const request = context.switchToHttp().getRequest();
     if (err || !user) {
@@ -92,6 +93,7 @@ export class JwtAuthGuard extends AuthGuard {
       });
       return { error: err?.message || info?.message || "Unauthorized" };
     }
-    return user;
+    request.user = userFormatting;
+    return userFormatting;
   }
 }
