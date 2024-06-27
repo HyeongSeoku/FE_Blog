@@ -2,7 +2,6 @@ import { LoaderFunction, MetaFunction, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import {
   ChangeEvent,
-  KeyboardEvent,
   MouseEvent,
   SyntheticEvent,
   useEffect,
@@ -12,16 +11,21 @@ import {
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
-import { getBasicInfoPost } from "server/posts";
+import { getBasicInfoPost, postCreatePost } from "server/posts";
 import useUserStore from "store/user";
 import { loaderCheckUser } from "utils/auth";
 import AutoComplete from "~/components/shared/AutoComplete";
 import useSyncUserStore from "~/hooks/useSyncUserStore";
 import { Handle } from "~/types/handle";
 import { AuthLoaderData } from "~/types/shared";
+import {
+  BasicInfoResponse,
+  CreatePostRequest,
+} from "../../../../types/posts/posts.api";
+import classNames from "classnames";
 
 export interface WriteLoaderData extends AuthLoaderData {
-  basicInfoData: any;
+  basicInfoData: BasicInfoResponse;
 }
 
 export const meta: MetaFunction = () => {
@@ -51,7 +55,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Write() {
   const [title, setTitle] = useState("");
-  const [categoryKey, setCategoryKey] = useState("");
+  const [categoryId, setCategoryId] = useState(-1);
+
   const [tagList, setTagList] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
   const [markdown, setMarkdown] = useState("");
@@ -60,7 +65,6 @@ export default function Write() {
   console.log("Tes basicInfoData", basicInfoData);
 
   const { userStore } = useUserStore();
-  const DUMMY_TAG_LIST = ["React", "Next.js", "Redux", "Nest.js"];
 
   const contentEditableRef = useRef<HTMLDivElement>(null);
 
@@ -78,7 +82,7 @@ export default function Write() {
 
   const handleChangeCategory = (e: MouseEvent<HTMLButtonElement>) => {
     const { value } = e.currentTarget;
-    setCategoryKey(value);
+    setCategoryId(parseInt(value));
   };
 
   const handleAddTag = (tag: string) => {
@@ -87,7 +91,7 @@ export default function Write() {
     }
   };
 
-  const handleSubmitPost = () => {
+  const handleSubmitPost = async () => {
     const ERROR_OBJ = {
       title: "제목",
       markdown: "본문",
@@ -101,15 +105,39 @@ export default function Write() {
       alert(`${ERROR_OBJ.markdown}을 입력해주세요.`);
       return;
     }
-    if (!categoryKey) {
+    if (!categoryId) {
       alert(`${ERROR_OBJ.categoryKey}을 입력해주세요.`);
       return;
     }
+
+    const postObj: CreatePostRequest = {
+      title,
+      body: markdown,
+      categoryId,
+      tagNames: tagList,
+    };
+
+    const { data } = await postCreatePost(postObj);
+
+    if (!data?.success) {
+      alert("오류 발생!");
+      return;
+    }
+
+    resetWritePost();
+  };
+
+  const resetWritePost = () => {
+    setTitle("");
+    setCategoryId(-1);
+    setMarkdown("");
+    setTagList([]);
+    setNewTag("");
   };
 
   useEffect(() => {
-    console.log("TEST", categoryKey);
-  }, [categoryKey]);
+    console.log("TEST", categoryId);
+  }, [categoryId]);
 
   return (
     <div className="container">
@@ -121,17 +149,22 @@ export default function Write() {
 
         <div>
           <div>카테고리</div>
-          {basicInfoData?.categoryList?.map(
-            ({ categoryId, name, categoryKey }) => (
-              <button
-                key={categoryKey}
-                value={categoryKey}
-                onClick={handleChangeCategory}
-              >
-                {name}
-              </button>
-            ),
-          )}
+          <ul className="flex justify-center items-center gap-2">
+            {basicInfoData?.categoryList?.map(
+              ({ categoryId: id, name, categoryKey: key }) => (
+                <button
+                  key={key}
+                  value={id}
+                  onClick={handleChangeCategory}
+                  className={classNames("w-full", "p-2", "box-border", {
+                    "border border-blue-500 rounded-xl": categoryId === id,
+                  })}
+                >
+                  {name}
+                </button>
+              ),
+            )}
+          </ul>
         </div>
 
         <div>
@@ -141,8 +174,7 @@ export default function Write() {
           ))}
           <AutoComplete
             suggestions={
-              // basicInfoData?.tagList?.list?.map((item) => item?.name) || []
-              DUMMY_TAG_LIST
+              basicInfoData?.tagList?.list?.map((item) => item?.name) || []
             }
             onSelectSuggestion={handleAddTag}
             inputValue={newTag}
