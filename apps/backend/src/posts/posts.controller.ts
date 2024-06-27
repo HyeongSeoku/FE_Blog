@@ -41,11 +41,11 @@ export class PostsController {
 
   @UseGuards(AdminGuard)
   @Post("create")
-  newPost(
+  async newPost(
     @Req() req: AuthenticatedRequest,
     @Body() createPostDto: CreatePostDto,
   ) {
-    return this.postsService.createPost(req, createPostDto);
+    return await this.postsService.createPost(req, createPostDto);
   }
 
   @UseGuards(PostOwnerGuard)

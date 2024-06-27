@@ -205,12 +205,24 @@ export class PostsService {
       tags,
     });
 
-    await this.postsRepository.save(newPost);
+    try {
+      await this.postsRepository.save(newPost);
 
-    const newView = await this.viewsService.createPostView(newPost.postId);
-    const response = { ...newPost, viewCount: newView.viewCount };
+      const newView = await this.viewsService.createPostView(newPost.postId);
+      const response = { ...newPost, viewCount: newView.viewCount };
 
-    return response;
+      return {
+        success: true,
+        message: "Post created successfully",
+        post: response,
+      };
+    } catch (error) {
+      console.error("Error creating post:", error);
+      return {
+        success: false,
+        message: "Failed to create post",
+      };
+    }
   }
 
   async updatePost(postId: string, updatePostDto: UpdatePostDto) {
