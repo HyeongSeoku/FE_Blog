@@ -15,3 +15,5 @@ export interface UsersProps {
   followers: FollowersProps[];
   following: FollowersProps[];
 }
+
+export type UserResponseProps = Omit<UsersProps, "password">;
