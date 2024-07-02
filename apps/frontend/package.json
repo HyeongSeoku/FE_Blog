@@ -18,6 +18,7 @@
     "axios": "^1.6.8",
     "classnames": "^2.5.1",
     "cookie": "^0.6.0",
+    "dayjs": "^1.11.11",
     "express": "^4.19.2",
     "http-proxy-middleware": "^3.0.0",
     "isbot": "^4.1.0",
