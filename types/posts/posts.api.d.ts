@@ -20,3 +20,13 @@ export interface CreatePostResponse {
   message: string;
   post?: PostProps;
 }
+
+export interface GetPostListRequest {
+  categoryId?: string;
+  pageNumber?: number;
+}
+
+export interface GetPostListResponse {
+  list: PostProps[];
+  total: number;
+}
