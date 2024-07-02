@@ -3,6 +3,8 @@ import {
   BasicInfoResponse,
   CreatePostRequest,
   CreatePostResponse,
+  GetPostListRequest,
+  GetPostListResponse,
 } from "../../../types/posts/posts.api";
 import { FetchOptions, fetchData } from "./utils";
 
@@ -24,4 +26,15 @@ export const postCreatePost = async (
     body: postObj,
   });
   return postData;
+};
+
+export const getPostList = async (
+  postListParam: GetPostListRequest,
+  req?: Request,
+  options?: FetchOptions,
+): Promise<FetchDataResponse<GetPostListResponse>> => {
+  const { categoryId, pageNumber = 1 } = postListParam;
+
+  const postListData = await fetchData("/posts/list", { ...options }, req);
+  return postListData;
 };
