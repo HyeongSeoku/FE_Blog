@@ -1,13 +1,60 @@
-import { Link } from "react-router-dom";
+import { LoaderFunction } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
+import { getPostList } from "server/posts";
+import { GetPostListResponse } from "../../../../types/posts/posts.api";
+import { PostProps } from "~/types/posts";
+import { getDate } from "utils/date";
 
-export default function Index() {
+interface IndexLoaderData {
+  postListData: GetPostListResponse;
+}
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const { data: postListData, error } = await getPostList({}, request);
+
+  if (error || !postListData) {
+    // 기본값 제공
+    return { postListData: { list: [], total: 0 } };
+  }
+
+  return { postListData };
+};
+
+const Index = () => {
+  const {
+    postListData: { list, total },
+  } = useLoaderData<IndexLoaderData>();
+
+  getDate({});
+
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
       <div>HOME</div>
-      <Link to="/login">login 페이지 이동</Link>
-      <Link to="/write" className="text-blue-500 hover:text-blue-700">
-        글 작성하기 페이지 이동
-      </Link>
+
+      <h2>게시물</h2>
+      <ul>
+        {list.map(
+          ({
+            postId,
+            category,
+            tags,
+            title,
+            user,
+            viewCount,
+            updatedAt,
+          }: PostProps) => (
+            <li key={postId}>
+              <Link to={`post/${postId}`}>
+                <div>{title}</div>
+                <div>{updatedAt}</div>
+                <div>{viewCount}</div>
+              </Link>
+            </li>
+          ),
+        )}
+      </ul>
     </div>
   );
-}
+};
+
+export default Index;

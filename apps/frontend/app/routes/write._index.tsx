@@ -62,8 +62,6 @@ export default function Write() {
   const [markdown, setMarkdown] = useState("");
   const { user, basicInfoData } = useLoaderData<WriteLoaderData>();
 
-  console.log("Tes basicInfoData", basicInfoData);
-
   const { userStore } = useUserStore();
 
   const contentEditableRef = useRef<HTMLDivElement>(null);
