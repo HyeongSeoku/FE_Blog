@@ -94,6 +94,7 @@ export class PostsService {
         category: {
           categoryId: post.category.categoryId,
           categoryKey: post.category.categoryKey,
+          name: post.category.name,
         },
         tags: post.tags.map((tag) => ({
           tagId: tag.tagId,
@@ -153,6 +154,7 @@ export class PostsService {
     } = targetPost.views ?? {};
 
     const { views, ...result } = targetPost;
+
     const response = {
       ...result,
       user: {
@@ -160,6 +162,7 @@ export class PostsService {
         username: targetPost.user.username,
       },
       category: {
+        categoryId: targetPost.category.categoryId,
         categoryKey: targetPost.category.categoryKey,
         categoryName: targetPost.category.name,
       },
@@ -177,11 +180,12 @@ export class PostsService {
     createPostDto: CreatePostDto,
   ) {
     const sanitizedBody = sanitizeHtml(createPostDto.body);
-    const categoryId = createPostDto.categoryId;
+    const targetCategoryId = createPostDto.categoryId;
 
-    if (categoryId) {
-      const category = await this.categoryRepository.findOne({
-        where: { categoryId },
+    let category: Categories | null = null;
+    if (targetCategoryId) {
+      category = await this.categoryRepository.findOne({
+        where: { categoryId: targetCategoryId },
       });
 
       if (!category) throw new NotFoundException("Category not found!");
@@ -201,7 +205,7 @@ export class PostsService {
       ...createPostDto,
       body: sanitizedBody,
       user: req.user,
-      category: { categoryId: createPostDto.categoryId }, // categoryId를 category 객체로 변환
+      category, // categoryId를 category 객체로 변환
       tags,
     });
 
