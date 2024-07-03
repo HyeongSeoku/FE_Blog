@@ -25,8 +25,6 @@ const Index = () => {
     postListData: { list, total },
   } = useLoaderData<IndexLoaderData>();
 
-  getDate({});
-
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
       <div>HOME</div>
@@ -46,7 +44,9 @@ const Index = () => {
             <li key={postId}>
               <Link to={`post/${postId}`}>
                 <div>{title}</div>
-                <div>{updatedAt}</div>
+                <div>{category.name}</div>
+                <div>{user.username}</div>
+                <div>{getDate("YYYY.MM.DD", updatedAt)}</div>
                 <div>{viewCount}</div>
               </Link>
             </li>
