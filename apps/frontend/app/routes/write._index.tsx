@@ -4,7 +4,6 @@ import {
   ChangeEvent,
   MouseEvent,
   SyntheticEvent,
-  useEffect,
   useRef,
   useState,
 } from "react";
@@ -23,6 +22,7 @@ import {
   CreatePostRequest,
 } from "../../../../types/posts/posts.api";
 import classNames from "classnames";
+import { MARKDOWN_CONTAINER } from "~/constants/classnames";
 
 export interface WriteLoaderData extends AuthLoaderData {
   basicInfoData: BasicInfoResponse;
@@ -117,6 +117,8 @@ export default function Write() {
 
     const { data } = await postCreatePost(postObj);
 
+    //TODO: 완료시 이후 동작 추가
+
     if (!data?.success) {
       alert("오류 발생!");
       return;
@@ -132,10 +134,6 @@ export default function Write() {
     setTagList([]);
     setNewTag("");
   };
-
-  useEffect(() => {
-    console.log("TEST", categoryId);
-  }, [categoryId]);
 
   return (
     <div className="container">
@@ -189,7 +187,9 @@ export default function Write() {
             className="w-full h-96 p-2 border border-gray-300 rounded overflow-y-auto"
             onInput={handleChange}
           ></div>
-          <div className="w-full h-96 p-2 border border-gray-300 rounded overflow-y-auto">
+          <div
+            className={`${MARKDOWN_CONTAINER} w-full h-96 p-2 border border-gray-300 rounded overflow-y-auto`}
+          >
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeHighlight]}

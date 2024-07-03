@@ -137,7 +137,4 @@ entityFiles.forEach((file) => {
 
   const content = `${imports}\n\n${types}`;
   fs.writeFileSync(outputFilePath, content, "utf8");
-  console.log(
-    `Types for ${file} have been generated and saved to ${outputFilePath}`,
-  );
 });
