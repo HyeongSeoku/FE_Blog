@@ -1,56 +1,56 @@
 /* 제목 스타일 */
-h1 {
+.markdown_container h1 {
   @apply text-3xl font-bold mt-6 mb-4;
 }
 
-h2 {
+.markdown_container h2 {
   @apply text-2xl font-semibold mt-5 mb-3;
 }
 
-h3 {
+.markdown_container h3 {
   @apply text-xl font-medium mt-4 mb-2;
 }
 
-h4 {
+.markdown_container h4 {
   @apply text-lg font-medium mt-3 mb-2;
 }
 
-h5 {
+.markdown_container h5 {
   @apply text-base font-semibold mt-2 mb-1;
 }
 
 /* 리스트 스타일 */
-ul,
-ol {
+.markdown_container ul,
+.markdown_container ol {
   @apply ml-5 mt-2 mb-2 list-disc list-inside;
 }
 
 /* 코드 블록 스타일 */
-pre,
-code {
+.markdown_container pre,
+.markdown_container code {
   @apply bg-gray-100 p-2 rounded text-sm font-mono;
 }
 
 /* 링크 스타일 */
-a {
+.markdown_container a {
   @apply text-blue-600 hover:underline;
 }
 
 /* 인용구 스타일 */
-blockquote {
+.markdown_container blockquote {
   @apply border-l-4 border-gray-300 pl-4 italic text-gray-600;
 }
 
 /* 테이블 스타일 */
-table {
+.markdown_container table {
   @apply w-full border-collapse mt-4 mb-4;
 }
 
-th,
-td {
+.markdown_container th,
+.markdown_container td {
   @apply border border-gray-300 px-4 py-2;
 }
 
-th {
+.markdown_container th {
   @apply bg-gray-100 font-semibold;
 }
