@@ -1,9 +1,10 @@
 import { LoaderFunction } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { getPostList } from "server/posts";
 import { GetPostListResponse } from "../../../../types/posts/posts.api";
 import { PostProps } from "~/types/posts";
-import { getDate } from "utils/date";
+
+import PostCard from "~/components/PostCard";
 
 interface IndexLoaderData {
   postListData: GetPostListResponse;
@@ -37,18 +38,22 @@ const Index = () => {
             category,
             tags,
             title,
+            body,
             user,
-            viewCount,
+            comments,
             updatedAt,
           }: PostProps) => (
             <li key={postId}>
-              <Link to={`post/${postId}`}>
-                <div>{title}</div>
-                <div>{category.name}</div>
-                <div>{user.username}</div>
-                <div>{getDate("YYYY.MM.DD", updatedAt)}</div>
-                <div>{viewCount}</div>
-              </Link>
+              <PostCard
+                postId={postId}
+                title={title}
+                body={body}
+                user={user}
+                updatedAt={updatedAt}
+                category={category}
+                tags={tags}
+                comments={comments}
+              />
             </li>
           ),
         )}

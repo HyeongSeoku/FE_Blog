@@ -22,7 +22,7 @@ import DefaultLayout from "./layout/defaultLayout";
 import { Handle } from "./types/handle";
 import styles from "./styles/tailwind.css?url";
 import { loaderCheckUser } from "utils/auth";
-import useUserStore, { UserProps } from "store/user";
+import useUserStore from "store/user";
 import { useEffect } from "react";
 import { getUserProfile } from "server/user";
 import { deepEqual } from "utils/object";
@@ -32,6 +32,7 @@ import {
   REFRESH_TOKEN_KEY,
 } from "constants/cookie.constants";
 import { parseCookies } from "utils/cookies";
+import { UserProps } from "./types/user";
 
 interface RootLoaderData {
   isLoginPage: boolean;
