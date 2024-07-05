@@ -9,5 +9,8 @@ export const removeMarkdown = (markdownText: string): string => {
     .replace(/[-*+] /g, "") // 리스트 아이템 제거
     .replace(/>\s?/g, "") // 인용문 제거
     .replace(/^\s*\n/gm, "") // 빈 줄 제거
-    .replace(/(\r\n|\n|\r)/gm, " "); // 줄 바꿈을 공백으로 변경
+    .replace(/(\r\n|\n|\r)/gm, " ") // 줄 바꿈을 공백으로 변경
+    .replace(/<[^>]+>/g, "") // HTML 태그 제거
+    .replace(/\s+/g, " ") // 여분의 공백 제거
+    .trim(); // 문자열 양끝 공백 제거
 };
