@@ -20,6 +20,8 @@ export interface PostsResponse {
   user: {
     userId: string;
     username: string;
+    githubImgUrl?: string;
+    githubProfileUrl?: string;
   };
   category: {
     categoryId: number;

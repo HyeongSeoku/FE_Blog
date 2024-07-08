@@ -90,6 +90,8 @@ export class PostsService {
         user: {
           userId: post.user.userId,
           username: post.user.username,
+          githubImgUrl: post.user?.githubImgUrl,
+          githubProfileUrl: post.user?.githubProfileUrl,
         },
         category: {
           categoryId: post.category.categoryId,
