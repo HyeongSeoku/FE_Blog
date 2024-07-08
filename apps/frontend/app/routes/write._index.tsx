@@ -6,6 +6,7 @@ import {
   SyntheticEvent,
   useRef,
   useState,
+  DragEvent,
 } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
@@ -56,22 +57,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Write() {
   const [title, setTitle] = useState("");
   const [categoryId, setCategoryId] = useState(-1);
-
   const [tagList, setTagList] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
   const [markdown, setMarkdown] = useState("");
   const { user, basicInfoData } = useLoaderData<WriteLoaderData>();
-
   const { userStore } = useUserStore();
-
-  const contentEditableRef = useRef<HTMLDivElement>(null);
+  const contentEditableRef = useRef<HTMLTextAreaElement>(null);
 
   useSyncUserStore(user);
-
-  const handleChange = (e: SyntheticEvent) => {
-    const target = e.target as HTMLDivElement;
-    setMarkdown(target.innerText);
-  };
 
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -87,6 +80,38 @@ export default function Write() {
     if (!tagList.includes(tag)) {
       setTagList((current) => [...current, tag]);
     }
+  };
+
+  const handleDrop = (event: DragEvent<HTMLTextAreaElement>) => {
+    event.preventDefault();
+    const files = Array.from(event.dataTransfer.files);
+    handleFiles(files);
+  };
+
+  const handleFiles = (files: File[]) => {
+    const fileReaders: FileReader[] = [];
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+      fileReaders.push(reader);
+
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          const imageMarkdown = `![Uploaded Image](${e.target.result})\n`;
+          setMarkdown((prevMarkdown) => prevMarkdown + imageMarkdown);
+        }
+      };
+
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleDragOver = (event: DragEvent<HTMLTextAreaElement>) => {
+    event.preventDefault();
+  };
+
+  const handleMarkdownChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setMarkdown(event.target.value);
   };
 
   const handleSubmitPost = async () => {
@@ -117,8 +142,6 @@ export default function Write() {
 
     const { data } = await postCreatePost(postObj);
 
-    //TODO: 완료시 이후 동작 추가
-
     if (!data?.success) {
       alert("오류 발생!");
       return;
@@ -138,10 +161,14 @@ export default function Write() {
   return (
     <div className="container">
       <h1 className="text-3xl font-bold mb-4">글 작성</h1>
-      {/* FORM 영역 */}
       <div>
         <h2>제목</h2>
-        <input value={title} onChange={handleChangeTitle} placeholder="제목" />
+        <input
+          value={title}
+          onChange={handleChangeTitle}
+          placeholder="제목"
+          className="w-full p-2 border border-gray-300 rounded"
+        />
 
         <div>
           <div>카테고리</div>
@@ -181,12 +208,14 @@ export default function Write() {
 
         <h2>본문</h2>
         <div className="flex flex-col md:flex-row">
-          <div
+          <textarea
             ref={contentEditableRef}
-            contentEditable
             className="w-full h-96 p-2 border border-gray-300 rounded overflow-y-auto"
-            onInput={handleChange}
-          ></div>
+            value={markdown}
+            onChange={handleMarkdownChange}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+          ></textarea>
           <div
             className={`${MARKDOWN_CONTAINER} w-full h-96 p-2 border border-gray-300 rounded overflow-y-auto`}
           >
@@ -201,7 +230,12 @@ export default function Write() {
       </div>
 
       <div>
-        <button onClick={handleSubmitPost}>제출</button>
+        <button
+          onClick={handleSubmitPost}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          제출
+        </button>
       </div>
     </div>
   );
