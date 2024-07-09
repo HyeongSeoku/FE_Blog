@@ -11,6 +11,7 @@ import { CommentsModule } from "./comments/comments.module";
 import { FollowersModule } from "./followers/followers.module";
 import { ViewsModule } from "./views/views.module";
 import { CategoryModule } from "./category/category.module";
+import { SchedulerModule } from "./scheduler/scheduler.module";
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CategoryModule } from "./category/category.module";
     FollowersModule,
     ViewsModule,
     CategoryModule,
+    SchedulerModule,
   ],
   providers: [AppService],
 })

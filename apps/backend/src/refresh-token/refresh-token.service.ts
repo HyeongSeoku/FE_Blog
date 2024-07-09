@@ -2,7 +2,6 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { RefreshToken } from "src/database/entities/refreshToken.entity";
 import { LessThan, MoreThan, Repository } from "typeorm";
-import { Cron, CronExpression } from "@nestjs/schedule";
 import { SharedService } from "src/shared/shared.service";
 import { JwtService } from "@nestjs/jwt";
 import {
@@ -21,12 +20,12 @@ export class RefreshTokenService {
 
   private logger = new Logger(RefreshTokenService.name);
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  async handleCron() {
+  async deleteExpiredTokens() {
     const currentDate = new Date();
     await this.refreshTokenRepository.delete({
       expiryDate: LessThan(currentDate),
     });
+    this.logger.log("Expired tokens have been deleted.");
   }
 
   async findToken(token: string): Promise<RefreshToken | null> {
