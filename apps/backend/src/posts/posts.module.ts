@@ -14,7 +14,6 @@ import { PostOwnerGuard } from "src/guards/postOwner.guard";
 import { Comments } from "src/database/entities/comments.entity";
 import { ViewsModule } from "src/views/views.module";
 import { CategoryService } from "src/category/category.service";
-import { JwtService } from "@nestjs/jwt";
 import { AuthService } from "src/auth/auth.service";
 import { RefreshToken } from "src/database/entities/refreshToken.entity";
 import { RefreshTokenService } from "src/refresh-token/refresh-token.service";

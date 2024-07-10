@@ -12,6 +12,7 @@ import { FollowersModule } from "./followers/followers.module";
 import { ViewsModule } from "./views/views.module";
 import { CategoryModule } from "./category/category.module";
 import { SchedulerModule } from "./scheduler/scheduler.module";
+import { UploadModule } from "./upload/upload.module";
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { SchedulerModule } from "./scheduler/scheduler.module";
     ViewsModule,
     CategoryModule,
     SchedulerModule,
+    UploadModule,
   ],
   providers: [AppService],
 })
