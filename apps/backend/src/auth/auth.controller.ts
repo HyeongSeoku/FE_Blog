@@ -42,7 +42,7 @@ import { RefreshTokenService } from "src/refresh-token/refresh-token.service";
 import { GithubAuthGuard } from "src/guards/github-auth.guard";
 import { v4 as uuidv4 } from "uuid";
 import { clearCookie, setCookie } from "src/utils/cookie";
-import { FindOrCreateUserByGithubResponse } from "src/users/users.service.interface";
+import { FindOrCreateUserByGithubResponse } from "../../../../types/users/users.api";
 
 @Controller("auth")
 export class AuthController {

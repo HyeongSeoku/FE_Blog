@@ -1,14 +1,14 @@
 import { FetchDataResponse } from "~/types/api";
 import { FetchOptions, fetchData } from "./utils";
-import { UserProps } from "store/user";
+import { UserProps } from "~/types/user";
 
 interface GetUserProfileResponse extends FetchDataResponse {
   data: UserProps | null;
 }
 
 export const getUserProfile = async (
-  options?: FetchOptions,
   req?: Request,
+  options?: FetchOptions,
 ): Promise<GetUserProfileResponse> => {
   const userProfile = await fetchData("/auth/me", options, req);
   return userProfile;

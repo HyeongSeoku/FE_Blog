@@ -1,5 +1,5 @@
-export interface FetchDataResponse {
-  data: any | null;
+export interface FetchDataResponse<T = any> {
+  data: T | null;
   error: FetchErrorProps | null;
   setCookieHeaders: string[] | null;
 }

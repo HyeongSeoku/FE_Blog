@@ -4,8 +4,7 @@ import axios from "axios";
 import { Profile, Strategy } from "passport-github";
 import { GithubUserDto } from "src/users/dto/user.dto";
 import { UsersService } from "src/users/users.service";
-import { FindOrCreateUserByGithubResponse } from "src/users/users.service.interface";
-
+import { FindOrCreateUserByGithubResponse } from "../../../../../types/users/users.api";
 @Injectable()
 export class GithubStrategy extends PassportStrategy(Strategy, "github") {
   private readonly logger = new Logger(GithubStrategy.name);

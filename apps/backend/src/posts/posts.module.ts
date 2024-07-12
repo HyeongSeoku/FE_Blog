@@ -13,6 +13,11 @@ import { TagsService } from "src/tags/tags.service";
 import { PostOwnerGuard } from "src/guards/postOwner.guard";
 import { Comments } from "src/database/entities/comments.entity";
 import { ViewsModule } from "src/views/views.module";
+import { CategoryService } from "src/category/category.service";
+import { AuthService } from "src/auth/auth.service";
+import { RefreshToken } from "src/database/entities/refreshToken.entity";
+import { RefreshTokenService } from "src/refresh-token/refresh-token.service";
+import { Users } from "src/database/entities/user.entity";
 
 @Module({
   imports: [
@@ -20,9 +25,24 @@ import { ViewsModule } from "src/views/views.module";
     SharedModule,
     TagsModule,
     forwardRef(() => ViewsModule),
-    TypeOrmModule.forFeature([Posts, Categories, Tags, Comments]),
+    TypeOrmModule.forFeature([
+      Posts,
+      Categories,
+      Tags,
+      Comments,
+      Users,
+      RefreshToken,
+    ]),
   ],
-  providers: [AdminGuard, PostsService, TagsService, PostOwnerGuard],
+  providers: [
+    AdminGuard,
+    PostsService,
+    TagsService,
+    PostOwnerGuard,
+    CategoryService,
+    AuthService,
+    RefreshTokenService,
+  ],
   controllers: [PostsController],
   exports: [PostsService],
 })

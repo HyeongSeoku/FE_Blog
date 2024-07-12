@@ -59,10 +59,6 @@ export class AuthService {
       const newAccessToken =
         await this.refreshTokenService.generateNewAccessToken(refreshToken);
 
-      if (!newAccessToken) {
-        throw new Error("Unable to generate access token");
-      }
-
       const decoded = this.jwtService.decode(refreshToken);
 
       const newRefreshToken = this.jwtService.sign(

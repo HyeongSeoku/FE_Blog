@@ -20,7 +20,7 @@ import { Users } from "../database/entities/user.entity";
 import { hash, compare } from "bcryptjs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { FindOrCreateUserByGithubResponse } from "./users.service.interface";
+import { FindOrCreateUserByGithubResponse } from "../../../../types/users/users.api";
 
 @Injectable()
 export class UsersService {

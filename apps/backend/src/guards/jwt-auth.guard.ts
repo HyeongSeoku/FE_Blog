@@ -14,8 +14,6 @@ import { parseCookies } from "src/utils/cookie";
 import { JwtService } from "@nestjs/jwt";
 @Injectable()
 export class JwtAuthGuard extends AuthGuard {
-  private readonly logger = new Logger(JwtAuthGuard.name);
-
   constructor(
     protected readonly authService: AuthService,
     protected readonly jwtService: JwtService,
@@ -24,7 +22,10 @@ export class JwtAuthGuard extends AuthGuard {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const logger = new Logger(JwtAuthGuard.name);
+
     const request = context.switchToHttp().getRequest();
+    const response = context.switchToHttp().getResponse();
 
     try {
       const cookies = parseCookies(request.headers.cookie);
@@ -38,13 +39,10 @@ export class JwtAuthGuard extends AuthGuard {
 
       return await super.canActivate(context);
     } catch (error) {
-      this.logger.warn(
-        "Access token is invalid or expired. Trying to refresh...",
-        {
-          error: error.message,
-          stack: error.stack,
-        },
-      );
+      logger.warn("Access token is invalid or expired. Trying to refresh...", {
+        error: error.message,
+        stack: error.stack,
+      });
 
       try {
         const parsedCookie = parseCookies(request.headers.cookie);
@@ -69,7 +67,10 @@ export class JwtAuthGuard extends AuthGuard {
         // 새 토큰으로 다시 인증 시도
         return await super.canActivate(context);
       } catch (refreshError) {
-        this.logger.error("Error refreshing token", {
+        //FIXME: 수정필요
+        // response.clearCookie(ACCESS_TOKEN_KEY);
+        // response.clearCookie(REFRESH_TOKEN_KEY);
+        logger.error("Error refreshing token", {
           message: refreshError.message,
           stack: refreshError.stack,
         });
@@ -79,9 +80,12 @@ export class JwtAuthGuard extends AuthGuard {
   }
 
   handleRequest(err, user, info, context: ExecutionContext) {
+    const logger = new Logger(JwtAuthGuard.name);
+    const userFormatting = { ...user, userId: user.sub };
+
     const request = context.switchToHttp().getRequest();
     if (err || !user) {
-      this.logger.error(`Authentication Error: ${err || info?.message}`, {
+      logger.error(`Authentication Error: ${err || info?.message}`, {
         url: request.url,
         headers: request.headers,
         body: request.body,
@@ -89,6 +93,7 @@ export class JwtAuthGuard extends AuthGuard {
       });
       return { error: err?.message || info?.message || "Unauthorized" };
     }
-    return user;
+    request.user = userFormatting;
+    return userFormatting;
   }
 }

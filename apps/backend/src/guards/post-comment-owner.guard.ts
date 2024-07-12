@@ -5,17 +5,19 @@ import {
   Logger,
   UnauthorizedException,
 } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
 import { CommentsService } from "src/comments/comments.service";
 import { UsersService } from "src/users/users.service";
+import { AuthGuard } from "./auth.guard";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
-export class PostCommentOwnerGuard extends AuthGuard("jwt") {
+export class PostCommentOwnerGuard extends AuthGuard {
   constructor(
     private commentsService: CommentsService,
     private usersService: UsersService,
+    protected readonly jwtService: JwtService,
   ) {
-    super();
+    super(jwtService);
   }
 
   private logger = new Logger(PostCommentOwnerGuard.name);
@@ -29,7 +31,7 @@ export class PostCommentOwnerGuard extends AuthGuard("jwt") {
 
     if (!user) throw new UnauthorizedException();
 
-    const userData = await this.usersService.findById(user.userId);
+    const userData = await this.usersService.findById(user.sub);
 
     if (!userData) {
       throw new UnauthorizedException("Access Denied");
@@ -37,8 +39,8 @@ export class PostCommentOwnerGuard extends AuthGuard("jwt") {
 
     const commentData = await this.commentsService.findOneComment(commentId);
 
-    const isPostOwner = commentData.post.user.userId === request.user.userId;
-    const isCommentOwner = commentData?.user?.userId === request.user.userId;
+    const isPostOwner = commentData.post.user.userId === user.sub;
+    const isCommentOwner = commentData?.user?.userId === user.sub;
 
     if (!isPostOwner && !isCommentOwner)
       throw new ForbiddenException("You are not the owner of the post");
