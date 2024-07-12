@@ -5,13 +5,17 @@ import {
   Logger,
   UnauthorizedException,
 } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
 import { CommentsService } from "src/comments/comments.service";
+import { AuthGuard } from "./auth.guard";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
-export class CommentOwnerGuard extends AuthGuard("jwt") {
-  constructor(private commentsService: CommentsService) {
-    super();
+export class CommentOwnerGuard extends AuthGuard {
+  constructor(
+    private commentsService: CommentsService,
+    protected readonly jwtService: JwtService,
+  ) {
+    super(jwtService);
   }
 
   private readonly logger = new Logger(CommentOwnerGuard.name);
@@ -27,7 +31,7 @@ export class CommentOwnerGuard extends AuthGuard("jwt") {
       const commentData = await this.commentsService.findOneComment(commentId);
 
       const isCommentOwner =
-        commentData.user && commentData.user.userId === user.userId;
+        commentData.user && commentData.user.userId === user.sub;
 
       if (isCommentOwner) return true;
 

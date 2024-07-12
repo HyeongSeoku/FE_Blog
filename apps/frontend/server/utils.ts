@@ -2,6 +2,7 @@ import { FetchDataResponse } from "~/types/api";
 
 export interface FetchOptions extends RequestInit {
   headers?: Record<string, string>;
+  body?: any;
 }
 
 const isServer = typeof window === "undefined";
@@ -15,11 +16,11 @@ const API_BASE_URL = isServer
  * @param path API 경로
  * @param options 추가 fetch 설정
  */
-export async function fetchData(
+export async function fetchData<T = any>(
   path: string,
   options?: FetchOptions,
   request?: Request,
-): Promise<FetchDataResponse> {
+): Promise<FetchDataResponse<T>> {
   const url = `${API_BASE_URL}${path}`;
   const serverCookies = request?.headers?.get("Cookie");
 
@@ -27,7 +28,7 @@ export async function fetchData(
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Cookie: serverCookies || "",
+      cookie: serverCookies || "",
     },
     credentials: "include",
   };
@@ -39,6 +40,10 @@ export async function fetchData(
       ...defaultOptions.headers,
       ...options?.headers,
     },
+    body:
+      options?.body && typeof options.body === "object"
+        ? JSON.stringify(options.body)
+        : options?.body,
   };
   try {
     const response = await fetch(url, finalOptions);

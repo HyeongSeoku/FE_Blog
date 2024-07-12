@@ -1,19 +1,5 @@
 import { create } from "zustand";
-
-export interface UserProps {
-  userId: string;
-  username: string;
-  email: string;
-  createdAt: string | null;
-  updatedAt: string | null;
-  lastLogin: string | null;
-  isAdmin: boolean;
-  githubId: string;
-  githubImgUrl: string;
-  githubProfileUrl: string;
-  followers: string[];
-  following: string[];
-}
+import { UserProps } from "~/types/user";
 
 export const initUser: UserProps = {
   userId: "",

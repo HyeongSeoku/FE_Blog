@@ -30,7 +30,7 @@ export class PostsController {
     return this.postsService.findAll(query);
   }
 
-  @Get(":postId")
+  @Get("detail/:postId")
   async getPost(@Param("postId") postId: string) {
     const targetPost = await this.postsService.findOnePost(postId);
 
@@ -41,11 +41,11 @@ export class PostsController {
 
   @UseGuards(AdminGuard)
   @Post("create")
-  newPost(
+  async newPost(
     @Req() req: AuthenticatedRequest,
     @Body() createPostDto: CreatePostDto,
   ) {
-    return this.postsService.createPost(req, createPostDto);
+    return await this.postsService.createPost(req, createPostDto);
   }
 
   @UseGuards(PostOwnerGuard)
@@ -61,5 +61,11 @@ export class PostsController {
   @Delete("delete/:postId")
   deletePost(@Param("postId") postId: string) {
     return this.postsService.deletePost(postId);
+  }
+
+  @UseGuards(AdminGuard)
+  @Get("basic-info")
+  getBasicInfoPost() {
+    return this.postsService.basicInfoCreatePost();
   }
 }

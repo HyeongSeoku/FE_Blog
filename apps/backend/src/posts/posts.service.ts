@@ -5,7 +5,6 @@ import {
   Injectable,
   Logger,
   NotFoundException,
-  Param,
   Req,
   forwardRef,
 } from "@nestjs/common";
@@ -23,6 +22,7 @@ import {
 import { TagsService } from "src/tags/tags.service";
 import { Comments } from "src/database/entities/comments.entity";
 import { ViewsService } from "src/views/views.service";
+import { CategoryService } from "src/category/category.service";
 
 @Injectable()
 export class PostsService {
@@ -36,6 +36,7 @@ export class PostsService {
     private readonly tagsService: TagsService,
     @Inject(forwardRef(() => ViewsService))
     private viewsService: ViewsService,
+    private categoryService: CategoryService,
   ) {}
   private readonly logger = new Logger(PostsService.name);
 
@@ -89,10 +90,13 @@ export class PostsService {
         user: {
           userId: post.user.userId,
           username: post.user.username,
+          githubImgUrl: post.user?.githubImgUrl,
+          githubProfileUrl: post.user?.githubProfileUrl,
         },
         category: {
           categoryId: post.category.categoryId,
           categoryKey: post.category.categoryKey,
+          name: post.category.name,
         },
         tags: post.tags.map((tag) => ({
           tagId: tag.tagId,
@@ -152,6 +156,7 @@ export class PostsService {
     } = targetPost.views ?? {};
 
     const { views, ...result } = targetPost;
+
     const response = {
       ...result,
       user: {
@@ -159,6 +164,7 @@ export class PostsService {
         username: targetPost.user.username,
       },
       category: {
+        categoryId: targetPost.category.categoryId,
         categoryKey: targetPost.category.categoryKey,
         categoryName: targetPost.category.name,
       },
@@ -176,11 +182,12 @@ export class PostsService {
     createPostDto: CreatePostDto,
   ) {
     const sanitizedBody = sanitizeHtml(createPostDto.body);
-    const categoryId = createPostDto.categoryId;
+    const targetCategoryId = createPostDto.categoryId;
 
-    if (categoryId) {
-      const category = await this.categoryRepository.findOne({
-        where: { categoryId },
+    let category: Categories | null = null;
+    if (targetCategoryId) {
+      category = await this.categoryRepository.findOne({
+        where: { categoryId: targetCategoryId },
       });
 
       if (!category) throw new NotFoundException("Category not found!");
@@ -200,16 +207,28 @@ export class PostsService {
       ...createPostDto,
       body: sanitizedBody,
       user: req.user,
-      category: { categoryId: createPostDto.categoryId }, // categoryId를 category 객체로 변환
+      category, // categoryId를 category 객체로 변환
       tags,
     });
 
-    await this.postsRepository.save(newPost);
+    try {
+      await this.postsRepository.save(newPost);
 
-    const newView = await this.viewsService.createPostView(newPost.postId);
-    const response = { ...newPost, viewCount: newView.viewCount };
+      const newView = await this.viewsService.createPostView(newPost.postId);
+      const response = { ...newPost, viewCount: newView.viewCount };
 
-    return response;
+      return {
+        success: true,
+        message: "Post created successfully",
+        post: response,
+      };
+    } catch (error) {
+      console.error("Error creating post:", error);
+      return {
+        success: false,
+        message: "Failed to create post",
+      };
+    }
   }
 
   async updatePost(postId: string, updatePostDto: UpdatePostDto) {
@@ -289,5 +308,15 @@ export class PostsService {
     await this.postsRepository.delete(postId);
 
     throw new HttpException("Post deleted successfully", HttpStatus.OK);
+  }
+
+  async basicInfoCreatePost() {
+    const categoryList = await this.categoryService.getCategoryList();
+    const tagList = await this.tagsService.getAllTags();
+
+    //TODO: 추후 임시 저장 데이터 등 추가 예정
+    const tempPost = [];
+
+    return { categoryList, tempPost, tagList };
   }
 }
