@@ -1,12 +1,9 @@
 import { useState } from "react";
 import "../../styles/hamburger.css";
 import { Link } from "react-router-dom";
-import useUserStore from "store/user";
 
 const HamburgerButton = () => {
   const [isOpen, setIsOpen] = useState(false);
-
-  const { userStore } = useUserStore();
 
   const toggleMenu = () => {
     setIsOpen((state) => !state);
@@ -48,17 +45,6 @@ const HamburgerButton = () => {
                 Home
               </Link>
             </li>
-            {userStore.isAdmin && (
-              <li className="px-4 py-2 cursor-pointer flex">
-                <Link
-                  to="/write"
-                  className="w-full h-full"
-                  onClick={handleLinkClick}
-                >
-                  Write
-                </Link>
-              </li>
-            )}
             <li className="px-4 py-2 cursor-pointer flex">
               <Link
                 to="/about"

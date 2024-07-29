@@ -11,27 +11,13 @@ import {
   Scripts,
   ScrollRestoration,
   isRouteErrorResponse,
-  useLoaderData,
-  useLocation,
   useMatches,
-  useNavigate,
   useRouteError,
 } from "@remix-run/react";
 import NotFound from "./routes/404";
 import DefaultLayout from "./layout/defaultLayout";
 import { Handle } from "./types/handle";
 import styles from "./styles/tailwind.css?url";
-import { loaderCheckUser } from "utils/auth";
-import useUserStore from "store/user";
-import { useEffect } from "react";
-import { getUserProfile } from "server/user";
-import { deepEqual } from "utils/object";
-import { isLoginRequired, isRootRoute } from "utils/route";
-import {
-  ACCESS_TOKEN_KEY,
-  REFRESH_TOKEN_KEY,
-} from "constants/cookie.constants";
-import { parseCookies } from "utils/cookies";
 import { UserProps } from "./types/user";
 
 interface RootLoaderData {
@@ -56,23 +42,8 @@ export const meta: MetaFunction = ({ data }) => {
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const pathname = url.pathname;
-  const cookies = parseCookies(request);
 
-  const hasLoginToken = cookies[ACCESS_TOKEN_KEY] || cookies[REFRESH_TOKEN_KEY];
-
-  const { user, headers } = hasLoginToken
-    ? await loaderCheckUser(request)
-    : { user: null, headers: request.headers };
-
-  return json(
-    {
-      isLoginPage: true,
-      metaTitle: isLoginRequired(pathname) ? "Login Required" : "Remix TEST",
-      user,
-      hasLoginToken,
-    },
-    { headers },
-  );
+  return {};
 };
 
 export function Document({ children }: { children: React.ReactNode }) {
@@ -123,35 +94,6 @@ export default function App() {
   const headerType = lastMatch?.handle?.headerType || "DEFAULT";
 
   const Layout = lastMatch?.handle?.Layout || DefaultLayout;
-
-  const { user, hasLoginToken } = useLoaderData<RootLoaderData>();
-
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
-  const { setUserStore, userStore } = useUserStore();
-
-  const checkUser = async () => {
-    const { data: userData, error } = await getUserProfile();
-    if (userData && !deepEqual(userStore, userData)) {
-      setUserStore(userData);
-    }
-
-    if (error || !userData) {
-      navigate("/login");
-    }
-  };
-
-  useEffect(() => {
-    if (user) {
-      setUserStore(user);
-    }
-  }, [user, setUserStore]);
-
-  useEffect(() => {
-    if (isLoginRequired(pathname) || (isRootRoute(pathname) && hasLoginToken)) {
-      checkUser();
-    }
-  }, [pathname, hasLoginToken]);
 
   return (
     <Document>
