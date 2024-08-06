@@ -5,7 +5,6 @@ import {
   KeyboardEvent,
   MouseEvent,
   SetStateAction,
-  useEffect,
   useMemo,
   useState,
 } from "react";

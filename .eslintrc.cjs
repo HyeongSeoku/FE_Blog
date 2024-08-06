@@ -14,7 +14,7 @@ module.exports = {
     project: "./tsconfig.json",
     sourceType: "module",
   },
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "prettier"],
   extends: [
     "plugin:@typescript-eslint/recommended",
     "prettier",
@@ -29,5 +29,6 @@ module.exports = {
     "no-console": ["warn", { allow: ["warn", "error"] }],
     "@typescript-eslint/no-unused-expressions": "warn",
     "@typescript-eslint/no-non-null-assertion": "warn",
+    "prettier/prettier": "error",
   },
 };
