@@ -9,5 +9,13 @@
   "arrowParens": "always",
   "jsxSingleQuote": false,
   "jsxBracketSameLine": false,
-  "endOfLine": "auto"
+  "endOfLine": "auto",
+  "overrides": [
+    {
+      "files": "*.mdx",
+      "options": {
+        "proseWrap": "preserve"
+      }
+    }
+  ]
 }
