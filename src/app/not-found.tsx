@@ -1,7 +1,10 @@
 import NotFound from "@/components/shared/NotFound";
+import NoneLayout from "@/layout/NoneLayout";
 
 export default function Custom404() {
-  return <NotFound />;
+  return (
+    <NoneLayout>
+      <NotFound />
+    </NoneLayout>
+  );
 }
-
-Custom404.layout = "none";

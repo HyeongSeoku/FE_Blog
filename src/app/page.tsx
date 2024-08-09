@@ -1,7 +1,11 @@
+import DefaultLayout from "@/layout/DefaultLayout";
+
 export default function Home() {
   return (
-    <div>
-      <h1>Home page</h1>
-    </div>
+    <DefaultLayout>
+      <div>
+        <h1>Home page</h1>
+      </div>
+    </DefaultLayout>
   );
 }
