@@ -3,6 +3,8 @@
 import { useState } from "react";
 import "@/styles/hamburger.css";
 import Link from "next/link";
+import Image from "next/image";
+import HamburgerIcon from "@/icon/hamburger.svg";
 
 const HamburgerButton = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,9 +21,7 @@ const HamburgerButton = () => {
     <>
       {!isOpen && (
         <button className="hamburger-container" onClick={toggleMenu}>
-          <div className={"hamburger-line"}></div>
-          <div className={"hamburger-line"}></div>
-          <div className={`hamburger-line`}></div>
+          <HamburgerIcon width={15} height={20} fill="black" />
         </button>
       )}
 
