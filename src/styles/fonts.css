@@ -2,8 +2,6 @@
   font-family: "Pretendard";
   font-weight: 400;
   font-style: normal;
-  /* src: url("/src/fonts/Pretendard-Regular.woff2") format("woff2");
-   */
   src: url("/app/fonts/Pretendard-Regular.woff2") format("woff2");
 }
 

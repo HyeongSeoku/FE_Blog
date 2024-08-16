@@ -1,4 +1,3 @@
-// next.config.mjs
 import withMDX from "@next/mdx";
 
 const nextConfig = withMDX({
@@ -8,7 +7,14 @@ const nextConfig = withMDX({
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
-      use: ["@svgr/webpack"],
+      use: [
+        {
+          loader: "@svgr/webpack",
+          options: {
+            svgo: false,
+          },
+        },
+      ],
     });
 
     return config;
