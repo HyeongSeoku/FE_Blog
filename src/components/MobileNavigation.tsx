@@ -13,16 +13,19 @@ const MobileNavigation = ({ isOpen, setIsOpen }: MobileNavigationProps) => {
   };
 
   return (
-    <nav>
-      <ul
-        className={`absolute top-7 bottom-0 left-0 right-0 flex flex-col bg-white shadow-lg transition-all duration-300 transform ${
-          isOpen
-            ? "opacity-100 translate-y-7 w-full h-full"
-            : "opacity-0 -translate-y-full w-0 h-0"
-        }`}
-      >
+    <nav
+      className={`fixed top-0 bottom-0 left-0 right-0 pt-10 flex flex-col bg-white shadow-lg transition-all duration-300 transform w-full ${
+        isOpen
+          ? "opacity-100 translate-y-0 h-full"
+          : "opacity-0 -translate-y-full h-0"
+      }`}
+    >
+      <ul className={`${isOpen ? "visible" : "hidden"}`}>
         {NAV_LIST.map(({ title, link }, idx) => (
-          <li key={`${title}_${idx}`} className="px-4 py-2 cursor-pointer flex">
+          <li
+            key={`${title}_${idx}`}
+            className="px-4 py-2 cursor-pointer flex ml-auto mr-auto max-w-[var(--max-width)]"
+          >
             <Link
               href={link}
               className="w-full h-full"

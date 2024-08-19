@@ -16,6 +16,7 @@
       dur="0.24s"
       begin="indefinite"
       calcMode="spline"
+      fill="freeze"
       keySplines="0.42, 0, 1, 1;0, 0, 0.58, 1"
       values=" 2 12, 16 12; 2 9, 16 9; 3.5 15, 15 3.5"
     ></animate>
@@ -26,6 +27,7 @@
       dur="0.24s"
       begin="indefinite"
       calcMode="spline"
+      fill="freeze"
       keySplines="0.42, 0, 1, 1;0, 0, 0.58, 1"
       values=" 3.5 15, 15 3.5; 2 9, 16 9; 2 12, 16 12"
     ></animate>
@@ -47,6 +49,7 @@
       dur="0.24s"
       begin="indefinite"
       calcMode="spline"
+      fill="freeze"
       keySplines="0.42, 0, 1, 1;0, 0, 0.58, 1"
       values=" 2 5, 16 5; 2 9, 16 9; 3.5 3.5, 15 15"
     ></animate>
@@ -57,6 +60,7 @@
       dur="0.24s"
       begin="indefinite"
       calcMode="spline"
+      fill="freeze"
       keySplines="0.42, 0, 1, 1;0, 0, 0.58, 1"
       values=" 3.5 3.5, 15 15; 2 9, 16 9; 2 5, 16 5"
     ></animate>

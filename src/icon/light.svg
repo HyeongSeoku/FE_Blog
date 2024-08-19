@@ -1,3 +1,96 @@
-<svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M10.4545 3.13636V1.04545C10.4545 0.470455 10.925 0 11.5 0C12.075 0 12.5455 0.470455 12.5455 1.04545V3.13636C12.5455 3.71136 12.075 4.18182 11.5 4.18182C10.925 4.18182 10.4545 3.71136 10.4545 3.13636ZM18.1491 6.325L19.6232 4.84045C20.0309 4.43273 20.0309 3.77409 19.6232 3.36636C19.2155 2.95864 18.5568 2.95864 18.1491 3.36636L16.675 4.85091C16.2673 5.25864 16.2673 5.91727 16.675 6.325C17.0827 6.73273 17.7414 6.73273 18.1491 6.325ZM21.9545 10.4545H19.8636C19.2886 10.4545 18.8182 10.925 18.8182 11.5C18.8182 12.075 19.2886 12.5455 19.8636 12.5455H21.9545C22.5295 12.5455 23 12.075 23 11.5C23 10.925 22.5295 10.4545 21.9545 10.4545ZM11.5 18.8182C10.925 18.8182 10.4545 19.2886 10.4545 19.8636V21.9545C10.4545 22.5295 10.925 23 11.5 23C12.075 23 12.5455 22.5295 12.5455 21.9545V19.8636C12.5455 19.2886 12.075 18.8182 11.5 18.8182ZM4.85091 6.325L3.36636 4.85091C2.95864 4.44318 2.95864 3.77409 3.36636 3.37682C3.77409 2.97955 4.44318 2.96909 4.84045 3.37682L6.31455 4.85091C6.72227 5.25864 6.72227 5.92773 6.31455 6.325C5.90682 6.72227 5.24818 6.73273 4.85091 6.325ZM16.675 16.675C16.2673 17.0827 16.2673 17.7518 16.675 18.1491L18.1491 19.6232C18.5568 20.0309 19.2259 20.0309 19.6232 19.6232C20.0309 19.2155 20.0309 18.5464 19.6232 18.1491L18.1491 16.675C17.7518 16.2673 17.0827 16.2673 16.675 16.675ZM1.04545 12.5455H3.13636C3.71136 12.5455 4.18182 12.075 4.18182 11.5C4.18182 10.925 3.71136 10.4545 3.13636 10.4545H1.04545C0.470455 10.4545 0 10.925 0 11.5C0 12.075 0.470455 12.5455 1.04545 12.5455ZM4.85091 19.6336L6.325 18.1595C6.73273 17.7518 6.73273 17.0827 6.325 16.6855C5.91727 16.2882 5.24818 16.2777 4.85091 16.6855L3.37682 18.1595C2.96909 18.5673 2.96909 19.2364 3.37682 19.6336C3.77409 20.0414 4.44318 20.0414 4.85091 19.6336ZM11.5 5.22727C8.03955 5.22727 5.22727 8.03955 5.22727 11.5C5.22727 14.9605 8.03955 17.7727 11.5 17.7727C14.9605 17.7727 17.7727 14.9605 17.7727 11.5C17.7727 8.03955 14.9605 5.22727 11.5 5.22727Z" fill="white"/>
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 64 64"
+  width="64"
+  height="64"
+>
+  <!-- 클립 경로 정의 -->
+  <clipPath id="moonClip">
+    <!-- 두 개의 원을 겹쳐서 초승달 모양을 만듭니다 -->
+    <circle cx="32" cy="32" r="20" />
+    <circle cx="32" cy="32" r="20">
+      <!-- 초승달로 변하는 애니메이션 -->
+      <animate
+        id="dark-mode-center"
+        attributeName="cx"
+        from="32"
+        to="44"
+        dur="0.5s"
+        fill="freeze"
+        begin="indefinite"
+      />
+      <!-- 원래 상태로 돌아가는 애니메이션 -->
+      <animate
+        id="light-mode-center"
+        attributeName="cx"
+        from="44"
+        to="32"
+        dur="0.5s"
+        fill="freeze"
+        begin="indefinite"
+      />
+    </circle>
+  </clipPath>
+
+  <!-- 오렌지색 원 (초승달 모양으로 변함) -->
+  <circle cx="32" cy="32" r="20" fill="orange" clip-path="url(#moonClip)" />
+
+  <!-- 외부 원들: 더 둥글게 배치하고 중심 원과 간격을 더 줌 -->
+  <circle cx="32" cy="4" r="4" fill="orange">
+    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="4" to="32" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="4" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+  </circle>
+  <circle cx="32" cy="60" r="4" fill="orange">
+    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="60" to="32" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="60" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+  </circle>
+  <circle cx="4" cy="32" r="4" fill="orange">
+    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="4" to="32" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="4" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+  </circle>
+  <circle cx="60" cy="32" r="4" fill="orange">
+    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="60" to="32" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="60" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+  </circle>
+
+  <circle cx="12" cy="12" r="4" fill="orange">
+    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="12" to="32" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="12" to="32" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="12" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="12" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+  </circle>
+  <circle cx="52" cy="12" r="4" fill="orange">
+    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="52" to="32" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="12" to="32" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="52" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="12" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+  </circle>
+  <circle cx="12" cy="52" r="4" fill="orange">
+    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="12" to="32" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="52" to="32" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="12" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="52" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+  </circle>
+  <circle cx="52" cy="52" r="4" fill="orange">
+    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="52" to="32" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="52" to="32" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="52" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="52" dur="0.5s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+  </circle>
 </svg>

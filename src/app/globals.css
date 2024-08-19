@@ -10,22 +10,38 @@
   --dark-bg-color: #121212;
   --dark-text-color: #e0e0e0;
   --dark-primary-color: #80bfff;
+  --transition-duration: 0.3s;
+  --transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  --max-width: 80rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-color: var(--dark-bg-color);
-    --text-color: var(--dark-text-color);
-    --primary-color: var(--dark-primary-color);
-  }
+[data-theme="light"] {
+  --bg-color: var(--light-bg-color);
+  --text-color: var(--light-text-color);
+  --primary-color: var(--light-primary-color);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg-color: var(--light-bg-color);
-    --text-color: var(--light-text-color);
-    --primary-color: var(--light-primary-color);
-  }
+/* 다크 모드 스타일 */
+[data-theme="dark"] {
+  --bg-color: var(--dark-bg-color);
+  --text-color: var(--dark-text-color);
+  --primary-color: var(--dark-primary-color);
+}
+
+html,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+div,
+span,
+button {
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  transition-timing-function: var(--transition-timing-function);
+  transition-duration: var(--transition-duration);
 }
 
 @layer utilities {
