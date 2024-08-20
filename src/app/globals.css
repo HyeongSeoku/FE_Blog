@@ -30,14 +30,21 @@
 
 html,
 body,
-h1,
+main,
+header,
+nav,
+ul,
+li h1,
 h2,
 h3,
 h4,
 h5,
 div,
 span,
-button {
+button,
+p,
+article,
+section {
   color: var(--text-color);
   background-color: var(--bg-color);
   transition-timing-function: var(--transition-timing-function);

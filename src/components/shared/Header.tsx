@@ -6,8 +6,8 @@ import MenuIcon from "@/icon/menu.svg";
 import LightIcon from "@/icon/light.svg";
 import { useRouter } from "next/navigation";
 import MobileNavigation from "@/components/MobileNavigation";
-import useThemaStore from "@/store/thema";
-import useTheme from "@/hooks/useThema";
+import useThemeStore from "@/store/theme";
+import useTheme from "@/hooks/useTheme";
 
 export interface HeaderProps {
   headerType: HeaderType;
@@ -17,10 +17,10 @@ export interface HeaderProps {
 export type HeaderType = "DEFAULT" | "BACK" | "NONE";
 
 const Header = ({ headerType, children }: HeaderProps) => {
-  useTheme();
   const [isMoNavOpen, setIsMoNavOpen] = useState(false);
-  const { isDarkMode, setDarkMode, setLightMode } = useThemaStore();
+  const { isDarkMode, setDarkMode, setLightMode } = useThemeStore();
   const router = useRouter();
+  useTheme();
 
   const triggerAnimation = (type: "id" | "class", target: string) => {
     let elements: NodeListOf<SVGAnimateElement> | SVGAnimateElement | null =
@@ -55,7 +55,7 @@ const Header = ({ headerType, children }: HeaderProps) => {
     }
   };
 
-  const toggleThema = () => {
+  const toggleTheme = () => {
     if (!isDarkMode) {
       triggerAnimation("class", "dark-mode");
       triggerAnimation("id", "dark-mode-center");
@@ -94,7 +94,7 @@ const Header = ({ headerType, children }: HeaderProps) => {
       {headerType === "BACK" && <BackButton />}
       {children && <>{children}</>}
 
-      <button className="ml-auto z-10" onClick={toggleThema}>
+      <button className="ml-auto z-10" onClick={toggleTheme}>
         <LightIcon width={18} height={18} fill="black" />
       </button>
 

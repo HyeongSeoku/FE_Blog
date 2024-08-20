@@ -15,7 +15,7 @@
         attributeName="cx"
         from="32"
         to="44"
-        dur="0.5s"
+        dur="0.3s"
         fill="freeze"
         begin="indefinite"
       />
@@ -25,72 +25,70 @@
         attributeName="cx"
         from="44"
         to="32"
-        dur="0.5s"
+        dur="0.3s"
         fill="freeze"
         begin="indefinite"
       />
     </circle>
   </clipPath>
 
-  <!-- 오렌지색 원 (초승달 모양으로 변함) -->
   <circle cx="32" cy="32" r="20" fill="orange" clip-path="url(#moonClip)" />
 
-  <!-- 외부 원들: 더 둥글게 배치하고 중심 원과 간격을 더 줌 -->
   <circle cx="32" cy="4" r="4" fill="orange">
-    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="4" to="32" dur="0.5s" fill="freeze" />
-    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="4" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="4" to="32" dur="0.3s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="4" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.3s" fill="freeze" />
   </circle>
   <circle cx="32" cy="60" r="4" fill="orange">
-    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="60" to="32" dur="0.5s" fill="freeze" />
-    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="60" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="60" to="32" dur="0.3s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="60" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.3s" fill="freeze" />
   </circle>
   <circle cx="4" cy="32" r="4" fill="orange">
-    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="4" to="32" dur="0.5s" fill="freeze" />
-    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="4" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="4" to="32" dur="0.3s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="4" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.3s" fill="freeze" />
   </circle>
   <circle cx="60" cy="32" r="4" fill="orange">
-    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="60" to="32" dur="0.5s" fill="freeze" />
-    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="60" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="60" to="32" dur="0.3s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="60" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.3s" fill="freeze" />
   </circle>
 
   <circle cx="12" cy="12" r="4" fill="orange">
-    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="12" to="32" dur="0.5s" fill="freeze" />
-    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="12" to="32" dur="0.5s" fill="freeze" />
-    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="12" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="12" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="12" to="32" dur="0.3s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="12" to="32" dur="0.3s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="12" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="12" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.3s" fill="freeze" />
   </circle>
   <circle cx="52" cy="12" r="4" fill="orange">
-    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="52" to="32" dur="0.5s" fill="freeze" />
-    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="12" to="32" dur="0.5s" fill="freeze" />
-    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="52" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="12" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="52" to="32" dur="0.3s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="12" to="32" dur="0.3s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="52" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="12" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.3s" fill="freeze" />
   </circle>
   <circle cx="12" cy="52" r="4" fill="orange">
-    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="12" to="32" dur="0.5s" fill="freeze" />
-    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="52" to="32" dur="0.5s" fill="freeze" />
-    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="12" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="52" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="12" to="32" dur="0.3s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="52" to="32" dur="0.3s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="12" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="52" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.3s" fill="freeze" />
   </circle>
   <circle cx="52" cy="52" r="4" fill="orange">
-    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="52" to="32" dur="0.5s" fill="freeze" />
-    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="52" to="32" dur="0.5s" fill="freeze" />
-    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="52" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="52" dur="0.5s" fill="freeze" />
-    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.5s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cx" from="52" to="32" dur="0.3s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="cy" from="52" to="32" dur="0.3s" fill="freeze" />
+    <animate class="dark-mode" begin="indefinite" attributeName="r" from="4" to="0" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cx" from="32" to="52" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="cy" from="32" to="52" dur="0.3s" fill="freeze" />
+    <animate class="light-mode" begin="indefinite" attributeName="r" from="0" to="4" dur="0.3s" fill="freeze" />
   </circle>
 </svg>

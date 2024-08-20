@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
 import classNames from "classnames";
+import { cookies } from "next/headers";
+import { LIGHT_DARK_THEME } from "@/constants/cookie.constants";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,8 +18,15 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
+  const cookieStore = cookies();
+  const theme = cookieStore.get(LIGHT_DARK_THEME)?.value || "light";
+
   return (
-    <html lang="en" className="h-full">
+    <html
+      lang="en"
+      className="h-full"
+      data-theme={theme === "dark" ? "dark" : "light"}
+    >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

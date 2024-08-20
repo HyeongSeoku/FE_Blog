@@ -50,7 +50,6 @@ export default async function PostPage({
   const postData = await fetchPostData(params.slug);
 
   if (!postData) {
-    // redirect("/");
     notFound();
   }
 
