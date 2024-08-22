@@ -17,8 +17,26 @@ export default {
       "2xl": "1536px",
     },
     extend: {
-      fontFamily: {
-        sans: ["Pretendard", "sans-serif"],
+      keyframes: {
+        easeInTypingEffect: {
+          "0%": {
+            opacity: "0",
+            clipPath: "inset(0 100% 0 0)",
+          },
+          "100%": {
+            opacity: "1",
+            clipPath: "inset(0 0 0 0)",
+          },
+        },
+
+        blink: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" },
+        } as any,
+      },
+      animation: {
+        easeInTypingEffect: "easeInTypingEffect 1s ease-in-out forwards",
+        blink: "blink 1s step-end infinite",
       },
     },
   },

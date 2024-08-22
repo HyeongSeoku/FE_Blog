@@ -6,7 +6,15 @@ export default function Home() {
       <div className="h-full">
         <section className="flex flex-col items-center justify-center lg:text-3xl  xs:text-2xl pt-16 pb-20">
           <h2>안녕하세요</h2>
-          <h2>을 추구하는</h2>
+          <h2>
+            <b
+              className="text-4xl font-medium animate-easeInTypingEffect"
+              style={{ fontFamily: "var(--font-family2)" }}
+            >
+              섬세함
+            </b>
+            {/* <span className="animate-blink">|</span> */}을 추구하는
+          </h2>
           <h2>개발자 김형석입니다.</h2>
         </section>
 
