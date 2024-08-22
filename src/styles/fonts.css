@@ -18,3 +18,11 @@
   font-style: normal;
   src: url("/fonts/Pretendard-Bold.woff2") format("woff2");
 }
+
+/* Nanum MiraeNamu */
+@font-face {
+  font-family: "Nanum MiraeNamu";
+  src: url("/fonts/Nanum-miraeNamu.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}

@@ -13,6 +13,8 @@
   --transition-duration: 0.3s;
   --transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --max-width: 80rem;
+  --font-family1: "Pretendard";
+  --font-family2: "Nanum MiraeNamu";
 }
 
 [data-theme="light"] {
@@ -49,6 +51,7 @@ section {
   background-color: var(--bg-color);
   transition-timing-function: var(--transition-timing-function);
   transition-duration: var(--transition-duration);
+  font-family: var(--font-family1);
 }
 
 @layer utilities {
