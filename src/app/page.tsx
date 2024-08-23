@@ -8,10 +8,11 @@ export default function Home() {
           <h2>안녕하세요</h2>
           <h2>
             <b
-              className="text-4xl font-medium animate-easeInTypingEffect"
+              className="text-4xl font-medium animate-easeInTypingEffect text-primary relative"
               style={{ fontFamily: "var(--font-family2)" }}
             >
               섬세함
+              <span className="absolute right-0 left-0 bottom-0 h-3 bg-primary opacity-20"></span>
             </b>
             {/* <span className="animate-blink">|</span> */}을 추구하는
           </h2>
