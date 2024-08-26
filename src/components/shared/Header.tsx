@@ -94,11 +94,11 @@ const Header = ({ headerType, children }: HeaderProps) => {
       {headerType === "BACK" && <BackButton />}
       {children && <>{children}</>}
 
-      <button className="ml-auto z-10" onClick={toggleTheme}>
+      <button className="ml-auto z-20" onClick={toggleTheme}>
         <LightIcon width={18} height={18} fill="black" />
       </button>
 
-      <button className="ml-1 relative z-10" onClick={toggleMoMenu}>
+      <button className="ml-1 relative z-20" onClick={toggleMoMenu}>
         <MenuIcon width={18} height={18} fill="black" />
       </button>
 

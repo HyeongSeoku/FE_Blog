@@ -14,7 +14,7 @@ const MobileNavigation = ({ isOpen, setIsOpen }: MobileNavigationProps) => {
 
   return (
     <nav
-      className={`fixed top-0 bottom-0 left-0 right-0 pt-10 flex flex-col bg-[var(--bg-color)] shadow-lg transition-all duration-300 transform w-full ${
+      className={`fixed top-0 bottom-0 left-0 right-0 pt-10 flex flex-col bg-[var(--bg-color)] shadow-lg transition-all duration-300 transform w-full z-10 ${
         isOpen
           ? "opacity-100 translate-y-0 h-full"
           : "opacity-0 -translate-y-full h-0"
