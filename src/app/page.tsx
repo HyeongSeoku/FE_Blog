@@ -1,6 +1,10 @@
+"use client";
+import useDeviceType from "@/hooks/useDeviceType";
 import DefaultLayout from "@/layout/DefaultLayout";
 
 export default function Home() {
+  useDeviceType();
+
   return (
     <DefaultLayout>
       <div className="h-full">
