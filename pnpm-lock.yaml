@@ -8,6 +8,9 @@ dependencies:
   '@mdx-js/loader':
     specifier: ^3.0.1
     version: 3.0.1(webpack@5.93.0)
+  '@mdx-js/mdx':
+    specifier: ^3.0.1
+    version: 3.0.1
   '@mdx-js/react':
     specifier: ^3.0.1
     version: 3.0.1(@types/react@18.3.3)(react@18.3.1)

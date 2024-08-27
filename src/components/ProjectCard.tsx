@@ -11,8 +11,8 @@ export interface ProjectCardProps {
   title: string;
   description: string;
   tags?: string[];
-  startDate?: string;
-  endDate?: string;
+  startDate?: number;
+  endDate?: number;
 }
 
 const ProjectCard = ({
@@ -22,12 +22,12 @@ const ProjectCard = ({
   title,
   description,
   tags = [],
-  startDate = "",
-  endDate = "",
+  startDate = 0,
+  endDate = 0,
 }: ProjectCardProps) => {
   const { isMobile } = useDeviceStore();
 
-  const INITAIL_WIDTH = isMobile ? 195 : 300;
+  const INITIAL_WIDTH = isMobile ? 195 : 300;
   const INITIAL_HEIGHT = isMobile ? 190 : 290;
 
   return (
@@ -36,19 +36,19 @@ const ProjectCard = ({
         <Image
           src={imgSrc}
           alt={imgAlt}
-          width={INITAIL_WIDTH}
+          width={INITIAL_WIDTH}
           height={INITIAL_HEIGHT}
           layout="responsive"
         />
         <h3>{title}</h3>
         <p>{description}</p>
         {!!startDate && (
-          <time dateTime={startDate}>
+          <time dateTime={`${startDate}`}>
             {new Date(startDate).toLocaleDateString()}
           </time>
         )}
         {!!endDate && (
-          <time dateTime={endDate}>
+          <time dateTime={`${endDate}`}>
             {new Date(endDate).toLocaleDateString()}
           </time>
         )}

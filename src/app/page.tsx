@@ -3,11 +3,11 @@ import { getAllProjects } from "@/utils/mdx";
 import { HomeClient } from "./pageClient";
 
 export default function Home() {
-  const data = getAllProjects();
+  const projectData = getAllProjects();
 
   return (
     <DefaultLayout>
-      <HomeClient />
+      <HomeClient projectData={projectData} />
     </DefaultLayout>
   );
 }
