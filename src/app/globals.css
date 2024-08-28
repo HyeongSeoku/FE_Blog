@@ -9,7 +9,9 @@
   --light-primary-color: #0090ff;
   --dark-bg-color: #121212;
   --dark-text-color: #e0e0e0;
-  --dark-primary-color: #80bfff;
+  --dark-primary-color: #45adff;
+  --gray-bg-color: #d9d9d9;
+  --gray-text-color: #808080;
   --transition-duration: 0.3s;
   --transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --max-width: 80rem;
@@ -32,23 +34,9 @@
 
 html,
 body,
-main,
-header,
-nav,
-ul,
-li h1,
-h2,
-h3,
-h4,
-h5,
-div,
-span,
-button,
-p,
-article,
-section {
-  color: var(--text-color);
+main {
   background-color: var(--bg-color);
+  color: var(--text-color);
   transition-timing-function: var(--transition-timing-function);
   transition-duration: var(--transition-duration);
   font-family: var(--font-family1);

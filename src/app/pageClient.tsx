@@ -11,8 +11,6 @@ interface HomeClientProps {
 export const HomeClient = ({ projectData }: HomeClientProps) => {
   useDeviceType();
 
-  console.log("TEST client projectData", projectData);
-
   return (
     <div className="h-full">
       <section className="flex flex-col items-center justify-center lg:text-3xl  xs:text-2xl pt-16 pb-20">
@@ -36,7 +34,7 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
       </section>
 
       <section>
-        <ul>
+        <ul className="max-xs:">
           {projectData.map(
             ({ title, description, startDate, endDate, tags, slug }) => (
               <ProjectCard
