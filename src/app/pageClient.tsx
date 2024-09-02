@@ -23,7 +23,7 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
             섬세함
             <span className="absolute right-0 left-0 bottom-0 h-3 bg-primary opacity-20"></span>
           </b>
-          {/* <span className="animate-blink">|</span> */}을 추구하는
+          을 추구하는
         </h2>
         <h2>개발자 김형석입니다.</h2>
       </section>
@@ -34,7 +34,7 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
       </section>
 
       <section>
-        <ul className="max-xs:">
+        <ul className="grid md:grid-cols-5">
           {projectData.map(
             ({ title, description, startDate, endDate, tags, slug }) => (
               <ProjectCard

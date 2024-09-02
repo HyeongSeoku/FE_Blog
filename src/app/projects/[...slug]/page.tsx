@@ -9,8 +9,6 @@ export default async function ProjectDetailPage({
 }) {
   const projectData = await getProjectDetail(params.slug);
 
-  console.log("TEST projectData", projectData);
-
   if (!projectData) {
     notFound();
   }
