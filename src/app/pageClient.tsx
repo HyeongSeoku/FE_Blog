@@ -34,7 +34,7 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
       </section>
 
       <section>
-        <ul className="grid md:grid-cols-5">
+        <ul className="grid md:grid-cols-4">
           {projectData.map(
             ({ title, description, startDate, endDate, tags, slug }) => (
               <ProjectCard

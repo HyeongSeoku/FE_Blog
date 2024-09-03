@@ -27,35 +27,35 @@ const ProjectCard = ({
 }: ProjectCardProps) => {
   const { isMobile } = useDeviceStore();
 
-  const INITIAL_WIDTH = isMobile ? 195 : 300;
-  const INITIAL_HEIGHT = isMobile ? 190 : 290;
+  // const INITIAL_WIDTH = isMobile ? 195 : 300;
+  // const INITIAL_HEIGHT = isMobile ? 190 : 290;
 
   return (
-    <article>
+    <article className="box-border">
       <Link
         href={link}
-        className="w-full h-full flex flex-col items-center p-[20px] rounded-[12px] bg-white max-md:flex-row"
+        className="w-full h-full flex flex-col items-center rounded-xl bg-white"
       >
-        <div className="max-md:w-[196px] max-md:h-[190px] rounded-[8px] flex bg-[var(--gray-bg-color)] max-md:mr-[27px]">
+        <div className="rounded-t-lg bg-[var(--gray-bg-color)] w-full h-full flex-grow-[1] flex-shrink-0">
           <Image
             src={imgSrc}
             alt={imgAlt}
-            width={INITIAL_WIDTH}
-            height={INITIAL_HEIGHT}
-            className="w-full h-full"
+            width={300}
+            height={290}
+            className="w-full h-64 object-cover"
           />
         </div>
-        <div className="text-black">
-          <h3 className="text-[30px] font-semibold mb-[12px]">{title}</h3>
-          <p className="text-[20px] mb-[45px]">{description}</p>
+        <div className="text-black flex-grow-[2] flex-shrink-0">
+          <h3 className="text-3xl font-semibold mb-3">{title}</h3>
+          <p className="text-xl mb-12">{description}</p>
           {!!tags.length && (
             <>
-              <div className="mb-[8px]">사용 기술</div>
-              <ul className="flex gap-[6px]">
+              <div className="mb-2">사용 기술</div>
+              <ul className="flex gap-1">
                 {tags.map((tagTitle, idx) => (
                   <li
                     key={`${idx}_${tagTitle}`}
-                    className="w-fit h-[19px] rounded-[16px] border px-[8px] py-[5px] text-[12px] box-border flex items-center justify-center border-primary text-primary"
+                    className="w-fit h-5 rounded-md border px-2 py-1 text-xs box-border flex items-center justify-center border-primary text-primary"
                   >
                     {tagTitle}
                   </li>
