@@ -17,7 +17,7 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
         <h2>안녕하세요</h2>
         <h2>
           <b
-            className="text-4xl font-medium animate-easeInTypingEffect text-primary relative"
+            className="text-4xl line- font-medium animate-easeInTypingEffect text-primary relative"
             style={{ fontFamily: "var(--font-family2)" }}
           >
             섬세함

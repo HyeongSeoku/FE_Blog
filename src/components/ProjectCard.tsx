@@ -36,7 +36,7 @@ const ProjectCard = ({
         href={link}
         className="w-full h-full flex flex-col items-center rounded-xl bg-white"
       >
-        <div className="rounded-t-lg bg-[var(--gray-bg-color)] w-full h-full flex-grow-[1] flex-shrink-0">
+        <div className="rounded-t-lg bg-[var(--gray-bg-color)] w-full">
           <Image
             src={imgSrc}
             alt={imgAlt}
@@ -45,7 +45,7 @@ const ProjectCard = ({
             className="w-full h-64 object-cover"
           />
         </div>
-        <div className="text-black flex-grow-[2] flex-shrink-0">
+        <div className="text-black">
           <h3 className="text-3xl font-semibold mb-3">{title}</h3>
           <p className="text-xl mb-12">{description}</p>
           {!!tags.length && (
