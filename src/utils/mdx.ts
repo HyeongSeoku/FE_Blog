@@ -11,8 +11,8 @@ export interface ProjectDataProps {
   slug: string;
   title: string;
   description: string;
-  startDate: number;
-  endDate: number;
+  startDate: string;
+  endDate: string;
   tags: string[];
   content: string;
 }

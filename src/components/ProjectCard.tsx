@@ -1,6 +1,6 @@
 "use client";
 
-import useDeviceStore from "@/store/deviceType";
+import { getDate } from "@/utils/date";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,8 +11,8 @@ export interface ProjectCardProps {
   title: string;
   description: string;
   tags?: string[];
-  startDate?: number;
-  endDate?: number;
+  startDate?: string;
+  endDate?: string;
 }
 
 const ProjectCard = ({
@@ -22,19 +22,14 @@ const ProjectCard = ({
   title,
   description,
   tags = [],
-  startDate = 0,
-  endDate = 0,
+  startDate = "",
+  endDate = "",
 }: ProjectCardProps) => {
-  const { isMobile } = useDeviceStore();
-
-  // const INITIAL_WIDTH = isMobile ? 195 : 300;
-  // const INITIAL_HEIGHT = isMobile ? 190 : 290;
-
   return (
-    <article className="box-border">
+    <article className="box-border transform transition duration-300 hover:scale-102">
       <Link
         href={link}
-        className="w-full h-full flex flex-col items-center rounded-xl bg-white"
+        className="w-full h-full flex flex-col rounded-xl bg-white"
       >
         <div className="rounded-t-lg bg-[var(--gray-bg-color)] w-full">
           <Image
@@ -45,7 +40,7 @@ const ProjectCard = ({
             className="w-full h-64 object-cover"
           />
         </div>
-        <div className="text-black">
+        <div className="text-black px-4 py-3">
           <h3 className="text-3xl font-semibold mb-3">{title}</h3>
           <p className="text-xl mb-12">{description}</p>
           {!!tags.length && (
@@ -68,7 +63,7 @@ const ProjectCard = ({
               dateTime={`${startDate}`}
               className="text-[var(--gray-text-color)] text-[14px] after:content-['-']"
             >
-              {new Date(startDate).toLocaleDateString()}
+              {getDate("YYYY-MM-DD", startDate)}
             </time>
           )}
           {!!endDate && (
@@ -76,7 +71,7 @@ const ProjectCard = ({
               dateTime={`${endDate}`}
               className="text-[var(--gray-text-color)] text-[14px]"
             >
-              {new Date(endDate).toLocaleDateString()}
+              {getDate("YYYY-MM-DD", endDate)}
             </time>
           )}
         </div>

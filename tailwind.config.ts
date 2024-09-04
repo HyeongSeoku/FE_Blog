@@ -17,6 +17,9 @@ export default {
       "2xl": "1536px",
     },
     extend: {
+      scale: {
+        "102": "1.02",
+      },
       colors: {
         primary: "var(--primary-color)",
       },

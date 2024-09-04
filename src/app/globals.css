@@ -7,9 +7,11 @@
   --light-bg-color: #ffffff;
   --light-text-color: #000000;
   --light-primary-color: #0090ff;
+  --light-second-bg-color: rgba(0, 144, 255, 0.3);
   --dark-bg-color: #121212;
   --dark-text-color: #e0e0e0;
   --dark-primary-color: #45adff;
+  --dark-second-bg-color: rgba(63, 63, 63, 0.3);
   --gray-bg-color: #d9d9d9;
   --gray-text-color: #808080;
   --transition-duration: 0.3s;
@@ -23,6 +25,7 @@
   --bg-color: var(--light-bg-color);
   --text-color: var(--light-text-color);
   --primary-color: var(--light-primary-color);
+  --second-bg-color: var(--light-second-bg-color);
 }
 
 /* 다크 모드 스타일 */
@@ -30,6 +33,7 @@
   --bg-color: var(--dark-bg-color);
   --text-color: var(--dark-text-color);
   --primary-color: var(--dark-primary-color);
+  --second-bg-color: var(--dark-second-bg-color);
 }
 
 html,

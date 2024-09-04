@@ -28,12 +28,13 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
         <h2>개발자 김형석입니다.</h2>
       </section>
 
-      <section className="flex flex-col items-center justify-center lg:text-3xl  xs:text-2xl">
+      <section className="flex flex-col items-center justify-center lg:text-3xl  xs:text-2xl mx-7 px-12 py-6 bg-[var(--second-bg-color)] rounded-lg mb-8">
         <h2>배우는 것에 즐거움을 느끼는</h2>
         <h2>프론트엔드 개발자입니다.</h2>
       </section>
 
       <section>
+        <h4 className="text-2xl mb-2">Project</h4>
         <ul className="grid md:grid-cols-4">
           {projectData.map(
             ({ title, description, startDate, endDate, tags, slug }) => (
