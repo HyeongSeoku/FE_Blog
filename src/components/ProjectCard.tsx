@@ -26,26 +26,26 @@ const ProjectCard = ({
   endDate = "",
 }: ProjectCardProps) => {
   return (
-    <article className="box-border transform transition duration-300 hover:scale-102">
+    <article className="w-64 h-80 box-border transform transition ease-in-out duration-300 hover:scale-102">
       <Link
         href={link}
-        className="w-full h-full flex flex-col rounded-xl bg-white"
+        className="block w-full h-full rounded-xl overflow-hidden bg-white"
       >
-        <div className="rounded-t-lg bg-[var(--gray-bg-color)] w-full">
+        <div className="bg-[var(--gray-bg-color)] h-1/2">
           <Image
             src={imgSrc}
             alt={imgAlt}
             width={300}
             height={290}
-            className="w-full h-64 object-cover"
+            className="w-full h-full object-cover"
           />
         </div>
-        <div className="text-black px-4 py-3">
-          <h3 className="text-3xl font-semibold mb-3">{title}</h3>
-          <p className="text-xl mb-12">{description}</p>
+        <div className="text-black px-5 py-4 h-1/2 bg-white">
+          <h3 className="text-xl font-semibold mb-2">{title}</h3>
+          <p className="text-sm mb-3">{description}</p>
           {!!tags.length && (
             <>
-              <div className="mb-2">사용 기술</div>
+              <div className="text-xs mb-1">사용 기술</div>
               <ul className="flex gap-1">
                 {tags.map((tagTitle, idx) => (
                   <li
@@ -63,7 +63,7 @@ const ProjectCard = ({
               dateTime={`${startDate}`}
               className="text-[var(--gray-text-color)] text-[14px] after:content-['-']"
             >
-              {getDate("YYYY-MM-DD", startDate)}
+              {getDate("YYYY.MM.DD", startDate)}
             </time>
           )}
           {!!endDate && (
@@ -71,7 +71,7 @@ const ProjectCard = ({
               dateTime={`${endDate}`}
               className="text-[var(--gray-text-color)] text-[14px]"
             >
-              {getDate("YYYY-MM-DD", endDate)}
+              {getDate("YYYY.MM.DD", endDate)}
             </time>
           )}
         </div>

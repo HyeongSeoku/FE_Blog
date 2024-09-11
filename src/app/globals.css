@@ -32,7 +32,8 @@
 [data-theme="dark"] {
   --bg-color: var(--dark-bg-color);
   --text-color: var(--dark-text-color);
-  --primary-color: var(--dark-primary-color);
+  /* --primary-color: var(--dark-primary-color); */
+  --primary-color: var(--light-primary-color);
   --second-bg-color: var(--dark-second-bg-color);
 }
 
