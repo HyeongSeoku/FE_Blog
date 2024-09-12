@@ -47,6 +47,9 @@ dependencies:
   sharp:
     specifier: ^0.33.4
     version: 0.33.4
+  swiper:
+    specifier: ^11.1.12
+    version: 11.1.12
   zustand:
     specifier: ^4.5.4
     version: 4.5.4(@types/react@18.3.3)(react@18.3.1)
@@ -6201,6 +6204,11 @@ packages:
       css-what: 6.1.0
       csso: 5.0.5
       picocolors: 1.0.1
+    dev: false
+
+  /swiper@11.1.12:
+    resolution: {integrity: sha512-PUkCToYAZMB4kP7z+YfPnkMHOMwMO71g8vUhz2o5INGIgIMb6Sb0XiP6cEJFsiFTd7FRDn5XCbg+KVKPDZqXLw==}
+    engines: {node: '>= 4.7.0'}
     dev: false
 
   /synckit@0.9.1:

@@ -6,6 +6,8 @@ import useDeviceType from "@/hooks/useDeviceType";
 import { ProjectDataProps } from "@/utils/mdx";
 import SeokuLogo from "@/image-components/seoku.svg";
 import MainSection from "@/components/MainSection";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 
 interface HomeClientProps {
   projectData: ProjectDataProps[];
@@ -27,29 +29,26 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
         </div>
       </section>
       <MainSection title="PROJECT">
-        <ul>
+        <Swiper
+          spaceBetween={5}
+          slidesPerView={1.3}
+          pagination={{ clickable: true }}
+        >
           {projectData.map(
-            ({
-              title,
-              description,
-              content,
-              startDate,
-              endDate,
-              slug,
-              tags,
-            }) => (
-              <ProjectCard
-                key={slug}
-                link={`/projects/${slug}`}
-                title={title}
-                description={description}
-                startDate={startDate}
-                endDate={endDate}
-                tags={tags}
-              />
+            ({ title, description, startDate, endDate, slug, tags }) => (
+              <SwiperSlide key={slug} style={{ width: "fit-content" }}>
+                <ProjectCard
+                  link={`/projects/${slug}`}
+                  title={title}
+                  description={description}
+                  startDate={startDate}
+                  endDate={endDate}
+                  tags={tags}
+                />
+              </SwiperSlide>
             ),
           )}
-        </ul>
+        </Swiper>
       </MainSection>
       <MainSection title="HISTORY">test</MainSection>
       <MainSection title="POST">test</MainSection>
