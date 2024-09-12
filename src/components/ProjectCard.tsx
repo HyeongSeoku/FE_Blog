@@ -31,12 +31,12 @@ const ProjectCard = ({
         href={link}
         className="block w-full h-full rounded-xl overflow-hidden bg-white"
       >
-        <div className="bg-[var(--gray-bg-color)] h-1/2">
+        <div className="bg-[var(--gray-bg-color)] h-1/2 flex items-center justify-center p-3">
           <Image
             src={imgSrc}
             alt={imgAlt}
-            width={300}
-            height={290}
+            width={200}
+            height={200}
             className="w-full h-full object-cover"
           />
         </div>
@@ -61,17 +61,17 @@ const ProjectCard = ({
           {!!startDate && (
             <time
               dateTime={`${startDate}`}
-              className="text-[var(--gray-text-color)] text-[14px] after:content-['-']"
+              className="text-[var(--gray-text-color)] text-xs after:content-['-']"
             >
-              {getDate("YYYY.MM.DD", startDate)}
+              {getDate("YYYY.MM.DD", `${startDate}`)}
             </time>
           )}
           {!!endDate && (
             <time
               dateTime={`${endDate}`}
-              className="text-[var(--gray-text-color)] text-[14px]"
+              className="text-[var(--gray-text-color)] text-xs"
             >
-              {getDate("YYYY.MM.DD", endDate)}
+              {getDate("YYYY.MM.DD", `${endDate}`)}
             </time>
           )}
         </div>
