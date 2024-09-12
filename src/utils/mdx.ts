@@ -17,6 +17,17 @@ export interface ProjectDataProps {
   content: string;
 }
 
+export interface ContentsDataProps {
+  slug: string;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  series?: string;
+  tags: string[];
+  content: string;
+}
+
 export const getAllProjects = (): ProjectDataProps[] => {
   const fileNames = fs.readdirSync(PROJECT_PATH);
 
@@ -104,3 +115,40 @@ export async function getProjectDetail(
   const mdxContentData = await getMdxContents(slug, PROJECT_PATH);
   return mdxContentData;
 }
+
+export const getSeriesPost = (series: string): ContentsDataProps[] => {
+  const exploreDirectory = (currentPath: string): ContentsDataProps[] => {
+    const files = fs.readdirSync(currentPath);
+
+    return files.reduce((allPosts: ContentsDataProps[], fileName: string) => {
+      const fullPath = path.join(currentPath, fileName);
+      const stat = fs.statSync(fullPath);
+
+      if (stat.isDirectory()) {
+        return allPosts.concat(exploreDirectory(fullPath));
+      } else if (stat.isFile() && fileName.endsWith(".mdx")) {
+        const fileContent = fs.readFileSync(fullPath, "utf-8");
+        const { data, content } = matter(fileContent);
+
+        if (data.series === series) {
+          const contentData: ContentsDataProps = {
+            slug: fileName.replace(/\.mdx$/, ""),
+            title: data.title || "",
+            description: data.description || "",
+            startDate: data.startDate || "",
+            endDate: data.endDate || "",
+            tags: data.tags || [],
+            series: data.series,
+            content: content || "",
+          };
+
+          return allPosts.concat(contentData);
+        }
+      }
+
+      return allPosts;
+    }, []);
+  };
+
+  return exploreDirectory(CONTENT_PATH);
+};
