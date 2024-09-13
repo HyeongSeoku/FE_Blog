@@ -6,16 +6,16 @@ function useDeviceType() {
   const { setIsMobile } = useDeviceStore();
 
   useEffect(() => {
-    const checkDeviceType = () => {
+    const checkDeviceWidth = () => {
       setIsMobile(window.innerWidth <= MOBILE_WIDTH);
     };
 
-    checkDeviceType();
+    checkDeviceWidth();
 
-    window.addEventListener("resize", checkDeviceType);
+    window.addEventListener("resize", checkDeviceWidth);
 
     return () => {
-      window.removeEventListener("resize", checkDeviceType);
+      window.removeEventListener("resize", checkDeviceWidth);
     };
   }, [setIsMobile]);
 }

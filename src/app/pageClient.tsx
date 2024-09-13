@@ -8,6 +8,8 @@ import SeokuLogo from "@/image-components/seoku.svg";
 import MainSection from "@/components/MainSection";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import ProjectSection from "@/components/ProjectSection";
+import HistoryLine from "@/components/HistoryLine";
 
 interface HomeClientProps {
   projectData: ProjectDataProps[];
@@ -29,14 +31,14 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
         </div>
       </section>
       <MainSection title="PROJECT">
-        <Swiper
+        {/* <Swiper
           spaceBetween={5}
           slidesPerView={1.3}
           pagination={{ clickable: true }}
         >
           {projectData.map(
             ({ title, description, startDate, endDate, slug, tags }) => (
-              <SwiperSlide key={slug} style={{ width: "fit-content" }}>
+              <SwiperSlide key={slug}>
                 <ProjectCard
                   link={`/projects/${slug}`}
                   title={title}
@@ -48,9 +50,13 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
               </SwiperSlide>
             ),
           )}
-        </Swiper>
+        </Swiper> */}
+        <ProjectSection projectData={projectData}></ProjectSection>
       </MainSection>
-      <MainSection title="HISTORY">test</MainSection>
+
+      <MainSection title="HISTORY">
+        <HistoryLine />
+      </MainSection>
       <MainSection title="POST">test</MainSection>
 
       <section className="flex flex-col gap-10"></section>

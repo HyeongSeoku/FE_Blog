@@ -38,11 +38,12 @@ export default {
         blink: {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0" },
-        } as any,
+        },
       },
       animation: {
         easeInTypingEffect: "easeInTypingEffect 1s ease-in-out forwards",
         blink: "blink 1s step-end infinite",
+        blinkEaseInOut: "blink 1s infinite ease-in-out",
       },
     },
   },
