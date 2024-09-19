@@ -43,7 +43,7 @@ export default {
       animation: {
         easeInTypingEffect: "easeInTypingEffect 1s ease-in-out forwards",
         blink: "blink 1s step-end infinite",
-        blinkEaseInOut: "blink 1s infinite ease-in-out",
+        blinkEaseInOut: "blink 1.5s infinite ease-in-out",
       },
     },
   },

@@ -5,10 +5,10 @@
 
 :root {
   --light-bg-color: #ffffff;
-  --light-text-color: #000000;
+  --light-text-color: #191919;
   --light-primary-color: #0090ff;
   --light-second-bg-color: rgba(0, 144, 255, 0.3);
-  --dark-bg-color: #121212;
+  --dark-bg-color: #191919;
   --dark-text-color: #e0e0e0;
   --dark-primary-color: #45adff;
   --dark-second-bg-color: rgba(63, 63, 63, 0.3);
@@ -37,6 +37,10 @@
   --second-bg-color: var(--dark-second-bg-color);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html,
 body,
 main {
@@ -51,4 +55,21 @@ main {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(217, 217, 217, 0.5);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(217, 217, 217, 0.8);
 }

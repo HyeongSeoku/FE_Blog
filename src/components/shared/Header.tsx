@@ -98,7 +98,7 @@ const Header = ({ headerType, children }: HeaderProps) => {
         <LightIcon width={18} height={18} fill="black" />
       </button>
 
-      <button className="ml-1 relative z-20" onClick={toggleMoMenu}>
+      <button className="ml-1 relative z-30" onClick={toggleMoMenu}>
         <MenuIcon width={18} height={18} fill="black" />
       </button>
 

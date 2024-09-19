@@ -1,6 +1,6 @@
 import { NAV_LIST } from "@/constants/navigation.constants";
 import Link from "next/link";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 export interface MobileNavigationProps {
   isOpen: boolean;
@@ -12,9 +12,17 @@ const MobileNavigation = ({ isOpen, setIsOpen }: MobileNavigationProps) => {
     setIsOpen(false);
   };
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      return;
+    }
+    document.body.style.overflow = "auto";
+  }, [isOpen]);
+
   return (
     <nav
-      className={`fixed top-0 bottom-0 left-0 right-0 pt-10 flex flex-col bg-[var(--bg-color)] shadow-lg transition-all duration-300 transform w-full z-10 ${
+      className={`fixed top-0 bottom-0 left-0 right-0 pt-10 flex flex-col bg-[var(--bg-color)] shadow-lg transition-all duration-300 transform w-full z-20 ${
         isOpen
           ? "opacity-100 translate-y-0 h-full"
           : "opacity-0 -translate-y-full h-0"

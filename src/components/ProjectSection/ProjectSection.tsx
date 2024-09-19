@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import useDeviceStore from "@/store/deviceType";
 import { ProjectDataProps } from "@/utils/mdx";
 import ProjectCard from "@/components/ProjectCard";
+import "@/components/ProjectSection/project-section.css";
 
 export interface ProjectSectionProps {
   projectData: ProjectDataProps[];
@@ -11,7 +12,6 @@ export interface ProjectSectionProps {
 
 const ProjectSection = ({ projectData }: ProjectSectionProps) => {
   const { isMobile } = useDeviceStore();
-  console.log("TEST isMobile", isMobile);
 
   /**
    * FIXME: Hydrate 이슈 수정
@@ -22,8 +22,8 @@ const ProjectSection = ({ projectData }: ProjectSectionProps) => {
     <>
       {isMobile ? (
         <Swiper
-          spaceBetween={5}
-          slidesPerView={1.3}
+          spaceBetween={15}
+          slidesPerView="auto"
           pagination={{ clickable: true }}
         >
           {projectData.map(

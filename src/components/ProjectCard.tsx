@@ -26,7 +26,7 @@ const ProjectCard = ({
   endDate = "",
 }: ProjectCardProps) => {
   return (
-    <article className="w-64 h-80 box-border transform transition ease-in-out duration-300 hover:scale-102">
+    <article className="w-64 h-80 box-border rounded-xl transform transition ease-in-out duration-300 hover:scale-102">
       <Link
         href={link}
         className="block w-full h-full rounded-xl overflow-hidden bg-white"
