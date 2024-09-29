@@ -4,6 +4,8 @@ import { ReactNode, useEffect, useState } from "react";
 import BackButton from "./backButton";
 import MenuIcon from "@/icon/menu.svg";
 import LightIcon from "@/icon/light.svg";
+import DarkIcon from "@/icon/dark.svg";
+import LogoIcon from "@/icon/logo.svg";
 import { useRouter } from "next/navigation";
 import MobileNavigation from "@/components/MobileNavigation";
 import useThemeStore from "@/store/theme";
@@ -17,10 +19,15 @@ export interface HeaderProps {
 export type HeaderType = "DEFAULT" | "BACK" | "NONE";
 
 const Header = ({ headerType, children }: HeaderProps) => {
+  const [isMounted, setIsMounted] = useState(false);
   const [isMoNavOpen, setIsMoNavOpen] = useState(false);
   const { isDarkMode, setDarkMode, setLightMode } = useThemeStore();
   const router = useRouter();
   useTheme();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const triggerAnimation = (type: "id" | "class", target: string) => {
     let elements: NodeListOf<SVGAnimateElement> | SVGAnimateElement | null =
@@ -41,6 +48,15 @@ const Header = ({ headerType, children }: HeaderProps) => {
     }
   };
 
+  const toggleTheme = () => {
+    if (isDarkMode) {
+      setLightMode();
+      return;
+    }
+
+    setDarkMode();
+  };
+
   const toggleMoMenu = () => {
     if (!isMoNavOpen) {
       // Open animations
@@ -55,51 +71,46 @@ const Header = ({ headerType, children }: HeaderProps) => {
     }
   };
 
-  const toggleTheme = () => {
-    if (!isDarkMode) {
-      triggerAnimation("class", "dark-mode");
-      triggerAnimation("id", "dark-mode-center");
-      setDarkMode();
-    } else {
-      triggerAnimation("class", "light-mode");
-      triggerAnimation("id", "light-mode-center");
-      setLightMode();
-    }
-  };
-
   const handleLogoButton = () => {
     router.push("/");
   };
 
-  useEffect(() => {
-    if (isDarkMode) {
-      triggerAnimation("class", "dark-mode");
-      triggerAnimation("id", "dark-mode-center");
-    } else {
-      triggerAnimation("class", "light-mode");
-      triggerAnimation("id", "light-mode-center");
-    }
-  }, [isDarkMode]);
-
   return (
-    <header className="flex pb-2 w-full h-10 box-border relative">
+    <header className="flex px-4 py-2 w-full box-border justify-between">
+      <button
+        className="flex flex-col flex-shrink-0 w-10 h-10 overflow-hidden"
+        onClick={toggleTheme}
+      >
+        <div
+          className={`flex flex-col flex-shrink-0 w-10 h-20 transition-transform duration-200 ease-in-out ${
+            isMounted && isDarkMode ? "transform translate-y-[-2.5rem]" : ""
+          }`}
+        >
+          <div className="flex items-center justify-center w-10 h-10">
+            <LightIcon width={24} height={24} />
+          </div>
+          <div className="flex items-center justify-center w-10 h-10">
+            <DarkIcon width={24} height={24} />
+          </div>
+        </div>
+      </button>
       {headerType === "DEFAULT" && (
         <button
-          className={`z-10 duration-[var(--transition-duration)] ${isMoNavOpen ? "opacity-0 transition-opacity" : "opacity-100"}`}
+          className={`z-10 flex gap-2 items-center ${isMoNavOpen ? "opacity-0 transition-opacity" : "opacity-100"}`}
           onClick={handleLogoButton}
         >
-          LOGO
+          <LogoIcon width={30} height={30} />
+          <h1 className="text-3xl font-bold">SEOKU</h1>
         </button>
       )}
       {headerType === "BACK" && <BackButton />}
       {children && <>{children}</>}
 
-      <button className="ml-auto z-20" onClick={toggleTheme}>
-        <LightIcon width={18} height={18} fill="black" />
-      </button>
-
-      <button className="ml-1 relative z-30" onClick={toggleMoMenu}>
-        <MenuIcon width={18} height={18} fill="black" />
+      <button
+        className="ml-1 h-10 w-10 flex items-center justify-center relative z-30"
+        onClick={toggleMoMenu}
+      >
+        <MenuIcon width={24} height={24} fill="black" />
       </button>
 
       <MobileNavigation isOpen={isMoNavOpen} setIsOpen={setIsMoNavOpen} />
