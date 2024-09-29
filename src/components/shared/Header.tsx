@@ -86,10 +86,10 @@ const Header = ({ headerType, children }: HeaderProps) => {
             isMounted && isDarkMode ? "transform translate-y-[-2.5rem]" : ""
           }`}
         >
-          <div className="flex items-center justify-center w-10 h-10">
+          <div className="flex items-center justify-center w-10 h-10 hover:animate-rotateFull">
             <LightIcon width={24} height={24} />
           </div>
-          <div className="flex items-center justify-center w-10 h-10">
+          <div className="flex items-center justify-center w-10 h-10 hover:animate-rotateQuarter">
             <DarkIcon width={24} height={24} />
           </div>
         </div>

@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import postcss from "postcss";
 import tailwindcss from "tailwindcss";
+import { transform } from "next/dist/build/swc";
 
 export default {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
@@ -35,15 +36,139 @@ export default {
           },
         },
 
+        rotateFull: {
+          from: {
+            transform: "rotate(0deg)",
+          },
+          to: {
+            transform: "rotate(360deg)",
+          },
+        },
+        rotateQuarter: {
+          "0%, 100%": {
+            transform: "rotate(0deg)",
+          },
+          "50%": {
+            transform: "rotate(40deg)",
+          },
+        },
         blink: {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0" },
+        },
+        bounceJelly: {
+          "0%": {
+            transform: "matrix(0, 0, 0, 0, 0, 0)",
+          },
+
+          "3.4%": {
+            transform: "matrix(0.316, 0, 0, 0.407, 0, 0)",
+          },
+
+          "4.7%": {
+            transform: "matrix(0.45, 0, 0, 0.599, 0, 0)",
+          },
+
+          "6.81%": {
+            transform: "matrix(0.659, 0, 0, 0.893, 0, 0)",
+          },
+
+          "9.41%": {
+            transform: "matrix(0.883, 0, 0, 1.168, 0, 0)",
+          },
+
+          "10.21%": {
+            transform: "matrix(0.942, 0, 0, 1.226, 0, 0)",
+          },
+
+          "13.61%": {
+            transform: "matrix(1.123, 0, 0, 1.332, 0, 0)",
+          },
+
+          "14.11%": {
+            transform: "matrix(1.141, 0, 0, 1.331, 0, 0)",
+          },
+
+          "17.52%": {
+            transform: "matrix(1.208, 0, 0, 1.239, 0, 0)",
+          },
+
+          "18.72%": {
+            transform: "matrix(1.212, 0, 0, 1.187, 0, 0)",
+          },
+
+          "21.32%": {
+            transform: "matrix(1.196, 0, 0, 1.069, 0, 0)",
+          },
+
+          "24.32%": {
+            transform: "matrix(1.151, 0, 0, 0.96, 0, 0)",
+          },
+
+          "25.23%": {
+            transform: "matrix(1.134, 0, 0, 0.938, 0, 0)",
+          },
+
+          "29.03%": {
+            transform: "matrix(1.063, 0, 0, 0.897, 0, 0)",
+          },
+
+          "29.93%": {
+            transform: "matrix(1.048, 0, 0, 0.899, 0, 0)",
+          },
+
+          "35.54%": {
+            transform: "matrix(0.979, 0, 0, 0.962, 0, 0)",
+          },
+
+          "36.74%": {
+            transform: "matrix(0.972, 0, 0, 0.979, 0, 0)",
+          },
+
+          "41.04%": {
+            transform: "matrix(0.961, 0, 0, 1.022, 0, 0)",
+          },
+
+          "44.44%": {
+            transform: "matrix(0.966, 0, 0, 1.032, 0, 0)",
+          },
+
+          "52.15%": {
+            transform: "matrix(0.991, 0, 0, 1.006, 0, 0)",
+          },
+
+          "59.86%": {
+            transform: "matrix(1.006, 0, 0, 0.99, 0, 0)",
+          },
+
+          "63.26%": {
+            transform: "matrix(1.007, 0, 0, 0.992, 0, 0)",
+          },
+
+          "75.28%": {
+            transform: "matrix(1.001, 0, 0, 1.003, 0, 0)",
+          },
+
+          "85.49%": {
+            transform: "matrix(0.999, 0, 0, 1, 0, 0)",
+          },
+
+          "90.69%": {
+            transform: "matrix(0.999, 0, 0, 0.999, 0, 0)",
+          },
+
+          to: {
+            transform: "matrix(1, 0, 0, 1, 0, 0)",
+          },
         },
       },
       animation: {
         easeInTypingEffect: "easeInTypingEffect 1s ease-in-out forwards",
         blink: "blink 1s step-end infinite",
         blinkEaseInOut: "blink 1.5s infinite ease-in-out",
+        rotateFull: "rotateFull 3s linear infinite",
+        rotateQuarter: "rotateQuarter 1s linear infinite",
+        bounceJelly: "bounceJelly 1s linear both",
       },
     },
   },
@@ -61,6 +186,12 @@ export default {
         },
         ".scrollbar-none": {
           "scrollbar-width": "none",
+        },
+        ".animation-paused": {
+          "animation-play-state": "paused",
+        },
+        ".animation-running": {
+          "animation-play-state": "running",
         },
       };
 
