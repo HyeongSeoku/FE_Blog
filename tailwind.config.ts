@@ -5,11 +5,45 @@ import postcss from "postcss";
 import tailwindcss from "tailwindcss";
 
 export default {
-  content: ["./app/**/*.{js,jsx,ts,tsx}"],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: "class",
   theme: {
+    screens: {
+      xs: "375px",
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
+    },
     extend: {
-      fontFamily: {
-        sans: ["Pretendard", "sans-serif"],
+      scale: {
+        "102": "1.02",
+      },
+      colors: {
+        primary: "var(--primary-color)",
+      },
+      keyframes: {
+        easeInTypingEffect: {
+          "0%": {
+            opacity: "0",
+            clipPath: "inset(0 100% 0 0)",
+          },
+          "100%": {
+            opacity: "1",
+            clipPath: "inset(0 0 0 0)",
+          },
+        },
+
+        blink: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" },
+        },
+      },
+      animation: {
+        easeInTypingEffect: "easeInTypingEffect 1s ease-in-out forwards",
+        blink: "blink 1s step-end infinite",
+        blinkEaseInOut: "blink 1.5s infinite ease-in-out",
       },
     },
   },

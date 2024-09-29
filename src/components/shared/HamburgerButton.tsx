@@ -3,6 +3,7 @@
 import { useState } from "react";
 import "@/styles/hamburger.css";
 import Link from "next/link";
+import MenuIcon from "@/icon/menu.svg";
 
 const HamburgerButton = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,13 +18,9 @@ const HamburgerButton = () => {
 
   return (
     <>
-      {!isOpen && (
-        <button className="hamburger-container" onClick={toggleMenu}>
-          <div className={"hamburger-line"}></div>
-          <div className={"hamburger-line"}></div>
-          <div className={`hamburger-line`}></div>
-        </button>
-      )}
+      <button className="hamburger-container" onClick={toggleMenu}>
+        <MenuIcon width={18} height={18} fill="black" />
+      </button>
 
       <div
         className={`fixed top-0 left-0 w-full h-full flex flex-col bg-white shadow-lg transition-all duration-300 transform ${
@@ -32,45 +29,42 @@ const HamburgerButton = () => {
         style={{ transitionProperty: "opacity, transform" }}
       >
         {isOpen && (
-          <button className="py-2 px-4 ml-auto" onClick={toggleMenu}>
-            X
-          </button>
+          <nav>
+            <ul
+              className={`flex flex-col transition-opacity duration-300 ${
+                isOpen ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <li className="px-4 py-2 cursor-pointer flex">
+                <Link
+                  href="/"
+                  className="w-full h-full"
+                  onClick={handleLinkClick}
+                >
+                  Home
+                </Link>
+              </li>
+              <li className="px-4 py-2 cursor-pointer flex">
+                <Link
+                  href="/blog"
+                  className="w-full h-full"
+                  onClick={handleLinkClick}
+                >
+                  Blog
+                </Link>
+              </li>
+              <li className="px-4 py-2 cursor-pointer flex">
+                <Link
+                  href="/login"
+                  className="w-full h-full"
+                  onClick={handleLinkClick}
+                >
+                  Resume
+                </Link>
+              </li>
+            </ul>
+          </nav>
         )}
-        <nav>
-          <ul
-            className={`flex flex-col transition-opacity duration-300 ${
-              isOpen ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <li className="px-4 py-2 cursor-pointer flex">
-              <Link
-                href="/"
-                className="w-full h-full"
-                onClick={handleLinkClick}
-              >
-                Home
-              </Link>
-            </li>
-            <li className="px-4 py-2 cursor-pointer flex">
-              <Link
-                href="/about"
-                className="w-full h-full"
-                onClick={handleLinkClick}
-              >
-                About
-              </Link>
-            </li>
-            <li className="px-4 py-2 cursor-pointer flex">
-              <Link
-                href="/login"
-                className="w-full h-full"
-                onClick={handleLinkClick}
-              >
-                Login
-              </Link>
-            </li>
-          </ul>
-        </nav>
       </div>
     </>
   );

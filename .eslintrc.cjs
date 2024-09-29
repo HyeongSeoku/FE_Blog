@@ -4,10 +4,10 @@ module.exports = {
     jest: true,
   },
   ignorePatterns: [
-    ".eslintrc.cjs",
     "*.config.js",
     "*.config.ts",
     "tsconfig.json",
+    "next.config.mjs",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
