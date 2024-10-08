@@ -1,3 +1,4 @@
+import { hexToRgba } from "@/utils/colors";
 import Image from "next/image";
 import { useRef } from "react";
 
@@ -27,14 +28,6 @@ const skillColors: SkillColor = {
   JavaScript: "#FFCA27",
   TypeScript: "#3178C6",
   NextJs: "#000000",
-};
-
-const hexToRgba = (hex: string, opacity: number) => {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-
-  return `rgba(${r}, ${g}, ${b}, ${opacity}%)`;
 };
 
 const SkillChip = ({

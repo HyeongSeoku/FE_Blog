@@ -24,7 +24,10 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
         <ProjectSection projectData={projectData}></ProjectSection>
       </MainSection>
 
-      <MainSection title="HISTORY">
+      <MainSection
+        title="HISTORY"
+        description={`경력 내용입니다. \n 자세한 내용은 클릭시 노출됩니다.`}
+      >
         <HistoryLine />
       </MainSection>
       <MainSection title="POST">test</MainSection>
