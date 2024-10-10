@@ -6,16 +6,25 @@ import MainSection from "@/components/MainSection";
 import ProjectSection from "@/components/ProjectSection/ProjectSection";
 import HistoryLine from "@/components/HistorySection/HistorySection";
 import IntroSection from "@/components/IntroSection/IntroSection";
+import { useState } from "react";
+import dynamic from "next/dynamic";
+
+const Modal = dynamic(() => import("@/components/shared/Modal/Modal"), {
+  ssr: false,
+});
 
 interface HomeClientProps {
   projectData: ProjectDataProps[];
 }
 
 export const HomeClient = ({ projectData }: HomeClientProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   useDeviceType();
 
   return (
     <div className="h-full flex flex-col">
+      <button onClick={() => setIsOpen((prev) => !prev)}>toggle modal</button>
       <IntroSection></IntroSection>
       <MainSection
         title="PROJECT"
@@ -33,6 +42,11 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
       <MainSection title="POST">test</MainSection>
 
       <section className="flex flex-col gap-10"></section>
+      {isOpen && (
+        <Modal isOpen={isOpen} setIsOpen={setIsOpen} hasCloseBtn={true}>
+          test
+        </Modal>
+      )}
     </div>
   );
 };

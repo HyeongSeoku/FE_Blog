@@ -31,7 +31,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body className={classNames("h-full w-full block")}>{children}</body>
+      <body className={classNames("h-full w-full block")}>
+        {children}
+        <div id="modal-root"></div>
+      </body>
     </html>
   );
 }

@@ -1,7 +1,8 @@
 "use client";
 
-import { Dispatch, ReactNode, SetStateAction } from "react";
+import { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
 import CloseIcon from "@/icon/close_icon.svg";
+import ReactDOM from "react-dom";
 import { hexToRgba } from "@/utils/colors";
 
 export interface ModalProps {
@@ -23,7 +24,16 @@ const Modal = ({
   setIsOpen,
   closeOnDimmedClick = true,
 }: ModalProps) => {
+  const modalElement = document.getElementById("modal-root");
   const backgroundColor = bgColor ? hexToRgba(bgColor, 40) : undefined;
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [isOpen]);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -35,15 +45,17 @@ const Modal = ({
     }
   };
 
-  return (
-    <div>
+  if (!modalElement) return null;
+
+  return ReactDOM.createPortal(
+    <div className="fixed inset-0 flex items-center justify-center z-50">
       <div
-        className="relative top-0 left-0 right-0 bottom-0 bg-slate-400 dimmed"
+        className="absolute inset-0 bg-slate-400 opacity-50 dimmed z-40"
         onClick={handleDimmedClick}
       ></div>
       <div
         role="dialog"
-        className="contents bg-white"
+        className="relative bg-white p-6 rounded-lg shadow-lg z-50"
         style={{
           backgroundColor: backgroundColor,
         }}
@@ -58,7 +70,8 @@ const Modal = ({
         </header>
         <div>{children}</div>
       </div>
-    </div>
+    </div>,
+    modalElement,
   );
 };
 
