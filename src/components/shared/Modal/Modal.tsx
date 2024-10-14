@@ -29,10 +29,14 @@ const Modal = ({
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.setAttribute("data-modal-open", "true");
     } else {
-      document.body.style.overflow = "";
+      document.body.removeAttribute("data-modal-open");
     }
+
+    return () => {
+      document.body.removeAttribute("data-modal-open");
+    };
   }, [isOpen]);
 
   const closeModal = () => {
@@ -45,20 +49,26 @@ const Modal = ({
     }
   };
 
-  if (!modalElement) return null;
+  if (!modalElement) {
+    console.error("Modal root element not found.");
+    return null;
+  }
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 flex items-center justify-center z-50">
-      <div
-        className="absolute inset-0 bg-slate-400 opacity-50 dimmed z-40"
-        onClick={handleDimmedClick}
-      ></div>
+    <div
+      className="fixed inset-0 flex items-center justify-center z-40 bg-slate-400"
+      onClick={handleDimmedClick}
+      style={{
+        backgroundColor: "rgba(0, 0, 0, 0.4)",
+      }}
+    >
       <div
         role="dialog"
-        className="relative bg-white p-6 rounded-lg shadow-lg z-50"
+        className="relative min-w-64 bg-white p-6 rounded-lg shadow-lg z-50 max-w-screen-sm opacity-100"
         style={{
           backgroundColor: backgroundColor,
         }}
+        onClick={(e) => e.stopPropagation()}
       >
         <header>
           {title && <h3>{title}</h3>}

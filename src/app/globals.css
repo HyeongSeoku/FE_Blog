@@ -51,6 +51,12 @@ main {
   font-family: var(--font-family1);
 }
 
+body[data-modal-open="true"] {
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none; /* 모바일 터치 스크롤 방지 */
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
