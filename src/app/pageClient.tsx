@@ -24,7 +24,6 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
 
   return (
     <div className="h-full flex flex-col">
-      <button onClick={() => setIsOpen((prev) => !prev)}>toggle modal</button>
       <IntroSection></IntroSection>
       <MainSection
         title="PROJECT"
@@ -32,6 +31,7 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
       >
         <ProjectSection projectData={projectData}></ProjectSection>
       </MainSection>
+      <button onClick={() => setIsOpen((prev) => !prev)}>toggle modal</button>
 
       <MainSection
         title="HISTORY"

@@ -1,9 +1,10 @@
 "use client";
 
-import { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import CloseIcon from "@/icon/close_icon.svg";
 import ReactDOM from "react-dom";
 import { hexToRgba } from "@/utils/colors";
+import useScrollDisable from "@/hooks/useScrollDisable";
 
 export interface ModalProps {
   title?: string;
@@ -27,17 +28,7 @@ const Modal = ({
   const modalElement = document.getElementById("modal-root");
   const backgroundColor = bgColor ? hexToRgba(bgColor, 40) : undefined;
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.setAttribute("data-modal-open", "true");
-    } else {
-      document.body.removeAttribute("data-modal-open");
-    }
-
-    return () => {
-      document.body.removeAttribute("data-modal-open");
-    };
-  }, [isOpen]);
+  useScrollDisable(isOpen);
 
   const closeModal = () => {
     setIsOpen(false);

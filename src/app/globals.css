@@ -38,7 +38,8 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  width: 100vw;
+  height: 100vh;
 }
 
 html,
@@ -51,10 +52,17 @@ main {
   font-family: var(--font-family1);
 }
 
+body {
+  scroll-behavior: smooth;
+  overflow-y: auto;
+  position: static;
+}
+
 body[data-modal-open="true"] {
-  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  overflow-y: scroll;
   overscroll-behavior: none;
-  touch-action: none; /* 모바일 터치 스크롤 방지 */
 }
 
 @layer utilities {

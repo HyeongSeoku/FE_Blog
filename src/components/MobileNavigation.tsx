@@ -1,6 +1,7 @@
 import { NAV_LIST } from "@/constants/navigation.constants";
+import useScrollDisable from "@/hooks/useScrollDisable";
 import Link from "next/link";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 export interface MobileNavigationProps {
   isOpen: boolean;
@@ -12,13 +13,7 @@ const MobileNavigation = ({ isOpen, setIsOpen }: MobileNavigationProps) => {
     setIsOpen(false);
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-      return;
-    }
-    document.body.style.overflow = "auto";
-  }, [isOpen]);
+  useScrollDisable(isOpen);
 
   return (
     <nav
