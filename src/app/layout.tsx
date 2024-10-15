@@ -22,11 +22,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   const theme = cookieStore.get(LIGHT_DARK_THEME)?.value || "light";
 
   return (
-    <html
-      lang="en"
-      className="h-full w-full"
-      data-theme={theme === "dark" ? "dark" : "light"}
-    >
+    <html lang="en" data-theme={theme === "dark" ? "dark" : "light"}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
