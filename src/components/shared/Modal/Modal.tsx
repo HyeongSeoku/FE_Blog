@@ -5,6 +5,8 @@ import CloseIcon from "@/icon/close_icon.svg";
 import ReactDOM from "react-dom";
 import { hexToRgba } from "@/utils/colors";
 import useScrollDisable from "@/hooks/useScrollDisable";
+import useModalVisibility from "@/hooks/useModalVisiblilty";
+import classNames from "classnames";
 
 export interface ModalProps {
   title?: string;
@@ -28,6 +30,8 @@ const Modal = ({
   const modalElement = document.getElementById("modal-root");
   const backgroundColor = bgColor ? hexToRgba(bgColor, 40) : undefined;
 
+  const isVisible = useModalVisibility(isOpen, 300);
+  // TODO: 모달 open 시 스크롤 최상단으로 이동되는 현상
   useScrollDisable(isOpen);
 
   const closeModal = () => {
@@ -45,9 +49,14 @@ const Modal = ({
     return null;
   }
 
+  if (!isVisible) return null;
+
   return ReactDOM.createPortal(
     <div
-      className="fixed inset-0 flex items-center justify-center z-40 bg-slate-400"
+      className={classNames(
+        "fixed inset-0 flex items-center justify-center z-40 bg-slate-400",
+        { "opacity-0": !isOpen, "opacity-100": isOpen },
+      )}
       onClick={handleDimmedClick}
       style={{
         backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -55,7 +64,13 @@ const Modal = ({
     >
       <div
         role="dialog"
-        className="relative min-w-64 bg-white p-6 rounded-lg shadow-lg z-50 max-w-screen-sm opacity-100"
+        className={classNames(
+          "relative min-w-64 bg-white p-6 rounded-lg shadow-lg z-50 max-w-screen-sm transform transition-all duration-300",
+          {
+            "opacity-0 scale-95": !isOpen,
+            "opacity-100 scale-100": isOpen,
+          },
+        )}
         style={{
           backgroundColor: backgroundColor,
         }}

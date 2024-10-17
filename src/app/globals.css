@@ -68,6 +68,7 @@ body[data-modal-open="true"] {
   position: fixed;
   width: 100%;
   overscroll-behavior: none;
+  overflow-y: scroll;
 }
 
 @layer utilities {

@@ -42,11 +42,9 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
       <MainSection title="POST">test</MainSection>
 
       <section className="flex flex-col gap-10"></section>
-      {isOpen && (
-        <Modal isOpen={isOpen} setIsOpen={setIsOpen} hasCloseBtn={true}>
-          test
-        </Modal>
-      )}
+      <Modal isOpen={isOpen} setIsOpen={setIsOpen} hasCloseBtn={true}>
+        test
+      </Modal>
     </div>
   );
 };
