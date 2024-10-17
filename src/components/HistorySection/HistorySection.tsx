@@ -2,18 +2,21 @@
 
 import "@/components/HistorySection/history-section.css";
 import { PUBLIC_IMG_PATH } from "@/constants/basic.constants";
-import { HISTORY_LIST } from "@/constants/history.constant";
+import {
+  HISTORY_LIST,
+  HISTORY_LIST_ITEM_PROPS,
+} from "@/constants/history.constant";
 
 const FIRST_YEAR = 2022;
-const currentYear = new Date().getFullYear();
+const currentYear = new Date().getFullYear() + 2;
 
 interface HistoryItemProps {
   targetYear: number;
+  currentJob?: HISTORY_LIST_ITEM_PROPS;
 }
 
-const HistoryItem = ({ targetYear }: HistoryItemProps) => {
+const HistoryItem = ({ targetYear, currentJob }: HistoryItemProps) => {
   const yearData = HISTORY_LIST.filter(({ year }) => targetYear === year);
-  const currentJob = yearData.find(({ isCurrent }) => isCurrent);
 
   return (
     <section className="history-item justify-center flex flex-col w-full h-full">
@@ -52,7 +55,22 @@ const HistoryItem = ({ targetYear }: HistoryItemProps) => {
           ))}
         </div>
       ) : (
-        <div></div>
+        <div className="history-detail-container">
+          <div className="flex items-center gap-2 pl-3 mb-2">
+            <span className="text-xl font-bold">{currentJob?.month}</span>
+            <img
+              src={`${PUBLIC_IMG_PATH}/${currentJob?.logoSrc}`}
+              className="bg-slate-400"
+              width={30}
+            />
+            <div>
+              <div className="">{currentJob?.title}</div>
+              <div className="text-xs font-thin opacity-55">
+                {currentJob?.description}
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </section>
   );
@@ -64,10 +82,16 @@ const HistorySection = () => {
     (_, index) => FIRST_YEAR + index,
   );
 
+  const currentJob = HISTORY_LIST.findLast(({ isCurrent }) => isCurrent);
+
   return (
     <article className="flex max-w-3xl justify-between relative">
       {yearList.map((year, idx) => (
-        <HistoryItem key={`${year}_${idx}`} targetYear={year} />
+        <HistoryItem
+          key={`${year}_${idx}`}
+          targetYear={year}
+          currentJob={currentJob}
+        />
       ))}
     </article>
   );
