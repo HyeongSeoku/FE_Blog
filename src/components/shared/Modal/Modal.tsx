@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, ReactNode, SetStateAction } from "react";
+import { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
 import CloseIcon from "@/icon/close_icon.svg";
 import ReactDOM from "react-dom";
 import { hexToRgba } from "@/utils/colors";
@@ -30,9 +30,8 @@ const Modal = ({
   const modalElement = document.getElementById("modal-root");
   const backgroundColor = bgColor ? hexToRgba(bgColor, 40) : undefined;
 
-  const isVisible = useModalVisibility(isOpen, 300);
-  // TODO: 모달 open 시 스크롤 최상단으로 이동되는 현상
   useScrollDisable(isOpen);
+  const isVisible = useModalVisibility(isOpen, 300);
 
   const closeModal = () => {
     setIsOpen(false);
