@@ -1,8 +1,8 @@
 "use client";
 
-import { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
-import CloseIcon from "@/icon/close_icon.svg";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import ReactDOM from "react-dom";
+import CloseIcon from "@/icon/close_icon.svg";
 import { hexToRgba } from "@/utils/colors";
 import useScrollDisable from "@/hooks/useScrollDisable";
 import useModalVisibility from "@/hooks/useModalVisiblilty";
@@ -14,8 +14,8 @@ export interface ModalProps {
   children: ReactNode;
   bgColor?: string;
   isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
   closeOnDimmedClick?: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const Modal = ({
@@ -24,14 +24,16 @@ const Modal = ({
   children,
   bgColor = "",
   isOpen,
-  setIsOpen,
   closeOnDimmedClick = true,
+  setIsOpen,
 }: ModalProps) => {
   const modalElement = document.getElementById("modal-root");
   const backgroundColor = bgColor ? hexToRgba(bgColor, 40) : undefined;
 
   useScrollDisable(isOpen);
-  const isVisible = useModalVisibility(isOpen, 300);
+
+  // useModalVisibility에서 가시성과 애니메이션 상태 가져오기
+  const { isVisible, isAnimating } = useModalVisibility(isOpen, 300);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -43,18 +45,13 @@ const Modal = ({
     }
   };
 
-  if (!modalElement) {
-    console.error("Modal root element not found.");
-    return null;
-  }
-
-  if (!isVisible) return null;
+  if (!modalElement || !isVisible) return null; // 가시성에 따라 렌더링 제어
 
   return ReactDOM.createPortal(
     <div
       className={classNames(
-        "fixed inset-0 flex items-center justify-center z-40 bg-slate-400",
-        { "opacity-0": !isOpen, "opacity-100": isOpen },
+        "fixed inset-0 flex items-center justify-center z-40 bg-slate-400 transform transition-all duration-300",
+        { "opacity-0": !isAnimating, "opacity-100": isAnimating },
       )}
       onClick={handleDimmedClick}
       style={{
@@ -64,21 +61,27 @@ const Modal = ({
       <div
         role="dialog"
         className={classNames(
-          "relative min-w-64 bg-white p-6 rounded-lg shadow-lg z-50 max-w-screen-sm transform transition-all duration-300",
+          "relative min-w-64 bg-white p-6 rounded-lg shadow-lg z-50 max-w-screen-sm transform transition-all duration-300 text-[var(--light-text-color)]",
           {
-            "opacity-0 scale-95": !isOpen,
-            "opacity-100 scale-100": isOpen,
+            "scale-95": !isAnimating, // 열릴 때 애니메이션
+            "scale-100": isAnimating, // 닫힐 때 애니메이션
           },
         )}
         style={{
           backgroundColor: backgroundColor,
+          opacity: isAnimating ? 1 : 0, // 애니메이션에 따라 투명도 제어
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <header>
-          {title && <h3>{title}</h3>}
+        <header className="flex items-center">
+          {title && <h3 className="font-semibold text-2xl">{title}</h3>}
           {hasCloseBtn && (
-            <button type="button" className="ml-auto" onClick={closeModal}>
+            <button
+              type="button"
+              aria-label="close"
+              className="ml-auto"
+              onClick={closeModal}
+            >
               <CloseIcon />
             </button>
           )}

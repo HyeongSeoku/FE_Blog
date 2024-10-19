@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+// import "tailwindcss";
 import { ReactNode } from "react";
-import classNames from "classnames";
 import { cookies } from "next/headers";
 import { LIGHT_DARK_THEME } from "@/constants/cookie.constants";
 

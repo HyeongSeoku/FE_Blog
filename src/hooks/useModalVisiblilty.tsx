@@ -2,12 +2,19 @@ import { useState, useEffect } from "react";
 
 function useModalVisibility(show: boolean, animationDuration = 300) {
   const [isVisible, setIsVisible] = useState(show);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
+
     if (show) {
       setIsVisible(true);
+      timer = setTimeout(() => {
+        setIsAnimating(true);
+      }, 10);
     } else {
-      const timer = setTimeout(() => {
+      setIsAnimating(false);
+      timer = setTimeout(() => {
         setIsVisible(false);
       }, animationDuration);
 
@@ -15,7 +22,7 @@ function useModalVisibility(show: boolean, animationDuration = 300) {
     }
   }, [show, animationDuration]);
 
-  return isVisible;
+  return { isVisible, isAnimating };
 }
 
 export default useModalVisibility;

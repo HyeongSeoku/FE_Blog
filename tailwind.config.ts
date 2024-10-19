@@ -3,7 +3,6 @@ import fs from "fs";
 import path from "path";
 import postcss from "postcss";
 import tailwindcss from "tailwindcss";
-import { transform } from "next/dist/build/swc";
 
 export default {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
