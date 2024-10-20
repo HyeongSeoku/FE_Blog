@@ -19,7 +19,7 @@ const HistoryItem = ({ targetYear, currentJob }: HistoryItemProps) => {
   const yearData = HISTORY_LIST.filter(({ year }) => targetYear === year);
 
   return (
-    <section className="history-item justify-center flex flex-col w-full h-full">
+    <section className="history-item justify-center flex flex-col w-full h-full min-w-40">
       <time
         dateTime={`${targetYear}`}
         className="block mb-2 text-lg font-semibold"
@@ -33,11 +33,11 @@ const HistoryItem = ({ targetYear, currentJob }: HistoryItemProps) => {
         <div className="absolute top-1/2 left-5 w-5 h-5 rounded-full bg-[var(--text-color)] transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
       </div>
       {!!yearData.length ? (
-        <div className="history-detail-container">
+        <div className="history-detail-container ">
           {yearData.map(({ month, title, description, tag, logoSrc }, idx) => (
             <div
               key={`${month}_${idx}`}
-              className="flex items-center gap-2 pl-3 mb-2"
+              className="flex items-center gap-2 pl-3 mb-2 min-h-20"
             >
               <span className="text-xl font-bold">{month}</span>
               <img
@@ -55,8 +55,8 @@ const HistoryItem = ({ targetYear, currentJob }: HistoryItemProps) => {
           ))}
         </div>
       ) : (
-        <div className="history-detail-container">
-          <div className="flex items-center gap-2 pl-3 mb-2">
+        <div className="history-detail-container ">
+          <div className="flex items-center gap-2 pl-3 mb-2 min-h-20">
             <span className="text-xl font-bold">{currentJob?.month}</span>
             <img
               src={`${PUBLIC_IMG_PATH}/${currentJob?.logoSrc}`}
@@ -85,7 +85,7 @@ const HistorySection = () => {
   const currentJob = HISTORY_LIST.findLast(({ isCurrent }) => isCurrent);
 
   return (
-    <article className="flex max-w-3xl justify-between relative">
+    <article className="history-container flex max-w-3xl justify-between relative overflow-x-scroll z-10">
       {yearList.map((year, idx) => (
         <HistoryItem
           key={`${year}_${idx}`}

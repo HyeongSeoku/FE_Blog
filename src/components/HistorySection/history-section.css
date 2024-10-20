@@ -1,3 +1,12 @@
+.history-container {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.history-container::-webkit-scrollbar {
+  display: none;
+}
+
 .history-circle::after {
   content: "";
   width: 100%;
@@ -12,4 +21,15 @@
 
 .history-item:last-child .history-circle::after {
   display: none;
+}
+
+.history-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 100%;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent);
+  pointer-events: none;
 }
