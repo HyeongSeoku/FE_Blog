@@ -53,10 +53,6 @@ main {
   box-sizing: border-box;
 }
 
-html {
-  scrollbar-gutter: stable;
-}
-
 body {
   scroll-behavior: smooth;
   position: static;
