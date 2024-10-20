@@ -7,6 +7,7 @@ import { hexToRgba } from "@/utils/colors";
 import useScrollDisable from "@/hooks/useScrollDisable";
 import useModalVisibility from "@/hooks/useModalVisiblilty";
 import classNames from "classnames";
+import useModalKeyboardControl from "@/hooks/useModalKeyboardControl";
 
 export interface ModalProps {
   title?: string;
@@ -15,6 +16,7 @@ export interface ModalProps {
   bgColor?: string;
   isOpen: boolean;
   closeOnDimmedClick?: boolean;
+  controlWithKeyboard?: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -25,19 +27,20 @@ const Modal = ({
   bgColor = "",
   isOpen,
   closeOnDimmedClick = true,
+  controlWithKeyboard = true,
   setIsOpen,
 }: ModalProps) => {
   const modalElement = document.getElementById("modal-root");
   const backgroundColor = bgColor ? hexToRgba(bgColor, 40) : undefined;
 
-  useScrollDisable(isOpen);
-
-  // useModalVisibility에서 가시성과 애니메이션 상태 가져오기
-  const { isVisible, isAnimating } = useModalVisibility(isOpen, 300);
-
   const closeModal = () => {
     setIsOpen(false);
   };
+
+  useScrollDisable(isOpen);
+  useModalKeyboardControl(isOpen, closeModal, controlWithKeyboard);
+
+  const { isVisible, isAnimating } = useModalVisibility(isOpen, 300);
 
   const handleDimmedClick = (e: React.MouseEvent) => {
     if (closeOnDimmedClick && e.target === e.currentTarget) {
@@ -45,7 +48,7 @@ const Modal = ({
     }
   };
 
-  if (!modalElement || !isVisible) return null; // 가시성에 따라 렌더링 제어
+  if (!modalElement || !isVisible) return null;
 
   return ReactDOM.createPortal(
     <div
@@ -63,13 +66,13 @@ const Modal = ({
         className={classNames(
           "relative min-w-64 bg-white p-6 rounded-lg shadow-lg z-50 max-w-screen-sm transform transition-all duration-300 text-[var(--light-text-color)]",
           {
-            "scale-95": !isAnimating, // 열릴 때 애니메이션
-            "scale-100": isAnimating, // 닫힐 때 애니메이션
+            "scale-95": !isAnimating,
+            "scale-100": isAnimating,
           },
         )}
         style={{
           backgroundColor: backgroundColor,
-          opacity: isAnimating ? 1 : 0, // 애니메이션에 따라 투명도 제어
+          opacity: isAnimating ? 1 : 0,
         }}
         onClick={(e) => e.stopPropagation()}
       >
