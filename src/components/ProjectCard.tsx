@@ -26,7 +26,7 @@ const ProjectCard = ({
   endDate = "",
 }: ProjectCardProps) => {
   return (
-    <article className="w-64 h-80 box-border rounded-xl transform transition ease-in-out duration-300 hover:scale-102">
+    <article className="w-64 h-80 box-border rounded-xl shadow-md transform transition ease-in-out duration-300 hover:scale-102">
       <Link
         href={link}
         className="block w-full h-full rounded-xl overflow-hidden bg-white"
@@ -37,10 +37,10 @@ const ProjectCard = ({
             alt={imgAlt}
             width={200}
             height={200}
-            className="w-full h-full object-cover"
+            className="h-full object-contain"
           />
         </div>
-        <div className="text-black px-5 py-4 h-1/2 bg-white">
+        <div className="text-black px-5 py-4 h-1/2 bg-[var(--project-card-bg)]">
           <h3 className="text-xl font-semibold mb-2">{title}</h3>
           <p className="text-sm mb-3">{description}</p>
           {!!tags.length && (
