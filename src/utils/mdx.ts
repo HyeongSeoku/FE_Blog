@@ -1,11 +1,12 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { PostProps } from "@/types/posts";
 
 export const DEFAULT_MDX_PATH = "src/mdx";
 const PROJECT_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/project`);
-const CONTENT_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/content`);
+const POST_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/content`);
 
 export interface ProjectDataProps {
   slug: string;
@@ -17,52 +18,10 @@ export interface ProjectDataProps {
   content: string;
 }
 
-export interface ContentsDataProps {
+export interface PostDataProps extends PostProps {
   slug: string;
-  title: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  series?: string;
-  tags: string[];
   content: string;
 }
-
-export const getAllProjects = (): ProjectDataProps[] => {
-  const fileNames = fs.readdirSync(PROJECT_PATH);
-
-  return fileNames.reduce((projects: ProjectDataProps[], fileName) => {
-    const filePath = path.join(PROJECT_PATH, fileName);
-    const fileContents = fs.readFileSync(filePath, "utf8");
-
-    const { data, content } = matter(fileContents);
-
-    if (
-      !data.title ||
-      !data.description ||
-      !data.startDate ||
-      !data.endDate ||
-      !data.tags
-    ) {
-      console.warn(
-        `파일 ${fileName}에 필수 메타데이터가 없습니다. 건너뜁니다.`,
-      );
-      return projects;
-    }
-
-    const project = {
-      slug: fileName.replace(/\.mdx$/, ""),
-      title: data.title,
-      description: data.description,
-      startDate: data.startDate,
-      endDate: data.endDate,
-      tags: data.tags.split(","),
-      content,
-    };
-
-    return [...projects, project];
-  }, []);
-};
 
 interface getMdxContentsResponse {
   source: MDXRemoteSerializeResult;
@@ -71,17 +30,20 @@ interface getMdxContentsResponse {
   };
 }
 
-export async function getMdxContents(
+export const getMdxContents = async (
   slug: string[],
   fileDirectory: string,
-): Promise<getMdxContentsResponse | null> {
+): Promise<getMdxContentsResponse | null> => {
   const filePath = path.join(fileDirectory, ...slug) + ".mdx";
 
-  if (!fs.existsSync(filePath)) {
+  try {
+    await fs.access(filePath);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 
-  const source = fs.readFileSync(filePath, "utf8");
+  const source = await fs.readFile(filePath, "utf8");
   const { content, data } = matter(source);
 
   function isFrontMatter(data: any): data is { title: string } {
@@ -100,55 +62,113 @@ export async function getMdxContents(
     source: mdxSource,
     frontMatter: data,
   };
-}
+};
 
-export async function getPostsDetail(
-  slug: string[],
-): Promise<getMdxContentsResponse | null> {
-  const mdxContentData = await getMdxContents(slug, CONTENT_PATH);
-  return mdxContentData;
-}
+export const getAllProjects = async (): Promise<ProjectDataProps[]> => {
+  const fileNames = await fs.readdir(PROJECT_PATH);
 
-export async function getProjectDetail(
-  slug: string[],
-): Promise<getMdxContentsResponse | null> {
-  const mdxContentData = await getMdxContents(slug, PROJECT_PATH);
-  return mdxContentData;
-}
+  const projects = await Promise.all(
+    fileNames.map(async (fileName) => {
+      const filePath = path.join(PROJECT_PATH, fileName);
+      const fileContents = await fs.readFile(filePath, "utf8");
 
-export const getSeriesPost = (series: string): ContentsDataProps[] => {
-  const exploreDirectory = (currentPath: string): ContentsDataProps[] => {
-    const files = fs.readdirSync(currentPath);
+      const { data, content } = matter(fileContents);
 
-    return files.reduce((allPosts: ContentsDataProps[], fileName: string) => {
-      const fullPath = path.join(currentPath, fileName);
-      const stat = fs.statSync(fullPath);
-
-      if (stat.isDirectory()) {
-        return allPosts.concat(exploreDirectory(fullPath));
-      } else if (stat.isFile() && fileName.endsWith(".mdx")) {
-        const fileContent = fs.readFileSync(fullPath, "utf-8");
-        const { data, content } = matter(fileContent);
-
-        if (data.series === series) {
-          const contentData: ContentsDataProps = {
-            slug: fileName.replace(/\.mdx$/, ""),
-            title: data.title || "",
-            description: data.description || "",
-            startDate: data.startDate || "",
-            endDate: data.endDate || "",
-            tags: data.tags || [],
-            series: data.series,
-            content: content || "",
-          };
-
-          return allPosts.concat(contentData);
-        }
+      if (
+        !data?.title ||
+        !data?.description ||
+        !data?.startDate ||
+        !data?.endDate ||
+        !data?.tags
+      ) {
+        console.warn(
+          `프로젝트 파일 ${fileName}에 필수 메타데이터가 없습니다. 건너뜁니다.`,
+        );
+        return null;
       }
 
-      return allPosts;
-    }, []);
-  };
+      return {
+        slug: fileName.replace(/\.mdx$/, ""),
+        title: data.title,
+        description: data.description,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        tags: Array.isArray(data.tags) ? data.tags : data.tags.split(","),
+        content,
+      };
+    }),
+  );
 
-  return exploreDirectory(CONTENT_PATH);
+  return projects.filter(Boolean) as ProjectDataProps[];
+};
+
+export const getProjectDetail = async (
+  slug: string[],
+): Promise<getMdxContentsResponse | null> => {
+  const mdxContentData = await getMdxContents(slug, PROJECT_PATH);
+  return mdxContentData;
+};
+
+const getMdxFilesRecursively = async (dir: string): Promise<string[]> => {
+  const dirents = await fs.readdir(dir, { withFileTypes: true });
+  const files = await Promise.all(
+    dirents.map(async (dirent) => {
+      const res = path.resolve(dir, dirent.name);
+      if (dirent.isDirectory()) {
+        // 디렉토리일 경우 재귀적으로 탐색
+        return getMdxFilesRecursively(res);
+      } else if (res.endsWith(".mdx")) {
+        return res;
+      } else {
+        return null;
+      }
+    }),
+  );
+  return files.flat().filter(Boolean) as string[];
+};
+
+export const getAllPosts = async (): Promise<PostDataProps[]> => {
+  // 모든 디렉토리에서 .mdx 파일 찾기
+  const filePaths = await getMdxFilesRecursively(POST_PATH);
+
+  const posts = await Promise.all(
+    filePaths.map(async (filePath) => {
+      const fileContents = await fs.readFile(filePath, "utf8");
+      const { data, content } = matter(fileContents);
+
+      if (
+        !data?.title ||
+        !data?.description ||
+        !data?.category ||
+        !data?.tags ||
+        !data?.createdAt
+      ) {
+        console.warn(
+          `게시물 파일 ${filePath}에 필수 메타데이터가 없습니다. 건너뜁니다.`,
+        );
+        return null;
+      }
+
+      const post: PostDataProps = {
+        slug: path.relative(POST_PATH, filePath).replace(/\.mdx$/, ""),
+        title: data.title,
+        description: data.description,
+        createdAt: data.createdAt,
+        tags: Array.isArray(data.tags) ? data.tags : data.tags.split(","),
+        content: content || "",
+        category: data.category,
+      };
+
+      return post;
+    }),
+  );
+
+  return posts.filter(Boolean) as PostDataProps[];
+};
+
+export const getPostsDetail = async (
+  slug: string[],
+): Promise<getMdxContentsResponse | null> => {
+  const mdxContentData = await getMdxContents(slug, POST_PATH);
+  return mdxContentData;
 };
