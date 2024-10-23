@@ -1,7 +1,7 @@
 "use client";
 
 import useDeviceType from "@/hooks/useDeviceType";
-import { ProjectDataProps } from "@/utils/mdx";
+import { PostDataProps, ProjectDataProps } from "@/utils/mdx";
 import MainSection from "@/components/MainSection";
 import ProjectSection from "@/components/ProjectSection/ProjectSection";
 import HistoryLine from "@/components/HistorySection/HistorySection";
@@ -15,6 +15,7 @@ const Modal = dynamic(() => import("@/components/shared/Modal/Modal"), {
 
 interface HomeClientProps {
   projectData: ProjectDataProps[];
+  postData: PostDataProps[];
 }
 
 export const HomeClient = ({ projectData }: HomeClientProps) => {

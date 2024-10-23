@@ -1,14 +1,15 @@
 import DefaultLayout from "@/layout/DefaultLayout";
-import { getAllProjects } from "@/utils/mdx";
+import { getAllPosts, getAllProjects } from "@/utils/mdx";
 import { HomeClient } from "./pageClient";
 import "swiper/css";
 
-export default function Home() {
-  const projectData = getAllProjects();
+export default async function Home() {
+  const projectData = await getAllProjects();
+  const postData = await getAllPosts();
 
   return (
     <DefaultLayout>
-      <HomeClient projectData={projectData} />
+      <HomeClient projectData={projectData} postData={postData} />
     </DefaultLayout>
   );
 }
