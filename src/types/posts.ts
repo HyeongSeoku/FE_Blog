@@ -1,20 +1,25 @@
 export type Category = "TECH" | "LIFE" | "OTHER";
+export type SubCategory =
+  | "FE"
+  | "BE"
+  | "TECH_OTHER"
+  | "WORK"
+  | "HOBBY"
+  | "BOOK"
+  | "PHOTO"
+  | "MUSIC";
 
-export type SubCategoryMap = {
-  TECH: "FE" | "BE" | "TECH_OTHER";
-  LIFE: "WORK" | "HOBBY" | "BOOK" | "PHOTO";
-  OTHER: "MUSIC";
+export const SubCategoryMap: Record<Category, SubCategory[]> = {
+  TECH: ["FE", "BE", "TECH_OTHER"],
+  LIFE: ["WORK", "HOBBY", "BOOK", "PHOTO"],
+  OTHER: ["MUSIC"],
 };
 
-export type SubCategory<C extends Category> = C extends keyof SubCategoryMap
-  ? SubCategoryMap[C]
-  : never;
-
-export interface PostProps<C extends Category> {
+export interface PostProps {
   title: string;
-  body: string;
+  description: string;
   category: Category;
-  subCategory?: SubCategory<C>;
+  subCategory?: SubCategory;
   tags: string[];
   createdAt: string;
 }
