@@ -8,7 +8,7 @@ import {
 } from "@/constants/history.constant";
 
 const FIRST_YEAR = 2022;
-const currentYear = new Date().getFullYear() + 2;
+const currentYear = new Date().getFullYear();
 
 interface HistoryItemProps {
   targetYear: number;
