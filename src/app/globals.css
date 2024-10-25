@@ -8,21 +8,37 @@
   --light-text-color: #1e2229;
   --light-second-bg-color: rgba(0, 144, 255, 0.3);
   --light-theme-color: #f5c525;
+
   --dark-bg-color: #14161b;
   --dark-text-color: #ffffff;
   --dark-second-bg-color: rgba(63, 63, 63, 0.3);
   --dark-theme-color: #6a0dad;
+
   --gray-bg-color: rgb(217, 217, 217);
   --gray-text-color: #808080;
   --dimmed-color: #6a737d;
   --primary-color: #0090ff;
   --description-text-color: #a8afbd;
+
   --transition-duration: 0.3s;
   --transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --max-width: 80rem;
+  --mobile-nav-max-width: 80rem;
   --font-family1: "Pretendard";
   --font-family2: "Nanum MiraeNamu";
+
   --project-light-bg: rgba(217, 217, 217, 0.4);
+
+  --category-dev-bg: #1f77d4;
+  --category-life-bg: #f39c12;
+  --category-etc-bg: #7f8c8d;
+  --category-fe-bg: #0090ff;
+  --category-be-bg: #0cba77;
+  --category-dev-other-bg: #e67e22;
+  --category-work-bg: #d35400;
+  --category-hobby-bg: #c0392b;
+  --category-book-bg: #8e44ad;
+  --category-photo-bg: #d4ac0d;
+  --category-music-bg: #2980b9;
 }
 
 [data-theme="light"] {
