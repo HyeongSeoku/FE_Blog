@@ -50,7 +50,7 @@ const ProjectCard = ({
                 {tags.map((tagTitle, idx) => (
                   <li
                     key={`${idx}_${tagTitle}`}
-                    className="w-fit h-5 rounded-md border px-2 py-1 text-xs box-border flex items-center justify-center border-primary text-primary"
+                    className="w-fit h-5 rounded-md border px-2 py-1 text-xs box-border flex items-center justify-center bg-primary text-white"
                   >
                     {tagTitle}
                   </li>
