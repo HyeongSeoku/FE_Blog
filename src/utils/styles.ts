@@ -18,3 +18,11 @@ export const hexToRgba = (hex: string, opacity: number) => {
 
   return `rgba(${r}, ${g}, ${b}, ${opacity}%)`;
 };
+
+export const setRootProperty = (propertyName: string, value: string) => {
+  if (propertyName && value) {
+    document.documentElement.style.setProperty(propertyName, value);
+  } else {
+    console.error("propertyName 또는 value가 유효하지 않습니다.");
+  }
+};

@@ -3,7 +3,7 @@
 import { Dispatch, ReactNode, SetStateAction } from "react";
 import ReactDOM from "react-dom";
 import CloseIcon from "@/icon/close_icon.svg";
-import { hexToRgba } from "@/utils/colors";
+import { hexToRgba } from "@/utils/styles";
 import useScrollDisable from "@/hooks/useScrollDisable";
 import useModalVisibility from "@/hooks/useModalVisiblilty";
 import classNames from "classnames";

@@ -1,4 +1,4 @@
-import { hexToRgba } from "@/utils/colors";
+import { hexToRgba } from "@/utils/styles";
 import Image from "next/image";
 import { useRef } from "react";
 
