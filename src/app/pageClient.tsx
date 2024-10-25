@@ -8,6 +8,7 @@ import HistoryLine from "@/components/HistorySection/HistorySection";
 import IntroSection from "@/components/IntroSection/IntroSection";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import PostSection from "@/components/PostSection/PostSection";
 
 const Modal = dynamic(() => import("@/components/shared/Modal/Modal"), {
   ssr: false,
@@ -18,7 +19,7 @@ interface HomeClientProps {
   postData: PostDataProps[];
 }
 
-export const HomeClient = ({ projectData }: HomeClientProps) => {
+export const HomeClient = ({ projectData, postData }: HomeClientProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   useDeviceType();
@@ -40,7 +41,9 @@ export const HomeClient = ({ projectData }: HomeClientProps) => {
       >
         <HistoryLine />
       </MainSection>
-      <MainSection title="POST">test</MainSection>
+      <MainSection title="POST">
+        <PostSection postData={postData} />
+      </MainSection>
 
       <section className="flex flex-col gap-10"></section>
       <Modal
