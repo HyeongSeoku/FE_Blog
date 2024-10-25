@@ -1,8 +1,8 @@
-export type Category = "TECH" | "LIFE" | "OTHER";
+export type Category = "DEV" | "LIFE" | "ETC";
 export type SubCategory =
   | "FE"
   | "BE"
-  | "TECH_OTHER"
+  | "DEV_OTHER"
   | "WORK"
   | "HOBBY"
   | "BOOK"
@@ -10,9 +10,9 @@ export type SubCategory =
   | "MUSIC";
 
 export const SubCategoryMap: Record<Category, SubCategory[]> = {
-  TECH: ["FE", "BE", "TECH_OTHER"],
+  DEV: ["FE", "BE", "DEV_OTHER"],
   LIFE: ["WORK", "HOBBY", "BOOK", "PHOTO"],
-  OTHER: ["MUSIC"],
+  ETC: ["MUSIC"],
 };
 
 export interface PostProps {
