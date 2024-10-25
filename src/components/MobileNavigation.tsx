@@ -27,7 +27,7 @@ const MobileNavigation = ({ isOpen, setIsOpen }: MobileNavigationProps) => {
         {NAV_LIST.map(({ title, link }, idx) => (
           <li
             key={`${title}_${idx}`}
-            className="px-4 py-2 cursor-pointer flex ml-auto mr-auto max-w-[var(--max-width)]"
+            className="px-4 py-2 cursor-pointer flex ml-auto mr-auto max-w-[var(--mobile-nav-max-width)]"
           >
             <Link
               href={link}
