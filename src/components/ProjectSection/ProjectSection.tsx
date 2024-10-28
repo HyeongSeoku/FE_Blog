@@ -18,16 +18,10 @@ const ProjectSection = ({ projectData }: ProjectSectionProps) => {
    * 서버사이드의 device type으로 mobile만 추출하고 그게 아니라면 pure css로 display:none 처리
    *  */
 
-  /** FIXME: swiper margin-right 랜더링 이슈 (한박지 늦게 적용됨)  */
-
   return (
     <>
       {isMobile ? (
-        <Swiper
-          spaceBetween={15}
-          slidesPerView="auto"
-          pagination={{ clickable: true }}
-        >
+        <Swiper slidesPerView="auto" pagination={{ clickable: true }}>
           {projectData.map(
             ({ title, description, startDate, endDate, slug, tags }) => (
               <SwiperSlide key={slug}>
@@ -45,11 +39,7 @@ const ProjectSection = ({ projectData }: ProjectSectionProps) => {
         </Swiper>
       ) : (
         // <div>test</div>
-        <Swiper
-          spaceBetween={15}
-          slidesPerView="auto"
-          pagination={{ clickable: true }}
-        >
+        <Swiper slidesPerView="auto" pagination={{ clickable: true }}>
           {projectData.map(
             ({ title, description, startDate, endDate, slug, tags }) => (
               <SwiperSlide key={slug}>
