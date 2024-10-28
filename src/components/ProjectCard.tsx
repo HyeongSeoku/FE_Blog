@@ -31,13 +31,13 @@ const ProjectCard = ({
         href={link}
         className="block w-full h-full rounded-xl overflow-hidden bg-white"
       >
-        <div className="bg-[var(--gray-bg-color)] h-1/2 flex items-center justify-center p-3">
+        <div className="bg-[var(--gray-bg-color)] h-1/2 flex items-center justify-center p-3 relative overflow-hidden">
           <Image
             src={imgSrc}
             alt={imgAlt}
-            width={200}
-            height={200}
-            className="h-full object-contain"
+            width={300}
+            height={300}
+            style={{ height: "100%", width: "auto", objectFit: "contain" }}
           />
         </div>
         <div className="text-black px-5 py-4 h-1/2 bg-[var(--project-card-bg)]">
