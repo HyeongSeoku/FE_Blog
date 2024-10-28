@@ -1,8 +1,8 @@
 "use client";
-
 import { Category, SubCategory } from "@/types/posts";
 import { getDate } from "@/utils/date";
 import { PostDataProps } from "@/utils/mdx";
+import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -13,17 +13,17 @@ export interface PostCardProps extends Omit<PostDataProps, "slug" | "content"> {
 }
 
 const CATEGORY_COLORS: Record<Category | SubCategory, string> = {
-  DEV: "var(--category-dev-bg)",
-  LIFE: "var(--category-life-bg)",
-  ETC: "var(--category-etc-bg)",
-  FE: "var(--category-fe-bg)",
-  BE: "var(--category-be-bg)",
-  DEV_OTHER: "var(--category-dev-other-bg)",
-  WORK: "var(--category-work-bg)",
-  HOBBY: "var(--category-hobby-bg)",
-  BOOK: "var(--category-book-bg)",
-  PHOTO: "var(--category-photo-bg)",
-  MUSIC: "var(--category-music-bg)",
+  DEV: "bg-[var(--category-dev-bg)]",
+  LIFE: "bg-[var(--category-life-bg)]",
+  ETC: "bg-[var(--category-etc-bg)]",
+  FE: "bg-[var(--category-fe-bg)]",
+  BE: "bg-[var(--category-be-bg)]",
+  DEV_OTHER: "bg-[var(--category-dev-other-bg)]",
+  WORK: "bg-[var(--category-work-bg)]",
+  HOBBY: "bg-[var(--category-hobby-bg)]",
+  BOOK: "bg-[var(--category-book-bg)]",
+  PHOTO: "bg-[var(--category-photo-bg)]",
+  MUSIC: "bg-[var(--category-music-bg)]",
 };
 
 const PostCard = ({
@@ -43,17 +43,22 @@ const PostCard = ({
         href={link}
         className="block w-full h-full rounded-xl overflow-hidden bg-white"
       >
-        <div className="bg-[var(--gray-bg-color)] h-1/3 flex items-center justify-center p-3">
+        <div className="bg-[var(--gray-bg-color)] h-3/7 flex items-center justify-center p-3 relative overflow-hidden">
           <Image
             src={imgSrc}
             alt={imgAlt}
-            width={200}
-            height={200}
-            className="h-full object-contain"
+            width={300}
+            height={300}
+            style={{ height: "100%", width: "auto", objectFit: "contain" }}
           />
         </div>
-        <div className="text-black px-5 py-4 h-2/3 bg-[var(--project-card-bg)]">
-          <div className="w-fit px-2 py-[2px] rounded-3xl bg-red-500 text-sm">
+        <div className="text-black px-5 py-4 h-4/7 bg-[var(--project-card-bg)] flex flex-col justify-center">
+          <div
+            className={classNames(
+              "w-fit px-2 py-[2px] rounded-3xl  text-sm text-white",
+              CATEGORY_COLORS[subCategory ?? category],
+            )}
+          >
             {category}
           </div>
           <h3 className="text-xl font-semibold mt-1 my-2">{title}</h3>
