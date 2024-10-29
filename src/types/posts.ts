@@ -9,6 +9,12 @@ export type SubCategory =
   | "PHOTO"
   | "MUSIC";
 
+export const categoryMap: Record<Category, true> = {
+  DEV: true,
+  LIFE: true,
+  ETC: true,
+};
+
 export const SubCategoryMap: Record<Category, SubCategory[]> = {
   DEV: ["FE", "BE", "DEV_OTHER"],
   LIFE: ["WORK", "HOBBY", "BOOK", "PHOTO"],

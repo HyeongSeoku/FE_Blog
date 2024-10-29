@@ -5,11 +5,13 @@ import { PostDataProps } from "@/utils/mdx";
 import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
+import { useMemo } from "react";
 
 export interface PostCardProps extends Omit<PostDataProps, "slug" | "content"> {
   link: string;
   imgSrc?: string;
   imgAlt?: string;
+  categoryType?: "SUB" | "MAIN";
 }
 
 const CATEGORY_COLORS: Record<Category | SubCategory, string> = {
@@ -36,14 +38,24 @@ const PostCard = ({
   createdAt,
   imgSrc = "/image/default_img.png",
   imgAlt = "default image alt",
+  categoryType = "MAIN",
 }: PostCardProps) => {
+  const [categoryText, categoryBgColor] = useMemo(() => {
+    const isCategorySub = categoryType === "SUB";
+    const text = isCategorySub ? (subCategory ?? category) : category;
+    const bgColor = isCategorySub
+      ? CATEGORY_COLORS[subCategory ?? category]
+      : CATEGORY_COLORS[category];
+    return [text, bgColor];
+  }, [category, subCategory, categoryType]);
+
   return (
     <article className="w-64 h-80 box-border rounded-xl shadow-md transform transition ease-in-out duration-300 hover:scale-102">
       <Link
         href={link}
         className="block w-full h-full rounded-xl overflow-hidden bg-white"
       >
-        <div className="bg-[var(--gray-bg-color)] h-3/7 flex items-center justify-center p-3 relative overflow-hidden">
+        <div className="bg-[var(--gray-bg-color)] h-2/5 flex items-center justify-center p-3 relative overflow-hidden">
           <Image
             src={imgSrc}
             alt={imgAlt}
@@ -52,14 +64,14 @@ const PostCard = ({
             style={{ height: "100%", width: "auto", objectFit: "contain" }}
           />
         </div>
-        <div className="text-black px-5 py-4 h-4/7 bg-[var(--project-card-bg)] flex flex-col justify-center">
+        <div className="text-black px-5 py-4 h-3/5 bg-[var(--project-card-bg)] flex flex-col justify-center">
           <div
             className={classNames(
               "w-fit px-2 py-[2px] rounded-3xl  text-sm text-white",
-              CATEGORY_COLORS[subCategory ?? category],
+              categoryBgColor,
             )}
           >
-            {category}
+            {categoryText}
           </div>
           <h3 className="text-xl font-semibold mt-1 my-2">{title}</h3>
           <p className="text-sm mb-3">{description}</p>

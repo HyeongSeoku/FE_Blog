@@ -3,6 +3,7 @@ import path from "path";
 import matter from "gray-matter";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { PostProps } from "@/types/posts";
+import { isValidCategory, isValidSubCategory } from "./posts";
 
 export const DEFAULT_MDX_PATH = "src/mdx";
 const PROJECT_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/project`);
@@ -144,10 +145,27 @@ export const getAllPosts = async (): Promise<PostDataProps[]> => {
         !data?.createdAt
       ) {
         console.warn(
-          `게시물 파일 ${filePath}에 필수 메타데이터가 없습니다. 건너뜁니다.`,
+          `🛠️  게시물 파일 ${filePath} 에 필수 메타데이터가 없습니다. 건너뜁니다.`,
         );
         return null;
       }
+
+      if (!isValidCategory(data?.category)) {
+        console.warn(
+          `🛠️  게시물 파일 ${filePath} 의 category를 수정하세요. 건너뜁니다.`,
+        );
+        return null;
+      }
+
+      if (!isValidSubCategory(data.category, data?.subCategory)) {
+        console.warn(
+          `🛠️  게시물 파일 ${filePath} 의 subCategory를 수정하세요.`,
+        );
+      }
+
+      const subCategory = isValidSubCategory(data.category, data?.subCategory)
+        ? data.subCategory
+        : "";
 
       const post: PostDataProps = {
         slug: path.relative(POST_PATH, filePath).replace(/\.mdx$/, ""),
@@ -157,6 +175,7 @@ export const getAllPosts = async (): Promise<PostDataProps[]> => {
         tags: Array.isArray(data.tags) ? data.tags : data.tags.split(","),
         content: content || "",
         category: data.category,
+        subCategory,
       };
 
       return post;
