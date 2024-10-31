@@ -1,7 +1,7 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { MDXRemoteSerializeResult, MDXRemote } from "next-mdx-remote";
+import { Suspense } from "react";
 
 interface PostPageProps {
   source: MDXRemoteSerializeResult;
@@ -10,18 +10,13 @@ interface PostPageProps {
   };
 }
 
-const MDXRemote = dynamic(
-  () => import("next-mdx-remote").then((mod) => mod.MDXRemote),
-  {
-    ssr: false,
-  },
-);
-
 export default function PostPageClient({ source, frontMatter }: PostPageProps) {
   return (
     <div>
       <h1>{frontMatter.title}</h1>
-      <MDXRemote {...source} />
+      <Suspense fallback={<p>Loading content...</p>}>
+        <MDXRemote {...source} />
+      </Suspense>
     </div>
   );
 }

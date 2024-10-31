@@ -19,6 +19,8 @@ const nextConfig = withMDX({
 
     return config;
   },
+
+  transpilePackages: ["next-mdx-remote"],
 });
 
 export default nextConfig;
