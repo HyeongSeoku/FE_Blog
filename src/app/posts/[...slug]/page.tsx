@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import PostPageClient from "./pageClient";
+import PostPageMainClient from "./pageClient";
 import { getPostsDetail } from "@/utils/mdx";
 
 export default async function PostPage({
@@ -14,9 +14,9 @@ export default async function PostPage({
   }
 
   return (
-    <PostPageClient
-      source={postData.source}
-      frontMatter={postData.frontMatter}
-    />
+    <>
+      <h1>{postData?.frontMatter.title}</h1>
+      <PostPageMainClient source={postData.source} />
+    </>
   );
 }
