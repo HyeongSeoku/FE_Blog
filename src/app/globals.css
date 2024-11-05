@@ -1,7 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @import "../styles/fonts.css";
+@import "../styles/markdown.css";
 
 :root {
   --light-bg-color: #ffffff;

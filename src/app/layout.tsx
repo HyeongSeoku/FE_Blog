@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
-import "@/app/markdown.css";
+// import "@/app/markdown.css";
 import { ReactNode } from "react";
 import { cookies } from "next/headers";
 import { LIGHT_DARK_THEME } from "@/constants/cookie.constants";
