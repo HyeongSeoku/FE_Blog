@@ -7,5 +7,9 @@ interface PostPageMainProps {
 }
 
 export default function PostPageMainClient({ source }: PostPageMainProps) {
-  return <MDXRemote {...source} />;
+  return (
+    <section className="markdown-contents">
+      <MDXRemote {...source} />
+    </section>
+  );
 }

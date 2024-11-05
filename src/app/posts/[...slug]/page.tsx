@@ -15,7 +15,7 @@ export default async function PostPage({
 
   return (
     <>
-      <h1>{postData?.frontMatter.title}</h1>
+      <h1 className="text-3xl">{postData?.frontMatter.title}</h1>
       <PostPageMainClient source={postData.source} />
     </>
   );
