@@ -1,11 +1,7 @@
 import withMDX from "@next/mdx";
-import rehypePrism from "rehype-prism-plus";
 
 const nextConfig = withMDX({
   extension: /\.mdx?$/,
-  options: {
-    rehypePlugins: [rehypePrism],
-  },
 })({
   pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
   webpack(config) {

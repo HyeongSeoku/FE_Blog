@@ -5,7 +5,7 @@ import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { PostProps } from "@/types/posts";
 import { isValidCategory, isValidSubCategory } from "./posts";
 import { serialize } from "next-mdx-remote/serialize";
-import rehypePrism from "rehype-prism-plus";
+import rehypePrettyCode, { Options } from "rehype-pretty-code";
 
 export const DEFAULT_MDX_PATH = "src/mdx";
 const PROJECT_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/project`);
@@ -31,6 +31,7 @@ interface getMdxContentsResponse {
   frontMatter: {
     title?: string;
   };
+  readingTime?: number;
 }
 export const getMdxContents = async (
   slug: string[],
@@ -54,14 +55,18 @@ export const getMdxContents = async (
 
   const mdxSource = await serialize(content, {
     mdxOptions: {
-      rehypePlugins: [rehypePrism],
+      rehypePlugins: [[rehypePrettyCode, rehypePrettyCodeOptions]],
     },
     scope: data,
   });
 
+  const plainTextContent = extractPlainText(content);
+  const readingTime = calculateReadingTime(plainTextContent);
+
   return {
     source: mdxSource,
     frontMatter: data,
+    readingTime,
   };
 };
 
@@ -190,4 +195,37 @@ export const getPostsDetail = async (
 ): Promise<getMdxContentsResponse | null> => {
   const mdxContentData = await getMdxContents(slug, POST_PATH);
   return mdxContentData;
+};
+
+export const rehypePrettyCodeOptions: Options = {
+  theme: "github-dark",
+  onVisitLine(node) {
+    if (node.children.length === 0) {
+      node.children = [{ type: "text", value: " " }];
+    }
+  },
+  onVisitHighlightedLine(node) {
+    node.properties.className = [
+      ...(node.properties.className || []),
+      "highlighted-line",
+    ];
+  },
+  onVisitHighlightedChars(node) {
+    node.properties.className = ["highlighted-word"];
+  },
+};
+
+export const extractPlainText = (content: string): string => {
+  const withoutCode = content.replace(/```[\s\S]*?```/g, "");
+  const withoutTags = withoutCode.replace(/<[^>]+>/g, "");
+  const withoutSpecialChars = withoutTags.replace(/[*#>\[\]`_\-~]/g, "");
+  return withoutSpecialChars;
+};
+
+export const calculateReadingTime = (text: string) => {
+  const WORDS_PER_MINUTES = 200;
+
+  const wordCount = text.trim().split(/\s+/).length;
+  const minutes = Math.ceil(wordCount / WORDS_PER_MINUTES);
+  return minutes;
 };
