@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import PostPageMainClient from "./pageClient";
 import { getPostsDetail } from "@/utils/mdx";
+import DefaultLayout from "@/layout/DefaultLayout";
 
 export default async function PostPage({
   params,
@@ -14,9 +15,9 @@ export default async function PostPage({
   }
 
   return (
-    <>
-      <h1 className="text-3xl">{postData?.frontMatter.title}</h1>
+    <DefaultLayout>
+      <h1 className="text-5xl font-bold">{postData?.frontMatter.title}</h1>
       <PostPageMainClient source={postData.source} />
-    </>
+    </DefaultLayout>
   );
 }
