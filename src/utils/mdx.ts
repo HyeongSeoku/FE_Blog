@@ -4,6 +4,8 @@ import matter from "gray-matter";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { PostProps } from "@/types/posts";
 import { isValidCategory, isValidSubCategory } from "./posts";
+import { serialize } from "next-mdx-remote/serialize";
+import rehypePrism from "rehype-prism-plus";
 
 export const DEFAULT_MDX_PATH = "src/mdx";
 const PROJECT_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/project`);
@@ -27,10 +29,9 @@ export interface PostDataProps extends PostProps {
 interface getMdxContentsResponse {
   source: MDXRemoteSerializeResult;
   frontMatter: {
-    title: string;
+    title?: string;
   };
 }
-
 export const getMdxContents = async (
   slug: string[],
   fileDirectory: string,
@@ -40,24 +41,23 @@ export const getMdxContents = async (
   try {
     await fs.access(filePath);
   } catch (error) {
-    console.error(error);
+    console.error("File not found:", error);
     return null;
   }
 
   const source = await fs.readFile(filePath, "utf8");
   const { content, data } = matter(source);
 
-  function isFrontMatter(data: any): data is { title: string } {
-    return data && typeof data.title === "string";
-  }
-
-  if (!isFrontMatter(data)) {
+  if (!data.title) {
     throw new Error("Front matter does not contain required 'title' field");
   }
 
-  const { serialize } = await import("next-mdx-remote/serialize");
-
-  const mdxSource = await serialize(content, { scope: data });
+  const mdxSource = await serialize(content, {
+    mdxOptions: {
+      rehypePlugins: [rehypePrism],
+    },
+    scope: data,
+  });
 
   return {
     source: mdxSource,
