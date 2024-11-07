@@ -30,6 +30,13 @@ const bar = "bar";
 const barFunc = () => {
   return bar;
 };
+
+const handleCopy = () => {
+  navigator.clipboard.writeText(codeText).then(() => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // 2초 후 복사 완료 메시지 숨기기
+  });
+};
 ```
 
 # Hello, MDX!

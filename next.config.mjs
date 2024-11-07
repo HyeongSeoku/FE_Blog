@@ -2,6 +2,7 @@ import withMDX from "@next/mdx";
 
 const nextConfig = withMDX({
   extension: /\.mdx?$/,
+  transpilePackages: ["next-mdx-remote"],
 })({
   pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
   webpack(config) {

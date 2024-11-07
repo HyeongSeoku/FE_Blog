@@ -1,5 +1,6 @@
 "use client";
 
+import CodeBlock from "@/components/shared/CodeBlock";
 import { MDXRemoteSerializeResult, MDXRemote } from "next-mdx-remote";
 
 interface PostPageMainProps {
@@ -9,7 +10,12 @@ interface PostPageMainProps {
 export default function PostPageMainClient({ source }: PostPageMainProps) {
   return (
     <section className="markdown-contents">
-      <MDXRemote {...source} />
+      <MDXRemote
+        {...source}
+        components={{
+          code: ({ children }) => <CodeBlock>{children}</CodeBlock>,
+        }}
+      />
     </section>
   );
 }
