@@ -40,7 +40,7 @@ const CodeBlock = ({ children }: CodeBlockProps) => {
 
   return (
     <div className="relative group">
-      <pre className="p-4 bg-gray-900 rounded-md text-white overflow-x-auto">
+      <pre className="p-2 bg-gray-900 rounded-md text-white overflow-x-auto">
         <code>{children}</code>
       </pre>
       <button

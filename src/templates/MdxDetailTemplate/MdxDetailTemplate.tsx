@@ -26,7 +26,7 @@ const MdxDetailTemplate = ({
           <span>분</span>
         </div>
       </header>
-      <section>
+      <section className="markdown-contents">
         <MDXRemote
           {...source}
           components={{

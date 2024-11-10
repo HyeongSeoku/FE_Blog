@@ -28,11 +28,11 @@
 /* 코드 블록 스타일 */
 .markdown-contents pre,
 .markdown-contents code {
-  @apply p-4 rounded text-sm font-mono overflow-x-auto flex flex-col;
+  @apply rounded text-sm font-mono overflow-x-auto flex flex-col;
 }
 
 .markdown-contents code {
-  @apply p-2 rounded text-sm font-mono;
+  @apply p-4 rounded text-xs font-mono;
 }
 
 /* 링크 스타일 */
@@ -65,10 +65,5 @@
 }
 
 .markdown-contents pre {
-  @apply bg-gray-100 p-4 rounded text-sm font-mono overflow-x-auto;
-}
-
-/* 공통 배경 색상 */
-.markdown-contents pre {
-  background-color: var(--code-bg-light);
+  @apply bg-gray-100 rounded text-sm font-mono overflow-x-auto bg-[var(--code-bg-light)];
 }
