@@ -6,6 +6,7 @@ import { PostProps } from "@/types/posts";
 import { isValidCategory, isValidSubCategory } from "./posts";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypePrettyCode, { Options } from "rehype-pretty-code";
+import { FrontMatterProps } from "@/types/mdx";
 
 export const DEFAULT_MDX_PATH = "src/mdx";
 const PROJECT_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/project`);
@@ -28,9 +29,7 @@ export interface PostDataProps extends PostProps {
 
 interface getMdxContentsResponse {
   source: MDXRemoteSerializeResult;
-  frontMatter: {
-    title?: string;
-  };
+  frontMatter: FrontMatterProps;
   readingTime?: number;
 }
 export const getMdxContents = async (
@@ -47,6 +46,7 @@ export const getMdxContents = async (
   }
 
   const source = await fs.readFile(filePath, "utf8");
+  // FIXME: data type 수정 필요
   const { content, data } = matter(source);
 
   if (!data.title) {
