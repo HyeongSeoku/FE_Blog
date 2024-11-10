@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import PostPageMainClient from "./pageClient";
 import { getPostsDetail } from "@/utils/mdx";
 import DefaultLayout from "@/layout/DefaultLayout";
+import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
 
 export default async function PostPage({
   params,
@@ -14,10 +14,20 @@ export default async function PostPage({
     notFound();
   }
 
+  const {
+    source,
+    frontMatter: { title, createdAt },
+    readingTime,
+  } = postData;
+
   return (
     <DefaultLayout>
-      <h1 className="text-5xl font-bold">{postData?.frontMatter.title}</h1>
-      <PostPageMainClient source={postData.source} />
+      <MdxDetailTemplate
+        source={source}
+        readingTime={readingTime}
+        title={title}
+        createdAt={createdAt}
+      />
     </DefaultLayout>
   );
 }
