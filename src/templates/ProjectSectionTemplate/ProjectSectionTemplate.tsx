@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import useDeviceStore from "@/store/deviceType";
 import { ProjectDataProps } from "@/utils/mdx";
 import ProjectCard from "@/components/ProjectCard";
-import "./project-section.css";
+import "./project-section-template.css";
 
 export interface ProjectSectionProps {
   projectData: ProjectDataProps[];

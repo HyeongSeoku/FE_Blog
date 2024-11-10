@@ -1,6 +1,6 @@
 "use client";
 
-import "./history-section.css";
+import "./history-section-template.css";
 import { PUBLIC_IMG_PATH } from "@/constants/basic.constants";
 import {
   HISTORY_LIST,

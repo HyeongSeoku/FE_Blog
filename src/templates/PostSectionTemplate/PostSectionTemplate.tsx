@@ -5,7 +5,7 @@ import useDeviceStore from "@/store/deviceType";
 import { PostDataProps } from "@/utils/mdx";
 import PostCard from "@/components/PostCard";
 
-import "./post-section.css";
+import "./post-section-template.css";
 
 export interface PostSectionProps {
   postData: PostDataProps[];
