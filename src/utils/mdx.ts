@@ -46,10 +46,10 @@ export const getMdxContents = async (
   }
 
   const source = await fs.readFile(filePath, "utf8");
-  // FIXME: data type 수정 필요
   const { content, data } = matter(source);
+  const frontTypeData = data as FrontMatterProps;
 
-  if (!data.title) {
+  if (!frontTypeData.title) {
     throw new Error("Front matter does not contain required 'title' field");
   }
 
@@ -65,7 +65,7 @@ export const getMdxContents = async (
 
   return {
     source: mdxSource,
-    frontMatter: data,
+    frontMatter: frontTypeData,
     readingTime,
   };
 };
