@@ -14,7 +14,7 @@ const DefaultLayout = ({
   return (
     <div className="py-2 px-4 max-w-7xl w-full h-full mx-auto box-border break-keep">
       <Header headerType={headerType}></Header>
-      <section className="">{children}</section>
+      <main className="">{children}</main>
       <Footer />
     </div>
   );
