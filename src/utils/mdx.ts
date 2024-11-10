@@ -6,6 +6,7 @@ import { PostProps } from "@/types/posts";
 import { isValidCategory, isValidSubCategory } from "./posts";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypePrettyCode, { Options } from "rehype-pretty-code";
+import rehypeExternalLinks from "rehype-external-links";
 
 export const DEFAULT_MDX_PATH = "src/mdx";
 const PROJECT_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/project`);
@@ -33,6 +34,7 @@ interface getMdxContentsResponse {
   };
   readingTime?: number;
 }
+
 export const getMdxContents = async (
   slug: string[],
   fileDirectory: string,
@@ -55,7 +57,13 @@ export const getMdxContents = async (
 
   const mdxSource = await serialize(content, {
     mdxOptions: {
-      rehypePlugins: [[rehypePrettyCode, rehypePrettyCodeOptions]],
+      rehypePlugins: [
+        [rehypePrettyCode, rehypePrettyCodeOptions],
+        [
+          rehypeExternalLinks,
+          { target: "_blank", rel: ["noopener", "noreferrer"] },
+        ],
+      ],
     },
     scope: data,
   });

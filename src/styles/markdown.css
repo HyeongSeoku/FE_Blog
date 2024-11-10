@@ -36,8 +36,22 @@
 }
 
 /* 링크 스타일 */
+/* .markdown-contents a {
+  @apply text-[#007acc] transition-colors duration-300 ease-in hover:underline hover:text-[#005b99];
+} */
+
 .markdown-contents a {
-  @apply text-blue-600 hover:underline;
+  @apply relative text-[#007acc] no-underline;
+}
+
+.markdown-contents a::after {
+  content: "";
+  @apply absolute left-0 -bottom-[2px] w-0 h-[2px] bg-[#007acc];
+  transition: width 0.3s ease;
+}
+
+.markdown-contents a:hover::after {
+  width: 100%;
 }
 
 /* 이미지 스타일 */
