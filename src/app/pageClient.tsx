@@ -3,12 +3,13 @@
 import useDeviceType from "@/hooks/useDeviceType";
 import { PostDataProps, ProjectDataProps } from "@/utils/mdx";
 import MainSection from "@/components/MainSection";
-import ProjectSection from "@/components/ProjectSection/ProjectSection";
-import HistoryLine from "@/components/HistorySection/HistorySection";
-import IntroSection from "@/components/IntroSection/IntroSection";
+
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import PostSection from "@/components/PostSection/PostSection";
+import ProjectSectionTemplate from "@/templates/ProjectSectionTemplate/ProjectSectionTemplate";
+import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionTemplate";
+import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
+import HistorySectionTemplate from "@/templates/HistorySectionTemplate/HistorySectionTemplate";
 
 const Modal = dynamic(() => import("@/components/shared/Modal/Modal"), {
   ssr: false,
@@ -26,12 +27,14 @@ export const HomeClient = ({ projectData, postData }: HomeClientProps) => {
 
   return (
     <div className="h-full flex flex-col">
-      <IntroSection></IntroSection>
+      <IntroSectionTemplate />
       <MainSection
         title="PROJECT"
         description={`개인 / 회사 프로젝트 리스트 \n 주로 react, ts를 이용하여 진행했습니다.`}
       >
-        <ProjectSection projectData={projectData}></ProjectSection>
+        <ProjectSectionTemplate
+          projectData={projectData}
+        ></ProjectSectionTemplate>
       </MainSection>
       <button onClick={() => setIsOpen((prev) => !prev)}>toggle modal</button>
 
@@ -39,10 +42,10 @@ export const HomeClient = ({ projectData, postData }: HomeClientProps) => {
         title="HISTORY"
         description={`경력 내용입니다. \n 자세한 내용은 클릭시 노출됩니다.`}
       >
-        <HistoryLine />
+        <HistorySectionTemplate />
       </MainSection>
       <MainSection title="POST">
-        <PostSection postData={postData} />
+        <PostSectionTemplate postData={postData} />
       </MainSection>
 
       <section className="flex flex-col gap-10"></section>

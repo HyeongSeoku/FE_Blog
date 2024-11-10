@@ -1,6 +1,6 @@
 "use client";
 
-import "@/components/HistorySection/history-section.css";
+import "./history-section.css";
 import { PUBLIC_IMG_PATH } from "@/constants/basic.constants";
 import {
   HISTORY_LIST,
@@ -76,7 +76,7 @@ const HistoryItem = ({ targetYear, currentJob }: HistoryItemProps) => {
   );
 };
 
-const HistorySection = () => {
+const HistorySectionTemplate = () => {
   const yearList = Array.from(
     { length: currentYear - FIRST_YEAR + 1 },
     (_, index) => FIRST_YEAR + index,
@@ -97,4 +97,4 @@ const HistorySection = () => {
   );
 };
 
-export default HistorySection;
+export default HistorySectionTemplate;
