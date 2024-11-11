@@ -45,9 +45,18 @@ const CodeBlock = ({ children }: CodeBlockProps) => {
       </pre>
       <button
         onClick={handleCopy}
-        className="absolute top-2 right-2 p-1 bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute top-2 right-2 p-1 bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 flex items-center justify-center w-16 h-8 transition-opacity duration-200"
       >
-        {copied ? "Copied!" : "Copy"}
+        <span
+          className={`transition-opacity duration-300 ${copied ? "opacity-100" : "opacity-0"} absolute`}
+        >
+          Copied
+        </span>
+        <span
+          className={`transition-opacity duration-300 ${copied ? "opacity-0" : "opacity-100"} absolute`}
+        >
+          Copy
+        </span>
       </button>
     </div>
   );
