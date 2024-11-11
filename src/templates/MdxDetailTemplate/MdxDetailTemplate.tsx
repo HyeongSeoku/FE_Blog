@@ -20,10 +20,12 @@ const MdxDetailTemplate = ({
     <>
       <header>
         <h1 className="text-5xl font-bold">{title}</h1>
-        <div>{createdAt}</div>
-        <div>
-          <time>{readingTime}</time>
-          <span>분</span>
+        <div className="flex items-center gap-3">
+          <time className="text-[--gray-text-color]">{createdAt}</time>
+          <div>
+            <time>{readingTime}</time>
+            <span>분</span>
+          </div>
         </div>
       </header>
       <section className="markdown-contents">
