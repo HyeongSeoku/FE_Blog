@@ -2,11 +2,13 @@ import fs from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
-import { PostProps } from "@/types/posts";
-import { isValidCategory, isValidSubCategory } from "./posts";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypePrettyCode, { Options } from "rehype-pretty-code";
+import rehypeExternalLinks from "rehype-external-links";
+
+import { isValidCategory, isValidSubCategory } from "./posts";
 import { FrontMatterProps } from "@/types/mdx";
+import { PostProps } from "@/types/posts";
 
 export const DEFAULT_MDX_PATH = "src/mdx";
 const PROJECT_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/project`);
@@ -55,7 +57,13 @@ export const getMdxContents = async (
 
   const mdxSource = await serialize(content, {
     mdxOptions: {
-      rehypePlugins: [[rehypePrettyCode, rehypePrettyCodeOptions]],
+      rehypePlugins: [
+        [rehypePrettyCode, rehypePrettyCodeOptions],
+        [
+          rehypeExternalLinks,
+          { target: "_blank", rel: ["noopener", "noreferrer"] },
+        ],
+      ],
     },
     scope: data,
   });
