@@ -1,7 +1,12 @@
 import { notFound } from "next/navigation";
-import { getPostsDetail } from "@/utils/mdx";
+import { getAllPosts, getPostsDetail } from "@/utils/mdx";
 import DefaultLayout from "@/layout/DefaultLayout";
 import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
+
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({ slug: post.slug.split("/") }));
+}
 
 export default async function PostPage({
   params,
