@@ -31,8 +31,8 @@ const MdxDetailTemplate = ({
         </section>
         {!!tags?.length && (
           <section className="flex items-center gap-2">
-            {tags.map((tagItem) => (
-              <div>{tagItem}</div>
+            {tags.map((tagItem, idx) => (
+              <div key={`${tagItem}_${idx}`}>{tagItem}</div>
             ))}
           </section>
         )}
