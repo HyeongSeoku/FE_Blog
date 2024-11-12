@@ -65,5 +65,5 @@
 }
 
 .markdown-contents pre {
-  @apply bg-gray-100 rounded text-sm font-mono overflow-x-auto bg-[var(--code-bg-light)];
+  @apply bg-gray-100 rounded text-sm font-mono overflow-x-auto bg-[var(--code-bg-light)] mt-2 mb-2;
 }

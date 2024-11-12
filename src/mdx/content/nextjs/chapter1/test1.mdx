@@ -41,6 +41,25 @@ const handleCopy = () => {
 };
 ```
 
+```typescript
+const foo = "test";
+console.log(foo);
+
+const bar = "bar";
+
+const barFunc = (text: string) => {
+  console.log(text);
+  return bar;
+};
+
+const handleCopy = () => {
+  navigator.clipboard.writeText(codeText).then(() => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // 2초 후 복사 완료 메시지 숨기기
+  });
+};
+```
+
 # Hello, MDX!
 
 This is a sample MDX file with **Markdown** and <span style={{ color: 'red' }}>JSX</span>.
@@ -53,15 +72,15 @@ This is a sample MDX file with **Markdown** and <span style={{ color: 'red' }}>J
 
 This is a test file
 
-```javascript
-const foo = "test";
-console.log(foo);
+```python
+from typing import Final
 
-const bar = "bar";
+# 작명 규칙을 이용한 상수 표기
+HELLO = "world!"
+# 작명 규칙과 타입 힌트를 이용한 상수 표기
+HELLO_WORLD: Final = "hello, world!"
 
-const barFunc = () => {
-  return bar;
-};
+HELLO = 3
 ```
 
 # Hello, MDX!
