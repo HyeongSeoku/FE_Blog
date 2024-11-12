@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { getAllPosts, getPostsDetail } from "@/utils/mdx";
-import DefaultLayout from "@/layout/DefaultLayout";
 import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
 
 export async function generateStaticParams() {
@@ -26,13 +25,11 @@ export default async function PostPage({
   } = postData;
 
   return (
-    <DefaultLayout>
-      <MdxDetailTemplate
-        source={source}
-        readingTime={readingTime}
-        title={title}
-        createdAt={createdAt}
-      />
-    </DefaultLayout>
+    <MdxDetailTemplate
+      source={source}
+      readingTime={readingTime}
+      title={title}
+      createdAt={createdAt}
+    />
   );
 }
