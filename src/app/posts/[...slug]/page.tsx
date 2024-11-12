@@ -18,18 +18,13 @@ export default async function PostPage({
     notFound();
   }
 
-  const {
-    source,
-    frontMatter: { title, createdAt },
-    readingTime,
-  } = postData;
+  const { source, frontMatter, readingTime } = postData;
 
   return (
     <MdxDetailTemplate
       source={source}
       readingTime={readingTime}
-      title={title}
-      createdAt={createdAt}
+      frontMatter={frontMatter}
     />
   );
 }

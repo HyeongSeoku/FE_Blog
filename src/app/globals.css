@@ -22,7 +22,8 @@
 
   /* Common Colors */
   --gray-bg-color: rgb(217, 217, 217);
-  --gray-text-color: #808080;
+  --gray1-text-color: #808080;
+  --gray2-text-color: #a8afbd;
   --dimmed-color: #6a737d;
   --primary-color: #0090ff;
   --description-text-color: #a8afbd;
