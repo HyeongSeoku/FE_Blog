@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import Header, { HeaderType } from "@/components/shared/Header";
-import Footer from "@/components/shared/Footer";
+import Header, { HeaderType } from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export interface DefaultLayoutProps {
   children: ReactNode;

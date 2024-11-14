@@ -1,4 +1,4 @@
-import NotFound from "@/components/shared/NotFound";
+import NotFound from "@/components/NotFound";
 import NoneLayout from "@/layout/NoneLayout";
 
 export default function Custom404() {

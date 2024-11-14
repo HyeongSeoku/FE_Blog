@@ -11,7 +11,7 @@ import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionT
 import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
 import HistorySectionTemplate from "@/templates/HistorySectionTemplate/HistorySectionTemplate";
 
-const Modal = dynamic(() => import("@/components/shared/Modal/Modal"), {
+const Modal = dynamic(() => import("@/components/Modal/Modal"), {
   ssr: false,
 });
 

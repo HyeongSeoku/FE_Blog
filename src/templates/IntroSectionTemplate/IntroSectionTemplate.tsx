@@ -1,4 +1,4 @@
-import SkillChip, { SkillName } from "@/components/shared/SkillChip";
+import SkillChip, { SkillName } from "@/components/SkillChip";
 import { PUBLIC_IMG_PATH } from "@/constants/basic.constants";
 
 const IntroSectionTemplate = () => {

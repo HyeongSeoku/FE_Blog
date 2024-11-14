@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getAllProjects, getProjectDetail } from "@/utils/mdx";
 import ProjectDetailPageClient from "./pageClient";
 import { Suspense } from "react";
-import { MdxContentSkeleton } from "@/components/shared/MdxContentSkeleton";
+import { MdxContentSkeleton } from "@/components/MdxContentSkeleton";
 
 export async function generateStaticParams() {
   const projects = await getAllProjects();

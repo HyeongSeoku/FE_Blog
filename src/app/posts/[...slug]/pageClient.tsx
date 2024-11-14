@@ -1,6 +1,6 @@
 "use client";
 
-import CodeBlock from "@/components/shared/CodeBlock";
+import CodeBlock from "@/components/CodeBlock";
 import { MDXRemoteSerializeResult, MDXRemote } from "next-mdx-remote";
 
 interface PostPageMainProps {
