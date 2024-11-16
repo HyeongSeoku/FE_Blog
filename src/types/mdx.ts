@@ -6,3 +6,9 @@ export interface FrontMatterProps {
   subCategory?: string;
   tags?: string[];
 }
+
+export interface HeadingsProps {
+  id: string;
+  text: string;
+  level: number;
+}
