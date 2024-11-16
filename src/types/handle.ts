@@ -1,4 +1,4 @@
-import { HeaderType } from "@/components/shared/Header";
+import { HeaderType } from "@/components/Header";
 
 export interface Handle {
   metaTitle?: string;
