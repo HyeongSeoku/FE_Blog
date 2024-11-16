@@ -37,7 +37,7 @@
 
 /* 링크 스타일 */
 .markdown-contents a {
-  @apply text-blue-600 hover:underline;
+  @apply text-[var(--link-text-color)] hover:text-[var(--link-text-hover-color)];
 }
 
 /* 이미지 스타일 */
