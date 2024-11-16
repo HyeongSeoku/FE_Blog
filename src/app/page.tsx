@@ -1,4 +1,4 @@
-import { getAllPosts, getAllProjects } from "@/utils/mdx";
+import { getAllPosts, getAllProjects } from "@/utils/mdxServer";
 import { HomeClient } from "./pageClient";
 import "swiper/css";
 

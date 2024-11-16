@@ -2,7 +2,7 @@
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import useDeviceStore from "@/store/deviceType";
-import { ProjectDataProps } from "@/utils/mdx";
+import { ProjectDataProps } from "@/utils/mdxServer";
 import ProjectCard from "@/components/ProjectCard";
 import "./project-section-template.css";
 

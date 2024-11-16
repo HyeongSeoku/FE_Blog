@@ -1,7 +1,7 @@
 "use client";
 
 import useDeviceType from "@/hooks/useDeviceType";
-import { PostDataProps, ProjectDataProps } from "@/utils/mdx";
+import { PostDataProps, ProjectDataProps } from "@/utils/mdxServer";
 import MainSection from "@/components/MainSection";
 
 import { useState } from "react";

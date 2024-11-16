@@ -2,7 +2,7 @@
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import useDeviceStore from "@/store/deviceType";
-import { PostDataProps } from "@/utils/mdx";
+import { PostDataProps } from "@/utils/mdxServer";
 import PostCard from "@/components/PostCard";
 
 import "./post-section-template.css";

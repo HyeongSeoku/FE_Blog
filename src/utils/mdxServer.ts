@@ -5,9 +5,11 @@ import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypePrettyCode, { Options } from "rehype-pretty-code";
 import rehypeExternalLinks from "rehype-external-links";
+import { remark } from "remark";
+import { visit } from "unist-util-visit";
 
 import { isValidCategory, isValidSubCategory } from "./posts";
-import { FrontMatterProps } from "@/types/mdx";
+import { FrontMatterProps, HeadingsProps } from "@/types/mdx";
 import { PostProps } from "@/types/posts";
 
 export const DEFAULT_MDX_PATH = "src/mdx";
@@ -236,4 +238,33 @@ export const calculateReadingTime = (text: string) => {
   const wordCount = text.trim().split(/\s+/).length;
   const minutes = Math.ceil(wordCount / WORDS_PER_MINUTES);
   return minutes;
+};
+
+export const generateUniqueId = (text: string, existingIds: Set<string>) => {
+  const baseId = text.trim().replace(/\s+/g, "-").toLowerCase();
+  let uniqueId = baseId;
+  let counter = 1;
+
+  // 중복 id 확인 후 고유 id 생성
+  while (existingIds.has(uniqueId)) {
+    uniqueId = `${baseId}-${counter}`;
+    counter++;
+  }
+  existingIds.add(uniqueId);
+  return uniqueId;
+};
+
+export const extractHeadings = (content: string): HeadingsProps[] => {
+  const existingIds = new Set<string>();
+  const ast = remark().parse(content);
+  const headings: HeadingsProps[] = [];
+
+  visit(ast, "heading", (node: any) => {
+    const text = node.children.map((child: any) => child.value).join("");
+    const level = node.depth;
+    const id = generateUniqueId(text, existingIds);
+    headings.push({ id, text, level });
+  });
+
+  return headings;
 };

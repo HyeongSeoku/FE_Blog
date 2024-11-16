@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getAllProjects, getProjectDetail } from "@/utils/mdx";
+import { getAllProjects, getProjectDetail } from "@/utils/mdxServer";
 import ProjectDetailPageClient from "./pageClient";
 import { Suspense } from "react";
 import { MdxContentSkeleton } from "@/components/MdxContentSkeleton";

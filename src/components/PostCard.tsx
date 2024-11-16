@@ -1,7 +1,7 @@
 "use client";
 import { Category, SubCategory } from "@/types/posts";
 import { getDate } from "@/utils/date";
-import { PostDataProps } from "@/utils/mdx";
+import { PostDataProps } from "@/utils/mdxServer";
 import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
