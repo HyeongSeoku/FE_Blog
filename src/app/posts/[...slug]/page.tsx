@@ -1,9 +1,5 @@
 import { notFound } from "next/navigation";
-import {
-  extractHeadings,
-  getAllPosts,
-  getPostsDetail,
-} from "@/utils/mdxServer";
+import { getAllPosts, getPostsDetail } from "@/utils/mdxServer";
 import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
 
 export async function generateStaticParams() {
@@ -22,15 +18,14 @@ export default async function PostPage({
     notFound();
   }
 
-  const { source, frontMatter, readingTime } = postData;
-  // const headings = extractHeadings(source.scope?.content || "");
-  console.log("TEST headings", source);
+  const { source, frontMatter, readingTime, heading } = postData;
 
   return (
     <MdxDetailTemplate
       source={source}
       readingTime={readingTime}
       frontMatter={frontMatter}
+      heading={heading}
     />
   );
 }

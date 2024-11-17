@@ -11,4 +11,5 @@ export interface HeadingsProps {
   id: string;
   text: string;
   level: number;
+  isVisit: boolean;
 }

@@ -5,7 +5,6 @@ import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
 import rehypePrettyCode, { Options } from "rehype-pretty-code";
 import rehypeExternalLinks from "rehype-external-links";
-import { remark } from "remark";
 import { visit } from "unist-util-visit";
 
 import { isValidCategory, isValidSubCategory } from "./posts";
@@ -35,7 +34,18 @@ interface getMdxContentsResponse {
   source: MDXRemoteSerializeResult;
   frontMatter: FrontMatterProps;
   readingTime?: number;
+  heading?: HeadingsProps[];
 }
+
+interface ExtendedElement extends Element {
+  properties?: Record<string, any>;
+}
+
+interface HeadingItems {
+  value?: string;
+  type?: string;
+}
+
 export const getMdxContents = async (
   slug: string[],
   fileDirectory: string,
@@ -50,6 +60,7 @@ export const getMdxContents = async (
   }
 
   const source = await fs.readFile(filePath, "utf8");
+  const heading = extractHeadings(source);
   const { content, data } = matter(source);
   const frontTypeData = data as FrontMatterProps;
 
@@ -60,6 +71,7 @@ export const getMdxContents = async (
   const mdxSource = await serialize(content, {
     mdxOptions: {
       rehypePlugins: [
+        [rehypeHeadingsWithIds, heading],
         [rehypePrettyCode, rehypePrettyCodeOptions],
         [
           rehypeExternalLinks,
@@ -77,6 +89,7 @@ export const getMdxContents = async (
     source: mdxSource,
     frontMatter: frontTypeData,
     readingTime,
+    heading,
   };
 };
 
@@ -240,31 +253,68 @@ export const calculateReadingTime = (text: string) => {
   return minutes;
 };
 
-export const generateUniqueId = (text: string, existingIds: Set<string>) => {
-  const baseId = text.trim().replace(/\s+/g, "-").toLowerCase();
-  let uniqueId = baseId;
-  let counter = 1;
-
-  // 중복 id 확인 후 고유 id 생성
-  while (existingIds.has(uniqueId)) {
-    uniqueId = `${baseId}-${counter}`;
-    counter++;
-  }
-  existingIds.add(uniqueId);
-  return uniqueId;
-};
-
 export const extractHeadings = (content: string): HeadingsProps[] => {
-  const existingIds = new Set<string>();
-  const ast = remark().parse(content);
   const headings: HeadingsProps[] = [];
+  const headingCounts = new Map<string, number>();
 
-  visit(ast, "heading", (node: any) => {
-    const text = node.children.map((child: any) => child.value).join("");
-    const level = node.depth;
-    const id = generateUniqueId(text, existingIds);
-    headings.push({ id, text, level });
-  });
+  const cleanedContent = content.replace(/```[\s\S]*?```/g, "");
+
+  const headingRegex = /^(#{1,2})\s+(.+)$/gm;
+  let match;
+  while ((match = headingRegex.exec(cleanedContent)) !== null) {
+    const [_, hashes, text] = match;
+
+    const level = hashes.length;
+
+    if (level > 2) continue;
+
+    const baseId = text.trim().replace(/\s+/g, "-").toLowerCase();
+    const count = headingCounts.get(baseId) || 0;
+    headingCounts.set(baseId, count + 1);
+
+    const uniqueId = count === 0 ? baseId : `${baseId}-${count}`;
+
+    headings.push({ id: uniqueId, text, level, isVisit: false });
+  }
 
   return headings;
+};
+
+// Element 타입 확장
+
+export const rehypeHeadingsWithIds = (headingData: HeadingsProps[]) => {
+  return (tree: any) => {
+    // 노드를 탐색하며 조작
+    visit(tree, "element", (node) => {
+      // 노드 조작 로직
+      const elementNode = node as ExtendedElement;
+
+      if (["h1", "h2"].includes(elementNode.tagName || "")) {
+        for (const item of elementNode.children) {
+          const headingItem = item as HeadingItems;
+          if (headingItem.value && headingItem.type === "text") {
+            const headingLevel = elementNode.tagName === "h1" ? 1 : 2;
+            const heading = headingData.find(
+              (h) =>
+                h.text === headingItem.value &&
+                !h.isVisit &&
+                h.level === headingLevel,
+            );
+
+            if (heading) {
+              heading.isVisit = true;
+            }
+
+            // 헤딩이 존재하면 id 속성 추가
+            if (heading) {
+              elementNode.properties = elementNode.properties || {};
+              elementNode.properties.id = heading.id;
+            }
+          }
+        }
+      }
+    });
+
+    return tree;
+  };
 };
