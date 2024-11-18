@@ -22,7 +22,6 @@ const MdxDetailTemplate = ({
 }: MdxDetailTemplateProps) => {
   return (
     <div className="flex">
-      {/* 사이드바 추가 */}
       <MdxSideBar headings={heading} />
       <main className="flex-1">
         <header className="border-b border-b-[var(--border-color)] mb-4 pb-4">

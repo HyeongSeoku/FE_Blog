@@ -14,16 +14,18 @@ import useTheme from "@/hooks/useTheme";
 export interface HeaderProps {
   headerType: HeaderType;
   children?: ReactNode;
+  initialTheme?: string;
 }
 
 export type HeaderType = "DEFAULT" | "BACK" | "NONE";
 
-const Header = ({ headerType, children }: HeaderProps) => {
+const Header = ({ headerType, children, initialTheme }: HeaderProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isMoNavOpen, setIsMoNavOpen] = useState(false);
   const { isDarkMode, setDarkMode, setLightMode } = useThemeStore();
+  const isDarkTheme = isMounted ? isDarkMode : initialTheme === "dark";
   const router = useRouter();
-  useTheme();
+  useTheme(initialTheme);
 
   useEffect(() => {
     setIsMounted(true);
@@ -58,17 +60,10 @@ const Header = ({ headerType, children }: HeaderProps) => {
   };
 
   const toggleMoMenu = () => {
-    if (!isMoNavOpen) {
-      // Open animations
-      triggerAnimation("id", "bread-top-open");
-      triggerAnimation("id", "bread-bottom-open");
-      setIsMoNavOpen(true);
-    } else {
-      // Close animations
-      triggerAnimation("id", "bread-top-close");
-      triggerAnimation("id", "bread-bottom-close");
-      setIsMoNavOpen(false);
-    }
+    const breadOpenStatusText = isMoNavOpen ? "open" : "close";
+    triggerAnimation("id", `bread-top-${breadOpenStatusText}`);
+    triggerAnimation("id", `bread-bottom-${breadOpenStatusText}`);
+    setIsMoNavOpen((current) => !current);
   };
 
   const handleLogoButton = () => {
@@ -83,7 +78,7 @@ const Header = ({ headerType, children }: HeaderProps) => {
       >
         <div
           className={`flex flex-col flex-shrink-0 w-10 h-20 transition-transform duration-200 ease-in-out ${
-            isMounted && isDarkMode ? "transform translate-y-[-2.5rem]" : ""
+            isDarkTheme ? "transform translate-y-[-2.5rem]" : ""
           }`}
         >
           <div className="flex items-center justify-center w-10 h-10 hover:animate-rotateFull">

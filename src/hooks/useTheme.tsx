@@ -1,8 +1,18 @@
 import useThemeStore from "@/store/theme";
 import { useEffect } from "react";
 
-const useTheme = () => {
-  const { isDarkMode } = useThemeStore();
+const useTheme = (initialTheme?: string) => {
+  const { isDarkMode, setDarkMode, setLightMode } = useThemeStore();
+
+  useEffect(() => {
+    if (initialTheme) {
+      if (initialTheme === "dark") {
+        setDarkMode();
+      } else {
+        setLightMode();
+      }
+    }
+  }, [initialTheme, setDarkMode, setLightMode]);
 
   useEffect(() => {
     document.documentElement.setAttribute(
