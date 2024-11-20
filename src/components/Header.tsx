@@ -6,6 +6,9 @@ import MenuIcon from "@/icon/menu.svg";
 import LightIcon from "@/icon/light.svg";
 import DarkIcon from "@/icon/dark.svg";
 import LogoIcon from "@/icon/logo.svg";
+import SunIcon from "@/icon/sun.svg";
+import MoonIcon from "@/icon/moon.svg";
+
 import { useRouter } from "next/navigation";
 import MobileNavigation from "@/components/MobileNavigation";
 import useThemeStore from "@/store/theme";
@@ -82,10 +85,12 @@ const Header = ({ headerType, children, initialTheme }: HeaderProps) => {
           }`}
         >
           <div className="flex items-center justify-center w-10 h-10 hover:animate-rotateFull">
-            <LightIcon width={24} height={24} />
+            {/* <LightIcon width={24} height={24} /> */}
+            <SunIcon width={24} height={24} />
           </div>
           <div className="flex items-center justify-center w-10 h-10 hover:animate-rotateQuarter">
-            <DarkIcon width={24} height={24} />
+            {/* <DarkIcon width={24} height={24} /> */}
+            <MoonIcon width={24} height={24} />
           </div>
         </div>
       </button>
