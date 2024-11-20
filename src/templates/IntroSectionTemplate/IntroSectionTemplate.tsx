@@ -1,7 +1,7 @@
+import SkillChip, { SkillName } from "@/components/SkillChip";
 import { PUBLIC_IMG_PATH } from "@/constants/basic.constants";
-import SkillChip, { SkillName } from "../shared/SkillChip";
 
-const IntroSection = () => {
+const IntroSectionTemplate = () => {
   const SKILL_LIST: {
     skillName: SkillName;
     bgColor?: `#${string}`;
@@ -54,4 +54,4 @@ const IntroSection = () => {
   );
 };
 
-export default IntroSection;
+export default IntroSectionTemplate;

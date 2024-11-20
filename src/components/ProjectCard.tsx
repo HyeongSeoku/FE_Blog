@@ -26,11 +26,8 @@ const ProjectCard = ({
   endDate = "",
 }: ProjectCardProps) => {
   return (
-    <article className="w-64 h-80 box-border rounded-xl shadow-md transform transition ease-in-out duration-300 hover:scale-102">
-      <Link
-        href={link}
-        className="block w-full h-full rounded-xl overflow-hidden bg-white"
-      >
+    <article className="w-64 h-80 box-border rounded-md overflow-hidden shadow-md transform transition ease-in-out duration-300 hover:scale-102">
+      <Link href={link} className="block w-full h-full bg-white">
         <div className="bg-[var(--gray-bg-color)] h-1/2 flex items-center justify-center p-3 relative overflow-hidden">
           <Image
             src={imgSrc}
@@ -61,7 +58,7 @@ const ProjectCard = ({
           {!!startDate && (
             <time
               dateTime={`${startDate}`}
-              className="text-[var(--gray-text-color)] text-xs after:content-['-']"
+              className="text-[var(--gray1-text-color)] text-xs after:content-['-']"
             >
               {getDate("YYYY.MM.DD", `${startDate}`)}
             </time>
@@ -69,7 +66,7 @@ const ProjectCard = ({
           {!!endDate && (
             <time
               dateTime={`${endDate}`}
-              className="text-[var(--gray-text-color)] text-xs"
+              className="text-[var(--gray1-text-color)] text-xs"
             >
               {getDate("YYYY.MM.DD", `${endDate}`)}
             </time>

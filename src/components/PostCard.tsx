@@ -1,7 +1,7 @@
 "use client";
 import { Category, SubCategory } from "@/types/posts";
 import { getDate } from "@/utils/date";
-import { PostDataProps } from "@/utils/mdx";
+import { PostDataProps } from "@/utils/mdxServer";
 import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
@@ -50,11 +50,8 @@ const PostCard = ({
   }, [category, subCategory, categoryType]);
 
   return (
-    <article className="w-64 h-80 box-border rounded-xl shadow-md transform transition ease-in-out duration-300 hover:scale-102">
-      <Link
-        href={link}
-        className="block w-full h-full rounded-xl overflow-hidden bg-white"
-      >
+    <article className="w-64 h-80 box-border rounded-md overflow-hidden shadow-md transform transition ease-in-out duration-300 hover:scale-102">
+      <Link href={link} className="block w-full h-full bg-white">
         <div className="bg-[var(--gray-bg-color)] h-2/5 flex items-center justify-center p-3 relative overflow-hidden">
           <Image
             src={imgSrc}
@@ -93,7 +90,7 @@ const PostCard = ({
 
           <time
             dateTime={`${createdAt}`}
-            className="text-[var(--gray-text-color)] text-xs"
+            className="text-[var(--gray1-text-color)] text-xs"
           >
             {getDate("YYYY.MM.DD", `${createdAt}`)}
           </time>

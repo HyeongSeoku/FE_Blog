@@ -1,7 +1,11 @@
 import { notFound } from "next/navigation";
-import PostPageMainClient from "./pageClient";
-import { getPostsDetail } from "@/utils/mdx";
-import DefaultLayout from "@/layout/DefaultLayout";
+import { getAllPosts, getPostsDetail } from "@/utils/mdxServer";
+import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
+
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({ slug: post.slug.split("/") }));
+}
 
 export default async function PostPage({
   params,
@@ -14,10 +18,14 @@ export default async function PostPage({
     notFound();
   }
 
+  const { source, frontMatter, readingTime, heading } = postData;
+
   return (
-    <DefaultLayout>
-      <h1 className="text-5xl font-bold">{postData?.frontMatter.title}</h1>
-      <PostPageMainClient source={postData.source} />
-    </DefaultLayout>
+    <MdxDetailTemplate
+      source={source}
+      readingTime={readingTime}
+      frontMatter={frontMatter}
+      heading={heading}
+    />
   );
 }

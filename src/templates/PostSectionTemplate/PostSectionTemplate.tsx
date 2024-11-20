@@ -2,16 +2,16 @@
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import useDeviceStore from "@/store/deviceType";
-import { PostDataProps } from "@/utils/mdx";
-import PostCard from "../PostCard";
+import { PostDataProps } from "@/utils/mdxServer";
+import PostCard from "@/components/PostCard";
 
-import "@/components/PostSection/post-section.css";
+import "./post-section-template.css";
 
 export interface PostSectionProps {
   postData: PostDataProps[];
 }
 
-const PostSection = ({ postData }: PostSectionProps) => {
+const PostSectionTemplate = ({ postData }: PostSectionProps) => {
   const { isMobile } = useDeviceStore();
 
   /**
@@ -79,4 +79,4 @@ const PostSection = ({ postData }: PostSectionProps) => {
   );
 };
 
-export default PostSection;
+export default PostSectionTemplate;

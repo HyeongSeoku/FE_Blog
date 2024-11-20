@@ -1,8 +1,13 @@
 import { notFound } from "next/navigation";
-import { getProjectDetail } from "@/utils/mdx";
+import { getAllProjects, getProjectDetail } from "@/utils/mdxServer";
 import ProjectDetailPageClient from "./pageClient";
 import { Suspense } from "react";
-import { MdxContentSkeleton } from "@/components/shared/MdxContentSkeleton";
+import { MdxContentSkeleton } from "@/components/MdxContentSkeleton";
+
+export async function generateStaticParams() {
+  const projects = await getAllProjects();
+  return projects.map((project) => ({ slug: project.slug.split("/") }));
+}
 
 export default async function ProjectDetailPage({
   params,
