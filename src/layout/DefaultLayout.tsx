@@ -17,7 +17,7 @@ const DefaultLayout = ({
   const initialTheme = cookieStore.get(LIGHT_DARK_THEME)?.value || "light";
 
   return (
-    <div className="py-2 px-4 max-w-7xl w-full h-full mx-auto box-border break-keep">
+    <div className="max-w-7xl w-full h-full mx-auto box-border break-keep">
       <Header headerType={headerType} initialTheme={initialTheme}></Header>
       <main className="">{children}</main>
       <Footer />

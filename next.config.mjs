@@ -22,6 +22,9 @@ const nextConfig = withMDX({
   },
 
   transpilePackages: ["next-mdx-remote"],
+  images: {
+    domains: ["avatars.githubusercontent.com"],
+  },
 });
 
 export default nextConfig;
