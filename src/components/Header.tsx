@@ -60,10 +60,10 @@ const Header = ({ headerType, children, initialTheme }: HeaderProps) => {
   };
 
   const toggleMoMenu = () => {
-    const breadOpenStatusText = isMoNavOpen ? "open" : "close";
+    const breadOpenStatusText = isMoNavOpen ? "close" : "open";
     triggerAnimation("id", `bread-top-${breadOpenStatusText}`);
     triggerAnimation("id", `bread-bottom-${breadOpenStatusText}`);
-    setIsMoNavOpen((current) => !current);
+    setIsMoNavOpen(!isMoNavOpen);
   };
 
   const handleLogoButton = () => {
