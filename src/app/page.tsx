@@ -2,6 +2,7 @@ import { getAllPosts, getAllProjects } from "@/utils/mdxServer";
 import { HomeClient } from "./pageClient";
 import "swiper/css";
 import { fetchGithubUserInfo } from "@/api/github";
+import DefaultLayout from "@/layout/DefaultLayout";
 
 export default async function Home() {
   const projectData = await getAllProjects();
@@ -9,10 +10,12 @@ export default async function Home() {
   const githubData = await fetchGithubUserInfo();
 
   return (
-    <HomeClient
-      projectData={projectData}
-      postData={postData}
-      githubData={githubData}
-    />
+    <DefaultLayout>
+      <HomeClient
+        projectData={projectData}
+        postData={postData}
+        githubData={githubData}
+      />
+    </DefaultLayout>
   );
 }
