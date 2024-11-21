@@ -15,13 +15,13 @@ const IntroSectionTemplate = () => {
 
   return (
     <section className="flex flex-col gap-2">
-      <div className="flex gap-1 items-center">
+      <div className="flex gap-1 items-center h-8">
         <strong className="text-xl">김형석</strong>
         {isGithubData && (
           <a
             href={githubUser.githubUrl}
             target="_blank"
-            className="transform duration-300 will-change-transform hover:bg-gray-400/20 p-1 rounded-md"
+            className="transform duration-300 will-change-transform hover:bg-gray-400/20 p-1 rounded-sm"
           >
             <Image
               src={githubUser.imgSrc}

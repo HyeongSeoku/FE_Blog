@@ -126,15 +126,12 @@ main {
   box-sizing: border-box;
 }
 
-html {
-  scrollbar-gutter: stable;
-}
-
 body {
   scroll-behavior: smooth;
   position: static;
   width: 100%;
   height: 100%;
+  scrollbar-gutter: stable;
 }
 
 body[data-modal-open="true"] {
@@ -148,4 +145,9 @@ body[data-modal-open="true"] {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+html,
+body {
+  height: 100%;
 }

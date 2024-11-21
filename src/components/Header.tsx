@@ -85,7 +85,7 @@ const Header = ({ headerType, children, initialTheme }: HeaderProps) => {
 
       <div className="flex items-center">
         <button
-          className="flex flex-col flex-shrink-0 w-10 h-10 overflow-hidden"
+          className="flex flex-col flex-shrink-0 w-10 h-10 overflow-hidden hover:bg-gray-400/20 rounded-sm"
           onClick={toggleTheme}
         >
           <div
@@ -102,7 +102,7 @@ const Header = ({ headerType, children, initialTheme }: HeaderProps) => {
           </div>
         </button>
         <button
-          className="ml-1 h-10 w-10 flex items-center justify-center relative z-30"
+          className="ml-1 h-10 w-10 flex items-center justify-center relative z-30 hover:bg-gray-400/20 rounded-sm"
           onClick={toggleMoMenu}
         >
           <MenuIcon width={24} height={24} alt="menu" />
