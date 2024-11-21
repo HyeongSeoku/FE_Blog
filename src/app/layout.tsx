@@ -24,10 +24,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
   return (
     <html lang="en" data-theme={theme === "dark" ? "dark" : "light"}>
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </head>
       <body>
         <DefaultLayout>{children}</DefaultLayout>
         <div id="modal-root"></div>
