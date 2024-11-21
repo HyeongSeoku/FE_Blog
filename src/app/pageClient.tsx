@@ -9,7 +9,6 @@ import dynamic from "next/dynamic";
 import ProjectSectionTemplate from "@/templates/ProjectSectionTemplate/ProjectSectionTemplate";
 import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionTemplate";
 import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
-import HistorySectionTemplate from "@/templates/HistorySectionTemplate/HistorySectionTemplate";
 import { GithubUserInfo } from "@/api/github";
 import useGithubInfoStore from "@/store/githubInfo";
 import { PUBLIC_IMG_PATH } from "@/constants/basic.constants";
@@ -65,9 +64,6 @@ export const HomeClient = ({ postData, githubData }: HomeClientProps) => {
     <div className="h-full flex flex-col p-8 gap-8">
       <IntroSectionTemplate />
 
-      {/* <MainSection title="POST">
-        <PostSectionTemplate postData={postData} />
-      </MainSection> */}
       <section className="flex flex-col gap-2">
         <h2>Skills</h2>
         <ul className="inline-flex flex-wrap gap-3 w-80">
@@ -82,7 +78,10 @@ export const HomeClient = ({ postData, githubData }: HomeClientProps) => {
           ))}
         </ul>
       </section>
-      <section className="flex flex-col gap-10"></section>
+      <MainSection title="POST">
+        <PostSectionTemplate postData={postData} />
+      </MainSection>
+
       <Modal
         title="모달"
         isOpen={isOpen}
