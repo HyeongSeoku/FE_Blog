@@ -50,9 +50,9 @@ const PostCard = ({
   }, [category, subCategory, categoryType]);
 
   return (
-    <article className="w-64 h-80 box-border rounded-md overflow-hidden shadow-md transform transition ease-in-out duration-300 hover:scale-102">
+    <article className="w-64 h-80 box-border rounded-lg overflow-hidden shadow-md transform transition ease-in-out duration-300 hover:scale-102">
       <Link href={link} className="block w-full h-full bg-white">
-        <div className="bg-[var(--gray-bg-color)] h-2/5 flex items-center justify-center p-3 relative overflow-hidden">
+        <div className="h-2/5 flex items-center justify-center p-3 relative overflow-hidden">
           <Image
             src={imgSrc}
             alt={imgAlt}
@@ -61,16 +61,16 @@ const PostCard = ({
             style={{ height: "100%", width: "auto", objectFit: "contain" }}
           />
         </div>
-        <div className="text-black px-5 py-4 h-3/5 bg-[var(--project-card-bg)] flex flex-col justify-center">
+        <div className="text-black px-5 py-4 h-3/5 flex flex-col justify-center">
           <div
             className={classNames(
-              "w-fit px-2 py-[2px] rounded-3xl  text-sm text-white",
+              "w-fit px-2 py-[2px] rounded-md text-sm text-white border",
               categoryBgColor,
             )}
           >
             {categoryText}
           </div>
-          <h3 className="text-xl font-semibold mt-1 my-2">{title}</h3>
+          <h3 className="text-xl font-semibold mt-1 ">{title}</h3>
           <p className="text-sm mb-3">{description}</p>
           {!!tags.length && (
             <>
@@ -79,7 +79,7 @@ const PostCard = ({
                 {tags.map((tagTitle, idx) => (
                   <li
                     key={`${idx}_${tagTitle}`}
-                    className="w-fit h-5 rounded-md border px-2 py-1 text-xs box-border flex items-center justify-center bg-primary text-white"
+                    className="w-fit h-5 rounded-md border px-2 py-1 text-xs box-border flex items-center justify-center "
                   >
                     {tagTitle}
                   </li>
