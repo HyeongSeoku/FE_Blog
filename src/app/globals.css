@@ -126,19 +126,19 @@ main {
   box-sizing: border-box;
 }
 
-body {
+#default-container {
   scroll-behavior: smooth;
   position: static;
   width: 100%;
   height: 100%;
   scrollbar-gutter: stable;
+  overflow-y: scroll;
 }
 
-body[data-modal-open="true"] {
+body[data-modal-open="true"] #default-container {
   position: fixed;
   width: 100%;
   overscroll-behavior: none;
-  overflow-y: scroll;
 }
 
 @layer utilities {
@@ -149,5 +149,5 @@ body[data-modal-open="true"] {
 
 html,
 body {
-  height: 100%;
+  height: 100vh;
 }
