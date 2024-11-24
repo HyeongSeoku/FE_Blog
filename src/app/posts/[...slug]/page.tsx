@@ -29,9 +29,6 @@ export async function generateMetadata({
       title: "게시글을 찾을 수 없습니다",
       description: "요청하신 게시글이 존재하지 않습니다.",
       other: { keyword: "" },
-      openGraph: {
-        publishedTime: "",
-      },
     };
   }
 
@@ -43,9 +40,6 @@ export async function generateMetadata({
       frontMatter.description ||
       "프론트엔드 개발자 김형석의 개발 블로그입니다.",
     other: { keyword: frontMatter.tags?.join(",") || "" },
-    openGraph: {
-      publishedTime: frontMatter.createdAt || "",
-    },
   };
 }
 

@@ -65,7 +65,7 @@ export const HomeClient = ({ postData, githubData }: HomeClientProps) => {
       <IntroSectionTemplate />
 
       <section className="flex flex-col gap-2">
-        <h2>Skills</h2>
+        <h3>Skills</h3>
         <ul className="inline-flex flex-wrap gap-3 w-80">
           {SKILL_LIST.map(({ skillName, bgColor, imgSrc }, idx) => (
             <SkillChip
@@ -78,7 +78,7 @@ export const HomeClient = ({ postData, githubData }: HomeClientProps) => {
           ))}
         </ul>
       </section>
-      <MainSection title="POST">
+      <MainSection title="게시물">
         <PostSectionTemplate postData={postData} />
       </MainSection>
 

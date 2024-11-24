@@ -16,13 +16,12 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
   };
 
   return (
-    <aside className="toc p-4 border-r border-gray-200 w-64">
-      <h2 className="font-bold text-lg mb-4">Table of Contents</h2>
-      <ul className="space-y-2">
+    <aside className="sticky top-[100px] p-4 border-r h-[700px] border-gray-200 w-64 flex flex-col">
+      <ul className="space-y-2 h-fit max-h-[500px] overflow-y-scroll scroll-bar-thin">
         {headings.map((heading, idx) => (
           <li
             key={`${heading}_${idx}`}
-            className={`toc-item ${
+            className={`${
               heading.level === 2 ? "ml-4" : ""
             } text-sm text-gray-700 hover:text-gray-900`}
           >
@@ -34,7 +33,7 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
                 window.history.replaceState(null, "", `#${heading.id}`);
                 handleClick(heading.id);
               }}
-              className="block"
+              className="block truncate"
             >
               {heading.text}
             </Link>

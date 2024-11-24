@@ -21,8 +21,10 @@ const MdxDetailTemplate = ({
   heading = [],
 }: MdxDetailTemplateProps) => {
   return (
-    <div className="flex">
+    <div className="flex relative">
+      {/* <div className="aside-track absolute"> */}
       <MdxSideBar headings={heading} />
+      {/* </div> */}
       <main className="flex-1">
         <header className="border-b border-b-[var(--border-color)] mb-4 pb-4">
           <h1 className="text-5xl font-bold">{title}</h1>

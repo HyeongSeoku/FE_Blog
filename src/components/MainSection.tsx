@@ -14,8 +14,8 @@ const MainSection = ({
   children,
 }: MainSectionProps) => {
   return (
-    <section className="my-10 flex flex-col justify-center items-center">
-      <h2 className="text-3xl font-bold mb-2">{title}</h2>
+    <section className="my-10 flex flex-col justify-center">
+      <h3 className="text-lg font-bold">{title}</h3>
       {description && (
         <p className="text-center flex flex-col justify-center text-[var(--description-text-color)] whitespace-pre-line">
           {description}
