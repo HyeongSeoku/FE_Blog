@@ -23,7 +23,7 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
             key={`${heading}_${idx}`}
             className={`${
               heading.level === 2 ? "ml-4" : ""
-            } text-sm text-gray-700 hover:text-gray-900`}
+            } text-sm text-gray-700 hover:text-white`}
           >
             <Link
               href={`#${heading.id}`}

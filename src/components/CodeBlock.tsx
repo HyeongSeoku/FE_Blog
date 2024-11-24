@@ -1,14 +1,25 @@
 "use client";
 
-// components/CodeBlock.tsx
+import useAnimationVisibility from "@/hooks/useAnimationVisibility";
+import classNames from "classnames";
+
 import { ReactNode, useState, useMemo } from "react";
+import { AnimationNameType } from "./AnimationContainer";
+import { ANIMAITE_FADE_IN_UP } from "@/constants/animation.constants";
 
 interface CodeBlockProps {
   children: ReactNode;
+  hasAnimation?: boolean;
+  animationName?: AnimationNameType;
 }
 
-const CodeBlock = ({ children }: CodeBlockProps) => {
+const CodeBlock = ({
+  children,
+  hasAnimation = true,
+  animationName = undefined,
+}: CodeBlockProps) => {
   const [copied, setCopied] = useState(false);
+  const [isVisible, ref] = useAnimationVisibility();
 
   const extractTextFromChildren = (node: ReactNode): string => {
     if (typeof node === "string") {
@@ -39,10 +50,14 @@ const CodeBlock = ({ children }: CodeBlockProps) => {
   };
 
   return (
-    <div className="relative group">
-      <pre className="p-2 bg-gray-900 rounded-md text-white overflow-x-auto">
-        <code>{children}</code>
-      </pre>
+    <code
+      className={classNames("relative", {
+        "opacity-0 transition duration-300 will-change-transform": hasAnimation,
+        [animationName || ANIMAITE_FADE_IN_UP]: hasAnimation && isVisible,
+      })}
+      ref={ref}
+    >
+      {children}
       <button
         onClick={handleCopy}
         className="absolute top-2 right-2 p-1 bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 flex items-center justify-center w-16 h-8 transition-opacity duration-200"
@@ -58,7 +73,7 @@ const CodeBlock = ({ children }: CodeBlockProps) => {
           Copy
         </span>
       </button>
-    </div>
+    </code>
   );
 };
 
