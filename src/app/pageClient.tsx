@@ -6,7 +6,6 @@ import MainSection from "@/components/MainSection";
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import ProjectSectionTemplate from "@/templates/ProjectSectionTemplate/ProjectSectionTemplate";
 import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionTemplate";
 import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
 import { GithubUserInfo } from "@/api/github";

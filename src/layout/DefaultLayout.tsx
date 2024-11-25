@@ -17,11 +17,14 @@ const DefaultLayout = ({
   const initialTheme = cookieStore.get(LIGHT_DARK_THEME)?.value || "light";
 
   return (
-    <section className="max-w-7xl w-full h-full mx-auto box-border break-keep flex flex-col">
+    <div
+      id="container"
+      className="max-w-7xl w-full h-full box-border break-keep flex flex-col"
+    >
       <Header headerType={headerType} initialTheme={initialTheme}></Header>
-      <main className="h-full box-border">{children}</main>
+      <main className="box-border w-full">{children}</main>
       <Footer />
-    </section>
+    </div>
   );
 };
 
