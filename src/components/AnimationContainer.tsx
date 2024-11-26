@@ -15,12 +15,14 @@ interface AnimationContainerProps {
   tag?: ElementType;
   animationName?: AnimationNameType;
   children: ReactNode;
+  className?: string;
 }
 
 const AnimationContainer = ({
   tag: Tag = "div",
   animationName = ANIMAITE_FADE_IN_UP,
   children,
+  className,
   ...props
 }: AnimationContainerProps) => {
   const [isVisible, ref] = useAnimationVisibility();
@@ -28,9 +30,13 @@ const AnimationContainer = ({
   return (
     <Tag
       ref={ref}
-      className={classNames("opacity-0 transition duration-300", {
-        [animationName]: isVisible,
-      })}
+      className={classNames(
+        "opacity-0 transition duration-300",
+        {
+          [animationName]: isVisible,
+        },
+        className,
+      )}
       {...props}
     >
       {children}

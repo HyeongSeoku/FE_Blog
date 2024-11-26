@@ -19,10 +19,10 @@ const DefaultLayout = ({
   return (
     <div
       id="container"
-      className="max-w-7xl w-full h-full box-border break-keep flex flex-col"
+      className="w-full h-full box-border break-keep flex flex-col items-center"
     >
-      <Header headerType={headerType} initialTheme={initialTheme}></Header>
-      <main className="box-border w-full">{children}</main>
+      <Header headerType={headerType} initialTheme={initialTheme} />
+      <main className="max-w-7xl box-border h-full">{children}</main>
       <Footer />
     </div>
   );

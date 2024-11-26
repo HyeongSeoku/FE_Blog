@@ -147,7 +147,6 @@ body {
   height: 100%;
   scrollbar-gutter: stable;
   overflow-y: scroll;
-  display: block;
 }
 
 body[data-modal-open="true"] #container {

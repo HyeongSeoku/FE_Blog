@@ -57,11 +57,15 @@ export default async function PostPage({
   const { source, frontMatter, readingTime, heading } = postData;
 
   return (
-    <MdxDetailTemplate
-      source={source}
-      readingTime={readingTime}
-      frontMatter={frontMatter}
-      heading={heading}
-    />
+    <>
+      <MdxDetailTemplate
+        source={source}
+        readingTime={readingTime}
+        frontMatter={frontMatter}
+        heading={heading}
+      />
+
+      <div style={{ height: "400px" }}>TEST</div>
+    </>
   );
 }
