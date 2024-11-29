@@ -31,7 +31,7 @@ const AnimationContainer = ({
     <Tag
       ref={ref}
       className={classNames(
-        "opacity-0 transition duration-300",
+        "opacity-0 transition duration-300 will-change-transform-opacity",
         {
           [animationName]: isVisible,
         },

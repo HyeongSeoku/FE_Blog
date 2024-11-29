@@ -180,7 +180,7 @@ export default {
         rotateFull: "rotateFull 3s linear infinite",
         rotateQuarter: "rotateQuarter 1s linear infinite",
         bounceJelly: "bounceJelly 1s linear both",
-        fadeInUp: "fadeInUp 0.3s ease-in-out forwards",
+        fadeInUp: "fadeInUp 0,3s ease-in-out forwards",
         fadeInDown: "fadeInDown 0.3s ease-in-out forwards",
         fadeInLeft: "fadeInLeft 0.3s ease-in-out forwards",
         fadeInRight: "fadeInRight 0.3s ease-in-out forwards",
@@ -207,6 +207,9 @@ export default {
         },
         ".animation-running": {
           "animation-play-state": "running",
+        },
+        ".will-change-transform-opacity": {
+          willChange: "transform opacity",
         },
       };
 
