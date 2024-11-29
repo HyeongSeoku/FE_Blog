@@ -65,9 +65,5 @@
 }
 
 .markdown-contents pre {
-  @apply p-2 bg-gray-900 rounded-md overflow-x-auto mt-2 mb-2;
+  @apply p-2 bg-gray-900 rounded-md overflow-x-auto mt-2 mb-2 overflow-y-hidden w-full;
 }
-
-/* .markdown-contents pre {
-  @apply bg-gray-100 rounded text-sm font-mono overflow-x-auto bg-[var(--code-bg-light)] mt-2 mb-2;
-} */

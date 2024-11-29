@@ -22,7 +22,9 @@ const DefaultLayout = ({
       className="w-full h-full box-border break-keep flex flex-col items-center"
     >
       <Header headerType={headerType} initialTheme={initialTheme} />
-      <main className="max-w-7xl box-border h-full">{children}</main>
+      <main className="max-w-7xl box-border w-full h-full min-h-fit flex flex-col">
+        {children}
+      </main>
       <Footer />
     </div>
   );
