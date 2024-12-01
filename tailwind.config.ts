@@ -5,12 +5,12 @@ export default {
   darkMode: "class",
   theme: {
     screens: {
-      xs: "375px",
-      sm: "640px",
-      md: "768px",
-      lg: "1024px",
-      xl: "1280px",
-      "2xl": "1536px",
+      xs: { max: "375px" },
+      sm: { max: "640px" },
+      md: { max: "768px" },
+      lg: { max: "1024px" },
+      xl: { max: "1280px" },
+      "2xl": { max: "1536px" },
     },
     extend: {
       scale: {
@@ -180,7 +180,7 @@ export default {
         rotateFull: "rotateFull 3s linear infinite",
         rotateQuarter: "rotateQuarter 1s linear infinite",
         bounceJelly: "bounceJelly 1s linear both",
-        fadeInUp: "fadeInUp 0,3s ease-in-out forwards",
+        fadeInUp: "fadeInUp 0.3s ease-in-out forwards",
         fadeInDown: "fadeInDown 0.3s ease-in-out forwards",
         fadeInLeft: "fadeInLeft 0.3s ease-in-out forwards",
         fadeInRight: "fadeInRight 0.3s ease-in-out forwards",

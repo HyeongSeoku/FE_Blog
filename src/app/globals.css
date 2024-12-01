@@ -138,9 +138,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-#container {
   scroll-behavior: smooth;
   position: static;
   width: 100%;
@@ -149,7 +146,7 @@ body {
   overflow-y: scroll;
 }
 
-body[data-modal-open="true"] #container {
+body[data-modal-open="true"] {
   position: fixed;
   width: 100%;
   overscroll-behavior: none;
@@ -159,11 +156,4 @@ body[data-modal-open="true"] #container {
   .text-balance {
     text-wrap: balance;
   }
-}
-
-html,
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
 }

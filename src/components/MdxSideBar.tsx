@@ -2,7 +2,6 @@
 
 import { HeadingsProps } from "@/types/mdx";
 import Link from "next/link";
-import AnimationContainer from "./AnimationContainer";
 import { ANIMAITE_FADE_IN_UP } from "@/constants/animation.constants";
 
 export interface MdxSideBarProps {
@@ -18,14 +17,14 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
   };
 
   return (
-    <aside className="absolute top-[100px] left-0 p-4 h-[700px] border-gray-200 w-64 flex flex-col">
+    <aside className="absolute top-[100px] right-[100px] p-4 w-fit h-fit max-w-[150px] max-h-[700px] border-gray-200 flex flex-col xl:opacity-0 transform duration-300">
       <ul className="space-y-2 h-fit max-h-[500px] overflow-y-scroll scroll-bar-thin">
         {headings.map((heading, idx) => (
           <li
             key={`${heading}_${idx}`}
             className={`${
               heading.level === 2 ? "ml-4" : ""
-            } ${ANIMAITE_FADE_IN_UP} text-sm text-gray-700 hover:text-white`}
+            } ${ANIMAITE_FADE_IN_UP} text-sm text-gray-700 hover:text-white transform duration-300`}
             style={{ animationDelay: `${idx * 20}ms` }}
           >
             <Link

@@ -16,15 +16,14 @@ interface MdxDetailTemplateProps {
 
 const MdxDetailTemplate = ({
   source,
-  frontMatter: { title, createdAt, description, subCategory, tags },
+  frontMatter: { title, createdAt, description, category, subCategory, tags },
   readingTime,
   heading = [],
 }: MdxDetailTemplateProps) => {
   return (
     <>
-      <MdxSideBar headings={heading} />
       <header className="border-b border-b-[var(--border-color)] mb-4 pb-4">
-        <h1 className="text-5xl font-bold">{title}</h1>
+        <h1 className="text-4xl font-bold">{title}</h1>
         <p className="text-[var(--gray2-text-color)] text-xl">{description}</p>
         <section className="flex items-center gap-3 mt-2 mb-2">
           <time className="text-[--gray2-text-color]">{createdAt}</time>
@@ -42,18 +41,22 @@ const MdxDetailTemplate = ({
           </section>
         )}
       </header>
-      <section className="markdown-contents">
-        <MDXRemote
-          {...source}
-          components={{
-            code: ({ children }) => <CodeBlock>{children}</CodeBlock>,
-            a: ({ children, href, target = "_blank" }) => (
-              <MdxLink href={href} target={target}>
-                {children}
-              </MdxLink>
-            ),
-          }}
-        />
+      <MdxSideBar headings={heading} />
+
+      <section className="relative">
+        <article className="markdown-contents">
+          <MDXRemote
+            {...source}
+            components={{
+              code: ({ children }) => <CodeBlock>{children}</CodeBlock>,
+              a: ({ children, href, target = "_blank" }) => (
+                <MdxLink href={href} target={target}>
+                  {children}
+                </MdxLink>
+              ),
+            }}
+          />
+        </article>
       </section>
     </>
   );
