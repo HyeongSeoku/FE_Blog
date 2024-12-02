@@ -47,12 +47,7 @@ const IntroSectionTemplate = () => {
           passHref
           target="_blank"
         >
-          <EmailIcon
-            alt="email"
-            width={20}
-            height={20}
-            className="relative z-10"
-          />
+          <EmailIcon alt="email" width={20} height={20} />
         </Link>
         <Link
           className="text-[var(--text-color)] p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"

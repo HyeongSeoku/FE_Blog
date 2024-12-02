@@ -71,7 +71,7 @@ const Header = ({ headerType, children, initialTheme }: HeaderProps) => {
   };
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-10 flex px-4 py-2 w-full max-w-7xl box-border justify-between">
+    <header className="sticky top-0 left-0 right-0 z-10 flex px-4 py-2 w-full max-w-7xl box-border justify-between backdrop-blur-sm bg-transparent">
       {headerType === "DEFAULT" && (
         <button
           className={`z-10 flex gap-2 items-center ${isMoNavOpen ? "opacity-0 transition-opacity" : "opacity-100"}`}

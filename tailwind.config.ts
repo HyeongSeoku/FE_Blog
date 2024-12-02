@@ -18,6 +18,13 @@ export default {
       },
       colors: {
         primary: "var(--primary-color)",
+        theme: "var(--bg-color)",
+      },
+      transitionDuration: {
+        custom: "var(--transition-duration)",
+      },
+      transitionTimingFunction: {
+        custom: "var(--transition-timing-function)",
       },
       keyframes: {
         easeInTypingEffect: {

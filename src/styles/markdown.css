@@ -65,5 +65,5 @@
 }
 
 .markdown-contents pre {
-  @apply p-2 bg-gray-900 rounded-md overflow-x-auto mt-2 mb-2 overflow-y-hidden w-full;
+  @apply p-2 rounded-md overflow-x-auto mt-2 mb-2 overflow-y-hidden w-full bg-[var(--code-bg-color)] !important;
 }

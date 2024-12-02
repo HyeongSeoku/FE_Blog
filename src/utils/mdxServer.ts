@@ -49,6 +49,7 @@ interface HeadingItems {
 export const getMdxContents = async (
   slug: string[],
   fileDirectory: string,
+  theme?: string,
 ): Promise<getMdxContentsResponse | null> => {
   const filePath = path.join(fileDirectory, ...slug) + ".mdx";
 
@@ -58,6 +59,31 @@ export const getMdxContents = async (
     console.error("File not found:", error);
     return null;
   }
+
+  let codeTheme: "github-dark" | "github-light" = "github-dark";
+  if (theme) {
+    if (theme === "light") {
+      codeTheme = "github-light";
+    }
+  }
+
+  const rehypePrettyCodeOptions: Options = {
+    theme: codeTheme,
+    onVisitLine(node) {
+      if (node.children.length === 0) {
+        node.children = [{ type: "text", value: " " }];
+      }
+    },
+    onVisitHighlightedLine(node) {
+      node.properties.className = [
+        ...(node.properties.className || []),
+        "highlighted-line",
+      ];
+    },
+    onVisitHighlightedChars(node) {
+      node.properties.className = ["highlighted-word"];
+    },
+  };
 
   const source = await fs.readFile(filePath, "utf8");
   const heading = extractHeadings(source);
@@ -133,8 +159,9 @@ export const getAllProjects = async (): Promise<ProjectDataProps[]> => {
 
 export const getProjectDetail = async (
   slug: string[],
+  theme?: string,
 ): Promise<getMdxContentsResponse | null> => {
-  const mdxContentData = await getMdxContents(slug, PROJECT_PATH);
+  const mdxContentData = await getMdxContents(slug, PROJECT_PATH, theme);
   return mdxContentData;
 };
 
@@ -215,27 +242,10 @@ export const getAllPosts = async (): Promise<PostDataProps[]> => {
 
 export const getPostsDetail = async (
   slug: string[],
+  theme?: string,
 ): Promise<getMdxContentsResponse | null> => {
-  const mdxContentData = await getMdxContents(slug, POST_PATH);
+  const mdxContentData = await getMdxContents(slug, POST_PATH, theme);
   return mdxContentData;
-};
-
-export const rehypePrettyCodeOptions: Options = {
-  theme: "github-dark",
-  onVisitLine(node) {
-    if (node.children.length === 0) {
-      node.children = [{ type: "text", value: " " }];
-    }
-  },
-  onVisitHighlightedLine(node) {
-    node.properties.className = [
-      ...(node.properties.className || []),
-      "highlighted-line",
-    ];
-  },
-  onVisitHighlightedChars(node) {
-    node.properties.className = ["highlighted-word"];
-  },
 };
 
 export const extractPlainText = (content: string): string => {

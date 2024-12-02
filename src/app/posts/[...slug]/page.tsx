@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { getAllPosts, getPostsDetail } from "@/utils/mdxServer";
 import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
+import { parseCookieHeader } from "@/utils/cookies";
+import { headers } from "next/headers";
 
 export async function generateStaticParams() {
   const posts = await getAllPosts();
@@ -8,7 +10,11 @@ export async function generateStaticParams() {
 }
 
 async function getPostData(slug: string[]) {
-  const postData = await getPostsDetail(slug);
+  const cookieHeader = headers().get("cookie");
+  const cookies = parseCookieHeader(cookieHeader);
+  const theme = cookies.LIGHT_DARK_THEME;
+
+  const postData = await getPostsDetail(slug, theme);
 
   if (!postData) {
     return null;
