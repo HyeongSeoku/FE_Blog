@@ -49,7 +49,6 @@ interface HeadingItems {
 export const getMdxContents = async (
   slug: string[],
   fileDirectory: string,
-  theme?: string,
 ): Promise<getMdxContentsResponse | null> => {
   const filePath = path.join(fileDirectory, ...slug) + ".mdx";
 
@@ -60,15 +59,8 @@ export const getMdxContents = async (
     return null;
   }
 
-  let codeTheme: "github-dark" | "github-light" = "github-dark";
-  if (theme) {
-    if (theme === "light") {
-      codeTheme = "github-light";
-    }
-  }
-
   const rehypePrettyCodeOptions: Options = {
-    theme: codeTheme,
+    theme: "github-dark",
     onVisitLine(node) {
       if (node.children.length === 0) {
         node.children = [{ type: "text", value: " " }];
@@ -159,9 +151,8 @@ export const getAllProjects = async (): Promise<ProjectDataProps[]> => {
 
 export const getProjectDetail = async (
   slug: string[],
-  theme?: string,
 ): Promise<getMdxContentsResponse | null> => {
-  const mdxContentData = await getMdxContents(slug, PROJECT_PATH, theme);
+  const mdxContentData = await getMdxContents(slug, PROJECT_PATH);
   return mdxContentData;
 };
 
@@ -242,9 +233,8 @@ export const getAllPosts = async (): Promise<PostDataProps[]> => {
 
 export const getPostsDetail = async (
   slug: string[],
-  theme?: string,
 ): Promise<getMdxContentsResponse | null> => {
-  const mdxContentData = await getMdxContents(slug, POST_PATH, theme);
+  const mdxContentData = await getMdxContents(slug, POST_PATH);
   return mdxContentData;
 };
 

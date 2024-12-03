@@ -40,9 +40,6 @@
   --silver: #c0c0c0;
   --light-silver: #e0e0e0;
   --whisper-gray: #f5f5f5;
-
-  --code-bg-light-color: #f6f8fa;
-  --code-bg-dark-color: #24292e;
 }
 
 /* 전환 관련 속성 */
@@ -83,7 +80,6 @@
   --second-bg-color: var(--light-second-bg-color);
   --project-card-bg: var(--project-light-bg);
   --border-color: var(--light-gray);
-  --code-bg-color: var(--code-bg-light-color);
 }
 
 /* Dark Theme */
@@ -93,7 +89,6 @@
   --second-bg-color: var(--dark-second-bg-color);
   --project-card-bg: #ffffff;
   --border-color: var(--dark-gray);
-  --code-bg-color: var(--code-bg-dark-color);
 }
 
 /* Global Styles */
