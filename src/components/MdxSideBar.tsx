@@ -23,8 +23,8 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
         });
       },
       {
-        rootMargin: "0px 0px -50% 0px",
-        threshold: 1.0,
+        rootMargin: "-50px 0px 0px 0px",
+        threshold: 1,
       },
     );
 
@@ -45,7 +45,12 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
   const handleClick = (id: string) => {
     const target = document.getElementById(id);
     if (target) {
-      target.scrollIntoView({ behavior: "smooth" });
+      const yOffset = -50; // 상단에서 50px 떨어지도록 설정
+      const yPosition =
+        target.getBoundingClientRect().top + window.scrollY + yOffset;
+
+      window.scrollTo({ top: yPosition, behavior: "smooth" });
+      setActiveId(id);
     }
   };
 
@@ -56,10 +61,10 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
           <li
             key={`${heading}_${idx}`}
             className={classNames(
-              "text-sm text-gray-700 hover:text-[var(--text-color)] transform transition-colors duration-300",
+              "text-sm hover:text-[var(--text-color)] transform transition-colors duration-300",
               ANIMAITE_FADE_IN_UP,
               {
-                "ml-4": heading.level === 2,
+                "ml-4": heading.level === 3,
                 "text-blue-600 font-bold": activeId === heading.id,
               },
             )}

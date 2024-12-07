@@ -23,6 +23,14 @@ const nextConfig = withMDX({
 
   transpilePackages: ["next-mdx-remote"],
   images: {
+    // remotePatterns: [
+    //   {
+    //     protocol: "https",
+    //     hostname: "avatars.githubusercontent.com",
+    //     port: "",
+    //     search: "",
+    //   },
+    // ],
     domains: ["avatars.githubusercontent.com"],
   },
 });

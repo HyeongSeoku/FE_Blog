@@ -11,235 +11,56 @@ tags:
 
 [OpenAI 홈페이지](https://www.openai.com)
 
-# Hello, MDX!
+# Next.js 14: 최신 기능 완벽 분석
 
-This is a sample MDX file with **Markdown** and <span style={{ color: 'red' }}>JSX</span>.
+Next.js는 현대 웹 개발을 선도하는 프레임워크 중 하나로, **Next.js 14** 버전은 이전 버전보다 한 단계 더 진보한 기능과 성능을 제공합니다. 이 문서에서는 새로운 기능과 변경 사항, 그리고 실질적인 활용 방법을 상세히 분석합니다.
 
-## MDX Test File
+---
 
-> 강조 테스트
+## 목차
 
-<br />
+1. [소개](#소개)
+2. [Next.js 14의 주요 기능](#nextjs-14의-주요-기능)
+   - [App Router와 Page Router 통합](#app-router와-page-router-통합)
+   - [React Server Components (RSC)](#react-server-components-rsc)
+   - [Turbo Pack](#turbo-pack)
+   - [자동 이미지 최적화](#자동-이미지-최적화)
+3. [성능 개선 사항](#성능-개선-사항)
+   - [빌드 속도 개선](#빌드-속도-개선)
+   - [리소스 최적화](#리소스-최적화)
+4. [주목할 변경점](#주목할-변경점)
+5. [Next.js 14 사용 예제](#nextjs-14-사용-예제)
+6. [결론](#결론)
 
-This is a test file
+---
 
-```javascript
-const foo = "test";
-console.log(foo);
+## 소개
 
-const bar = "bar";
+Next.js는 **React 기반 프레임워크**로, SSR(Server-Side Rendering), CSR(Client-Side Rendering), 그리고 정적 사이트 생성(SSG) 기능을 통합적으로 제공하는 강력한 도구입니다. Next.js 14는 개발자 경험(DX)을 개선하고 성능을 극대화하기 위한 새로운 기능을 도입했습니다.
 
-const barFunc = () => {
-  return bar;
-};
+---
 
-const handleCopy = () => {
-  navigator.clipboard.writeText(codeText).then(() => {
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000); // 2초 후 복사 완료 메시지 숨기기
-  });
-};
-```
+## Next.js 14의 주요 기능
 
-```typescript
-const foo = "test";
-console.log(foo);
+### App Router와 Page Router 통합
 
-const bar = "bar";
+Next.js 14에서는 기존 **Page Router**와 새롭게 도입된 **App Router**를 병렬로 사용할 수 있습니다. 이는 점진적인 마이그레이션을 가능하게 하며, 기존 프로젝트에서 App Router의 기능을 활용할 수 있도록 돕습니다.
 
-const barFunc = (text: string) => {
-  console.log(text);
-  return bar;
-};
+#### 특징
 
-const handleCopy = () => {
-  navigator.clipboard.writeText(codeText).then(() => {
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000); // 2초 후 복사 완료 메시지 숨기기
-  });
-};
-```
+- `app` 디렉토리 기반의 **파일 시스템 라우팅**.
+- 서버 컴포넌트와 클라이언트 컴포넌트의 혼합 지원.
+- Layout 및 중첩 라우팅 구조 지원.
 
-# Hello, MDX!112321421421421kjlsdkvjsdaklvjskldvjsdlkvjsdalvjsdklvjs
-
-This is a sample MDX file with **Markdown** and <span style={{ color: 'red' }}>JSX</span>.
-
-## MDX Test File
-
-> 강조 테스트
-
-<br />
-
-This is a test file
-
-```python
-from typing import Final
-
-# 작명 규칙을 이용한 상수 표기
-HELLO = "world!"
-# 작명 규칙과 타입 힌트를 이용한 상수 표기
-HELLO_WORLD: Final = "hello, world!"
-
-HELLO = 3
-```
-
-# Hello, MDX!2
-
-This is a sample MDX file with **Markdown** and <span style={{ color: 'red' }}>JSX</span>.
-
-## MDX Test File
-
-> 강조 테스트
-
-<br />
-
-This is a test file
+#### 예제: App Router 기본 사용
 
 ```javascript
-const foo = "test";
-console.log(foo);
-
-const bar = "bar";
-
-const barFunc = () => {
-  return bar;
-};
-```
-
-# Hello, MDX!3
-
-This is a sample MDX file with **Markdown** and <span style={{ color: 'red' }}>JSX</span>.
-
-## MDX Test File
-
-> 강조 테스트
-
-<br />
-
-This is a test file
-
-```javascript
-const foo = "test";
-console.log(foo);
-
-const bar = "bar";
-
-const barFunc = () => {
-  return bar;
-};
-```
-
-# Hello, MDX!4
-
-This is a sample MDX file with **Markdown** and <span style={{ color: 'red' }}>JSX</span>.
-
-## MDX Test File
-
-> 강조 테스트
-
-<br />
-
-This is a test file
-
-```javascript
-const foo = "test";
-console.log(foo);
-
-const bar = "bar";
-
-const barFunc = () => {
-  return bar;
-};
-```
-
-# Hello, MDX!5
-
-This is a sample MDX file with **Markdown** and <span style={{ color: 'red' }}>JSX</span>.
-
-## MDX Test File
-
-> 강조 테스트
-
-<br />
-
-This is a test file
-
-```javascript
-const foo = "test";
-console.log(foo);
-
-const bar = "bar";
-
-const barFunc = () => {
-  return bar;
-};
-```
-
-# Hello, MDX!6
-
-This is a sample MDX file with **Markdown** and <span style={{ color: 'red' }}>JSX</span>.
-
-## MDX Test File
-
-> 강조 테스트
-
-<br />
-
-This is a test file
-
-```javascript
-const foo = "test";
-console.log(foo);
-
-const bar = "bar";
-
-const barFunc = () => {
-  return bar;
-};
-```
-
-# Hello, MDX!7
-
-This is a sample MDX file with **Markdown** and <span style={{ color: 'red' }}>JSX</span>.
-
-## MDX Test File
-
-> 강조 테스트
-
-<br />
-
-This is a test file
-
-```javascript
-const foo = "test";
-console.log(foo);
-
-const bar = "bar";
-
-const barFunc = () => {
-  return bar;
-};
-```
-
-# Hello, MDX!8
-
-This is a sample MDX file with **Markdown** and <span style={{ color: 'red' }}>JSX</span>.
-
-## MDX Test File
-
-> 강조 테스트
-
-<br />
-
-This is a test file
-
-```javascript
-const foo = "test";
-console.log(foo);
-
-const bar = "bar";
-
-const barFunc = () => {
-  return bar;
-};
+// src/app/layout.tsx
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
 ```

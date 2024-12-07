@@ -259,14 +259,14 @@ export const extractHeadings = (content: string): HeadingsProps[] => {
 
   const cleanedContent = content.replace(/```[\s\S]*?```/g, "");
 
-  const headingRegex = /^(#{1,2})\s+(.+)$/gm;
+  const headingRegex = /^(#{2,3})\s+(.+)$/gm;
   let match;
   while ((match = headingRegex.exec(cleanedContent)) !== null) {
     const [_, hashes, text] = match;
 
     const level = hashes.length;
 
-    if (level > 2) continue;
+    if (level > 3) continue;
 
     const baseId = text.trim().replace(/\s+/g, "-").toLowerCase();
     const count = headingCounts.get(baseId) || 0;
@@ -289,11 +289,11 @@ export const rehypeHeadingsWithIds = (headingData: HeadingsProps[]) => {
       // 노드 조작 로직
       const elementNode = node as ExtendedElement;
 
-      if (["h1", "h2"].includes(elementNode.tagName || "")) {
+      if (["h2", "h3"].includes(elementNode.tagName || "")) {
         for (const item of elementNode.children) {
           const headingItem = item as HeadingItems;
           if (headingItem.value && headingItem.type === "text") {
-            const headingLevel = elementNode.tagName === "h1" ? 1 : 2;
+            const headingLevel = elementNode.tagName === "h2" ? 2 : 3;
             const heading = headingData.find(
               (h) =>
                 h.text === headingItem.value &&
