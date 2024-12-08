@@ -1,7 +1,6 @@
 "use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import useDeviceStore from "@/store/deviceType";
 import { PostDataProps } from "@/utils/mdxServer";
 import PostCard from "@/components/PostCard";
 
@@ -13,34 +12,25 @@ export interface PostSectionProps {
 }
 
 const PostSectionTemplate = ({ postData }: PostSectionProps) => {
-  const { isMobile } = useDeviceStore();
-
-  /**
-   * FIXME: Hydrate 이슈 수정
-   * 서버사이드의 device type으로 mobile만 추출하고 그게 아니라면 pure css로 display:none 처리
-   *  */
-
   return (
     <>
       <Swiper
+        tag="ul"
         slidesPerView="auto"
         pagination={{ clickable: true }}
         className="md:!hidden"
       >
         {postData.map(
-          (
-            {
-              title,
-              description,
-              createdAt,
-              slug,
-              tags,
-              category,
-              subCategory,
-            },
-            idx,
-          ) => (
-            <SwiperSlide key={slug}>
+          ({
+            title,
+            description,
+            createdAt,
+            slug,
+            tags,
+            category,
+            subCategory,
+          }) => (
+            <SwiperSlide key={slug} tag="li">
               <PostCard
                 link={`/posts/${slug}`}
                 title={title}
@@ -54,7 +44,7 @@ const PostSectionTemplate = ({ postData }: PostSectionProps) => {
           ),
         )}
       </Swiper>
-      <div className="min-md:hidden">
+      <ul className="min-md:hidden">
         {postData.map(
           ({
             title,
@@ -77,7 +67,7 @@ const PostSectionTemplate = ({ postData }: PostSectionProps) => {
             />
           ),
         )}
-      </div>
+      </ul>
     </>
   );
 };
