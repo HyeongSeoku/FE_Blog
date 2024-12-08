@@ -6,6 +6,7 @@ import { PostDataProps } from "@/utils/mdxServer";
 import PostCard from "@/components/PostCard";
 
 import "./post-section-template.css";
+import classNames from "classnames";
 
 export interface PostSectionProps {
   postData: PostDataProps[];
@@ -21,10 +22,14 @@ const PostSectionTemplate = ({ postData }: PostSectionProps) => {
 
   return (
     <>
-      {isMobile ? (
-        <Swiper slidesPerView="auto" pagination={{ clickable: true }}>
-          {postData.map(
-            ({
+      <Swiper
+        slidesPerView="auto"
+        pagination={{ clickable: true }}
+        className="md:!hidden"
+      >
+        {postData.map(
+          (
+            {
               title,
               description,
               createdAt,
@@ -32,49 +37,47 @@ const PostSectionTemplate = ({ postData }: PostSectionProps) => {
               tags,
               category,
               subCategory,
-            }) => (
-              <SwiperSlide key={slug}>
-                <PostCard
-                  link={`/posts/${slug}`}
-                  title={title}
-                  description={description}
-                  createdAt={createdAt}
-                  tags={tags}
-                  category={category}
-                  subCategory={subCategory}
-                />
-              </SwiperSlide>
-            ),
-          )}
-        </Swiper>
-      ) : (
-        // <div>test</div>
-        <Swiper slidesPerView="auto" pagination={{ clickable: true }}>
-          {postData.map(
-            ({
-              title,
-              description,
-              createdAt,
-              slug,
-              tags,
-              category,
-              subCategory,
-            }) => (
-              <SwiperSlide key={slug}>
-                <PostCard
-                  link={`/posts/${slug}`}
-                  title={title}
-                  description={description}
-                  createdAt={createdAt}
-                  tags={tags}
-                  category={category}
-                  subCategory={subCategory}
-                />
-              </SwiperSlide>
-            ),
-          )}
-        </Swiper>
-      )}
+            },
+            idx,
+          ) => (
+            <SwiperSlide key={slug}>
+              <PostCard
+                link={`/posts/${slug}`}
+                title={title}
+                description={description}
+                createdAt={createdAt}
+                tags={tags}
+                category={category}
+                subCategory={subCategory}
+              />
+            </SwiperSlide>
+          ),
+        )}
+      </Swiper>
+      <div className="min-md:hidden">
+        {postData.map(
+          ({
+            title,
+            description,
+            createdAt,
+            slug,
+            tags,
+            category,
+            subCategory,
+          }) => (
+            <PostCard
+              key={slug}
+              link={`/posts/${slug}`}
+              title={title}
+              description={description}
+              createdAt={createdAt}
+              tags={tags}
+              category={category}
+              subCategory={subCategory}
+            />
+          ),
+        )}
+      </div>
     </>
   );
 };

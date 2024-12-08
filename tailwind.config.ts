@@ -11,6 +11,7 @@ export default {
       lg: { max: "1024px" },
       xl: { max: "1280px" },
       "2xl": { max: "1536px" },
+      "min-md": { min: "768px" },
     },
     extend: {
       scale: {
@@ -59,19 +60,19 @@ export default {
           "50%": { opacity: "0" },
         },
         fadeInUp: {
-          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "0%": { opacity: "0", transform: "translateY(5px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         fadeInDown: {
-          "0%": { opacity: "0", transform: "translateY(-20px)" },
+          "0%": { opacity: "0", transform: "translateY(-5px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         fadeInLeft: {
-          "0%": { opacity: "0", transform: "translateX(-20px)" },
+          "0%": { opacity: "0", transform: "translateX(-5px)" },
           "100%": { opacity: "1", transform: "translateX(0)" },
         },
         fadeInRight: {
-          "0%": { opacity: "0", transform: "translateX(20px)" },
+          "0%": { opacity: "0", transform: "translateX(5px)" },
           "100%": { opacity: "1", transform: "translateX(0)" },
         },
         bounceJelly: {

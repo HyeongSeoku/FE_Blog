@@ -6,6 +6,7 @@ import TimeIcon from "@/icon/time.svg";
 import { FrontMatterProps, HeadingsProps } from "@/types/mdx";
 import MdxLink from "@/components/MdxLink";
 import MdxSideBar from "@/components/MdxSideBar";
+import AnimationContainer from "@/components/AnimationContainer";
 
 interface MdxDetailTemplateProps {
   source: MDXRemoteSerializeResult;
@@ -53,6 +54,24 @@ const MdxDetailTemplate = ({
                 <MdxLink href={href} target={target}>
                   {children}
                 </MdxLink>
+              ),
+              p: ({ children }) => (
+                <AnimationContainer tag="p">{children}</AnimationContainer>
+              ),
+              h1: ({ children }) => (
+                <AnimationContainer tag="h1">{children}</AnimationContainer>
+              ),
+              h2: ({ children }) => (
+                <AnimationContainer tag="h2">{children}</AnimationContainer>
+              ),
+              h3: ({ children }) => (
+                <AnimationContainer tag="h3">{children}</AnimationContainer>
+              ),
+              ul: ({ children }) => (
+                <AnimationContainer tag="ul">{children}</AnimationContainer>
+              ),
+              li: ({ children }) => (
+                <AnimationContainer tag="li">{children}</AnimationContainer>
               ),
             }}
           />

@@ -60,7 +60,7 @@ export const HomeClient = ({ postData, githubData }: HomeClientProps) => {
   ];
 
   return (
-    <div className="h-full flex flex-col p-8 gap-8">
+    <div className="h-full flex flex-col">
       <IntroSectionTemplate />
 
       <section className="flex flex-col gap-2">
