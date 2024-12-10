@@ -72,3 +72,7 @@
 .markdown-contents pre {
   @apply p-2 rounded-md overflow-x-auto mt-2 mb-2 overflow-y-hidden w-full;
 }
+
+.markdown-contents hr {
+  @apply my-4;
+}

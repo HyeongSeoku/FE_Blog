@@ -24,9 +24,11 @@ const MdxDetailTemplate = ({
   return (
     <>
       <header className="border-b border-b-[var(--border-color)] mb-4 pb-4">
-        <h1 className="text-4xl font-bold">{title}</h1>
-        <p className="text-[var(--gray2-text-color)] text-xl">{description}</p>
-        <section className="flex items-center gap-3 mt-2 mb-2">
+        <h1 className="text-4xl font-bold mb-1">{title}</h1>
+        <p className="text-[var(--gray2-text-color)] text-xl mb-3">
+          {description}
+        </p>
+        <section className="flex items-center gap-3 mb-3">
           <time className="text-[--gray2-text-color]">{createdAt}</time>
           <div className="flex items-center gap-[2px]">
             <TimeIcon width={14} height={14} stroke="black" />
