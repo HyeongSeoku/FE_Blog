@@ -217,7 +217,7 @@ export default {
           "animation-play-state": "running",
         },
         ".will-change-transform-opacity": {
-          willChange: "transform opacity",
+          willChange: "transform, opacity",
         },
       };
 
