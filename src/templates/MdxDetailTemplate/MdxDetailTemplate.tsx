@@ -51,7 +51,14 @@ const MdxDetailTemplate = ({
           <MDXRemote
             {...source}
             components={{
-              code: ({ children }) => <CodeBlock>{children}</CodeBlock>,
+              code: ({ className, children }) => (
+                <CodeBlock
+                  hasCopyBtn={className?.includes("block-code")}
+                  className={className}
+                >
+                  {children}
+                </CodeBlock>
+              ),
               a: ({ children, href, target = "_blank" }) => (
                 <MdxLink href={href} target={target}>
                   {children}

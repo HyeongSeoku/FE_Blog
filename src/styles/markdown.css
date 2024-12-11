@@ -40,6 +40,10 @@
   @apply p-4 rounded text-xs font-mono;
 }
 
+.markdown-contents code.inline-code {
+  @apply inline;
+}
+
 /* 링크 스타일 */
 .markdown-contents a {
   @apply text-[var(--link-text-color)] hover:text-[var(--link-text-hover-color)];

@@ -11,12 +11,16 @@ interface CodeBlockProps {
   children: ReactNode;
   hasAnimation?: boolean;
   animationName?: AnimationNameType;
+  hasCopyBtn?: boolean;
+  className?: string;
 }
 
 const CodeBlock = ({
   children,
   hasAnimation = true,
   animationName = undefined,
+  hasCopyBtn = true,
+  className,
 }: CodeBlockProps) => {
   const [copied, setCopied] = useState(false);
   const [isVisible, ref] = useAnimationVisibility();
@@ -51,28 +55,35 @@ const CodeBlock = ({
 
   return (
     <code
-      className={classNames("relative", {
-        "opacity-0 transition duration-300 will-change-transform": hasAnimation,
-        [animationName || ANIMAITE_FADE_IN_UP]: hasAnimation && isVisible,
-      })}
+      className={classNames(
+        "relative group",
+        {
+          "opacity-0 transition duration-300 will-change-transform":
+            hasAnimation,
+          [animationName || ANIMAITE_FADE_IN_UP]: hasAnimation && isVisible,
+        },
+        className,
+      )}
       ref={ref}
     >
       {children}
-      <button
-        onClick={handleCopy}
-        className="absolute top-2 right-2 p-1 bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 flex items-center justify-center w-16 h-8 transition-opacity duration-200"
-      >
-        <span
-          className={`transition-opacity duration-300 ${copied ? "opacity-100" : "opacity-0"} absolute`}
+      {hasCopyBtn && (
+        <button
+          onClick={handleCopy}
+          className="absolute top-2 right-2 p-1 bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 flex items-center justify-center w-16 h-8 transition-opacity duration-200"
         >
-          Copied
-        </span>
-        <span
-          className={`transition-opacity duration-300 ${copied ? "opacity-0" : "opacity-100"} absolute`}
-        >
-          Copy
-        </span>
-      </button>
+          <span
+            className={`transition-opacity duration-300 ${copied ? "opacity-100" : "opacity-0"} absolute`}
+          >
+            Copied
+          </span>
+          <span
+            className={`transition-opacity duration-300 ${copied ? "opacity-0" : "opacity-100"} absolute`}
+          >
+            Copy
+          </span>
+        </button>
+      )}
     </code>
   );
 };

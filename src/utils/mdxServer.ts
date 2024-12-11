@@ -95,6 +95,7 @@ export const getMdxContents = async (
           rehypeExternalLinks,
           { target: "_blank", rel: ["noopener", "noreferrer"] },
         ],
+        rehypeCodeBlockClassifier,
       ],
     },
     scope: data,
@@ -316,5 +317,25 @@ export const rehypeHeadingsWithIds = (headingData: HeadingsProps[]) => {
     });
 
     return tree;
+  };
+};
+
+export const rehypeCodeBlockClassifier = () => {
+  return (tree: any) => {
+    visit(tree, "element", (node, index, parent) => {
+      const elementNode = node as ExtendedElement;
+
+      if (elementNode.tagName === "code") {
+        const isBlockCode = parent?.tagName === "pre";
+
+        node.properties = {
+          ...(node.properties || {}),
+          className: [
+            ...(node.properties.className || []),
+            isBlockCode ? "block-code" : "inline-code",
+          ],
+        };
+      }
+    });
   };
 };
