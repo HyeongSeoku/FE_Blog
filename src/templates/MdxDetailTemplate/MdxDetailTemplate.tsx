@@ -7,6 +7,7 @@ import { FrontMatterProps, HeadingsProps } from "@/types/mdx";
 import MdxLink from "@/components/MdxLink";
 import MdxSideBar from "@/components/MdxSideBar";
 import AnimationContainer from "@/components/AnimationContainer";
+import Giscus from "@/components/Giscus";
 
 interface MdxDetailTemplateProps {
   source: MDXRemoteSerializeResult;
@@ -98,6 +99,8 @@ const MdxDetailTemplate = ({
           />
         </article>
       </section>
+
+      <Giscus />
     </>
   );
 };
