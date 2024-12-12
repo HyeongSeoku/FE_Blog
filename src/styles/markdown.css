@@ -41,7 +41,7 @@
 }
 
 .markdown-contents code.inline-code {
-  @apply inline;
+  @apply inline bg-gray-500 p-1;
 }
 
 /* 링크 스타일 */
@@ -79,4 +79,8 @@
 
 .markdown-contents hr {
   @apply my-4;
+}
+
+.markdown-contents li {
+  list-style: disc;
 }

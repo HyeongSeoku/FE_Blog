@@ -64,23 +64,35 @@ const MdxDetailTemplate = ({
                   {children}
                 </MdxLink>
               ),
-              p: ({ children }) => (
-                <AnimationContainer tag="p">{children}</AnimationContainer>
+              p: ({ children, ...rest }) => (
+                <AnimationContainer tag="p" {...rest}>
+                  {children}
+                </AnimationContainer>
               ),
-              h1: ({ children }) => (
-                <AnimationContainer tag="h1">{children}</AnimationContainer>
+              h1: ({ children, ...rest }) => (
+                <AnimationContainer tag="h1" {...rest}>
+                  {children}
+                </AnimationContainer>
               ),
-              h2: ({ children }) => (
-                <AnimationContainer tag="h2">{children}</AnimationContainer>
+              h2: ({ children, ...rest }) => (
+                <AnimationContainer tag="h2" {...rest}>
+                  {children}
+                </AnimationContainer>
               ),
-              h3: ({ children }) => (
-                <AnimationContainer tag="h3">{children}</AnimationContainer>
+              h3: ({ children, ...rest }) => (
+                <AnimationContainer tag="h3" {...rest}>
+                  {children}
+                </AnimationContainer>
               ),
-              ul: ({ children }) => (
-                <AnimationContainer tag="ul">{children}</AnimationContainer>
+              ul: ({ children, ...rest }) => (
+                <AnimationContainer tag="ul" {...rest}>
+                  {children}
+                </AnimationContainer>
               ),
-              li: ({ children }) => (
-                <AnimationContainer tag="li">{children}</AnimationContainer>
+              li: ({ children, ...rest }) => (
+                <AnimationContainer tag="li" {...rest}>
+                  {children}
+                </AnimationContainer>
               ),
             }}
           />
