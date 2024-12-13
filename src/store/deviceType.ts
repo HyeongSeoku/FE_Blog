@@ -1,4 +1,4 @@
-import { MOBILE_WIDTH } from "@/constants/device.constants";
+import { MOBILE_WIDTH } from "@/constants/basic.constants";
 import { create } from "zustand";
 
 interface DeviceTypeState {

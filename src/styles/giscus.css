@@ -1,0 +1,5 @@
+.giscusContainer {
+  [class*="BtnGroup-item--selected"] {
+    border: none !important;
+  }
+}

@@ -64,8 +64,6 @@ export default async function PostPage({
         frontMatter={frontMatter}
         heading={heading}
       />
-
-      <div style={{ height: "400px" }}>TEST</div>
     </>
   );
 }

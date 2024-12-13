@@ -2,13 +2,14 @@
 
 import useThemeStore from "@/store/theme";
 import { useEffect, useRef } from "react";
+import "@/styles/giscus.css";
 
 export default function Giscus() {
   const ref = useRef<HTMLDivElement>(null);
   const { isDarkMode } = useThemeStore();
 
   // https://github.com/giscus/giscus/tree/main/styles/themes
-  const theme = isDarkMode ? "dark" : "light";
+  const theme = isDarkMode ? "noborder_gray" : "noborder_light";
 
   const repoId = process.env.NEXT_PUBLIC_GISCUS_REPO_ID ?? "";
   const clientId = process.env.NEXT_PUBLIC_GISCUS_CLIENT_ID ?? "";
@@ -47,5 +48,7 @@ export default function Giscus() {
     );
   }, [theme]);
 
-  return <section ref={ref} />;
+  return (
+    <section ref={ref} className="giscusContainer mt-20" id="giscusSection" />
+  );
 }

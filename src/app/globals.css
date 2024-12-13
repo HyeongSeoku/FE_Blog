@@ -75,6 +75,10 @@
   --category-music-bg: #2980b9;
 }
 
+:root {
+  --mobile-nav-max-width: 56rem;
+}
+
 /* Light Theme */
 [data-theme="light"] {
   --bg-color: var(--light-bg-color);

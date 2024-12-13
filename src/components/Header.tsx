@@ -109,7 +109,11 @@ const Header = ({ headerType, children, initialTheme }: HeaderProps) => {
         </button>
       </div>
 
-      <MobileNavigation isOpen={isMoNavOpen} setIsOpen={setIsMoNavOpen} />
+      <MobileNavigation
+        isOpen={isMoNavOpen}
+        setIsOpen={setIsMoNavOpen}
+        toggleMoMenu={toggleMoMenu}
+      />
     </header>
   );
 };
