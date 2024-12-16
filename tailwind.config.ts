@@ -28,6 +28,10 @@ export default {
         custom: "var(--transition-timing-function)",
       },
       keyframes: {
+        bounceSlight: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-2px)" },
+        },
         easeInTypingEffect: {
           "0%": {
             opacity: "0",
@@ -192,6 +196,7 @@ export default {
         fadeInDown: "fadeInDown 0.3s ease-in-out forwards",
         fadeInLeft: "fadeInLeft 0.3s ease-in-out forwards",
         fadeInRight: "fadeInRight 0.3s ease-in-out forwards",
+        bounceSlight: "bounceSlight 1s infinite",
       },
     },
   },
