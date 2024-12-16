@@ -6,5 +6,5 @@ export default function PostsDetailLayout({
 }: {
   children: ReactNode;
 }) {
-  return <DefaultLayout>{children}</DefaultLayout>;
+  return <DefaultLayout showScrollProgress={true}>{children}</DefaultLayout>;
 }

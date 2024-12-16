@@ -10,26 +10,34 @@ import { useRouter } from "next/navigation";
 import MobileNavigation from "@/components/MobileNavigation";
 import useThemeStore from "@/store/theme";
 import useTheme from "@/hooks/useTheme";
+import ScrollProgressBar from "./ScrollProgressBar";
 
 export interface HeaderProps {
   headerType: HeaderType;
   children?: ReactNode;
   initialTheme?: string;
+  showScrollProgress?: boolean;
 }
 
 export type HeaderType = "DEFAULT" | "BACK" | "NONE";
 
-const Header = ({ headerType, children, initialTheme }: HeaderProps) => {
+const Header = ({
+  headerType,
+  children,
+  initialTheme,
+  showScrollProgress = false,
+}: HeaderProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isMoNavOpen, setIsMoNavOpen] = useState(false);
   const { isDarkMode, setDarkMode, setLightMode } = useThemeStore();
   const isDarkTheme = isMounted ? isDarkMode : initialTheme === "dark";
   const router = useRouter();
-  useTheme(initialTheme);
+
+  useTheme();
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+  }, [initialTheme, setDarkMode, setLightMode]);
 
   const triggerAnimation = (type: "id" | "class", target: string) => {
     let elements: NodeListOf<SVGAnimateElement> | SVGAnimateElement | null =
@@ -51,6 +59,7 @@ const Header = ({ headerType, children, initialTheme }: HeaderProps) => {
   };
 
   const toggleTheme = () => {
+    console.log("TESTTTESTSET isDarkMode", isDarkMode);
     if (isDarkMode) {
       setLightMode();
       return;
@@ -108,12 +117,8 @@ const Header = ({ headerType, children, initialTheme }: HeaderProps) => {
           <MenuIcon width={24} height={24} alt="menu" />
         </button>
       </div>
-
-      <MobileNavigation
-        isOpen={isMoNavOpen}
-        setIsOpen={setIsMoNavOpen}
-        toggleMoMenu={toggleMoMenu}
-      />
+      {showScrollProgress && <ScrollProgressBar />}
+      <MobileNavigation isOpen={isMoNavOpen} toggleMoMenu={toggleMoMenu} />
     </header>
   );
 };
