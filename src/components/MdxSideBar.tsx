@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ANIMAITE_FADE_IN_UP } from "@/constants/animation.constants";
 import { useEffect, useState } from "react";
 import classNames from "classnames";
+import MoScrollProgress from "./MoScrollProgress";
 
 export interface MdxSideBarProps {
   headings: HeadingsProps[];
@@ -45,7 +46,7 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
   const handleClick = (id: string) => {
     const target = document.getElementById(id);
     if (target) {
-      const yOffset = -50; // 상단에서 50px 떨어지도록 설정
+      const yOffset = -50;
       const yPosition =
         target.getBoundingClientRect().top + window.scrollY + yOffset;
 
@@ -55,39 +56,46 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
   };
 
   return (
-    <aside className="fixed top-[100px] right-[50px] p-4 w-fit h-fit max-w-[150px] max-h-[700px] border-gray-200 flex flex-col xl:opacity-0 transform duration-300">
-      <ul className="space-y-2 h-fit max-h-[500px] overflow-y-scroll scroll-bar-thin">
-        {headings.map((heading, idx) => (
-          <li
-            key={`${heading}_${idx}`}
-            className={classNames(
-              "text-sm hover:text-[var(--text-color)] transform transition-colors duration-100",
-              ANIMAITE_FADE_IN_UP,
-              {
-                "ml-4": heading.level === 3,
-                "text-blue-600 font-bold": activeId === heading.id,
-              },
-            )}
-            style={{ animationDelay: `${idx * 20}ms` }}
-          >
-            <Link
-              href={`#${heading.id}`}
-              scroll={false}
-              onClick={(e) => {
-                e.preventDefault();
-                window.history.replaceState(null, "", `#${heading.id}`);
-                handleClick(heading.id);
-              }}
+    <>
+      <aside className="fixed top-[100px] right-[50px] p-4 w-fit h-fit max-w-[150px] max-h-[700px] border-gray-200 flex flex-col xl:opacity-0 transform duration-300 md:hidden">
+        <ul className="space-y-2 h-fit max-h-[500px] overflow-y-scroll scroll-bar-thin">
+          {headings.map((heading, idx) => (
+            <li
+              key={`${heading}_${idx}`}
               className={classNames(
-                "block truncate transition-colors duration-300",
+                "text-sm hover:text-[var(--text-color)] transform transition-colors duration-100",
+                ANIMAITE_FADE_IN_UP,
+                {
+                  "ml-4": heading.level === 3,
+                  "text-blue-600 font-bold": activeId === heading.id,
+                },
               )}
+              style={{ animationDelay: `${idx * 20}ms` }}
             >
-              {heading.text}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </aside>
+              <Link
+                href={`#${heading.id}`}
+                scroll={false}
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.history.replaceState(null, "", `#${heading.id}`);
+                  handleClick(heading.id);
+                }}
+                className={classNames(
+                  "block truncate transition-colors duration-300",
+                )}
+              >
+                {heading.text}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </aside>
+      <aside className="fixed bottom-10 right-2 z-10 min-md:hidden">
+        <div className="flex items-center justify-center w-fit">
+          <MoScrollProgress />
+        </div>
+      </aside>
+    </>
   );
 };
 
