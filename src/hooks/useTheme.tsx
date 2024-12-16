@@ -12,7 +12,7 @@ const useTheme = (initialTheme?: string) => {
         setLightMode();
       }
     }
-  }, [initialTheme, setDarkMode, setLightMode]);
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute(
