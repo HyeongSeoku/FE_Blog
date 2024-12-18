@@ -3,15 +3,18 @@
 import { HeadingsProps } from "@/types/mdx";
 import Link from "next/link";
 import { ANIMAITE_FADE_IN_UP } from "@/constants/animation.constants";
-import { useEffect, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import classNames from "classnames";
 import MoScrollProgress from "./MoScrollProgress";
 
+import CommentIcon from "@/icon/comment.svg";
+
 export interface MdxSideBarProps {
   headings: HeadingsProps[];
+  commentRef: RefObject<HTMLElement>;
 }
 
-const MdxSideBar = ({ headings }: MdxSideBarProps) => {
+const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -46,12 +49,25 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
   const handleClick = (id: string) => {
     const target = document.getElementById(id);
     if (target) {
-      const yOffset = -50;
-      const yPosition =
-        target.getBoundingClientRect().top + window.scrollY + yOffset;
+      const yPosition = target.getBoundingClientRect().top + window.scrollY;
 
       window.scrollTo({ top: yPosition, behavior: "smooth" });
       setActiveId(id);
+    }
+  };
+
+  const handleScrollToCommentSection = () => {
+    if (commentRef.current) {
+      const yOffset = -50;
+      const yPosition =
+        commentRef.current.getBoundingClientRect().top +
+        window.scrollY +
+        yOffset;
+
+      window.scrollTo({
+        top: yPosition,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -89,8 +105,22 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
             </li>
           ))}
         </ul>
+        <button
+          className="w-8 p-1 mt-5 rounded-sm hover:bg-gray-400/20"
+          onClick={handleScrollToCommentSection}
+        >
+          <CommentIcon width={24} height={24} />
+        </button>
       </aside>
-      <aside className="fixed bottom-10 right-2 z-10 min-md:hidden">
+
+      {/* NOTE: MO용 side */}
+      <aside className="fixed bottom-10 right-2 z-10 flex flex-col items-center gap-2 min-md:hidden">
+        <button
+          className="w-8 p-1 rounded-sm hover:bg-gray-400/20"
+          onClick={handleScrollToCommentSection}
+        >
+          <CommentIcon width={26} height={26} />
+        </button>
         <div className="flex items-center justify-center w-fit">
           <MoScrollProgress />
         </div>
