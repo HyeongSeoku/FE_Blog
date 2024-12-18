@@ -25,7 +25,7 @@ const DefaultLayout = ({
         initialTheme={initialTheme}
         showScrollProgress={showScrollProgress}
       />
-      <main className="box-border w-full h-full min-h-fit flex flex-col px-10 py-10 md:px-12 md:py-14">
+      <main className="box-border w-full h-full min-h-fit flex flex-col px-10 py-10 md:px-4 md:py-6">
         {children}
       </main>
       <Footer />

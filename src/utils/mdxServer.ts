@@ -35,8 +35,12 @@ interface getMdxContentsResponse {
   frontMatter: FrontMatterProps;
   readingTime?: number;
   heading?: HeadingsProps[];
-  previousPost: { slug: string; headings: HeadingsProps[] } | null;
-  nextPost: { slug: string; headings: HeadingsProps[] } | null;
+  previousPost: {
+    slug: string;
+    headings: HeadingsProps[];
+    title: string;
+  } | null;
+  nextPost: { slug: string; headings: HeadingsProps[]; title: string } | null;
 }
 
 interface ExtendedElement extends Element {
@@ -122,6 +126,7 @@ export const getMdxContents = async (
       ? {
           slug: sortedPosts[currentIndex - 1].slug,
           headings: extractHeadings(sortedPosts[currentIndex - 1].content),
+          title: sortedPosts[currentIndex - 1].title,
         }
       : null;
 
@@ -130,6 +135,7 @@ export const getMdxContents = async (
       ? {
           slug: sortedPosts[currentIndex + 1].slug,
           headings: extractHeadings(sortedPosts[currentIndex + 1].content),
+          title: sortedPosts[currentIndex + 1].title,
         }
       : null;
   return {

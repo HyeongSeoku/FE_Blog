@@ -9,8 +9,13 @@ import MdxSideBar from "@/components/MdxSideBar";
 import AnimationContainer from "@/components/AnimationContainer";
 import Giscus from "@/components/Giscus";
 import { useRef } from "react";
+import Link from "next/link";
 
-type MdxDetailRelatedPost = { slug: string; headings: HeadingsProps[] };
+type MdxDetailRelatedPost = {
+  slug: string;
+  headings: HeadingsProps[];
+  title: string;
+};
 
 interface MdxDetailTemplateProps {
   source: MDXRemoteSerializeResult;
@@ -26,6 +31,8 @@ const MdxDetailTemplate = ({
   frontMatter: { title, createdAt, description, category, subCategory, tags },
   readingTime,
   heading = [],
+  previousPost,
+  nextPost,
 }: MdxDetailTemplateProps) => {
   const commentRef = useRef<HTMLElement>(null);
 
@@ -54,7 +61,7 @@ const MdxDetailTemplate = ({
       </header>
       <MdxSideBar headings={heading} commentRef={commentRef} />
 
-      <section className="relative">
+      <section className="relative border-b">
         <article className="markdown-contents">
           <MDXRemote
             {...source}
@@ -105,6 +112,37 @@ const MdxDetailTemplate = ({
             }}
           />
         </article>
+      </section>
+
+      <section className="my-4">
+        <div className="flex justify-between text-sm text-gray-400">
+          <div className="w-1/2">
+            {previousPost && (
+              <button className="group flex flex-col items-start">
+                <span className="group-hover:text-gray-300">Previous</span>
+                <Link
+                  className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5"
+                  href={`/posts/${previousPost.slug}`}
+                >
+                  {previousPost.title}
+                </Link>
+              </button>
+            )}
+          </div>
+          <div className="w-1/2">
+            {nextPost && (
+              <button className="group flex flex-col items-end ml-auto">
+                <span className="group-hover:text-gray-300">Next</span>
+                <Link
+                  className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5"
+                  href={`/posts/${nextPost.slug}`}
+                >
+                  {nextPost.title}
+                </Link>
+              </button>
+            )}
+          </div>
+        </div>
       </section>
 
       <section ref={commentRef}>

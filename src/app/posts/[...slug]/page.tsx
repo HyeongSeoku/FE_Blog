@@ -54,7 +54,8 @@ export default async function PostPage({
     redirect("/not-found");
   }
 
-  const { source, frontMatter, readingTime, heading } = postData;
+  const { source, frontMatter, readingTime, heading, nextPost, previousPost } =
+    postData;
 
   return (
     <>
@@ -63,6 +64,8 @@ export default async function PostPage({
         readingTime={readingTime}
         frontMatter={frontMatter}
         heading={heading}
+        nextPost={nextPost}
+        previousPost={previousPost}
       />
     </>
   );
