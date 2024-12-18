@@ -8,12 +8,17 @@ import MdxLink from "@/components/MdxLink";
 import MdxSideBar from "@/components/MdxSideBar";
 import AnimationContainer from "@/components/AnimationContainer";
 import Giscus from "@/components/Giscus";
+import { useRef } from "react";
+
+type MdxDetailRelatedPost = { slug: string; headings: HeadingsProps[] };
 
 interface MdxDetailTemplateProps {
   source: MDXRemoteSerializeResult;
   frontMatter: FrontMatterProps;
   readingTime?: number;
   heading?: HeadingsProps[];
+  previousPost: MdxDetailRelatedPost | null;
+  nextPost: MdxDetailRelatedPost | null;
 }
 
 const MdxDetailTemplate = ({
@@ -22,6 +27,8 @@ const MdxDetailTemplate = ({
   readingTime,
   heading = [],
 }: MdxDetailTemplateProps) => {
+  const commentRef = useRef<HTMLElement>(null);
+
   return (
     <>
       <header className="border-b border-b-[var(--border-color)] mb-4 pb-4">
@@ -45,7 +52,7 @@ const MdxDetailTemplate = ({
           </section>
         )}
       </header>
-      <MdxSideBar headings={heading} />
+      <MdxSideBar headings={heading} commentRef={commentRef} />
 
       <section className="relative">
         <article className="markdown-contents">
@@ -100,7 +107,9 @@ const MdxDetailTemplate = ({
         </article>
       </section>
 
-      <Giscus />
+      <section ref={commentRef}>
+        <Giscus />
+      </section>
     </>
   );
 };

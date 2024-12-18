@@ -7,14 +7,31 @@ export async function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug.split("/") }));
 }
 
-async function getPostData(slug: string[]) {
+async function getPostDataWithMetadata(slug: string[]) {
   const postData = await getPostsDetail(slug);
 
   if (!postData) {
-    return null;
+    return {
+      postData: null,
+      metadata: {
+        title: "게시글을 찾을 수 없습니다",
+        description: "요청하신 게시글이 존재하지 않습니다.",
+        other: { keyword: "" },
+      },
+    };
   }
 
-  return postData;
+  const { frontMatter } = postData;
+
+  const metadata = {
+    title: frontMatter.title || "SEOK 개발 블로그",
+    description:
+      frontMatter.description ||
+      "프론트엔드 개발자 김형석의 개발 블로그입니다.",
+    other: { keyword: frontMatter.tags?.join(",") || "" },
+  };
+
+  return { postData, metadata };
 }
 
 export async function generateMetadata({
@@ -22,25 +39,8 @@ export async function generateMetadata({
 }: {
   params: { slug: string[] };
 }) {
-  const postData = await getPostData(params.slug);
-
-  if (!postData) {
-    return {
-      title: "게시글을 찾을 수 없습니다",
-      description: "요청하신 게시글이 존재하지 않습니다.",
-      other: { keyword: "" },
-    };
-  }
-
-  const { frontMatter } = postData;
-
-  return {
-    title: frontMatter.title || "SEOK 개발 블로그",
-    description:
-      frontMatter.description ||
-      "프론트엔드 개발자 김형석의 개발 블로그입니다.",
-    other: { keyword: frontMatter.tags?.join(",") || "" },
-  };
+  const { metadata } = await getPostDataWithMetadata(params.slug);
+  return metadata;
 }
 
 export default async function PostPage({
@@ -48,7 +48,7 @@ export default async function PostPage({
 }: {
   params: { slug: string[] };
 }) {
-  const postData = await getPostData(params.slug);
+  const { postData } = await getPostDataWithMetadata(params.slug);
 
   if (!postData) {
     redirect("/not-found");

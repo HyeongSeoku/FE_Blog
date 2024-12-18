@@ -35,6 +35,8 @@ interface getMdxContentsResponse {
   frontMatter: FrontMatterProps;
   readingTime?: number;
   heading?: HeadingsProps[];
+  previousPost: { slug: string; headings: HeadingsProps[] } | null;
+  nextPost: { slug: string; headings: HeadingsProps[] } | null;
 }
 
 interface ExtendedElement extends Element {
@@ -104,11 +106,39 @@ export const getMdxContents = async (
   const plainTextContent = extractPlainText(content);
   const readingTime = calculateReadingTime(plainTextContent);
 
+  const allPosts = await getAllPosts();
+  const sortedPosts = allPosts.sort((a, b) => {
+    const dateA = new Date(a.createdAt).getTime();
+    const dateB = new Date(b.createdAt).getTime();
+    return dateA - dateB;
+  });
+
+  const currentIndex = sortedPosts.findIndex(
+    (post) => post.slug === slug.join("/"),
+  );
+
+  const previousPost =
+    currentIndex > 0
+      ? {
+          slug: sortedPosts[currentIndex - 1].slug,
+          headings: extractHeadings(sortedPosts[currentIndex - 1].content),
+        }
+      : null;
+
+  const nextPost =
+    currentIndex < sortedPosts.length - 1
+      ? {
+          slug: sortedPosts[currentIndex + 1].slug,
+          headings: extractHeadings(sortedPosts[currentIndex + 1].content),
+        }
+      : null;
   return {
     source: mdxSource,
     frontMatter: frontTypeData,
     readingTime,
     heading,
+    previousPost,
+    nextPost,
   };
 };
 
