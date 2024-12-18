@@ -30,7 +30,7 @@ export default {
       keyframes: {
         bounceSlight: {
           "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-2px)" },
+          "50%": { transform: "translateY(-1.5px)" },
         },
         easeInTypingEffect: {
           "0%": {
