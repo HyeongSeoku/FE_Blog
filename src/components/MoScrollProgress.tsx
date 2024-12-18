@@ -1,11 +1,27 @@
+"use client";
+
 import useScrollProgress from "@/hooks/useScrollProgress";
 import ArrowTop from "@/icon/arrow_top.svg";
 import classNames from "classnames";
+import { useEffect, useState } from "react";
 
 const MoScrollProgress = () => {
   const progressWidth = useScrollProgress();
 
-  const isScrollTop = window.scrollY === 0;
+  const [isScrollTop, setIsScrollTop] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrollTop(window.scrollY === 0);
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -17,7 +33,7 @@ const MoScrollProgress = () => {
   return (
     <button
       className={classNames(
-        "group min-md:hidden flex justify-center items-center w-8 h-8 relative transition-opacity duration-300 opacity-0 ",
+        "group min-md:hidden flex justify-center items-center w-7 h-7 relative transition-opacity duration-300 opacity-0 ",
         {
           invisible: isScrollTop,
           "opacity-100 ": !isScrollTop,
