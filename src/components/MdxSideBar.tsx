@@ -114,16 +114,14 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
       </aside>
 
       {/* NOTE: MO용 side */}
-      <aside className="fixed bottom-10 right-2 z-10 flex flex-col items-center gap-2 min-md:hidden">
+      <aside className="fixed bottom-10 right-2 p-1 z-10 flex flex-col items-center gap-2 min-md:hidden bg-gray-400/20 rounded-lg">
         <button
-          className="w-8 p-1 rounded-sm hover:bg-gray-400/20"
+          className="w-8 h-8 rounded-sm hover:bg-gray-400/20 flex items-center justify-center"
           onClick={handleScrollToCommentSection}
         >
           <CommentIcon width={26} height={26} />
         </button>
-        <div className="flex items-center justify-center w-fit">
-          <MoScrollProgress />
-        </div>
+        <MoScrollProgress />
       </aside>
     </>
   );
