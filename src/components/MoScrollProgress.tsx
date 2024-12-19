@@ -35,7 +35,7 @@ const MoScrollProgress = () => {
       className={classNames(
         "group min-md:hidden flex justify-center items-center w-7 h-7 relative transition-opacity duration-300 opacity-0 ",
         {
-          invisible: isScrollTop,
+          hidden: isScrollTop,
           "opacity-100 ": !isScrollTop,
         },
       )}
