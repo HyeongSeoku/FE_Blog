@@ -10,10 +10,13 @@ import AnimationContainer from "@/components/AnimationContainer";
 import Giscus from "@/components/Giscus";
 import { useRef } from "react";
 import Link from "next/link";
+import RightArrow from "@/icon/arrow_right.svg";
+import LeftArrow from "@/icon/arrow_left.svg";
+
+import DoubleArrow from "@/icon/arrow_right_double.svg";
 
 type MdxDetailRelatedPost = {
   slug: string;
-  headings: HeadingsProps[];
   title: string;
 };
 
@@ -24,6 +27,7 @@ interface MdxDetailTemplateProps {
   heading?: HeadingsProps[];
   previousPost: MdxDetailRelatedPost | null;
   nextPost: MdxDetailRelatedPost | null;
+  relatedPosts: MdxDetailRelatedPost[] | null;
 }
 
 const MdxDetailTemplate = ({
@@ -33,6 +37,7 @@ const MdxDetailTemplate = ({
   heading = [],
   previousPost,
   nextPost,
+  relatedPosts,
 }: MdxDetailTemplateProps) => {
   const commentRef = useRef<HTMLElement>(null);
 
@@ -61,7 +66,7 @@ const MdxDetailTemplate = ({
       </header>
       <MdxSideBar headings={heading} commentRef={commentRef} />
 
-      <section className="relative border-b">
+      <section className="relative border-b py-5">
         <article className="markdown-contents">
           <MDXRemote
             {...source}
@@ -119,7 +124,10 @@ const MdxDetailTemplate = ({
           <div className="w-1/2">
             {previousPost && (
               <button className="group flex flex-col items-start">
-                <span className="group-hover:text-gray-300">Previous</span>
+                <div className="flex items-center group-hover:text-[var(--text-color)]">
+                  <LeftArrow width={16} height={16} />
+                  <span>Previous</span>
+                </div>
                 <Link
                   className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5"
                   href={`/posts/${previousPost.slug}`}
@@ -132,7 +140,10 @@ const MdxDetailTemplate = ({
           <div className="w-1/2">
             {nextPost && (
               <button className="group flex flex-col items-end ml-auto">
-                <span className="group-hover:text-gray-300">Next</span>
+                <div className="flex items-center group-hover:text-[var(--text-color)]">
+                  <span>Next</span>
+                  <RightArrow width={16} height={16} />
+                </div>
                 <Link
                   className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5"
                   href={`/posts/${nextPost.slug}`}
@@ -142,6 +153,29 @@ const MdxDetailTemplate = ({
               </button>
             )}
           </div>
+        </div>
+
+        <div className="mt-3">
+          {!!relatedPosts && !!relatedPosts.length && (
+            <div>
+              <div className="flex items-center group-hover:text-[var(--text-color)]">
+                <span>Relate Posts</span>
+                <DoubleArrow width={16} height={16} />
+              </div>
+              <ul className="text-sm">
+                {relatedPosts.map(({ slug, title }) => (
+                  <button className="group flex flex-col items-end">
+                    <Link
+                      className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5"
+                      href={`/posts/${slug}`}
+                    >
+                      {title}
+                    </Link>
+                  </button>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </section>
 
