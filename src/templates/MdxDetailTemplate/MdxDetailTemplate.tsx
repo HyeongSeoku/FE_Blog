@@ -157,16 +157,16 @@ const MdxDetailTemplate = ({
 
         <div className="mt-3">
           {!!relatedPosts && !!relatedPosts.length && (
-            <div>
-              <div className="flex items-center group-hover:text-[var(--text-color)]">
-                <span>Relate Posts</span>
+            <div className="text-gray-400">
+              <div className="flex items-center text-sm">
+                <span>Related Posts</span>
                 <DoubleArrow width={16} height={16} />
               </div>
               <ul className="text-sm">
                 {relatedPosts.map(({ slug, title }) => (
                   <button className="group flex flex-col items-end">
                     <Link
-                      className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5"
+                      className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5 underline underline-offset-4"
                       href={`/posts/${slug}`}
                     >
                       {title}
