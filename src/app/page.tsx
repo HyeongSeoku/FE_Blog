@@ -6,7 +6,7 @@ import DefaultLayout from "@/layout/DefaultLayout";
 
 export default async function Home() {
   const projectData = await getAllProjects();
-  const postData = await getAllPosts();
+  const postData = await getAllPosts({ maxCount: 3 });
   const githubData = await fetchGithubUserInfo();
 
   return (

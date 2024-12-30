@@ -59,7 +59,6 @@ const Header = ({
   };
 
   const toggleTheme = () => {
-    console.log("TESTTTESTSET isDarkMode", isDarkMode);
     if (isDarkMode) {
       setLightMode();
       return;

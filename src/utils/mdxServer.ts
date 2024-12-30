@@ -40,6 +40,11 @@ interface getMdxContentsResponse {
   relatedPosts: RelatedPost[] | null;
 }
 
+export interface getAllPostsRequest {
+  maxCount?: number;
+  isSorted?: boolean;
+}
+
 export interface RelatedPost {
   slug: string;
   title: string;
@@ -53,116 +58,6 @@ interface HeadingItems {
   value?: string;
   type?: string;
 }
-
-// export const getMdxContents = async (
-//   slug: string[],
-//   fileDirectory: string,
-// ): Promise<getMdxContentsResponse | null> => {
-//   const filePath = path.join(fileDirectory, ...slug) + ".mdx";
-
-//   try {
-//     await fs.access(filePath);
-//   } catch (error) {
-//     console.error("File not found:", error);
-//     return null;
-//   }
-
-//   const rehypePrettyCodeOptions: Options = {
-//     theme: "github-dark",
-//     onVisitLine(node) {
-//       if (node.children.length === 0) {
-//         node.children = [{ type: "text", value: " " }];
-//       }
-//     },
-//     onVisitHighlightedLine(node) {
-//       node.properties.className = [
-//         ...(node.properties.className || []),
-//         "highlighted-line",
-//       ];
-//     },
-//     onVisitHighlightedChars(node) {
-//       node.properties.className = ["highlighted-word"];
-//     },
-//   };
-
-//   const source = await fs.readFile(filePath, "utf8");
-//   const heading = extractHeadings(source);
-//   const { content, data } = matter(source);
-//   const frontTypeData = data as FrontMatterProps;
-
-//   if (!frontTypeData.title) {
-//     throw new Error("Front matter does not contain required 'title' field");
-//   }
-
-//   const mdxSource = await serialize(content, {
-//     mdxOptions: {
-//       rehypePlugins: [
-//         [rehypeHeadingsWithIds, heading],
-//         [rehypePrettyCode, rehypePrettyCodeOptions],
-//         [
-//           rehypeExternalLinks,
-//           { target: "_blank", rel: ["noopener", "noreferrer"] },
-//         ],
-//         rehypeCodeBlockClassifier,
-//       ],
-//     },
-//     scope: data,
-//   });
-
-//   const plainTextContent = extractPlainText(content);
-//   const readingTime = calculateReadingTime(plainTextContent);
-
-//   const allPosts = await getAllPosts();
-//   const sortedPosts = allPosts.sort((a, b) => {
-//     const dateA = new Date(a.createdAt).getTime();
-//     const dateB = new Date(b.createdAt).getTime();
-//     return dateA - dateB;
-//   });
-
-//   const currentIndex = sortedPosts.findIndex(
-//     (post) => post.slug === slug.join("/"),
-//   );
-//   const currentTags = frontTypeData.tags || [];
-//   const currentCategory = frontTypeData.category;
-
-//   const filteredByTag = sortedPosts.filter(
-//     (post) =>
-//       post.slug !== slug.join("/") &&
-//       post.tags &&
-//       post.tags.some((tag) => currentTags.includes(tag)),
-//   );
-
-//   const filteredByCategory = sortedPosts.filter(
-//     (post) => post.slug !== slug.join("/") && post.category === currentCategory,
-//   );
-
-//   const previousPost =
-//     currentIndex > 0
-//       ? {
-//           slug: sortedPosts[currentIndex - 1].slug,
-//           headings: extractHeadings(sortedPosts[currentIndex - 1].content),
-//           title: sortedPosts[currentIndex - 1].title,
-//         }
-//       : null;
-
-//   const nextPost =
-//     currentIndex < sortedPosts.length - 1
-//       ? {
-//           slug: sortedPosts[currentIndex + 1].slug,
-//           headings: extractHeadings(sortedPosts[currentIndex + 1].content),
-//           title: sortedPosts[currentIndex + 1].title,
-//         }
-//       : null;
-
-//   return {
-//     source: mdxSource,
-//     frontMatter: frontTypeData,
-//     readingTime,
-//     heading,
-//     previousPost,
-//     nextPost,
-//   };
-// };
 
 export const getMdxContents = async (
   slug: string[],
@@ -225,30 +120,25 @@ export const getMdxContents = async (
   const plainTextContent = extractPlainText(content);
   const readingTime = calculateReadingTime(plainTextContent);
 
-  // Fetch and sort all posts
-  const allPosts = await getAllPosts();
-  const sortedPosts = allPosts.sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-  );
+  const allPosts = await getAllPosts({});
 
-  // Find the current post's index
-  const currentIndex = sortedPosts.findIndex(
+  const currentIndex = allPosts.findIndex(
     (post) => post.slug === slug.join("/"),
   );
 
   const previousPost =
     currentIndex > 0
       ? {
-          slug: sortedPosts[currentIndex - 1].slug,
-          title: sortedPosts[currentIndex - 1].title,
+          slug: allPosts[currentIndex - 1].slug,
+          title: allPosts[currentIndex - 1].title,
         }
       : null;
 
   const nextPost =
-    currentIndex < sortedPosts.length - 1
+    currentIndex < allPosts.length - 1
       ? {
-          slug: sortedPosts[currentIndex + 1].slug,
-          title: sortedPosts[currentIndex + 1].title,
+          slug: allPosts[currentIndex + 1].slug,
+          title: allPosts[currentIndex + 1].title,
         }
       : null;
 
@@ -328,8 +218,10 @@ const getMdxFilesRecursively = async (dir: string): Promise<string[]> => {
   return files.flat().filter(Boolean) as string[];
 };
 
-export const getAllPosts = async (): Promise<PostDataProps[]> => {
-  // 모든 디렉토리에서 .mdx 파일 찾기
+export const getAllPosts = async ({
+  isSorted = true,
+  maxCount,
+}: getAllPostsRequest): Promise<PostDataProps[]> => {
   const filePaths = await getMdxFilesRecursively(POST_PATH);
 
   const posts = await Promise.all(
@@ -382,7 +274,21 @@ export const getAllPosts = async (): Promise<PostDataProps[]> => {
     }),
   );
 
-  return posts.filter(Boolean) as PostDataProps[];
+  const validPosts = posts.filter(Boolean) as PostDataProps[];
+
+  if (isSorted) {
+    validPosts.sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    });
+  }
+
+  if (maxCount) {
+    return validPosts.slice(0, maxCount);
+  }
+
+  return validPosts;
 };
 
 export const getPostsDetail = async (

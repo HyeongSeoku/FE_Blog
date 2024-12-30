@@ -164,7 +164,7 @@ const MdxDetailTemplate = ({
               </div>
               <ul className="text-sm">
                 {relatedPosts.map(({ slug, title }) => (
-                  <button className="group flex flex-col items-end">
+                  <button key={slug} className="group flex flex-col items-end">
                     <Link
                       className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5 underline underline-offset-4"
                       href={`/posts/${slug}`}
