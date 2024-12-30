@@ -144,6 +144,8 @@ export const getMdxContents = async (
 
   const relatedPosts = findRelatedPosts(allPosts, slug, frontMatter);
 
+  console.log("TEST relatedPosts", relatedPosts);
+
   return {
     source: mdxSource,
     frontMatter,
@@ -383,6 +385,7 @@ export const findRelatedPosts = (
   allPosts: PostDataProps[],
   slug: string[],
   frontMatter: FrontMatterProps,
+  maxCount: number = 3,
 ): RelatedPost[] => {
   const currentTags = frontMatter.tags || [];
   const currentCategory = frontMatter.category;
@@ -399,8 +402,10 @@ export const findRelatedPosts = (
   );
 
   return filteredByTag.length > 0
-    ? filteredByTag.map((post) => ({ slug: post.slug, title: post.title }))
-    : filteredByCategory.map((post) => ({
+    ? filteredByTag
+        .slice(0, maxCount)
+        .map((post) => ({ slug: post.slug, title: post.title }))
+    : filteredByCategory.slice(0, maxCount).map((post) => ({
         slug: post.slug,
         title: post.title,
       }));
