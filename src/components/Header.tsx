@@ -11,7 +11,6 @@ import MobileNavigation from "@/components/MobileNavigation";
 import useThemeStore from "@/store/theme";
 import useTheme from "@/hooks/useTheme";
 import ScrollProgressBar from "./ScrollProgressBar";
-import GitHubIssueButton from "./GithubIssueButton";
 
 export interface HeaderProps {
   headerType: HeaderType;
@@ -93,7 +92,6 @@ const Header = ({
       {children && <>{children}</>}
 
       <div className="flex items-center">
-        <GitHubIssueButton />
         <button
           className="flex flex-col flex-shrink-0 w-10 h-10 overflow-hidden hover:bg-gray-400/20 rounded-sm"
           onClick={toggleTheme}

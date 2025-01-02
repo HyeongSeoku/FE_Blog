@@ -1,4 +1,5 @@
-import { NAV_LIST } from "@/constants/navigation.constants";
+import { NAV_GITHUB_ISSUE, NAV_LIST } from "@/constants/navigation.constants";
+import useIssueInfo from "@/hooks/useIssueInfo";
 import useScrollDisable from "@/hooks/useScrollDisable";
 import classNames from "classnames";
 import Link from "next/link";
@@ -9,11 +10,24 @@ export interface MobileNavigationProps {
 }
 
 const MobileNavigation = ({ isOpen, toggleMoMenu }: MobileNavigationProps) => {
+  useScrollDisable(isOpen);
+  const { title, body } = useIssueInfo();
+  const issueQueryString = `title=${encodeURIComponent(
+    `${title}`,
+  )}&body=${encodeURIComponent(`${body}`)}`;
+
   const handleLinkClick = () => {
     toggleMoMenu();
   };
 
-  useScrollDisable(isOpen);
+  const handleExternalLink = (link: string, id: string) => {
+    const externalLink = link.startsWith("http") ? link : `https://${link}`;
+    if (id === NAV_GITHUB_ISSUE) {
+      return `${externalLink}?${issueQueryString}`;
+    }
+
+    return externalLink;
+  };
 
   return (
     <nav
@@ -24,14 +38,14 @@ const MobileNavigation = ({ isOpen, toggleMoMenu }: MobileNavigationProps) => {
       }`}
     >
       <ul className={classNames("h-dvh", isOpen ? "visible" : "hidden")}>
-        {NAV_LIST.map(({ title, link, isExternalLink, target }, idx) => (
+        {NAV_LIST.map(({ id, title, link, isExternalLink, target }, idx) => (
           <li
-            key={`${title}_${idx}`}
+            key={`${id}_${idx}`}
             className="px-4 py-2 cursor-pointer flex max-w-[var(--mobile-nav-max-width)]"
           >
             {isExternalLink ? (
               <a
-                href={link.startsWith("http") ? link : `https://${link}`}
+                href={handleExternalLink(link, id)}
                 target={target ?? "_blank"}
                 rel="noopener noreferrer"
                 className="w-full h-full"
