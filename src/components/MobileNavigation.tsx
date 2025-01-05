@@ -31,10 +31,10 @@ const MobileNavigation = ({ isOpen, toggleMoMenu }: MobileNavigationProps) => {
 
   return (
     <nav
-      className={`fixed top-0 bottom-0 left-0 right-0 pt-10 flex flex-col bg-[var(--bg-color)] shadow-lg transition-all duration-300 transform z-20 h-fit${
+      className={`fixed inset-0 pt-10 flex flex-col bg-[var(--bg-color)] shadow-lg transform z-20 h-fit transition-[opacity,transform,height] ${
         isOpen
-          ? "opacity-100 translate-y-0 h-fit w-dvw"
-          : "opacity-0 -translate-y-full h-0"
+          ? "opacity-100 translate-y-0 h-fit w-dvw duration-300"
+          : "opacity-0 -translate-y-full h-0 duration-300"
       }`}
     >
       <ul className={classNames("h-dvh", isOpen ? "visible" : "hidden")}>
