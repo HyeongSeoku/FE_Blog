@@ -3,8 +3,8 @@ import { getAllPosts, getPostsDetail } from "@/utils/mdxServer";
 import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
 
 export async function generateStaticParams() {
-  const posts = await getAllPosts({});
-  return posts.map((post) => ({ slug: post.slug.split("/") }));
+  const { postList } = await getAllPosts({});
+  return postList.map((post) => ({ slug: post.slug.split("/") }));
 }
 
 async function getPostDataWithMetadata(slug: string[]) {
@@ -43,11 +43,7 @@ export async function generateMetadata({
   return metadata;
 }
 
-export default async function PostPage({
-  params,
-}: {
-  params: { slug: string[] };
-}) {
+const PostPage = async ({ params }: { params: { slug: string[] } }) => {
   const { postData } = await getPostDataWithMetadata(params.slug);
 
   if (!postData) {
@@ -77,4 +73,6 @@ export default async function PostPage({
       />
     </>
   );
-}
+};
+
+export default PostPage;

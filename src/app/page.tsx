@@ -6,14 +6,14 @@ import DefaultLayout from "@/layout/DefaultLayout";
 
 export default async function Home() {
   const projectData = await getAllProjects();
-  const postData = await getAllPosts({ maxCount: 3 });
+  const { postList } = await getAllPosts({ maxCount: 3 });
   const githubData = await fetchGithubUserInfo();
 
   return (
     <DefaultLayout>
       <HomeClient
         projectData={projectData}
-        postData={postData}
+        postData={postList}
         githubData={githubData}
       />
     </DefaultLayout>

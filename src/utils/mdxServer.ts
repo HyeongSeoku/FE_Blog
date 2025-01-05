@@ -43,6 +43,8 @@ interface getMdxContentsResponse {
 export interface getAllPostsRequest {
   maxCount?: number;
   isSorted?: boolean;
+  page?: number;
+  pageSize?: number;
 }
 
 export interface RelatedPost {
@@ -57,6 +59,11 @@ interface ExtendedElement extends Element {
 interface HeadingItems {
   value?: string;
   type?: string;
+}
+
+export interface getAllProjectsResponse {
+  postList: PostDataProps[];
+  postCount: number;
 }
 
 export const getMdxContents = async (
@@ -120,7 +127,7 @@ export const getMdxContents = async (
   const plainTextContent = extractPlainText(content);
   const readingTime = calculateReadingTime(plainTextContent);
 
-  const allPosts = await getAllPosts({});
+  const { postList: allPosts } = await getAllPosts({});
 
   const currentIndex = allPosts.findIndex(
     (post) => post.slug === slug.join("/"),
@@ -223,7 +230,9 @@ const getMdxFilesRecursively = async (dir: string): Promise<string[]> => {
 export const getAllPosts = async ({
   isSorted = true,
   maxCount,
-}: getAllPostsRequest): Promise<PostDataProps[]> => {
+  page,
+  pageSize = 10,
+}: getAllPostsRequest): Promise<getAllProjectsResponse> => {
   const filePaths = await getMdxFilesRecursively(POST_PATH);
 
   const posts = await Promise.all(
@@ -261,7 +270,7 @@ export const getAllPosts = async ({
         ? data.subCategory
         : "";
 
-      const post: PostDataProps = {
+      return {
         slug: path.relative(POST_PATH, filePath).replace(/\.mdx$/, ""),
         title: data.title,
         description: data.description,
@@ -271,12 +280,10 @@ export const getAllPosts = async ({
         category: data.category,
         subCategory,
       };
-
-      return post;
     }),
   );
 
-  const validPosts = posts.filter(Boolean) as PostDataProps[];
+  let validPosts = posts.filter(Boolean) as PostDataProps[];
 
   if (isSorted) {
     validPosts.sort((a, b) => {
@@ -287,10 +294,17 @@ export const getAllPosts = async ({
   }
 
   if (maxCount) {
-    return validPosts.slice(0, maxCount);
+    validPosts = validPosts.slice(0, maxCount);
   }
 
-  return validPosts;
+  if (page && pageSize) {
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const resultPostList = validPosts.slice(startIndex, endIndex);
+    return { postList: resultPostList, postCount: resultPostList.length };
+  }
+
+  return { postList: validPosts, postCount: validPosts.length };
 };
 
 export const getPostsDetail = async (
