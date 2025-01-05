@@ -59,10 +59,7 @@ const PostCard = ({
           </div>
         )}
 
-        <time
-          dateTime={`${createdAt}`}
-          className="text-[var(--gray1-text-color)] text-xs"
-        >
+        <time dateTime={`${createdAt}`} className="text-gray-400 text-xs">
           {getDate("YYYY.MM.DD", `${createdAt}`)}
         </time>
       </div>

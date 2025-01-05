@@ -151,8 +151,6 @@ export const getMdxContents = async (
 
   const relatedPosts = findRelatedPosts(allPosts, slug, frontMatter);
 
-  console.log("TEST relatedPosts", relatedPosts);
-
   return {
     source: mdxSource,
     frontMatter,
@@ -293,6 +291,8 @@ export const getAllPosts = async ({
     });
   }
 
+  const totalPostCount = validPosts.length; // 전체 게시물 수 저장
+
   if (maxCount) {
     validPosts = validPosts.slice(0, maxCount);
   }
@@ -304,7 +304,7 @@ export const getAllPosts = async ({
     return { postList: resultPostList, postCount: resultPostList.length };
   }
 
-  return { postList: validPosts, postCount: validPosts.length };
+  return { postList: validPosts, postCount: totalPostCount };
 };
 
 export const getPostsDetail = async (

@@ -10,8 +10,9 @@ import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionT
 import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
 import { GithubUserInfo } from "@/api/github";
 import useGithubInfoStore from "@/store/githubInfo";
-import { PUBLIC_IMG_PATH } from "@/constants/basic.constants";
-import SkillChip, { SkillName } from "@/components/SkillChip";
+import { SKILL_LIST } from "@/constants/basic.constants";
+import SkillChip from "@/components/SkillChip";
+import Link from "next/link";
 
 const Modal = dynamic(() => import("@/components/Modal/Modal"), {
   ssr: false,
@@ -19,11 +20,16 @@ const Modal = dynamic(() => import("@/components/Modal/Modal"), {
 
 interface HomeClientProps {
   projectData: ProjectDataProps[];
-  postData: PostDataProps[];
+  postList: PostDataProps[];
   githubData: GithubUserInfo;
+  postCount: number;
 }
 
-export const HomeClient = ({ postData, githubData }: HomeClientProps) => {
+export const HomeClient = ({
+  postList,
+  githubData,
+  postCount,
+}: HomeClientProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { setGithubUser } = useGithubInfoStore();
 
@@ -36,31 +42,9 @@ export const HomeClient = ({ postData, githubData }: HomeClientProps) => {
   }, [githubData]);
 
   useDeviceType();
-  const SKILL_LIST: {
-    skillName: SkillName;
-    bgColor?: `#${string}`;
-    imgSrc: string;
-  }[] = [
-    { skillName: "React", imgSrc: `${PUBLIC_IMG_PATH}/skill/react.svg` },
-    {
-      skillName: "TypeScript",
-      imgSrc: `${PUBLIC_IMG_PATH}/skill/typescript.svg`,
-    },
-    {
-      skillName: "NextJs",
-      bgColor: "#363636",
-      imgSrc: `${PUBLIC_IMG_PATH}/skill/nextjs.svg`,
-    },
-    {
-      skillName: "JavaScript",
-      imgSrc: `${PUBLIC_IMG_PATH}/skill/javascript.svg`,
-    },
-    { skillName: "HTML", imgSrc: `${PUBLIC_IMG_PATH}/skill/html5.svg` },
-    { skillName: "CSS", imgSrc: `${PUBLIC_IMG_PATH}/skill/css3.svg` },
-  ];
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col gap-4">
       <IntroSectionTemplate />
 
       <section className="flex flex-col gap-2">
@@ -77,8 +61,20 @@ export const HomeClient = ({ postData, githubData }: HomeClientProps) => {
           ))}
         </ul>
       </section>
-      <MainSection title="게시물">
-        <PostSectionTemplate postData={postData} />
+      <MainSection
+        title="게시물"
+        titleChildren={
+          postCount > 3 ? (
+            <Link
+              href="/blog"
+              className="text-sm text-gray-500 hover:text-[var(--text-color)] transition-colors"
+            >
+              더보기
+            </Link>
+          ) : null
+        }
+      >
+        <PostSectionTemplate postData={postList} />
       </MainSection>
 
       <Modal

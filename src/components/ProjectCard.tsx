@@ -58,16 +58,13 @@ const ProjectCard = ({
           {!!startDate && (
             <time
               dateTime={`${startDate}`}
-              className="text-[var(--gray1-text-color)] text-xs after:content-['-']"
+              className="text-gray-400 text-xs after:content-['-']"
             >
               {getDate("YYYY.MM.DD", `${startDate}`)}
             </time>
           )}
           {!!endDate && (
-            <time
-              dateTime={`${endDate}`}
-              className="text-[var(--gray1-text-color)] text-xs"
-            >
+            <time dateTime={`${endDate}`} className="text-gray-400 text-xs">
               {getDate("YYYY.MM.DD", `${endDate}`)}
             </time>
           )}

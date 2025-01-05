@@ -22,8 +22,6 @@
 
   /* Common Colors */
   --gray-bg-color: #d9d9d9;
-  --gray1-text-color: #808080;
-  --gray2-text-color: #a8afbd;
   --dimmed-color: #6a737d;
   --primary-color: #0090ff;
   --description-text-color: #a8afbd;
@@ -33,6 +31,7 @@
   --link-text-hover-color: #fb923c; */
   --hover-link-color: rgba(192, 192, 192, 0.3);
 
+  /* TODO: 삭제 요망 */
   /** Gray Scale*/
   --dark-gray: #333333;
   --dim-gray: #666666;
