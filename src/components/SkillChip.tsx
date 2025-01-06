@@ -58,8 +58,8 @@ const SkillChip = ({
       }}
       onAnimationEnd={handleAnimationEnd}
     >
-      <Image width={20} height={20} src={imgSrc} alt={skillName} />
-      <div className="font-semibold">{skillName}</div>
+      <Image width={18} height={18} src={imgSrc} alt={skillName} />
+      <div className="font-semibold text-sm">{skillName}</div>
     </button>
   );
 };

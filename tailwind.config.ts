@@ -5,12 +5,13 @@ export default {
   darkMode: "class",
   theme: {
     screens: {
-      xs: "375px",
-      sm: "640px",
-      md: "768px",
-      lg: "1024px",
-      xl: "1280px",
-      "2xl": "1536px",
+      xs: { max: "375px" },
+      sm: { max: "640px" },
+      md: { max: "768px" },
+      lg: { max: "1024px" },
+      xl: { max: "1280px" },
+      "2xl": { max: "1536px" },
+      "min-md": { min: "768px" },
     },
     extend: {
       scale: {
@@ -18,8 +19,19 @@ export default {
       },
       colors: {
         primary: "var(--primary-color)",
+        theme: "var(--bg-color)",
+      },
+      transitionDuration: {
+        custom: "var(--transition-duration)",
+      },
+      transitionTimingFunction: {
+        custom: "var(--transition-timing-function)",
       },
       keyframes: {
+        bounceSlight: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-1.5px)" },
+        },
         easeInTypingEffect: {
           "0%": {
             opacity: "0",
@@ -50,6 +62,22 @@ export default {
         blink: {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0" },
+        },
+        fadeInUp: {
+          "0%": { opacity: "0", transform: "translateY(5px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        fadeInDown: {
+          "0%": { opacity: "0", transform: "translateY(-5px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        fadeInLeft: {
+          "0%": { opacity: "0", transform: "translateX(-5px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
+        fadeInRight: {
+          "0%": { opacity: "0", transform: "translateX(5px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
         },
         bounceJelly: {
           "0%": {
@@ -164,6 +192,11 @@ export default {
         rotateFull: "rotateFull 3s linear infinite",
         rotateQuarter: "rotateQuarter 1s linear infinite",
         bounceJelly: "bounceJelly 1s linear both",
+        fadeInUp: "fadeInUp 0.3s ease-in-out forwards",
+        fadeInDown: "fadeInDown 0.3s ease-in-out forwards",
+        fadeInLeft: "fadeInLeft 0.3s ease-in-out forwards",
+        fadeInRight: "fadeInRight 0.3s ease-in-out forwards",
+        bounceSlight: "bounceSlight 1s infinite",
       },
     },
   },
@@ -187,6 +220,9 @@ export default {
         },
         ".animation-running": {
           "animation-play-state": "running",
+        },
+        ".will-change-transform-opacity": {
+          willChange: "transform, opacity",
         },
       };
 

@@ -8,6 +8,8 @@ module.exports = {
     "*.config.ts",
     "tsconfig.json",
     "next.config.mjs",
+    ".eslintrc.cjs",
+    "script/**/*.js",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {

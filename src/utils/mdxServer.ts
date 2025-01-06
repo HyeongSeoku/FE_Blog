@@ -35,6 +35,22 @@ interface getMdxContentsResponse {
   frontMatter: FrontMatterProps;
   readingTime?: number;
   heading?: HeadingsProps[];
+  previousPost: RelatedPost | null;
+  nextPost: RelatedPost | null;
+  relatedPosts: RelatedPost[] | null;
+}
+
+export interface getAllPostsRequest {
+  maxCount?: number;
+  isSorted?: boolean;
+  page?: number;
+  pageSize?: number;
+  targetYear?: number;
+}
+
+export interface RelatedPost {
+  slug: string;
+  title: string;
 }
 
 interface ExtendedElement extends Element {
@@ -44,6 +60,11 @@ interface ExtendedElement extends Element {
 interface HeadingItems {
   value?: string;
   type?: string;
+}
+
+export interface getAllProjectsResponse {
+  postList: PostDataProps[];
+  totalPostCount: number;
 }
 
 export const getMdxContents = async (
@@ -59,14 +80,35 @@ export const getMdxContents = async (
     return null;
   }
 
+  // Read and parse the MDX file
   const source = await fs.readFile(filePath, "utf8");
-  const heading = extractHeadings(source);
   const { content, data } = matter(source);
-  const frontTypeData = data as FrontMatterProps;
+  const frontMatter = data as FrontMatterProps;
 
-  if (!frontTypeData.title) {
+  if (!frontMatter.title) {
     throw new Error("Front matter does not contain required 'title' field");
   }
+
+  // MDX plugins and processing
+  const rehypePrettyCodeOptions: Options = {
+    theme: "github-dark",
+    onVisitLine(node) {
+      if (node.children.length === 0) {
+        node.children = [{ type: "text", value: " " }];
+      }
+    },
+    onVisitHighlightedLine(node) {
+      node.properties.className = [
+        ...(node.properties.className || []),
+        "highlighted-line",
+      ];
+    },
+    onVisitHighlightedChars(node) {
+      node.properties.className = ["highlighted-word"];
+    },
+  };
+
+  const heading = extractHeadings(content);
 
   const mdxSource = await serialize(content, {
     mdxOptions: {
@@ -77,6 +119,7 @@ export const getMdxContents = async (
           rehypeExternalLinks,
           { target: "_blank", rel: ["noopener", "noreferrer"] },
         ],
+        rehypeCodeBlockClassifier,
       ],
     },
     scope: data,
@@ -85,11 +128,38 @@ export const getMdxContents = async (
   const plainTextContent = extractPlainText(content);
   const readingTime = calculateReadingTime(plainTextContent);
 
+  const { postList: allPosts } = await getAllPosts({});
+
+  const currentIndex = allPosts.findIndex(
+    (post) => post.slug === slug.join("/"),
+  );
+
+  const previousPost =
+    currentIndex > 0
+      ? {
+          slug: allPosts[currentIndex - 1].slug,
+          title: allPosts[currentIndex - 1].title,
+        }
+      : null;
+
+  const nextPost =
+    currentIndex < allPosts.length - 1
+      ? {
+          slug: allPosts[currentIndex + 1].slug,
+          title: allPosts[currentIndex + 1].title,
+        }
+      : null;
+
+  const relatedPosts = findRelatedPosts(allPosts, slug, frontMatter);
+
   return {
     source: mdxSource,
-    frontMatter: frontTypeData,
+    frontMatter,
     readingTime,
     heading,
+    previousPost,
+    nextPost,
+    relatedPosts,
   };
 };
 
@@ -156,8 +226,13 @@ const getMdxFilesRecursively = async (dir: string): Promise<string[]> => {
   return files.flat().filter(Boolean) as string[];
 };
 
-export const getAllPosts = async (): Promise<PostDataProps[]> => {
-  // 모든 디렉토리에서 .mdx 파일 찾기
+export const getAllPosts = async ({
+  isSorted = true,
+  maxCount,
+  page,
+  pageSize = 10,
+  targetYear,
+}: getAllPostsRequest): Promise<getAllProjectsResponse> => {
   const filePaths = await getMdxFilesRecursively(POST_PATH);
 
   const posts = await Promise.all(
@@ -195,7 +270,7 @@ export const getAllPosts = async (): Promise<PostDataProps[]> => {
         ? data.subCategory
         : "";
 
-      const post: PostDataProps = {
+      return {
         slug: path.relative(POST_PATH, filePath).replace(/\.mdx$/, ""),
         title: data.title,
         description: data.description,
@@ -205,12 +280,41 @@ export const getAllPosts = async (): Promise<PostDataProps[]> => {
         category: data.category,
         subCategory,
       };
-
-      return post;
     }),
   );
 
-  return posts.filter(Boolean) as PostDataProps[];
+  const validPosts = posts.filter(Boolean) as PostDataProps[];
+  const totalCount = validPosts.length;
+
+  let resultPosts = validPosts;
+
+  if (targetYear) {
+    resultPosts = resultPosts.filter((post) => {
+      const postYear = new Date(post.createdAt).getFullYear();
+      return postYear === targetYear;
+    });
+  }
+
+  if (isSorted) {
+    resultPosts.sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    });
+  }
+
+  if (maxCount) {
+    resultPosts = resultPosts.slice(0, maxCount);
+  }
+
+  if (page && pageSize) {
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const resultPostList = resultPosts.slice(startIndex, endIndex);
+    return { postList: resultPostList, totalPostCount: totalCount };
+  }
+
+  return { postList: resultPosts, totalPostCount: totalCount };
 };
 
 export const getPostsDetail = async (
@@ -218,24 +322,6 @@ export const getPostsDetail = async (
 ): Promise<getMdxContentsResponse | null> => {
   const mdxContentData = await getMdxContents(slug, POST_PATH);
   return mdxContentData;
-};
-
-export const rehypePrettyCodeOptions: Options = {
-  theme: "github-dark",
-  onVisitLine(node) {
-    if (node.children.length === 0) {
-      node.children = [{ type: "text", value: " " }];
-    }
-  },
-  onVisitHighlightedLine(node) {
-    node.properties.className = [
-      ...(node.properties.className || []),
-      "highlighted-line",
-    ];
-  },
-  onVisitHighlightedChars(node) {
-    node.properties.className = ["highlighted-word"];
-  },
 };
 
 export const extractPlainText = (content: string): string => {
@@ -259,14 +345,14 @@ export const extractHeadings = (content: string): HeadingsProps[] => {
 
   const cleanedContent = content.replace(/```[\s\S]*?```/g, "");
 
-  const headingRegex = /^(#{1,2})\s+(.+)$/gm;
+  const headingRegex = /^(#{2,3})\s+(.+)$/gm;
   let match;
   while ((match = headingRegex.exec(cleanedContent)) !== null) {
     const [_, hashes, text] = match;
 
     const level = hashes.length;
 
-    if (level > 2) continue;
+    if (level > 3) continue;
 
     const baseId = text.trim().replace(/\s+/g, "-").toLowerCase();
     const count = headingCounts.get(baseId) || 0;
@@ -289,11 +375,11 @@ export const rehypeHeadingsWithIds = (headingData: HeadingsProps[]) => {
       // 노드 조작 로직
       const elementNode = node as ExtendedElement;
 
-      if (["h1", "h2"].includes(elementNode.tagName || "")) {
+      if (["h2", "h3"].includes(elementNode.tagName || "")) {
         for (const item of elementNode.children) {
           const headingItem = item as HeadingItems;
           if (headingItem.value && headingItem.type === "text") {
-            const headingLevel = elementNode.tagName === "h1" ? 1 : 2;
+            const headingLevel = elementNode.tagName === "h2" ? 2 : 3;
             const heading = headingData.find(
               (h) =>
                 h.text === headingItem.value &&
@@ -316,5 +402,55 @@ export const rehypeHeadingsWithIds = (headingData: HeadingsProps[]) => {
     });
 
     return tree;
+  };
+};
+
+export const findRelatedPosts = (
+  allPosts: PostDataProps[],
+  slug: string[],
+  frontMatter: FrontMatterProps,
+  maxCount: number = 3,
+): RelatedPost[] => {
+  const currentTags = frontMatter.tags || [];
+  const currentCategory = frontMatter.category;
+
+  const filteredByTag = allPosts.filter(
+    (post) =>
+      post.slug !== slug.join("/") &&
+      post.tags &&
+      post.tags.some((tag) => currentTags.includes(tag)),
+  );
+
+  const filteredByCategory = allPosts.filter(
+    (post) => post.slug !== slug.join("/") && post.category === currentCategory,
+  );
+
+  return filteredByTag.length > 0
+    ? filteredByTag
+        .slice(0, maxCount)
+        .map((post) => ({ slug: post.slug, title: post.title }))
+    : filteredByCategory.slice(0, maxCount).map((post) => ({
+        slug: post.slug,
+        title: post.title,
+      }));
+};
+
+export const rehypeCodeBlockClassifier = () => {
+  return (tree: any) => {
+    visit(tree, "element", (node, index, parent) => {
+      const elementNode = node as ExtendedElement;
+
+      if (elementNode.tagName === "code") {
+        const isBlockCode = parent?.tagName === "pre";
+
+        node.properties = {
+          ...(node.properties || {}),
+          className: [
+            ...(node.properties.className || []),
+            isBlockCode ? "block-code" : "inline-code",
+          ],
+        };
+      }
+    });
   };
 };

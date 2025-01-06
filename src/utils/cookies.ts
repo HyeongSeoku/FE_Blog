@@ -1,15 +1,15 @@
-export const parseCookies = (request: Request) => {
-  const cookieHeader = request.headers.get("Cookie");
+// SSR Method
+export const parseCookieHeader = (cookieHeader: string | null) => {
+  if (!cookieHeader) return {};
   const cookies: Record<string, string> = {};
-  if (cookieHeader) {
-    cookieHeader.split(";").forEach((cookie) => {
-      const [key, value] = cookie.split("=").map((c) => c.trim());
-      cookies[key] = decodeURIComponent(value);
-    });
-  }
+  cookieHeader.split(";").forEach((cookie) => {
+    const [key, value] = cookie.split("=").map((c) => c.trim());
+    cookies[key] = decodeURIComponent(value || "");
+  });
   return cookies;
 };
 
+//CSR Method
 export const setCookie = (name: string, value: string, days: number) => {
   let expires = "";
   if (days) {

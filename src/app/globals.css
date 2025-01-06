@@ -22,14 +22,16 @@
 
   /* Common Colors */
   --gray-bg-color: #d9d9d9;
-  --gray1-text-color: #808080;
-  --gray2-text-color: #a8afbd;
   --dimmed-color: #6a737d;
   --primary-color: #0090ff;
   --description-text-color: #a8afbd;
   --link-text-color: #0070f3;
   --link-text-hover-color: #3399ff;
+  /* --link-text-color: #ea580c;
+  --link-text-hover-color: #fb923c; */
+  --hover-link-color: rgba(192, 192, 192, 0.3);
 
+  /* TODO: 삭제 요망 */
   /** Gray Scale*/
   --dark-gray: #333333;
   --dim-gray: #666666;
@@ -72,6 +74,10 @@
   --category-music-bg: #2980b9;
 }
 
+:root {
+  --mobile-nav-max-width: 56rem;
+}
+
 /* Light Theme */
 [data-theme="light"] {
   --bg-color: var(--light-bg-color);
@@ -102,19 +108,63 @@ main {
 }
 
 /* Scrollbar Styles */
-::-webkit-scrollbar {
-  width: 8px;
+*::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
 }
 
-::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: transparent;
 }
 
-::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background-color: rgba(217, 217, 217, 0.5);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(217, 217, 217, 0.8);
+}
+
+.scroll-bar-thin {
+  scrollbar-width: 4px;
+}
+.scroll-bar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  scroll-behavior: smooth;
+  position: static;
+  width: 100%;
+  height: 100%;
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+}
+
+body[data-modal-open="true"] {
+  position: fixed;
+  width: 100%;
+  overscroll-behavior: none;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
 }

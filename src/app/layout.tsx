@@ -1,13 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "@/app/globals.css";
 
 import { ReactNode } from "react";
 import { cookies } from "next/headers";
 import { LIGHT_DARK_THEME } from "@/constants/cookie.constants";
-import DefaultLayout from "@/layout/DefaultLayout";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "SEOK 개발 블로그",
@@ -24,12 +20,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
   return (
     <html lang="en" data-theme={theme === "dark" ? "dark" : "light"}>
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </head>
       <body>
-        <DefaultLayout>{children}</DefaultLayout>
+        {children}
         <div id="modal-root"></div>
       </body>
     </html>
