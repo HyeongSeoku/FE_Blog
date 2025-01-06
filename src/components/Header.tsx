@@ -11,6 +11,8 @@ import MobileNavigation from "@/components/MobileNavigation";
 import useThemeStore from "@/store/theme";
 import useTheme from "@/hooks/useTheme";
 import ScrollProgressBar from "./ScrollProgressBar";
+import useScrollDirection from "@/hooks/useScrollDirection";
+import classNames from "classnames";
 
 export interface HeaderProps {
   headerType: HeaderType;
@@ -32,6 +34,7 @@ const Header = ({
   const { isDarkMode, setDarkMode, setLightMode } = useThemeStore();
   const isDarkTheme = isMounted ? isDarkMode : initialTheme === "dark";
   const router = useRouter();
+  const scrollDirection = useScrollDirection(50);
 
   useTheme();
 
@@ -79,7 +82,15 @@ const Header = ({
   };
 
   return (
-    <header className="sticky top-0 left-0 right-0 h-14 z-10 flex px-4 py-2 w-full max-w-7xl box-border justify-between backdrop-blur-sm">
+    <header
+      className={classNames(
+        "sticky top-0 left-0 right-0 z-10 flex items-center px-4 w-full max-w-7xl box-border backdrop-blur-sm transition-[height] duration-300 overflow-hidden",
+        {
+          "h-14 py-2": scrollDirection === "up",
+          "h-0 py-0": scrollDirection === "down",
+        },
+      )}
+    >
       {headerType === "DEFAULT" && (
         <button
           className={`z-10 flex gap-2 items-center ${isMoNavOpen ? "opacity-0 transition-opacity" : "opacity-100"}`}
@@ -91,7 +102,7 @@ const Header = ({
       {headerType === "BACK" && <BackButton />}
       {children && <>{children}</>}
 
-      <div className="flex items-center">
+      <div className="flex items-center ml-auto">
         <button
           className="flex flex-col flex-shrink-0 w-10 h-10 overflow-hidden hover:bg-gray-400/20 rounded-sm"
           onClick={toggleTheme}
@@ -116,6 +127,7 @@ const Header = ({
           <MenuIcon width={24} height={24} alt="menu" />
         </button>
       </div>
+      {/* FIXME: ScrollProgressBar 미노출 이슈 수정  */}
       {showScrollProgress && <ScrollProgressBar />}
       <MobileNavigation isOpen={isMoNavOpen} toggleMoMenu={toggleMoMenu} />
     </header>
