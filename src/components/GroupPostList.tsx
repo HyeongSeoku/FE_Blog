@@ -37,18 +37,21 @@ const GroupPostList = ({ groupedPosts, groupingType }: PostListProps) => {
         return (
           <div
             key={key}
-            className="mb-8 py-2 px-2 flex gap-32 border-t last:border-b"
+            className="mb-8 py-8 px-4 flex gap-32 border-t last:border-b group"
           >
-            <h2 className="text-2xl font-bold flex-shrink-0">
+            <h2 className="text-2xl font-bold flex-shrink-0 h-fit group-hover:bg-gray-300 transition-colors">
               {keyFormat(key)}
               {suffixText}
             </h2>
-            <ul className="flex flex-col justify-center gap-2 flex-1">
+            <ul className="flex flex-col justify-center gap-2 flex-1 group">
               {groupedPosts[key].map(({ slug, title, createdAt }) => (
-                <li key={slug}>
+                <li
+                  key={slug}
+                  className="group-hover:text-gray-500 hover:bg-gray-500 hover:!text-white transition-colors"
+                >
                   <Link
                     href={`/posts/${slug}`}
-                    className="flex justify-between items-center"
+                    className="flex justify-between items-center p-2"
                   >
                     <span>{title}</span>
                     <span className="text-gray-500">
