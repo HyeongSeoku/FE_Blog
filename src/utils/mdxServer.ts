@@ -45,6 +45,7 @@ export interface getAllPostsRequest {
   isSorted?: boolean;
   page?: number;
   pageSize?: number;
+  targetYear?: number;
 }
 
 export interface RelatedPost {
@@ -63,7 +64,7 @@ interface HeadingItems {
 
 export interface getAllProjectsResponse {
   postList: PostDataProps[];
-  postCount: number;
+  totalPostCount: number;
 }
 
 export const getMdxContents = async (
@@ -230,6 +231,7 @@ export const getAllPosts = async ({
   maxCount,
   page,
   pageSize = 10,
+  targetYear,
 }: getAllPostsRequest): Promise<getAllProjectsResponse> => {
   const filePaths = await getMdxFilesRecursively(POST_PATH);
 
@@ -281,30 +283,38 @@ export const getAllPosts = async ({
     }),
   );
 
-  let validPosts = posts.filter(Boolean) as PostDataProps[];
+  const validPosts = posts.filter(Boolean) as PostDataProps[];
+  const totalCount = validPosts.length;
+
+  let resultPosts = validPosts;
+
+  if (targetYear) {
+    resultPosts = resultPosts.filter((post) => {
+      const postYear = new Date(post.createdAt).getFullYear();
+      return postYear === targetYear;
+    });
+  }
 
   if (isSorted) {
-    validPosts.sort((a, b) => {
+    resultPosts.sort((a, b) => {
       const dateA = new Date(a.createdAt).getTime();
       const dateB = new Date(b.createdAt).getTime();
       return dateB - dateA;
     });
   }
 
-  const totalPostCount = validPosts.length; // 전체 게시물 수 저장
-
   if (maxCount) {
-    validPosts = validPosts.slice(0, maxCount);
+    resultPosts = resultPosts.slice(0, maxCount);
   }
 
   if (page && pageSize) {
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    const resultPostList = validPosts.slice(startIndex, endIndex);
-    return { postList: resultPostList, postCount: resultPostList.length };
+    const resultPostList = resultPosts.slice(startIndex, endIndex);
+    return { postList: resultPostList, totalPostCount: totalCount };
   }
 
-  return { postList: validPosts, postCount: totalPostCount };
+  return { postList: resultPosts, totalPostCount: totalCount };
 };
 
 export const getPostsDetail = async (
