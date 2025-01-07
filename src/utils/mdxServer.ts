@@ -311,6 +311,7 @@ export const getAllPosts = async ({
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
     const resultPostList = resultPosts.slice(startIndex, endIndex);
+
     return { postList: resultPostList, totalPostCount: totalCount };
   }
 

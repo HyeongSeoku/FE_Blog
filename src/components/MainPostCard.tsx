@@ -1,20 +1,20 @@
 "use client";
 
-import { Category, SubCategory } from "@/types/posts";
 import { getDate } from "@/utils/date";
 import { PostDataProps } from "@/utils/mdxServer";
 import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 
-export interface PostCardProps extends Omit<PostDataProps, "slug" | "content"> {
+export interface MainPostCardProps
+  extends Omit<PostDataProps, "slug" | "content"> {
   link: string;
   imgSrc?: string;
   imgAlt?: string;
   categoryType?: "SUB" | "MAIN";
 }
 
-const PostCard = ({
+const MainPostCard = ({
   link,
   title,
   description,
@@ -25,7 +25,7 @@ const PostCard = ({
   imgSrc = "/image/default_img.png",
   imgAlt = "default image alt",
   categoryType = "MAIN",
-}: PostCardProps) => {
+}: MainPostCardProps) => {
   return (
     <Link
       href={link}
@@ -67,4 +67,4 @@ const PostCard = ({
   );
 };
 
-export default PostCard;
+export default MainPostCard;

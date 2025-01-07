@@ -1,3 +1,4 @@
+import BlogPostCard from "@/components/BlogPostCard";
 import GroupPostList from "@/components/GroupPostList";
 import { getAllPosts } from "@/utils/mdxServer";
 import { groupPosts } from "@/utils/posts";
@@ -16,7 +17,17 @@ const BlogPage = async () => {
 
   return (
     <div>
-      <GroupPostList groupedPosts={groupPostList} groupingType="year" />
+      {/* <GroupPostList groupedPosts={groupPostList} groupingType="year" /> */}
+      {postList.map(({ title, createdAt, description, slug, tags }) => (
+        <BlogPostCard
+          key={slug}
+          title={title}
+          createdAt={createdAt}
+          description={description}
+          slug={slug}
+          tagList={tags}
+        />
+      ))}
     </div>
   );
 };
