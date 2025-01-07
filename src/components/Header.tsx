@@ -84,10 +84,10 @@ const Header = ({
   return (
     <header
       className={classNames(
-        "sticky top-0 left-0 right-0 z-10 flex items-center px-4 w-full max-w-7xl box-border backdrop-blur-sm transition-[height] duration-300 overflow-hidden",
+        "sticky top-0 left-0 right-0 z-10 flex items-center px-4 w-full max-w-7xl box-border backdrop-blur-sm transition-[height] duration-300",
         {
           "h-14 py-2": scrollDirection === "up",
-          "h-0 py-0": scrollDirection === "down",
+          "h-0 py-0 overflow-hidden": scrollDirection === "down",
         },
       )}
     >
