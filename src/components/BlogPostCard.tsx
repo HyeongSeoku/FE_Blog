@@ -21,18 +21,28 @@ const BlogPostCard = ({
   const formattedDate = getDate("MMMM D, YYYY", createdAt);
 
   return (
-    <Link href={`/posts/${slug}`}>
-      <h3>{title}</h3>
-      <span>{formattedDate}</span>
-      <p>{description}</p>
+    <div className="py-5 border-b last:border-b-0">
+      <Link
+        href={`/posts/${slug}`}
+        className="flex flex-col transition-colors duration-300 hover:text-gray-400"
+      >
+        <h3 className="text-3xl mb-1">{title}</h3>
+        <span className="text-sm mb-2">{formattedDate}</span>
+        <p className="text-md mb-2">{description}</p>
+      </Link>
       {!!tagList?.length && (
-        <ul>
+        <ul className="flex gap-2 text-sm ">
           {tagList.map((item, idx) => (
-            <li key={`${item}_${idx}`}>{item}</li>
+            <li
+              key={`${item}_${idx}`}
+              className="border px-1 rounded-md transition-colors duration-300 hover:border-gray-400 hover:text-gray-400 "
+            >
+              <button>{item}</button>
+            </li>
           ))}
         </ul>
       )}
-    </Link>
+    </div>
   );
 };
 
