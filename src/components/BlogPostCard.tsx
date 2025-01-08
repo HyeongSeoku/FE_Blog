@@ -35,9 +35,9 @@ const BlogPostCard = ({
           {tagList.map((item, idx) => (
             <li
               key={`${item}_${idx}`}
-              className="border px-1 rounded-md transition-colors duration-300 hover:border-gray-400 hover:text-gray-400 "
+              className="py-1 px-2 rounded-full transition-colors duration-300 bg-[var(--bg-gray-color)] hover:bg-[var(--bg-gray-hover-color)]"
             >
-              <button>{item}</button>
+              <button className="w-full">{item}</button>
             </li>
           ))}
         </ul>

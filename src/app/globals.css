@@ -13,12 +13,16 @@
   --light-text-color: #1e2229;
   --light-second-bg-color: rgba(0, 144, 255, 0.3);
   --light-theme-color: #f5c525;
+  --light-bg-gray-color: #f1f3f5;
+  --light-bg-gray-hover-color: #dee2e6;
 
   /* Dark Mode Colors */
   --dark-bg-color: #14161b;
   --dark-text-color: #ffffff;
   --dark-second-bg-color: rgba(63, 63, 63, 0.3);
   --dark-theme-color: #6a0dad;
+  --dark-bg-gray-color: #2d2d2d;
+  --dark-bg-gray-hover-color: #404040;
 
   /* Common Colors */
   --gray-bg-color: #d9d9d9;
@@ -27,8 +31,6 @@
   --description-text-color: #a8afbd;
   --link-text-color: #0070f3;
   --link-text-hover-color: #3399ff;
-  /* --link-text-color: #ea580c;
-  --link-text-hover-color: #fb923c; */
   --hover-link-color: rgba(192, 192, 192, 0.3);
 
   /* TODO: 삭제 요망 */
@@ -85,6 +87,8 @@
   --second-bg-color: var(--light-second-bg-color);
   --project-card-bg: var(--project-light-bg);
   --border-color: var(--light-gray);
+  --bg-gray-color: var(--light-bg-gray-color);
+  --bg-gray-hover-color: var(--light-bg-gray-hover-color);
 }
 
 /* Dark Theme */
@@ -94,6 +98,8 @@
   --second-bg-color: var(--dark-second-bg-color);
   --project-card-bg: #ffffff;
   --border-color: var(--dark-gray);
+  --bg-gray-color: var(--dark-bg-gray-color);
+  --bg-gray-hover-color: var(--dark-bg-gray-hover-color);
 }
 
 /* Global Styles */
