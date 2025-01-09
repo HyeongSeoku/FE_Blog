@@ -37,7 +37,12 @@ const BlogPostCard = ({
               key={`${item}_${idx}`}
               className="py-1 px-2 rounded-full transition-colors duration-300 bg-[var(--bg-gray-color)] hover:bg-[var(--bg-gray-hover-color)]"
             >
-              <button className="w-full">{item}</button>
+              <Link
+                href={`/tags/${item.toLocaleLowerCase()}`}
+                className="w-full h-full block"
+              >
+                {item}
+              </Link>
             </li>
           ))}
         </ul>
