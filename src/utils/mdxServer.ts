@@ -318,6 +318,68 @@ export const getAllPosts = async ({
   return { postList: resultPosts, totalPostCount: totalCount };
 };
 
+export const getPostsByTag = async (
+  tag: string,
+): Promise<{ list: PostDataProps[]; count: number }> => {
+  const filePaths = await getMdxFilesRecursively(POST_PATH);
+
+  const posts = await Promise.all(
+    filePaths.map(async (filePath) => {
+      const fileContents = await fs.readFile(filePath, "utf8");
+      const { data, content } = matter(fileContents);
+
+      if (
+        !data?.title ||
+        !data?.description ||
+        !data?.category ||
+        !data?.tags ||
+        !data?.createdAt
+      ) {
+        console.warn(
+          `🛠️  게시물 파일 ${filePath} 에 필수 메타데이터가 없습니다. 건너뜁니다.`,
+        );
+        return null;
+      }
+
+      if (!isValidCategory(data?.category)) {
+        console.warn(
+          `🛠️  게시물 파일 ${filePath} 의 category를 수정하세요. 건너뜁니다.`,
+        );
+        return null;
+      }
+
+      if (!isValidSubCategory(data.category, data?.subCategory)) {
+        console.warn(
+          `🛠️  게시물 파일 ${filePath} 의 subCategory를 수정하세요.`,
+        );
+      }
+
+      const tags = Array.isArray(data.tags) ? data.tags : data.tags.split(",");
+      const subCategory = isValidSubCategory(data.category, data?.subCategory)
+        ? data.subCategory
+        : "";
+
+      return {
+        slug: path.relative(POST_PATH, filePath).replace(/\.mdx$/, ""),
+        title: data.title,
+        description: data.description,
+        createdAt: data.createdAt,
+        tags,
+        content: content || "",
+        category: data.category,
+        subCategory,
+      };
+    }),
+  );
+
+  const filteredPosts = (posts.filter(Boolean) as PostDataProps[]).filter(
+    (post) => post.tags.some((t) => t.toLowerCase() === tag),
+  );
+
+  // `tag` 필터링
+  return { list: filteredPosts, count: filteredPosts.length };
+};
+
 export const getPostsDetail = async (
   slug: string[],
 ): Promise<getMdxContentsResponse | null> => {
