@@ -1,4 +1,5 @@
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { RelatedPost } from "./posts";
 export interface FrontMatterProps {
   title: string;
   description: string;
@@ -15,11 +16,6 @@ export interface HeadingsProps {
   isVisit: boolean;
 }
 
-export interface RelatedPost {
-  slug: string;
-  title: string;
-}
-
 export type ExtendedElement = {
   tagName?: string;
   children: Array<{ type: string; value?: string; [key: string]: any }>;
@@ -34,4 +30,9 @@ export interface getMdxContentsResponse {
   previousPost: RelatedPost | null;
   nextPost: RelatedPost | null;
   relatedPosts: RelatedPost[] | null;
+}
+
+export interface HeadingItems {
+  value?: string;
+  type?: string;
 }

@@ -12,7 +12,7 @@ import { GithubUserInfo } from "@/api/github";
 import useGithubInfoStore from "@/store/githubInfo";
 import SkillChip from "@/components/SkillChip";
 import Link from "next/link";
-import { SKILL_LIST } from "@/constants/skils.constants";
+import { SKILL_LIST } from "@/constants/post.constants";
 
 const Modal = dynamic(() => import("@/components/Modal/Modal"), {
   ssr: false,

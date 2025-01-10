@@ -4,15 +4,14 @@ import path from "path";
 import matter from "gray-matter";
 import {
   Category,
-  categoryMap,
   SubCategory,
-  SubCategoryMap,
   PostDataProps,
   getAllPostsRequest,
   getAllProjectsResponse,
 } from "@/types/posts";
 import { getMdxContents } from "./mdx";
 import { getMdxContentsResponse } from "@/types/mdx";
+import { CATEGORY_MAP, SUB_CATEGORY_MAP } from "@/constants/post.constants";
 
 const POST_PATH = path.join(process.cwd(), "src/mdx/content");
 
@@ -137,7 +136,7 @@ export const getPostsByTag = async (
 };
 
 export const isValidCategory = (category: Category): boolean => {
-  return !!categoryMap[category];
+  return !!CATEGORY_MAP[category];
 };
 
 export const isValidSubCategory = (
@@ -145,7 +144,7 @@ export const isValidSubCategory = (
   subCategory?: SubCategory,
 ): boolean => {
   if (!subCategory) return false;
-  return SubCategoryMap[category].includes(subCategory);
+  return SUB_CATEGORY_MAP[category].includes(subCategory);
 };
 
 // 년도별 그룹화 함수

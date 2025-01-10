@@ -1,5 +1,6 @@
 import { SkillName } from "@/components/SkillChip";
 import { PUBLIC_IMG_PATH } from "./basic.constants";
+import { Category, SubCategory } from "@/types/posts";
 
 export const SKILL_LIST: {
   skillName: SkillName;
@@ -23,3 +24,15 @@ export const SKILL_LIST: {
   { skillName: "HTML", imgSrc: `${PUBLIC_IMG_PATH}/skill/html5.svg` },
   { skillName: "CSS", imgSrc: `${PUBLIC_IMG_PATH}/skill/css3.svg` },
 ];
+
+export const CATEGORY_MAP: Record<Category, true> = {
+  DEV: true,
+  LIFE: true,
+  ETC: true,
+};
+
+export const SUB_CATEGORY_MAP: Record<Category, SubCategory[]> = {
+  DEV: ["FE", "BE", "DEV_OTHER"],
+  LIFE: ["WORK", "HOBBY", "BOOK", "PHOTO"],
+  ETC: ["MUSIC"],
+};

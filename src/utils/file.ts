@@ -12,9 +12,8 @@ export const getMdxFilesRecursively = async (
         return getMdxFilesRecursively(res);
       } else if (res.endsWith(".mdx")) {
         return res;
-      } else {
-        return null;
       }
+      return null;
     }),
   );
   return files.flat().filter(Boolean) as string[];

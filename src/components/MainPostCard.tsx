@@ -1,7 +1,7 @@
 "use client";
 
 import { getDate } from "@/utils/date";
-import { PostDataProps } from "@/utils/post";
+import { PostDataProps } from "@/types/posts";
 import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";

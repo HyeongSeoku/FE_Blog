@@ -1,4 +1,5 @@
 import BlogPostCard from "@/components/BlogPostCard";
+import { getPostsByTag } from "@/utils/post";
 
 const TagPage = async ({ params }: { params: { slug: string } }) => {
   const { slug } = params;
