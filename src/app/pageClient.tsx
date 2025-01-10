@@ -1,7 +1,7 @@
 "use client";
 
 import useDeviceType from "@/hooks/useDeviceType";
-import { PostDataProps, ProjectDataProps } from "@/utils/mdxServer";
+import { PostDataProps } from "@/types/posts";
 import MainSection from "@/components/MainSection";
 
 import { useEffect, useState } from "react";
@@ -10,16 +10,15 @@ import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionT
 import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
 import { GithubUserInfo } from "@/api/github";
 import useGithubInfoStore from "@/store/githubInfo";
-import { SKILL_LIST } from "@/constants/basic.constants";
 import SkillChip from "@/components/SkillChip";
 import Link from "next/link";
+import { SKILL_LIST } from "@/constants/skils.constants";
 
 const Modal = dynamic(() => import("@/components/Modal/Modal"), {
   ssr: false,
 });
 
 interface HomeClientProps {
-  projectData: ProjectDataProps[];
   postList: PostDataProps[];
   githubData: GithubUserInfo;
   postCount: number;

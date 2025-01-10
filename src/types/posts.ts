@@ -29,3 +29,21 @@ export interface PostProps {
   tags: string[];
   createdAt: string;
 }
+
+export interface PostDataProps extends PostProps {
+  slug: string;
+  content: string;
+}
+
+export interface getAllProjectsResponse {
+  postList: PostDataProps[];
+  totalPostCount: number;
+}
+
+export interface getAllPostsRequest {
+  maxCount?: number;
+  isSorted?: boolean;
+  page?: number;
+  pageSize?: number;
+  targetYear?: number;
+}

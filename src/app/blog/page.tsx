@@ -1,7 +1,6 @@
 import BlogPostCard from "@/components/BlogPostCard";
 import GroupPostList from "@/components/GroupPostList";
-import { getAllPosts } from "@/utils/mdxServer";
-import { groupPosts } from "@/utils/posts";
+import { getAllPosts, groupPosts } from "@/utils/post";
 
 const BlogPage = async () => {
   const { postList } = await getAllPosts({

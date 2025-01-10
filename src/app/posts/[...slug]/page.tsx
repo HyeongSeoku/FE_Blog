@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getAllPosts, getPostsDetail } from "@/utils/mdxServer";
+import { getAllPosts, getPostsDetail } from "@/utils/post";
 import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
 
 export async function generateStaticParams() {

@@ -1,7 +1,7 @@
 "use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { PostDataProps } from "@/utils/mdxServer";
+import { PostDataProps } from "@/utils/post";
 import MainPostCard from "@/components/MainPostCard";
 
 import "./post-section-template.css";

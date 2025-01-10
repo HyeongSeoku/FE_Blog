@@ -1,5 +1,5 @@
 import { getDate } from "@/utils/date";
-import { PostDataProps } from "@/utils/mdxServer";
+import { PostDataProps } from "@/utils/post";
 import Link from "next/link";
 
 type GroupedPosts = {
