@@ -84,6 +84,22 @@ export const getMdxContents = async (
   };
 };
 
+export const getRepresentativeImage = (data: any, content: string): string => {
+  // 1. 메타데이터에서 thumbnail 가져오기
+  if (data.thumbnail) {
+    return data.thumbnail;
+  }
+
+  // 2. content에서 첫 번째 이미지 찾기
+  const firstImageMatch = content.match(/!\[.*\]\((.*)\)/);
+  if (firstImageMatch && firstImageMatch[1]) {
+    return firstImageMatch[1]; // 첫 번째 이미지의 URL 반환
+  }
+
+  // 3. 기본 이미지 반환
+  return "/default-thumbnail.jpg";
+};
+
 export const extractHeadings = (content: string): HeadingsProps[] => {
   const headings: HeadingsProps[] = [];
   const headingCounts = new Map<string, number>();
