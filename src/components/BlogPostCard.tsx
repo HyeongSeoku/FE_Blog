@@ -2,6 +2,8 @@
 
 import { getDate } from "@/utils/date";
 import Link from "next/link";
+import { useMemo } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 export interface BlogPostCardProps {
   title: string;
@@ -20,11 +22,16 @@ const BlogPostCard = ({
 }: BlogPostCardProps) => {
   const formattedMonth = getDate("MMMM D", createdAt);
   const formattedYear = getDate("YYYY", createdAt);
-  //TODO: link replace 적용
+
+  const pathname = usePathname();
+  const replacePathList = ["year", "month", "tags"];
+
+  const isReplace = replacePathList.some((path) => pathname.includes(path));
 
   return (
     <li className="py-5 border-b last:border-b-0">
       <Link
+        replace={isReplace}
         href={`/posts/${slug}`}
         className="flex flex-col transition-colors duration-300 hover:text-gray-400"
       >
@@ -32,12 +39,14 @@ const BlogPostCard = ({
       </Link>
       <div className="text-sm flex items-center gap-1">
         <Link
+          replace={isReplace}
           href={`/posts/month/${getDate("YYYY.MM", createdAt)}`}
           className="flex flex-col transition-colors duration-300 hover:text-gray-400 mb-2"
         >
           {formattedMonth}
         </Link>
         <Link
+          replace={isReplace}
           href={`/posts/year/${getDate("YYYY", createdAt)}`}
           className="flex flex-col transition-colors duration-300 hover:text-gray-400 mb-2"
         >
@@ -55,6 +64,7 @@ const BlogPostCard = ({
               className="py-1 px-2 rounded-full transition-colors duration-300 bg-[var(--bg-gray-color)] hover:bg-[var(--bg-gray-hover-color)]"
             >
               <Link
+                replace={isReplace}
                 href={`/tags/${item.toLocaleLowerCase()}`}
                 className="w-full h-full block"
               >
