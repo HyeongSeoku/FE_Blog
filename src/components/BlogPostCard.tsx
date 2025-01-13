@@ -18,18 +18,35 @@ const BlogPostCard = ({
   tagList,
   slug,
 }: BlogPostCardProps) => {
-  const formattedDate = getDate("MMMM D, YYYY", createdAt);
+  const formattedMonth = getDate("MMMM D", createdAt);
+  const formattedYear = getDate("YYYY", createdAt);
+  //TODO: link replace 적용
 
   return (
-    <div className="py-5 border-b last:border-b-0">
+    <li className="py-5 border-b last:border-b-0">
       <Link
         href={`/posts/${slug}`}
         className="flex flex-col transition-colors duration-300 hover:text-gray-400"
       >
         <h3 className="text-3xl mb-1">{title}</h3>
-        <span className="text-sm mb-2">{formattedDate}</span>
-        <p className="text-md mb-2">{description}</p>
       </Link>
+      <div className="text-sm flex items-center gap-1">
+        <Link
+          href={`/posts/month/${getDate("YYYY.MM", createdAt)}`}
+          className="flex flex-col transition-colors duration-300 hover:text-gray-400 mb-2"
+        >
+          {formattedMonth}
+        </Link>
+        <Link
+          href={`/posts/year/${getDate("YYYY", createdAt)}`}
+          className="flex flex-col transition-colors duration-300 hover:text-gray-400 mb-2"
+        >
+          {formattedYear}
+        </Link>
+      </div>
+
+      <p className="text-md mb-2">{description}</p>
+
       {!!tagList?.length && (
         <ul className="flex gap-2 text-sm ">
           {tagList.map((item, idx) => (
@@ -47,7 +64,7 @@ const BlogPostCard = ({
           ))}
         </ul>
       )}
-    </div>
+    </li>
   );
 };
 

@@ -135,6 +135,56 @@ export const getPostsByTag = async (
   return { list: filteredPosts, count: filteredPosts.length };
 };
 
+export const getPostsByDate = async ({
+  type,
+  date,
+  isSorted = true,
+  page,
+  pageSize = 10,
+}: {
+  type: "year" | "month";
+  date: string;
+  isSorted?: boolean;
+  page?: number;
+  pageSize?: number;
+}): Promise<getAllProjectsResponse> => {
+  // 모든 게시물을 가져옵니다.
+  const { postList: allPosts, totalPostCount } = await getAllPosts({
+    isSorted,
+    page: 1,
+    pageSize: Number.MAX_SAFE_INTEGER, // 모든 게시물을 가져오기 위해 설정
+  });
+
+  // 날짜 필터링
+  const filteredPosts = allPosts.filter((post) => {
+    const createdAt = new Date(post.createdAt);
+
+    if (type === "year") {
+      // type이 "year"일 경우 연도만 비교
+      return createdAt.getFullYear().toString() === date;
+    }
+
+    if (type === "month") {
+      // type이 "month"일 경우 "YYYY.MM" 형식 비교
+      const [year, month] = date.split(".").map((str) => parseInt(str, 10));
+      return (
+        createdAt.getFullYear() === year && createdAt.getMonth() + 1 === month
+      );
+    }
+
+    return false;
+  });
+
+  // 페이징 및 정렬 적용
+  const resultPosts = sortAndPaginatePosts(filteredPosts, {
+    isSorted,
+    page,
+    pageSize,
+  });
+
+  return { postList: resultPosts, totalPostCount };
+};
+
 export const isValidCategory = (category: Category): boolean => {
   return !!CATEGORY_MAP[category];
 };
@@ -145,47 +195,6 @@ export const isValidSubCategory = (
 ): boolean => {
   if (!subCategory) return false;
   return SUB_CATEGORY_MAP[category].includes(subCategory);
-};
-
-// 년도별 그룹화 함수
-const groupPostsByYear = (
-  postList: PostDataProps[],
-): Record<number, PostDataProps[]> => {
-  return postList.reduce<Record<number, PostDataProps[]>>((acc, post) => {
-    const year = new Date(post.createdAt).getFullYear();
-    if (!acc[year]) acc[year] = [];
-    acc[year].push(post);
-    return acc;
-  }, {});
-};
-
-// 년도-월별 그룹화 함수
-const groupPostsByMonth = (
-  postList: PostDataProps[],
-): Record<string, PostDataProps[]> => {
-  return postList.reduce<Record<string, PostDataProps[]>>((acc, post) => {
-    const date = new Date(post.createdAt);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-
-    if (!acc[month]) acc[month] = [];
-    acc[month].push(post);
-
-    return acc;
-  }, {});
-};
-
-// 옵션에 따라 그룹화 방식 선택
-export const groupPosts = (
-  postList: PostDataProps[],
-  groupBy: "year" | "month",
-): Record<number, any> => {
-  if (groupBy === "year") {
-    return groupPostsByYear(postList);
-  } else if (groupBy === "month") {
-    return groupPostsByMonth(postList);
-  }
-  throw new Error("Invalid grouping option. Use 'year' or 'month'.");
 };
 
 export const filterPosts = (
