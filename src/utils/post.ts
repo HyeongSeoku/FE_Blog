@@ -101,8 +101,14 @@ export const getPostsDetail = async (
 
 export const getPostsByTag = async (
   tag: string,
-): Promise<{ list: PostDataProps[]; count: number }> => {
+): Promise<{
+  list: PostDataProps[];
+  count: number;
+  tagCounts: Record<string, number>;
+}> => {
   const filePaths = await getMdxFilesRecursively(POST_PATH);
+
+  const tagCounts: Record<string, number> = {};
 
   const posts = await Promise.all(
     filePaths.map(async (filePath) => {
@@ -114,7 +120,14 @@ export const getPostsByTag = async (
         return null;
       }
 
-      const tags = Array.isArray(data.tags) ? data.tags : data.tags.split(",");
+      const tags: string[] = Array.isArray(data.tags)
+        ? data.tags
+        : data.tags.split(",");
+      tags.forEach((tag) => {
+        const lowerCaseTag = tag.trim().toLowerCase();
+        tagCounts[lowerCaseTag] = (tagCounts[lowerCaseTag] || 0) + 1;
+      });
+
       return {
         slug: path.relative(POST_PATH, filePath).replace(/\.mdx$/, ""),
         title: data.title,
@@ -132,7 +145,7 @@ export const getPostsByTag = async (
     (post) => post.tags.some((t) => t.toLowerCase() === tag.toLowerCase()),
   );
 
-  return { list: filteredPosts, count: filteredPosts.length };
+  return { list: filteredPosts, count: filteredPosts.length, tagCounts };
 };
 
 export const getPostsByDate = async ({

@@ -3,7 +3,7 @@ import { getPostsByTag } from "@/utils/post";
 
 const TagPage = async ({ params }: { params: { tag: string } }) => {
   const { tag } = params;
-  const { list: postList, count } = await getPostsByTag(tag);
+  const { list: postList, count, tagCounts } = await getPostsByTag(tag);
 
   return (
     <div>
