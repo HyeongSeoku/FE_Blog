@@ -14,7 +14,7 @@ const BlogMonthPage = async ({ params }: { params: { month: string } }) => {
 
   return (
     <div>
-      <h3>{formattedMonth}</h3>
+      <h3 className="text-4xl font-bold">{formattedMonth}</h3>
       <p>{postCount}개의 포스트</p>
       <ul>
         {postList.map(({ title, createdAt, description, slug, tags }) => (
