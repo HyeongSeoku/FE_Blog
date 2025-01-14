@@ -19,6 +19,7 @@ export interface HeaderProps {
   children?: ReactNode;
   initialTheme?: string;
   showScrollProgress?: boolean;
+  hasAnimation?: boolean;
 }
 
 export type HeaderType = "DEFAULT" | "BACK" | "NONE";
@@ -28,6 +29,7 @@ const Header = ({
   children,
   initialTheme,
   showScrollProgress = false,
+  hasAnimation = false,
 }: HeaderProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isMoNavOpen, setIsMoNavOpen] = useState(false);
@@ -40,7 +42,7 @@ const Header = ({
 
   useEffect(() => {
     setIsMounted(true);
-  }, [initialTheme, setDarkMode, setLightMode]);
+  }, []);
 
   const triggerAnimation = (type: "id" | "class", target: string) => {
     let elements: NodeListOf<SVGAnimateElement> | SVGAnimateElement | null =
@@ -84,10 +86,10 @@ const Header = ({
   return (
     <header
       className={classNames(
-        "sticky top-0 left-0 right-0 z-10 flex items-center px-4 w-full max-w-7xl box-border backdrop-blur-sm transition-[height] duration-300",
+        "sticky left-0 right-0 z-10 h-14 py-2 flex items-center px-4 w-full max-w-7xl box-border backdrop-blur-sm transition-[top,opacity]  duration-300",
         {
-          "h-14 py-2": scrollDirection === "up",
-          "h-0 py-0 overflow-hidden": scrollDirection === "down",
+          "top-0 opacity-1": !hasAnimation || scrollDirection === "up",
+          "-top-14 opacity-0": hasAnimation && scrollDirection === "down",
         },
       )}
     >
