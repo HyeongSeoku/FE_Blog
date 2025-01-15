@@ -83,7 +83,9 @@
 /* Light Theme */
 [data-theme="light"] {
   --bg-color: var(--light-bg-color);
+  --contrasting-bg-color: var(--dark-bg-color);
   --text-color: var(--light-text-color);
+  --contrasting-text-color: var(--dark-text-color);
   --second-bg-color: var(--light-second-bg-color);
   --project-card-bg: var(--project-light-bg);
   --border-color: var(--light-gray);
@@ -94,7 +96,9 @@
 /* Dark Theme */
 [data-theme="dark"] {
   --bg-color: var(--dark-bg-color);
+  --contrasting-bg-color: var(--light-bg-color);
   --text-color: var(--dark-text-color);
+  --contrasting-text-color: var(--light-text-color);
   --second-bg-color: var(--dark-second-bg-color);
   --project-card-bg: #ffffff;
   --border-color: var(--dark-gray);

@@ -9,7 +9,7 @@ import {
   getAllPostsRequest,
   getAllProjectsResponse,
 } from "@/types/posts";
-import { getMdxContents } from "./mdx";
+import { getMdxContents, getRepresentativeImage } from "./mdx";
 import { getMdxContentsResponse } from "@/types/mdx";
 import { CATEGORY_MAP, SUB_CATEGORY_MAP } from "@/constants/post.constants";
 
@@ -28,6 +28,7 @@ export const getAllPosts = async ({
     filePaths.map(async (filePath) => {
       const fileContents = await fs.readFile(filePath, "utf8");
       const { data, content } = matter(fileContents);
+      const thumbnail = getRepresentativeImage(data, content);
 
       if (
         !data?.title ||
@@ -68,6 +69,7 @@ export const getAllPosts = async ({
         content: content || "",
         category: data.category,
         subCategory,
+        thumbnail,
       };
     }),
   );
@@ -104,7 +106,7 @@ export const getPostsByTag = async (
 ): Promise<{
   list: PostDataProps[];
   count: number;
-  tagCounts: Record<string, number>;
+  tagList: { key: string; value: number }[];
 }> => {
   const filePaths = await getMdxFilesRecursively(POST_PATH);
 
@@ -145,7 +147,11 @@ export const getPostsByTag = async (
     (post) => post.tags.some((t) => t.toLowerCase() === tag.toLowerCase()),
   );
 
-  return { list: filteredPosts, count: filteredPosts.length, tagCounts };
+  const tagList = Object.keys(tagCounts).map((key) => {
+    return { key, value: tagCounts[key] * 2 };
+  });
+
+  return { list: filteredPosts, count: filteredPosts.length, tagList };
 };
 
 export const getPostsByDate = async ({

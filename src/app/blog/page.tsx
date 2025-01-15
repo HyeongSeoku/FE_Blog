@@ -17,16 +17,19 @@ const BlogPage = async () => {
     return (
       <div>
         <ul>
-          {postList.map(({ title, createdAt, description, slug, tags }) => (
-            <BlogPostCard
-              key={slug}
-              title={title}
-              createdAt={createdAt}
-              description={description}
-              slug={slug}
-              tagList={tags}
-            />
-          ))}
+          {postList.map(
+            ({ title, createdAt, description, slug, tags, thumbnail }) => (
+              <BlogPostCard
+                key={slug}
+                title={title}
+                createdAt={createdAt}
+                description={description}
+                slug={slug}
+                tagList={tags}
+                thumbnail={thumbnail}
+              />
+            ),
+          )}
         </ul>
       </div>
     );

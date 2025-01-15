@@ -4,6 +4,7 @@ import { getDate } from "@/utils/date";
 import Link from "next/link";
 import { useMemo } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 
 export interface BlogPostCardProps {
   title: string;
@@ -11,6 +12,7 @@ export interface BlogPostCardProps {
   description: string;
   tagList?: string[];
   slug: string;
+  thumbnail: string;
 }
 
 const BlogPostCard = ({
@@ -19,6 +21,7 @@ const BlogPostCard = ({
   description,
   tagList,
   slug,
+  thumbnail,
 }: BlogPostCardProps) => {
   const formattedMonth = getDate("MMMM D", createdAt);
   const formattedYear = getDate("YYYY", createdAt);
@@ -30,6 +33,7 @@ const BlogPostCard = ({
 
   return (
     <li className="py-5 border-b last:border-b-0">
+      <Image width={100} height={100} src={thumbnail} alt="" />
       <Link
         replace={isReplace}
         href={`/posts/${slug}`}

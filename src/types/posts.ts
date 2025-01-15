@@ -16,6 +16,7 @@ export interface PostProps {
   subCategory?: SubCategory;
   tags: string[];
   createdAt: string;
+  thumbnail: string;
 }
 
 export interface PostDataProps extends PostProps {

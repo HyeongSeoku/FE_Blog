@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "optimize-images": "node ./script/optimize-images.js",
     "build": "next build",
     "dev": "next dev",
     "start": "next start",

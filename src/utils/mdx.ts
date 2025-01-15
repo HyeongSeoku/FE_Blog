@@ -10,6 +10,7 @@ import fs from "fs/promises";
 import path from "path";
 import rehypeExternalLinks from "rehype-external-links";
 import { rehypeCodeBlockClassifier, rehypeHeadingsWithIds } from "./mdxPlugin";
+import { PUBLIC_IMG_PATH } from "@/constants/basic.constants";
 
 export const getMdxContents = async (
   slug: string[],
@@ -85,19 +86,16 @@ export const getMdxContents = async (
 };
 
 export const getRepresentativeImage = (data: any, content: string): string => {
-  // 1. 메타데이터에서 thumbnail 가져오기
   if (data.thumbnail) {
     return data.thumbnail;
   }
 
-  // 2. content에서 첫 번째 이미지 찾기
   const firstImageMatch = content.match(/!\[.*\]\((.*)\)/);
   if (firstImageMatch && firstImageMatch[1]) {
     return firstImageMatch[1]; // 첫 번째 이미지의 URL 반환
   }
 
-  // 3. 기본 이미지 반환
-  return "/default-thumbnail.jpg";
+  return `${PUBLIC_IMG_PATH}/default-thumbnail.jpg`;
 };
 
 export const extractHeadings = (content: string): HeadingsProps[] => {

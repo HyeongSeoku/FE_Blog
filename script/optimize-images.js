@@ -9,6 +9,8 @@ const QUALITY = 80; // JPEG 품질
 const MAX_WIDTH = 1920; // 최대 너비
 const MAX_HEIGHT = 1080; // 최대 높이
 
+const CONTENT_IMAGE_DIR = path.join(process.cwd(), "public/content-images");
+
 // 이미지 최적화 함수
 export const optimizeImage = async (filePath) => {
   const outputFilePath = filePath.replace(/\.\w+$/, ".jpeg"); // 확장자를 .jpeg로 변경
@@ -71,3 +73,9 @@ export const optimizeImagesInDir = async (dir) => {
     }
   }
 };
+
+(async () => {
+  console.log(`[INFO] ${CONTENT_IMAGE_DIR} 디렉터리에서 이미지 최적화 시작`);
+  await optimizeImagesInDir(CONTENT_IMAGE_DIR);
+  console.log("[INFO] 이미지 최적화 완료");
+})();

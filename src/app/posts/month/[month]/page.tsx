@@ -17,16 +17,19 @@ const BlogMonthPage = async ({ params }: { params: { month: string } }) => {
       <h3 className="text-4xl font-bold">{formattedMonth}</h3>
       <p>{postCount}개의 포스트</p>
       <ul>
-        {postList.map(({ title, createdAt, description, slug, tags }) => (
-          <BlogPostCard
-            key={slug}
-            title={title}
-            createdAt={createdAt}
-            description={description}
-            slug={slug}
-            tagList={tags}
-          />
-        ))}
+        {postList.map(
+          ({ title, createdAt, description, slug, tags, thumbnail }) => (
+            <BlogPostCard
+              key={slug}
+              title={title}
+              createdAt={createdAt}
+              description={description}
+              slug={slug}
+              tagList={tags}
+              thumbnail={thumbnail}
+            />
+          ),
+        )}
       </ul>
     </div>
   );

@@ -28,6 +28,7 @@ const PostSectionTemplate = ({ postData }: PostSectionProps) => {
             tags,
             category,
             subCategory,
+            thumbnail,
           }) => (
             <SwiperSlide key={slug} tag="li">
               <MainPostCard
@@ -38,6 +39,7 @@ const PostSectionTemplate = ({ postData }: PostSectionProps) => {
                 tags={tags}
                 category={category}
                 subCategory={subCategory}
+                thumbnail={thumbnail}
               />
             </SwiperSlide>
           ),
@@ -53,6 +55,7 @@ const PostSectionTemplate = ({ postData }: PostSectionProps) => {
             tags,
             category,
             subCategory,
+            thumbnail,
           }) => (
             <MainPostCard
               key={slug}
@@ -63,6 +66,7 @@ const PostSectionTemplate = ({ postData }: PostSectionProps) => {
               tags={tags}
               category={category}
               subCategory={subCategory}
+              thumbnail={thumbnail}
             />
           ),
         )}
