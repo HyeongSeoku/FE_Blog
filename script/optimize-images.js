@@ -9,7 +9,7 @@ const QUALITY = 80; // JPEG 품질
 const MAX_WIDTH = 1920; // 최대 너비
 const MAX_HEIGHT = 1080; // 최대 높이
 
-const CONTENT_IMAGE_DIR = path.join(process.cwd(), "public/content-images");
+const CONTENT_IMAGE_DIR = path.join(process.cwd(), "public/content-image");
 
 // 이미지 최적화 함수
 export const optimizeImage = async (filePath) => {
