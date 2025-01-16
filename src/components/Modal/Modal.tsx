@@ -18,6 +18,7 @@ export interface ModalProps {
   closeOnDimmedClick?: boolean;
   controlWithKeyboard?: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
+  onClose?: () => void;
 }
 
 const Modal = ({
@@ -29,11 +30,16 @@ const Modal = ({
   closeOnDimmedClick = true,
   controlWithKeyboard = true,
   setIsOpen,
+  onClose,
 }: ModalProps) => {
   const modalElement = document.getElementById("modal-root");
   const backgroundColor = bgColor ? hexToRgba(bgColor, 40) : undefined;
 
   const closeModal = () => {
+    if (onClose) {
+      onClose();
+      return;
+    }
     setIsOpen(false);
   };
 

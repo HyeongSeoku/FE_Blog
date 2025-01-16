@@ -2,8 +2,7 @@
 
 import { getDate } from "@/utils/date";
 import Link from "next/link";
-import { useMemo } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 export interface BlogPostCardProps {

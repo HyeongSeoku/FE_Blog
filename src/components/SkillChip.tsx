@@ -7,6 +7,7 @@ export interface SkillChipProps {
   skillName: SkillName;
   backGroundColor?: string;
   index: number;
+  onClick: (title: string) => void;
 }
 
 export type SkillName =
@@ -35,6 +36,7 @@ const SkillChip = ({
   imgSrc,
   backGroundColor,
   index,
+  onClick,
 }: SkillChipProps) => {
   const chipRef = useRef<HTMLButtonElement>(null);
 
@@ -57,6 +59,7 @@ const SkillChip = ({
         animationDelay: `${index * 0.1}s`,
       }}
       onAnimationEnd={handleAnimationEnd}
+      onClick={() => onClick(skillName)}
     >
       <Image width={18} height={18} src={imgSrc} alt={skillName} />
       <div className="font-semibold text-sm">{skillName}</div>

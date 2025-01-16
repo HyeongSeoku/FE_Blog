@@ -47,7 +47,7 @@ export const HomeClient = ({
       <IntroSectionTemplate />
 
       <section className="flex flex-col gap-2">
-        <h3>Skills</h3>
+        <h3 className="text-lg font-bold">Skills</h3>
         <ul className="inline-flex flex-wrap gap-3 w-80">
           {SKILL_LIST.map(({ skillName, bgColor, imgSrc }, idx) => (
             <SkillChip
@@ -56,6 +56,7 @@ export const HomeClient = ({
               backGroundColor={bgColor}
               imgSrc={imgSrc}
               index={idx + 1}
+              onClick={(title: string) => console.log("title", title)}
             />
           ))}
         </ul>
@@ -81,6 +82,9 @@ export const HomeClient = ({
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         hasCloseBtn={true}
+        onClose={() => {
+          setIsOpen(false);
+        }}
       >
         test
       </Modal>
