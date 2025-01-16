@@ -33,12 +33,12 @@ export const optimizeImage = async (filePath) => {
       sizeMB > MAX_SIZE_MB;
 
     if (!shouldOptimize) {
-      console.log(`이미 최적화된 파일입니다. 건너뜁니다: ${filePath}`);
+      console.log(`[INFO] 이미 최적화된 파일입니다. 건너뜁니다: ${filePath}`);
       return;
     }
 
     console.log(
-      `최적화 중: ${filePath} (${sizeMB.toFixed(2)} MB, ${width}x${height})`,
+      `[INFO] 최적화 중: ${filePath} (${sizeMB.toFixed(2)} MB, ${width}x${height})`,
     );
 
     // 이미지 최적화 및 JPEG로 변환
@@ -54,9 +54,9 @@ export const optimizeImage = async (filePath) => {
     // 원본 파일 삭제
     fs.unlinkSync(filePath);
 
-    console.log(`최적화 완료 및 JPEG로 변환: ${outputFilePath}`);
+    console.log(`[INFO] 최적화 완료 및 JPEG로 변환: ${outputFilePath}`);
   } catch (error) {
-    console.error(`최적화 중 오류 발생: ${filePath} - ${error.message}`);
+    console.error(`[INFO] 최적화 중 오류 발생: ${filePath} - ${error.message}`);
   }
 };
 
