@@ -116,6 +116,7 @@ export const getPostsByTag = async (
     filePaths.map(async (filePath) => {
       const fileContents = await fs.readFile(filePath, "utf8");
       const { data, content } = matter(fileContents);
+      const thumbnail = getRepresentativeImage(data, content);
 
       if (!data?.title || !data?.tags || !data?.category || !data?.createdAt) {
         console.warn(`🛠️  ${filePath} 파일에서 필수 메타데이터가 없습니다.`);
@@ -139,6 +140,7 @@ export const getPostsByTag = async (
         content,
         category: data.category,
         subCategory: data.subCategory || "",
+        thumbnail,
       };
     }),
   );
