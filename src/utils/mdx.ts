@@ -10,7 +10,7 @@ import fs from "fs/promises";
 import path from "path";
 import rehypeExternalLinks from "rehype-external-links";
 import { rehypeCodeBlockClassifier, rehypeHeadingsWithIds } from "./mdxPlugin";
-import { PUBLIC_IMG_PATH } from "@/constants/basic.constants";
+import { PUBLIC_CONTENT_IMG_PATH } from "@/constants/basic.constants";
 
 export const getMdxContents = async (
   slug: string[],
@@ -95,7 +95,7 @@ export const getRepresentativeImage = (data: any, content: string): string => {
     return firstImageMatch[1]; // 첫 번째 이미지의 URL 반환
   }
 
-  return `${PUBLIC_IMG_PATH}/default-thumbnail.jpg`;
+  return `${PUBLIC_CONTENT_IMG_PATH}/default-loading-image.jpeg`;
 };
 
 export const extractHeadings = (content: string): HeadingsProps[] => {
