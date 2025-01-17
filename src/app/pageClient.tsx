@@ -4,7 +4,7 @@ import useDeviceType from "@/hooks/useDeviceType";
 import { PostDataProps } from "@/types/posts";
 import MainSection from "@/components/MainSection";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionTemplate";
 import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
@@ -29,8 +29,20 @@ export const HomeClient = ({
   githubData,
   postCount,
 }: HomeClientProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [targetSkill, setTargetSkill] = useState("");
   const { setGithubUser } = useGithubInfoStore();
+
+  const isOpen = useMemo(() => {
+    return !!targetSkill;
+  }, [targetSkill]);
+
+  const onClickSkillChip = (skillName: string) => {
+    setTargetSkill(skillName);
+  };
+
+  const onCloseSkillModal = () => {
+    setTargetSkill("");
+  };
 
   useEffect(() => {
     setGithubUser({
@@ -56,7 +68,7 @@ export const HomeClient = ({
               backGroundColor={bgColor}
               imgSrc={imgSrc}
               index={idx + 1}
-              onClick={(title: string) => console.log("title", title)}
+              onClick={() => onClickSkillChip(skillName)}
             />
           ))}
         </ul>
@@ -78,18 +90,14 @@ export const HomeClient = ({
       </MainSection>
 
       <Modal
-        title="모달"
+        title={targetSkill}
         isOpen={isOpen}
-        setIsOpen={setIsOpen}
         hasCloseBtn={true}
-        onClose={() => {
-          setIsOpen(false);
-        }}
+        onClose={onCloseSkillModal}
+        className="w-1/2"
       >
         test
       </Modal>
-
-      <button onClick={() => setIsOpen((prev) => !prev)}>toggle modal</button>
     </div>
   );
 };

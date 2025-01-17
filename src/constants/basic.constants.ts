@@ -20,3 +20,5 @@ export const POST_PATH = path.join(
   process.cwd(),
   `${DEFAULT_MDX_PATH}/content`,
 );
+
+export const SKILL_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/skill`);

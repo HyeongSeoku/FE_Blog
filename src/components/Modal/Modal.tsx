@@ -17,7 +17,9 @@ export interface ModalProps {
   isOpen: boolean;
   closeOnDimmedClick?: boolean;
   controlWithKeyboard?: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  modalContainerClassName?: string;
+  className?: string;
+  setIsOpen?: Dispatch<SetStateAction<boolean>>;
   onClose?: () => void;
 }
 
@@ -29,6 +31,8 @@ const Modal = ({
   isOpen,
   closeOnDimmedClick = true,
   controlWithKeyboard = true,
+  modalContainerClassName = "",
+  className = "",
   setIsOpen,
   onClose,
 }: ModalProps) => {
@@ -40,7 +44,7 @@ const Modal = ({
       onClose();
       return;
     }
-    setIsOpen(false);
+    setIsOpen?.(false);
   };
 
   useScrollDisable(isOpen);
@@ -61,6 +65,7 @@ const Modal = ({
       className={classNames(
         "fixed inset-0 flex items-center justify-center z-40 bg-slate-400 transform transition-all duration-300",
         { "opacity-0": !isAnimating, "opacity-100": isAnimating },
+        modalContainerClassName,
       )}
       onClick={handleDimmedClick}
       style={{
@@ -70,11 +75,12 @@ const Modal = ({
       <div
         role="dialog"
         className={classNames(
-          "relative min-w-64 bg-white p-6 rounded-lg shadow-lg z-50 max-w-screen-sm transform transition-all duration-300 text-[var(--light-text-color)]",
+          "relative min-w-64 bg-white p-6 rounded-md shadow-lg z-50 max-w-screen-sm transform transition-all duration-300 text-[var(--light-text-color)]",
           {
             "scale-95": !isAnimating,
             "scale-100": isAnimating,
           },
+          className,
         )}
         style={{
           backgroundColor: backgroundColor,
