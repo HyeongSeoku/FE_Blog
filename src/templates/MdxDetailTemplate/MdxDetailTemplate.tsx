@@ -1,7 +1,7 @@
 "use client";
 
 import CodeBlock from "@/components/CodeBlock";
-import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import TimeIcon from "@/icon/time.svg";
 import { FrontMatterProps, HeadingsProps } from "@/types/mdx";
 import MdxLink from "@/components/MdxLink";
@@ -12,6 +12,16 @@ import { useRef } from "react";
 import Link from "next/link";
 import RightArrow from "@/icon/arrow_right.svg";
 import LeftArrow from "@/icon/arrow_left.svg";
+import dynamic from "next/dynamic";
+
+// MDXRemote를 동적으로 import
+const MDXRemote = dynamic(
+  () => import("next-mdx-remote").then((mod) => mod.MDXRemote),
+  {
+    ssr: false, // 서버에서 렌더링하지 않도록 설정
+    loading: () => <div className="min-h-40 py-5">Loading...</div>, // 로딩 중 표시할 컴포넌트
+  },
+);
 
 import DoubleArrow from "@/icon/arrow_right_double.svg";
 
@@ -117,65 +127,70 @@ const MdxDetailTemplate = ({
         </article>
       </section>
 
-      <section className="my-4">
-        <div className="flex justify-between text-sm text-gray-400">
-          <div className="w-1/2">
-            {previousPost && (
-              <button className="group flex flex-col items-start">
-                <div className="flex items-center group-hover:text-[var(--text-color)]">
-                  <LeftArrow width={16} height={16} />
-                  <span>Previous</span>
-                </div>
-                <Link
-                  className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5"
-                  href={`/posts/${previousPost.slug}`}
-                >
-                  {previousPost.title}
-                </Link>
-              </button>
-            )}
-          </div>
-          <div className="w-1/2">
-            {nextPost && (
-              <button className="group flex flex-col items-end ml-auto">
-                <div className="flex items-center group-hover:text-[var(--text-color)]">
-                  <span>Next</span>
-                  <RightArrow width={16} height={16} />
-                </div>
-                <Link
-                  className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5"
-                  href={`/posts/${nextPost.slug}`}
-                >
-                  {nextPost.title}
-                </Link>
-              </button>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-3">
-          {!!relatedPosts && !!relatedPosts.length && (
-            <div className="text-gray-400">
-              <div className="flex items-center text-sm">
-                <span>Related Posts</span>
-                <DoubleArrow width={16} height={16} />
-              </div>
-              <ul className="text-sm">
-                {relatedPosts.map(({ slug, title }) => (
-                  <button key={slug} className="group flex flex-col items-end">
-                    <Link
-                      className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5 underline underline-offset-4"
-                      href={`/posts/${slug}`}
-                    >
-                      {title}
-                    </Link>
-                  </button>
-                ))}
-              </ul>
+      {(previousPost || nextPost) && (
+        <section className="my-4">
+          <div className="flex justify-between text-sm text-gray-400">
+            <div className="w-1/2">
+              {previousPost && (
+                <button className="group flex flex-col items-start">
+                  <div className="flex items-center group-hover:text-[var(--text-color)]">
+                    <LeftArrow width={16} height={16} />
+                    <span>Previous</span>
+                  </div>
+                  <Link
+                    className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5"
+                    href={`/posts/${previousPost.slug}`}
+                  >
+                    {previousPost.title}
+                  </Link>
+                </button>
+              )}
             </div>
-          )}
-        </div>
-      </section>
+            <div className="w-1/2">
+              {nextPost && (
+                <button className="group flex flex-col items-end ml-auto">
+                  <div className="flex items-center group-hover:text-[var(--text-color)]">
+                    <span>Next</span>
+                    <RightArrow width={16} height={16} />
+                  </div>
+                  <Link
+                    className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5"
+                    href={`/posts/${nextPost.slug}`}
+                  >
+                    {nextPost.title}
+                  </Link>
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-3">
+            {!!relatedPosts && !!relatedPosts.length && (
+              <div className="text-gray-400">
+                <div className="flex items-center text-sm">
+                  <span>Related Posts</span>
+                  <DoubleArrow width={16} height={16} />
+                </div>
+                <ul className="text-sm">
+                  {relatedPosts.map(({ slug, title }) => (
+                    <button
+                      key={slug}
+                      className="group flex flex-col items-end"
+                    >
+                      <Link
+                        className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5 underline underline-offset-4"
+                        href={`/posts/${slug}`}
+                      >
+                        {title}
+                      </Link>
+                    </button>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       <section ref={commentRef}>
         <Giscus />

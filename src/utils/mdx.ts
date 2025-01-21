@@ -11,6 +11,7 @@ import path from "path";
 import rehypeExternalLinks from "rehype-external-links";
 import { rehypeCodeBlockClassifier, rehypeHeadingsWithIds } from "./mdxPlugin";
 import { PUBLIC_CONTENT_IMG_PATH } from "@/constants/basic.constants";
+import { getMdxFilesRecursively } from "./file";
 
 export const getMdxContents = async (
   slug: string[],
@@ -33,6 +34,71 @@ export const getMdxContents = async (
   if (!frontMatter.title) {
     throw new Error("Front matter does not contain required 'title' field");
   }
+
+  const filePaths = await getMdxFilesRecursively(fileDirectory);
+  const posts: {
+    slug: string;
+    title: string;
+    tags: string[];
+    category: string;
+    createdAt: string;
+  }[] = await Promise.all(
+    filePaths.map(async (file) => {
+      const fileContents = await fs.readFile(file, "utf8");
+      const { data } = matter(fileContents);
+      return {
+        slug: path.relative(fileDirectory, file).replace(/\.mdx$/, ""),
+        title: data.title || "",
+        tags: data.tags || [],
+        category: data.category || "",
+        createdAt: data.createdAt || "",
+      };
+    }),
+  );
+
+  // Sort posts by createdAt (descending) or alphabetically as fallback
+  const sortedPosts = posts.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
+
+  // Determine current index
+  const currentIndex = sortedPosts.findIndex(
+    (post) => post.slug === slug.join("/"),
+  );
+
+  // Calculate previous and next posts
+  const previousPost =
+    currentIndex > 0
+      ? {
+          slug: sortedPosts[currentIndex - 1].slug,
+          title: sortedPosts[currentIndex - 1].title,
+        }
+      : null;
+
+  const nextPost =
+    currentIndex < sortedPosts.length - 1
+      ? {
+          slug: sortedPosts[currentIndex + 1].slug,
+          title: sortedPosts[currentIndex + 1].title,
+        }
+      : null;
+
+  // Find related posts based on tags and category
+  const currentTags = frontMatter.tags || [];
+  const currentCategory = frontMatter.category;
+
+  const relatedPosts = sortedPosts
+    .filter(
+      (post) =>
+        post.slug !== slug.join("/") &&
+        (post.category === currentCategory ||
+          post.tags.some((tag: string) => currentTags.includes(tag))),
+    )
+    .slice(0, 3) // Limit to 3 related posts
+    .map((post) => ({
+      slug: post.slug,
+      title: post.title,
+    }));
 
   // MDX plugins
   const rehypePrettyCodeOptions: Options = {
@@ -79,9 +145,9 @@ export const getMdxContents = async (
     frontMatter,
     readingTime,
     heading,
-    previousPost: null,
-    nextPost: null,
-    relatedPosts: [],
+    previousPost,
+    nextPost,
+    relatedPosts,
   };
 };
 

@@ -61,17 +61,15 @@ const PostPage = async ({ params }: { params: { slug: string[] } }) => {
   } = postData;
 
   return (
-    <>
-      <MdxDetailTemplate
-        source={source}
-        readingTime={readingTime}
-        frontMatter={frontMatter}
-        heading={heading}
-        nextPost={nextPost}
-        previousPost={previousPost}
-        relatedPosts={relatedPosts}
-      />
-    </>
+    <MdxDetailTemplate
+      source={source}
+      readingTime={readingTime}
+      frontMatter={frontMatter}
+      heading={heading}
+      nextPost={nextPost}
+      previousPost={previousPost}
+      relatedPosts={relatedPosts}
+    />
   );
 };
 
