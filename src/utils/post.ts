@@ -23,6 +23,9 @@ export const getAllPosts = async ({
   targetYear,
 }: getAllPostsRequest): Promise<getAllProjectsResponse> => {
   const filePaths = await getMdxFilesRecursively(POST_PATH);
+  const categoryCounts: Record<Category, number> = Object.fromEntries(
+    Object.keys(CATEGORY_MAP).map((key) => [key, 0]),
+  ) as Record<Category, number>;
 
   const posts = await Promise.all(
     filePaths.map(async (filePath) => {
@@ -60,6 +63,12 @@ export const getAllPosts = async ({
         ? data.subCategory
         : "";
 
+      const category = data.category as Category;
+
+      if (CATEGORY_MAP[category]) {
+        categoryCounts[category] += 1;
+      }
+
       return {
         slug: path.relative(POST_PATH, filePath).replace(/\.mdx$/, ""),
         title: data.title,
@@ -91,7 +100,11 @@ export const getAllPosts = async ({
     resultPosts = resultPosts.slice(0, maxCount);
   }
 
-  return { postList: resultPosts, totalPostCount: validPosts.length };
+  return {
+    postList: resultPosts,
+    totalPostCount: validPosts.length,
+    categoryCounts,
+  };
 };
 
 export const getPostsDetail = async (
@@ -181,12 +194,10 @@ export const getPostsByDate = async ({
     const createdAt = new Date(post.createdAt);
 
     if (type === "year") {
-      // type이 "year"일 경우 연도만 비교
       return createdAt.getFullYear().toString() === date;
     }
 
     if (type === "month") {
-      // type이 "month"일 경우 "YYYY.MM" 형식 비교
       const [year, month] = date.split(".").map((str) => parseInt(str, 10));
       return (
         createdAt.getFullYear() === year && createdAt.getMonth() + 1 === month

@@ -1,4 +1,5 @@
 import BlogPostCard from "@/components/BlogPostCard";
+import { CATEGORY_MAP } from "@/constants/post.constants";
 import { getAllPosts } from "@/utils/post";
 
 export const metadata = {
@@ -7,15 +8,31 @@ export const metadata = {
 };
 
 export const generateStaticParams = async () => {
-  const { postList } = await getAllPosts({ page: 1, pageSize: 50 });
+  const { postList } = await getAllPosts({
+    page: 1,
+    pageSize: 50,
+  });
   return postList.map((post) => ({ slug: post.slug }));
 };
 
 const BlogPage = async () => {
   try {
-    const { postList } = await getAllPosts({ page: 1, pageSize: 50 });
+    const { postList, categoryCounts } = await getAllPosts({
+      page: 1,
+      pageSize: 50,
+    });
+
+    const categoryKeys = Object.keys(CATEGORY_MAP);
     return (
       <div>
+        <ul>
+          {categoryKeys.map((key) => (
+            <li key={key}>
+              <div>{key}</div>
+              <span>{categoryCounts[key]}</span>
+            </li>
+          ))}
+        </ul>
         <ul>
           {postList.map(
             ({ title, createdAt, description, slug, tags, thumbnail }) => (

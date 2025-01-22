@@ -27,6 +27,7 @@ export interface PostDataProps extends PostProps {
 export interface getAllProjectsResponse {
   postList: PostDataProps[];
   totalPostCount: number;
+  categoryCounts?: Record<Category, number>;
 }
 
 export interface getAllPostsRequest {
