@@ -18,8 +18,8 @@ import dynamic from "next/dynamic";
 const MDXRemote = dynamic(
   () => import("next-mdx-remote").then((mod) => mod.MDXRemote),
   {
-    ssr: false, // 서버에서 렌더링하지 않도록 설정
-    loading: () => <div className="min-h-40 py-5">Loading...</div>, // 로딩 중 표시할 컴포넌트
+    ssr: false,
+    loading: () => <div className="min-h-40 py-5">Loading...</div>,
   },
 );
 

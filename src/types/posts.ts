@@ -24,10 +24,10 @@ export interface PostDataProps extends PostProps {
   content: string;
 }
 
-export interface getAllProjectsResponse {
+export interface getAllPostResponse {
   postList: PostDataProps[];
   totalPostCount: number;
-  categoryCounts?: Record<Category, number>;
+  categoryCounts: Record<string, number>;
 }
 
 export interface getAllPostsRequest {

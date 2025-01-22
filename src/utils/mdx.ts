@@ -94,7 +94,7 @@ export const getMdxContents = async (
         (post.category === currentCategory ||
           post.tags.some((tag: string) => currentTags.includes(tag))),
     )
-    .slice(0, 3) // Limit to 3 related posts
+    .slice(0, 3)
     .map((post) => ({
       slug: post.slug,
       title: post.title,

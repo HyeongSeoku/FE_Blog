@@ -1,27 +1,50 @@
 import BlogPostCard from "@/components/BlogPostCard";
 import PostCategoryCount from "@/components/PostCategoryCount";
 import { CATEGORY_MAP, DEFAUL_CATEGORY_ALL } from "@/constants/post.constants";
-import { getAllPosts } from "@/utils/post";
+import { getPostsByCategory } from "@/utils/post";
+import { redirect } from "next/navigation";
 
-export const metadata = {
-  title: "블로그 페이지",
-  description: "최신 블로그 글 목록을 확인하세요.",
+export const generateMetadata = async ({
+  params,
+}: {
+  params: { category: string };
+}) => {
+  const categoryTitle = `블로그 | ${params.category}`;
+
+  const metadata = {
+    title: `${categoryTitle} 카테고리`,
+    description: `${params.category} 관련 블로그 글 목록을 확인하세요.`,
+  };
+
+  return metadata;
 };
 
 export const generateStaticParams = async () => {
-  const { postList } = await getAllPosts({
-    page: 1,
-    pageSize: 50,
-  });
-  return postList.map((post) => ({ slug: post.slug }));
+  const categories = Object.keys(CATEGORY_MAP);
+
+  return categories.map((category) => ({ category }));
 };
 
-const BlogPage = async () => {
+const BlogCategoryPage = async ({
+  params,
+}: {
+  params: { category: string };
+}) => {
+  const isCategoryKeyAll = params.category.toLowerCase() === "all";
+  const isCategoryValid = Object.keys(CATEGORY_MAP).includes(
+    params.category.toUpperCase(),
+  );
+  if (isCategoryKeyAll || !isCategoryValid) {
+    redirect("/blog");
+  }
+
   try {
-    const { postList, totalPostCount, categoryCounts } = await getAllPosts({
-      page: 1,
-      pageSize: 50,
-    });
+    const { postList, totalPostCount, categoryCounts } =
+      await getPostsByCategory({
+        page: 1,
+        pageSize: 50,
+        categoryKey: params.category.toUpperCase(),
+      });
     const categoryKeys = [DEFAUL_CATEGORY_ALL, ...Object.keys(CATEGORY_MAP)];
     return (
       <div>
@@ -66,4 +89,4 @@ const BlogPage = async () => {
   }
 };
 
-export default BlogPage;
+export default BlogCategoryPage;

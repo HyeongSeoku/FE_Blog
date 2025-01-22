@@ -7,7 +7,7 @@ import {
   SubCategory,
   PostDataProps,
   getAllPostsRequest,
-  getAllProjectsResponse,
+  getAllPostResponse,
 } from "@/types/posts";
 import { getMdxContents, getRepresentativeImage } from "./mdx";
 import { getMdxContentsResponse } from "@/types/mdx";
@@ -21,7 +21,7 @@ export const getAllPosts = async ({
   page,
   pageSize = 10,
   targetYear,
-}: getAllPostsRequest): Promise<getAllProjectsResponse> => {
+}: getAllPostsRequest): Promise<getAllPostResponse> => {
   const filePaths = await getMdxFilesRecursively(POST_PATH);
   const categoryCounts: Record<Category, number> = Object.fromEntries(
     Object.keys(CATEGORY_MAP).map((key) => [key, 0]),
@@ -173,7 +173,7 @@ export const getPostsByDate = async ({
   type,
   date,
   isSorted = true,
-  page,
+  page = 1,
   pageSize = 10,
 }: {
   type: "year" | "month";
@@ -181,11 +181,15 @@ export const getPostsByDate = async ({
   isSorted?: boolean;
   page?: number;
   pageSize?: number;
-}): Promise<getAllProjectsResponse> => {
+}): Promise<getAllPostResponse> => {
   // 모든 게시물을 가져옵니다.
-  const { postList: allPosts, totalPostCount } = await getAllPosts({
+  const {
+    postList: allPosts,
+    totalPostCount,
+    categoryCounts,
+  } = await getAllPosts({
     isSorted,
-    page: 1,
+    page,
     pageSize: Number.MAX_SAFE_INTEGER, // 모든 게시물을 가져오기 위해 설정
   });
 
@@ -214,7 +218,31 @@ export const getPostsByDate = async ({
     pageSize,
   });
 
-  return { postList: resultPosts, totalPostCount };
+  return { postList: resultPosts, totalPostCount, categoryCounts };
+};
+
+export const getPostsByCategory = async ({
+  page,
+  pageSize = Number.MAX_SAFE_INTEGER,
+  categoryKey,
+}: {
+  page?: number;
+  pageSize?: number;
+  categoryKey: string;
+}): Promise<getAllPostResponse> => {
+  const {
+    postList: allPosts,
+    totalPostCount,
+    categoryCounts,
+  } = await getAllPosts({
+    page,
+    pageSize: pageSize,
+  });
+  const targetPostList = allPosts.filter(
+    ({ category }) => category === categoryKey,
+  );
+
+  return { postList: targetPostList, totalPostCount, categoryCounts };
 };
 
 export const isValidCategory = (category: Category): boolean => {

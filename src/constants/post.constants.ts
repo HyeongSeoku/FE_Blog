@@ -52,3 +52,5 @@ export const SUB_CATEGORY_MAP: Record<Category, SubCategory[]> = {
   LIFE: ["WORK", "HOBBY", "BOOK", "PHOTO"],
   ETC: ["MUSIC"],
 };
+
+export const DEFAUL_CATEGORY_ALL = "All";
