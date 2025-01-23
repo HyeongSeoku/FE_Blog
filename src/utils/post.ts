@@ -8,10 +8,15 @@ import {
   PostDataProps,
   getAllPostsRequest,
   getAllPostResponse,
+  getPostsByCategoryResponse,
 } from "@/types/posts";
 import { getMdxContents, getRepresentativeImage } from "./mdx";
 import { getMdxContentsResponse } from "@/types/mdx";
-import { CATEGORY_MAP, SUB_CATEGORY_MAP } from "@/constants/post.constants";
+import {
+  CATEGORY_MAP,
+  DEFAULT_PAGE_SIZE,
+  SUB_CATEGORY_MAP,
+} from "@/constants/post.constants";
 
 const POST_PATH = path.join(process.cwd(), "src/mdx/content");
 
@@ -19,7 +24,7 @@ export const getAllPosts = async ({
   isSorted = true,
   maxCount,
   page,
-  pageSize = 10,
+  pageSize = DEFAULT_PAGE_SIZE,
   targetYear,
 }: getAllPostsRequest): Promise<getAllPostResponse> => {
   const filePaths = await getMdxFilesRecursively(POST_PATH);
@@ -174,7 +179,7 @@ export const getPostsByDate = async ({
   date,
   isSorted = true,
   page = 1,
-  pageSize = 10,
+  pageSize = DEFAULT_PAGE_SIZE,
 }: {
   type: "year" | "month";
   date: string;
@@ -222,27 +227,31 @@ export const getPostsByDate = async ({
 };
 
 export const getPostsByCategory = async ({
-  page,
-  pageSize = Number.MAX_SAFE_INTEGER,
+  page = 1,
+  pageSize = DEFAULT_PAGE_SIZE,
   categoryKey,
 }: {
   page?: number;
   pageSize?: number;
   categoryKey: string;
-}): Promise<getAllPostResponse> => {
-  const {
-    postList: allPosts,
-    totalPostCount,
-    categoryCounts,
-  } = await getAllPosts({
-    page,
-    pageSize: pageSize,
+}): Promise<getPostsByCategoryResponse> => {
+  const { postList, totalPostCount, categoryCounts } = await getAllPosts({
+    isSorted: true,
   });
-  const targetPostList = allPosts.filter(
+
+  const filteredPosts = postList.filter(
     ({ category }) => category === categoryKey,
   );
 
-  return { postList: targetPostList, totalPostCount, categoryCounts };
+  const start = (page - 1) * pageSize;
+  const paginatedPosts = filteredPosts.slice(start, start + pageSize);
+
+  return {
+    postList: paginatedPosts,
+    totalPostCount,
+    totalCategoryPostCount: filteredPosts.length,
+    categoryCounts: categoryCounts,
+  };
 };
 
 export const isValidCategory = (category: Category): boolean => {

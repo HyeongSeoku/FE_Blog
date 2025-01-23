@@ -42,3 +42,7 @@ export interface RelatedPost {
   slug: string;
   title: string;
 }
+
+export interface getPostsByCategoryResponse extends getAllPostResponse {
+  totalCategoryPostCount: number;
+}

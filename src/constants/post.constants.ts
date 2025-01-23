@@ -53,4 +53,5 @@ export const SUB_CATEGORY_MAP: Record<Category, SubCategory[]> = {
   ETC: ["MUSIC"],
 };
 
-export const DEFAUL_CATEGORY_ALL = "All";
+export const DEFAULT_CATEGORY_ALL = "All";
+export const DEFAULT_PAGE_SIZE = 10;

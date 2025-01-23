@@ -1,6 +1,5 @@
-import BlogPostCard from "@/components/BlogPostCard";
-import PostCategoryCount from "@/components/PostCategoryCount";
-import { CATEGORY_MAP, DEFAUL_CATEGORY_ALL } from "@/constants/post.constants";
+import { CATEGORY_MAP, DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
+import BlogPageTemplate from "@/templates/BlogPageTemplate";
 import { getPostsByCategory } from "@/utils/post";
 import { redirect } from "next/navigation";
 
@@ -25,11 +24,17 @@ export const generateStaticParams = async () => {
   return categories.map((category) => ({ category }));
 };
 
+interface BlogCategoryPageProps {
+  params: { category: string };
+  searchParams: { [key: string]: string | undefined };
+}
+
 const BlogCategoryPage = async ({
   params,
-}: {
-  params: { category: string };
-}) => {
+  searchParams,
+}: BlogCategoryPageProps) => {
+  const currentPage = parseInt(searchParams.page || "1", 10);
+  const pageSize = DEFAULT_PAGE_SIZE;
   const isCategoryKeyAll = params.category.toLowerCase() === "all";
   const isCategoryValid = Object.keys(CATEGORY_MAP).includes(
     params.category.toUpperCase(),
@@ -38,55 +43,28 @@ const BlogCategoryPage = async ({
     redirect("/blog");
   }
 
-  try {
-    const { postList, totalPostCount, categoryCounts } =
-      await getPostsByCategory({
-        page: 1,
-        pageSize: 50,
-        categoryKey: params.category.toUpperCase(),
-      });
-    const categoryKeys = [DEFAUL_CATEGORY_ALL, ...Object.keys(CATEGORY_MAP)];
-    return (
-      <div>
-        <ul className="flex items-center gap-3">
-          {categoryKeys.map((key) => {
-            const isKeyDefault =
-              key.toUpperCase() === DEFAUL_CATEGORY_ALL.toUpperCase();
-            const categoryPostCount = isKeyDefault
-              ? totalPostCount
-              : categoryCounts[key];
+  const { postList, totalPostCount, categoryCounts, totalCategoryPostCount } =
+    await getPostsByCategory({
+      page: currentPage,
+      pageSize: pageSize,
+      categoryKey: params.category.toUpperCase(),
+    });
+  const maxPage = Math.ceil(totalCategoryPostCount / pageSize);
+  const totalPages = Math.ceil(totalCategoryPostCount / pageSize);
 
-            return (
-              <PostCategoryCount
-                key={key}
-                categoryKey={key}
-                categoryPostCount={categoryPostCount}
-                isDefault={isKeyDefault}
-              />
-            );
-          })}
-        </ul>
-        <ul>
-          {postList.map(
-            ({ title, createdAt, description, slug, tags, thumbnail }) => (
-              <BlogPostCard
-                key={slug}
-                title={title}
-                createdAt={createdAt}
-                description={description}
-                slug={slug}
-                tagList={tags}
-                thumbnail={thumbnail}
-              />
-            ),
-          )}
-        </ul>
-      </div>
-    );
-  } catch (error) {
-    console.error("Error fetching posts:", error);
-    return <div>포스트를 불러오는 중 오류가 발생했습니다.</div>;
+  if (maxPage && maxPage < currentPage) {
+    redirect(`/blog/${params.category}`);
   }
+
+  return (
+    <BlogPageTemplate
+      postList={postList}
+      currentPage={currentPage}
+      totalPostCount={totalPostCount}
+      categoryCounts={categoryCounts}
+      totalPages={totalPages}
+    />
+  );
 };
 
 export default BlogCategoryPage;

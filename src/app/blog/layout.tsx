@@ -1,5 +1,5 @@
 import DefaultLayout from "@/layout/DefaultLayout";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 
 const BlogLayout = ({ children }: { children: ReactNode }) => {
   return <DefaultLayout>{children}</DefaultLayout>;

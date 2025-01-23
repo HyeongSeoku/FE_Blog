@@ -14,6 +14,9 @@ export default {
       "min-md": { min: "768px" },
     },
     extend: {
+      textColor: {
+        theme: "var(--text-color)",
+      },
       scale: {
         "102": "1.02",
       },
