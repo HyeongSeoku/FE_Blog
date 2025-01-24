@@ -1,19 +1,29 @@
-import React from "react";
+import classNames from "classnames";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import RightArrow from "@/icon/arrow_right.svg";
+import LeftArrow from "@/icon/arrow_left.svg";
+import DoubleLeftArrow from "@/icon/double_arrow_left.svg";
+import DoubleRightArrow from "@/icon/double_arrow_right.svg";
 
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  siblingCount?: number;
-  showAll?: boolean;
+  moveByLink?: boolean;
+  pathname?: string;
+  pageParam?: string;
+  perPageCount?: number;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
-  siblingCount = 1,
-  showAll = false,
+  moveByLink = false,
+  pathname = "",
+  pageParam = "",
+  perPageCount = 5,
 }) => {
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
@@ -24,69 +34,206 @@ const Pagination: React.FC<PaginationProps> = ({
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   };
 
-  const generatePages = (): (number | "...")[] => {
-    if (showAll) {
-      return range(1, totalPages);
+  const generatePages = (): number[] => {
+    const totalVisible = perPageCount;
+    const halfVisible = Math.floor(totalVisible / 2);
+
+    let start = Math.max(currentPage - halfVisible, 1);
+    let end = Math.min(currentPage + halfVisible, totalPages);
+
+    if (currentPage <= halfVisible) {
+      start = 1;
+      end = Math.min(totalVisible, totalPages);
     }
 
-    const totalPageNumbers = siblingCount * 2 + 3;
-    if (totalPages <= totalPageNumbers) {
-      return range(1, totalPages);
+    if (currentPage + halfVisible > totalPages) {
+      end = totalPages;
+      start = Math.max(totalPages - totalVisible + 1, 1);
     }
 
-    const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
-    const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPages);
-
-    const pages: (number | "...")[] = [];
-
-    if (leftSiblingIndex > 1) pages.push(1, "...");
-    pages.push(...range(leftSiblingIndex, rightSiblingIndex));
-    if (rightSiblingIndex < totalPages) pages.push("...", totalPages);
-
-    return pages;
+    return range(start, end);
   };
 
   const pages = generatePages();
+  const isSinglePage = totalPages <= 1;
+  const isPrevBtnDisabled = currentPage === 1;
+  const isNextBtnDisabled = currentPage === totalPages;
+  const showShortCutNavigateBtn = !isSinglePage && totalPages > perPageCount;
 
-  return (
-    <nav className="flex items-center justify-center space-x-2">
-      <button
-        className="px-3 py-1 rounded-md transition-[background-color] duration-300 hover:bg-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        aria-label="Previous Page"
-      >
-        « Previous
-      </button>
+  if (moveByLink) {
+    const path = pathname || usePathname();
+    const href = (page: number) => {
+      const pageNumber = Math.max(Math.min(page, totalPages), 0);
 
-      {pages.map((page, index) =>
-        page === "..." ? (
-          <span key={index} className="px-3 py-1 text-gray-500">
-            {page}
-          </span>
-        ) : (
-          <button
-            key={index}
-            className={`px-3 py-1 rounded-md transition-[background-color] duration-300 ${
-              page === currentPage
-                ? "bg-blue-500 text-theme"
-                : "hover:bg-gray-400"
-            }`}
-            onClick={() => handlePageChange(page as number)}
+      if (pageNumber === 0 || pageNumber === 1) return path;
+      if (pageParam) {
+        return `${path}?${pageParam}=${pageNumber}`;
+      }
+      return `${path}/${pageNumber}`;
+    };
+
+    return (
+      <nav className="flex items-center justify-center space-x-2 h-8">
+        {showShortCutNavigateBtn && (
+          <Link
+            href={href(1)}
+            className={classNames(
+              "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
+              {
+                "hover:bg-gray-100 hover:text-gray-900": !isPrevBtnDisabled,
+                "cursor-not-allowed text-gray-500": isPrevBtnDisabled,
+              },
+            )}
+            aria-label="First Page"
+          >
+            <DoubleLeftArrow width={15} height={15} />
+          </Link>
+        )}
+        {!isSinglePage && (
+          <Link
+            href={href(currentPage - 1)}
+            className={classNames(
+              "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
+              {
+                "hover:bg-gray-100 hover:text-gray-900": !isPrevBtnDisabled,
+                "cursor-not-allowed text-gray-500": isPrevBtnDisabled,
+              },
+            )}
+            aria-label="Previous Page"
+          >
+            <LeftArrow width={15} height={15} />
+          </Link>
+        )}
+
+        {pages.map((page) => (
+          <Link
+            href={href(page)}
+            key={page}
+            className={classNames("px-3 py-1 rounded-md border", {
+              "border-gray-200": page === currentPage,
+              "border-transparent": page !== currentPage,
+            })}
           >
             {page}
-          </button>
-        ),
+          </Link>
+        ))}
+
+        {!isSinglePage && (
+          <Link
+            href={href(currentPage + 1)}
+            className={classNames(
+              "flex items-center justify-center h-full w-8 p-1 rounded-md  transition-[background-color,color]",
+              {
+                "hover:bg-gray-100 hover:text-gray-900": !isNextBtnDisabled,
+                "cursor-not-allowed text-gray-500": isNextBtnDisabled,
+              },
+            )}
+            aria-label="Next Page"
+          >
+            <RightArrow width={15} height={15} />
+          </Link>
+        )}
+
+        {showShortCutNavigateBtn && (
+          <Link
+            href={href(totalPages)}
+            className={classNames(
+              "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
+              {
+                "hover:bg-gray-100 hover:text-gray-900": !isNextBtnDisabled,
+                "cursor-not-allowed text-gray-500": isNextBtnDisabled,
+              },
+            )}
+            aria-label="Last Page"
+          >
+            <DoubleRightArrow width={15} height={15} />
+          </Link>
+        )}
+      </nav>
+    );
+  }
+
+  return (
+    <nav className="flex items-center justify-center space-x-2 h-8">
+      {showShortCutNavigateBtn && (
+        <button
+          className={classNames(
+            "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
+            {
+              "hover:bg-gray-100 hover:text-gray-900": !isPrevBtnDisabled,
+              "cursor-not-allowed text-gray-500": isPrevBtnDisabled,
+            },
+          )}
+          onClick={() => handlePageChange(1)}
+          disabled={isPrevBtnDisabled}
+          aria-label="First Page"
+        >
+          <DoubleLeftArrow width={15} height={15} />
+        </button>
+      )}
+      {!isSinglePage && (
+        <button
+          className={classNames(
+            "flex items-center px-3 py-1 rounded-md h-full w-8 p-1 transition-[background-color,color] duration-300  hover:text-black disabled:cursor-not-allowed disabled:text-gray-500",
+            {
+              "hover:bg-gray-100 hover:text-gray-900": !isPrevBtnDisabled,
+            },
+          )}
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={isPrevBtnDisabled}
+          aria-label="Previous Page"
+        >
+          <LeftArrow width={15} height={15} />
+        </button>
       )}
 
-      <button
-        className="px-3 py-1 rounded-md bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        aria-label="Next Page"
-      >
-        Next »
-      </button>
+      {pages.map((page) => (
+        <button
+          key={page}
+          className={classNames(
+            "px-3 py-1 rounded-md transition-[background-color,color] duration-300 hover:bg-gray-100 hover:text-gray-900 border",
+            {
+              "border-gray-200": page === currentPage,
+              "border-[var(--bg-color)]": page !== currentPage,
+            },
+          )}
+          onClick={() => handlePageChange(page as number)}
+        >
+          {page}
+        </button>
+      ))}
+
+      {!isSinglePage && (
+        <button
+          className={classNames(
+            "flex items-center px-3 py-1 rounded-md disabled:cursor-not-allowed transition-[background-color,color] disabled:text-gray-500",
+            {
+              "hover:bg-gray-100 hover:text-gray-900": !isNextBtnDisabled,
+            },
+          )}
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={isNextBtnDisabled}
+          aria-label="Next Page"
+        >
+          <RightArrow />
+        </button>
+      )}
+      {showShortCutNavigateBtn && (
+        <button
+          className={classNames(
+            "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
+            {
+              "hover:bg-gray-100 hover:text-gray-900": !isNextBtnDisabled,
+              "cursor-not-allowed text-gray-500": isNextBtnDisabled,
+            },
+          )}
+          onClick={() => handlePageChange(totalPages)}
+          disabled={isNextBtnDisabled}
+          aria-label="Last Page"
+        >
+          <DoubleRightArrow width={15} height={15} />
+        </button>
+      )}
     </nav>
   );
 };

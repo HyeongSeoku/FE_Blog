@@ -80,8 +80,8 @@ const BlogPageTemplate = ({
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={handlePagination}
-          siblingCount={1}
-          showAll={false}
+          moveByLink
+          pageParam="page"
         />
       </section>
     </div>

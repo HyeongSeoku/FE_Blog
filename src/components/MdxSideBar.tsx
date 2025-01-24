@@ -79,7 +79,7 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
             <li
               key={`${heading}_${idx}`}
               className={classNames(
-                "text-sm hover:text-[var(--text-color)] transform transition-colors duration-100",
+                "text-sm hover:text-theme transform transition-colors duration-100",
                 ANIMAITE_FADE_IN_UP,
                 {
                   "ml-4": heading.level === 3,

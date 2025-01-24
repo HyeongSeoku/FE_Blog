@@ -133,12 +133,12 @@ const MdxDetailTemplate = ({
             <div className="w-1/2">
               {previousPost && (
                 <button className="group flex flex-col items-start">
-                  <div className="flex items-center group-hover:text-[var(--text-color)]">
+                  <div className="flex items-center group-hover:text-theme">
                     <LeftArrow width={16} height={16} />
                     <span>Previous</span>
                   </div>
                   <Link
-                    className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5"
+                    className="group-hover:text-theme group-hover:bg-gray-100/5 rounded-sm p-0.5"
                     href={`/posts/${previousPost.slug}`}
                   >
                     {previousPost.title}
@@ -149,12 +149,12 @@ const MdxDetailTemplate = ({
             <div className="w-1/2">
               {nextPost && (
                 <button className="group flex flex-col items-end ml-auto">
-                  <div className="flex items-center group-hover:text-[var(--text-color)]">
+                  <div className="flex items-center group-hover:text-theme">
                     <span>Next</span>
                     <RightArrow width={16} height={16} />
                   </div>
                   <Link
-                    className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5"
+                    className="group-hover:text-theme group-hover:bg-gray-100/5 rounded-sm p-0.5"
                     href={`/posts/${nextPost.slug}`}
                   >
                     {nextPost.title}
@@ -178,7 +178,7 @@ const MdxDetailTemplate = ({
                       className="group flex flex-col items-end"
                     >
                       <Link
-                        className="group-hover:text-[var(--text-color)] group-hover:bg-gray-100/5 rounded-sm p-0.5 underline underline-offset-4"
+                        className="group-hover:text-theme group-hover:bg-gray-100/5 rounded-sm p-0.5 underline underline-offset-4"
                         href={`/posts/${slug}`}
                       >
                         {title}

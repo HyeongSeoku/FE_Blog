@@ -9,16 +9,16 @@
 /* 라이트 및 다크 모드 기본 색상 */
 :root {
   /* Light Mode Colors */
-  --light-bg-color: #ffffff;
-  --light-text-color: #1e2229;
+  --light-bg-color: #fafafa;
+  --light-text-color: #121212;
   --light-second-bg-color: rgba(0, 144, 255, 0.3);
   --light-theme-color: #f5c525;
   --light-bg-gray-color: #f1f3f5;
   --light-bg-gray-hover-color: #dee2e6;
 
   /* Dark Mode Colors */
-  --dark-bg-color: #14161b;
-  --dark-text-color: #ffffff;
+  --dark-bg-color: #121212;
+  --dark-text-color: #fafafa;
   --dark-second-bg-color: rgba(63, 63, 63, 0.3);
   --dark-theme-color: #6a0dad;
   --dark-bg-gray-color: #2d2d2d;

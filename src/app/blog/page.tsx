@@ -21,6 +21,14 @@ interface BlogPageProps {
 }
 
 const BlogPage = async ({ searchParams }: BlogPageProps) => {
+  const isInvalidPageParam =
+    (searchParams.page !== undefined && isNaN(Number(searchParams.page))) ||
+    Number(searchParams.page) === 0;
+
+  if (isInvalidPageParam) {
+    redirect("/blog");
+  }
+
   const currentPage = parseInt(searchParams.page || "1", 10);
   const pageSize = DEFAULT_PAGE_SIZE;
 

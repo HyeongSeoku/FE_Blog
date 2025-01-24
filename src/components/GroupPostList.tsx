@@ -39,7 +39,7 @@ const GroupPostList = ({ groupedPosts, groupingType }: PostListProps) => {
             key={key}
             className="mb-8 py-8 px-4 flex gap-32 border-t last:border-b group"
           >
-            <h2 className="text-2xl font-bold flex-shrink-0 h-fit text-gray-300 group-hover:bg-gray-300 group-hover:text-[var(--text-color)] transition-colors">
+            <h2 className="text-2xl font-bold flex-shrink-0 h-fit text-gray-300 group-hover:bg-gray-300 group-hover:text-theme transition-colors">
               {keyFormat(key)}
               {suffixText}
             </h2>

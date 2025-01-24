@@ -16,6 +16,7 @@ export default {
     extend: {
       textColor: {
         theme: "var(--text-color)",
+        "opposite-theme": "var(--contrasting-text-color)",
       },
       scale: {
         "102": "1.02",

@@ -79,7 +79,7 @@ export const HomeClient = ({
           postCount > 3 ? (
             <Link
               href="/blog"
-              className="text-sm text-gray-500 hover:text-[var(--text-color)] transition-colors"
+              className="text-sm text-gray-500 hover:text-theme transition-colors"
             >
               더보기
             </Link>
