@@ -21,25 +21,23 @@ interface BlogPageProps {
 }
 
 const BlogPage = async ({ searchParams }: BlogPageProps) => {
-  const isInvalidPageParam =
-    (searchParams.page !== undefined && isNaN(Number(searchParams.page))) ||
-    Number(searchParams.page) === 0;
+  const pageParam = searchParams.page;
+  const currentPage = pageParam ? parseInt(pageParam, 10) : 1;
+  const isInvalidPageParam = isNaN(currentPage) || currentPage <= 0;
 
   if (isInvalidPageParam) {
     redirect("/blog");
   }
 
-  const currentPage = parseInt(searchParams.page || "1", 10);
   const pageSize = DEFAULT_PAGE_SIZE;
-
   const { postList, totalPostCount, categoryCounts } = await getAllPosts({
     page: currentPage,
     pageSize,
   });
-  const maxPage = Math.ceil(totalPostCount / pageSize);
+
   const totalPages = Math.ceil(totalPostCount / pageSize);
 
-  if (maxPage && maxPage < currentPage) {
+  if (totalPages < currentPage) {
     redirect("/blog");
   }
 
