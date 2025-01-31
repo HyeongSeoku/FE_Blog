@@ -12,6 +12,7 @@ export default {
       xl: { max: "1280px" },
       "2xl": { max: "1536px" },
       "min-md": { min: "768px" },
+      "md-lg": { min: "769px", max: "1023px" },
     },
     extend: {
       textColor: {
@@ -23,6 +24,7 @@ export default {
       },
       colors: {
         primary: "var(--primary-color)",
+        "primary-hover": "var(--primary-hover-color)",
         theme: "var(--bg-color)",
       },
       transitionDuration: {

@@ -56,7 +56,7 @@ const MoScrollProgress = () => {
           r="45"
         />
         <circle
-          className="text-blue-500"
+          className="text-primary"
           strokeWidth="8"
           strokeLinecap="round"
           stroke="currentColor"

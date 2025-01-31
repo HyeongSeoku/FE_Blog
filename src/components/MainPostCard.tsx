@@ -60,7 +60,7 @@ const MainPostCard = ({
         )}
 
         <time dateTime={`${createdAt}`} className="text-gray-400 text-xs">
-          {getDate("YYYY.MM.DD", `${createdAt}`)}
+          {getDate("YYYY.MM.DD", createdAt)}
         </time>
       </div>
     </Link>

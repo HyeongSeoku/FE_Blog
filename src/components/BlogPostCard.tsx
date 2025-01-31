@@ -31,7 +31,7 @@ const BlogPostCard = ({
   const isReplace = replacePathList.some((path) => pathname.includes(path));
 
   return (
-    <li className="py-5 border-b last:border-b-0 flex gap-4">
+    <li className="py-5 flex gap-4">
       <Link href={`/posts/${slug}`} className="w-[150px] h-[150px] relative">
         <Image
           src={thumbnail}

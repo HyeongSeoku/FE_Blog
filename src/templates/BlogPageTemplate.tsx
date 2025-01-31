@@ -40,7 +40,7 @@ const BlogPageTemplate = ({
 
   //TODO: 게시물이 없을때의 화면 처리 필요
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col flex-grow">
       <ul className="flex items-center gap-3">
         {categoryKeys.map((key) => {
           const isKeyDefault =

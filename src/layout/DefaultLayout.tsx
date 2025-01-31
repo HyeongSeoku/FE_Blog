@@ -21,14 +21,14 @@ const DefaultLayout = ({
   const initialTheme = cookieStore.get(LIGHT_DARK_THEME)?.value || "light";
 
   return (
-    <div className="max-w-4xl w-full h-full min-h-fit flex flex-col">
+    <div className="w-full h-auto min-h-fit flex flex-col flex-grow">
       <Header
         headerType={headerType}
         initialTheme={initialTheme}
         showScrollProgress={showScrollProgress}
         hasAnimation={hasHeaderAnimation}
       />
-      <main className="box-border w-full h-full min-h-fit flex flex-col px-10 py-10 md:px-4 md:py-6">
+      <main className="box-border w-full h-full min-h-fit flex flex-col flex-grow">
         {children}
       </main>
       <Footer />

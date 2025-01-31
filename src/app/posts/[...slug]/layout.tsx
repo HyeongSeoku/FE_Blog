@@ -8,7 +8,7 @@ export default function PostsDetailLayout({
 }) {
   return (
     <DefaultLayout showScrollProgress={true} hasHeaderAnimation={true}>
-      {children}
+      <div className="px-44 py-10 md-lg:px-32 md:px-12">{children}</div>
     </DefaultLayout>
   );
 }

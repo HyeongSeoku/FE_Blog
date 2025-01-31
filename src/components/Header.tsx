@@ -10,9 +10,10 @@ import { useRouter } from "next/navigation";
 import MobileNavigation from "@/components/MobileNavigation";
 import useThemeStore from "@/store/theme";
 import useTheme from "@/hooks/useTheme";
-import ScrollProgressBar from "./ScrollProgressBar";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
 import useScrollDirection from "@/hooks/useScrollDirection";
 import classNames from "classnames";
+import { triggerAnimation } from "@/utils/styles";
 
 export interface HeaderProps {
   headerType: HeaderType;
@@ -44,25 +45,6 @@ const Header = ({
     setIsMounted(true);
   }, []);
 
-  const triggerAnimation = (type: "id" | "class", target: string) => {
-    let elements: NodeListOf<SVGAnimateElement> | SVGAnimateElement | null =
-      null;
-
-    if (type === "id") {
-      elements = document.getElementById(target) as SVGAnimateElement | null;
-      if (elements) {
-        elements.beginElement();
-      }
-    } else if (type === "class") {
-      elements = document.querySelectorAll(`.${target}`);
-      elements.forEach((element) => {
-        if (element instanceof SVGAnimateElement) {
-          element.beginElement();
-        }
-      });
-    }
-  };
-
   const toggleTheme = () => {
     if (isDarkMode) {
       setLightMode();
@@ -86,7 +68,7 @@ const Header = ({
   return (
     <header
       className={classNames(
-        "sticky left-0 right-0 z-10 h-14 py-2 flex items-center px-4 w-full max-w-7xl box-border backdrop-blur-sm transition-[top,opacity]  duration-300",
+        "sticky left-0 right-0 z-10 h-14 py-2 flex items-center px-8 w-full box-border backdrop-blur-sm transition-[top,opacity] duration-300 md:px-4",
         {
           "top-0 opacity-1": !hasAnimation || scrollDirection === "up",
           "-top-14 opacity-0": hasAnimation && scrollDirection === "down",
@@ -98,7 +80,9 @@ const Header = ({
           className={`z-10 flex gap-2 items-center ${isMoNavOpen ? "opacity-0 transition-opacity" : "opacity-100"}`}
           onClick={handleLogoButton}
         >
-          <h1 className="text-3xl font-bold">SEOKU</h1>
+          <h1 className="text-3xl font-bold transition-[color] text-primary hover:text-primary-hover md:text-2xl">
+            SEOKU
+          </h1>
         </button>
       )}
       {headerType === "BACK" && <BackButton />}
