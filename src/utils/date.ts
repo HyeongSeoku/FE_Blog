@@ -20,3 +20,23 @@ export const getDate = (
 
   return now.format(format);
 };
+
+export const formatToKoreanMonth = (date: string): string => {
+  if (!date) return "Invalid Date";
+
+  const isFullDate = /^\d{4}\.\d{2}\.\d{2}$/.test(date);
+  let normalizedDate = date;
+
+  if (!isFullDate && /^\d{4}\.\d{2}$/.test(date)) {
+    normalizedDate += ".01";
+  }
+
+  const parsedDate = dayjs(normalizedDate, "YYYY.MM.DD");
+
+  if (!parsedDate.isValid()) {
+    console.error("⚠️ Invalid Date detected:", date);
+    return "Invalid Date";
+  }
+
+  return parsedDate.format("YYYY년MM월");
+};

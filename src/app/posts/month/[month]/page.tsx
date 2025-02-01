@@ -1,37 +1,44 @@
 import BlogPostCard from "@/components/BlogPostCard";
-import { getDate } from "@/utils/date";
+import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
+import BlogDateTemplate from "@/templates/BlogDateTemplate";
+import { formatToKoreanMonth, getDate } from "@/utils/date";
 import { getPostsByDate } from "@/utils/post";
+import dayjs from "dayjs";
+import { redirect } from "next/navigation";
 
-const BlogMonthPage = async ({ params }: { params: { month: string } }) => {
+interface BlogMonthPageProps {
+  params: { month: string };
+  searchParams: { [key: string]: string | undefined };
+}
+
+const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
   const { month } = params;
-  const formattedMonth = getDate("YYYY년MM월", month);
 
-  const { postList } = await getPostsByDate({
+  const pageParam = searchParams.page;
+  const currentPage = pageParam ? parseInt(pageParam, 10) : 1;
+  const isInvalidPageParam = isNaN(currentPage) || currentPage <= 0;
+
+  if (isInvalidPageParam) {
+    redirect(`/posts/month/${month}`);
+  }
+  const formattedMonth = formatToKoreanMonth(month);
+
+  const { postList, totalPostCount } = await getPostsByDate({
     type: "month",
     date: month,
+    page: currentPage,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
-  const postCount = postList.length;
+  const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
 
   return (
-    <div>
-      <h3 className="text-4xl font-bold">{formattedMonth}</h3>
-      <p>{postCount}개의 포스트</p>
-      <ul>
-        {postList.map(
-          ({ title, createdAt, description, slug, tags, thumbnail }) => (
-            <BlogPostCard
-              key={slug}
-              title={title}
-              createdAt={createdAt}
-              description={description}
-              slug={slug}
-              tagList={tags}
-              thumbnail={thumbnail}
-            />
-          ),
-        )}
-      </ul>
-    </div>
+    <BlogDateTemplate
+      dateText={formattedMonth}
+      postList={postList}
+      postCount={totalPostCount}
+      currentPage={currentPage}
+      totalPages={totalPages}
+    />
   );
 };
 

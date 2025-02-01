@@ -188,14 +188,10 @@ export const getPostsByDate = async ({
   pageSize?: number;
 }): Promise<getAllPostResponse> => {
   // 모든 게시물을 가져옵니다.
-  const {
-    postList: allPosts,
-    totalPostCount,
-    categoryCounts,
-  } = await getAllPosts({
+  const { postList: allPosts, categoryCounts } = await getAllPosts({
     isSorted,
-    page,
-    pageSize: Number.MAX_SAFE_INTEGER, // 모든 게시물을 가져오기 위해 설정
+    page: 1,
+    pageSize: Number.MAX_SAFE_INTEGER,
   });
 
   // 날짜 필터링
@@ -223,7 +219,13 @@ export const getPostsByDate = async ({
     pageSize,
   });
 
-  return { postList: resultPosts, totalPostCount, categoryCounts };
+  console.log("TEST filteredPosts.length", filteredPosts.length);
+
+  return {
+    postList: resultPosts,
+    totalPostCount: filteredPosts.length,
+    categoryCounts,
+  };
 };
 
 export const getPostsByCategory = async ({
@@ -296,7 +298,16 @@ export const sortAndPaginatePosts = (
 
   if (options.page && options.pageSize) {
     const start = (options.page - 1) * options.pageSize;
+
     result = result.slice(start, start + options.pageSize);
+    console.log(
+      "TEST start",
+      start,
+      "result",
+      result.length,
+      "pageSize",
+      options.pageSize,
+    );
   }
 
   return result;

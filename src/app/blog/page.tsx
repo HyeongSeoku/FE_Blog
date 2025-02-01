@@ -29,13 +29,12 @@ const BlogPage = async ({ searchParams }: BlogPageProps) => {
     redirect("/blog");
   }
 
-  const pageSize = DEFAULT_PAGE_SIZE;
   const { postList, totalPostCount, categoryCounts } = await getAllPosts({
     page: currentPage,
-    pageSize,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
 
-  const totalPages = Math.ceil(totalPostCount / pageSize);
+  const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
 
   if (totalPages < currentPage) {
     redirect("/blog");

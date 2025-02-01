@@ -14,6 +14,7 @@ interface PaginationProps {
   pathname?: string;
   pageParam?: string;
   perPageCount?: number;
+  isReplace?: boolean;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -24,6 +25,7 @@ const Pagination: React.FC<PaginationProps> = ({
   pathname = "",
   pageParam = "",
   perPageCount = 5,
+  isReplace = false,
 }) => {
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
@@ -77,6 +79,7 @@ const Pagination: React.FC<PaginationProps> = ({
         {showShortCutNavigateBtn && (
           <Link
             href={href(1)}
+            replace={isReplace}
             className={classNames(
               "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
               {
@@ -108,6 +111,7 @@ const Pagination: React.FC<PaginationProps> = ({
         {pages.map((page) => (
           <Link
             href={href(page)}
+            replace={isReplace}
             key={page}
             className={classNames("px-3 py-1 rounded-md border", {
               "border-gray-200": page === currentPage,
@@ -137,6 +141,7 @@ const Pagination: React.FC<PaginationProps> = ({
         {showShortCutNavigateBtn && (
           <Link
             href={href(totalPages)}
+            replace={isReplace}
             className={classNames(
               "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
               {
