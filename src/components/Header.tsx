@@ -10,16 +10,15 @@ import { useRouter } from "next/navigation";
 import MobileNavigation from "@/components/MobileNavigation";
 import useThemeStore from "@/store/theme";
 import useTheme from "@/hooks/useTheme";
-import ScrollProgressBar from "@/components/ScrollProgressBar";
 import useScrollDirection from "@/hooks/useScrollDirection";
 import classNames from "classnames";
 import { triggerAnimation } from "@/utils/styles";
+import { HEADER_SCROLL_THRESHOLD } from "@/constants/basic.constants";
 
 export interface HeaderProps {
   headerType: HeaderType;
   children?: ReactNode;
   initialTheme?: string;
-  showScrollProgress?: boolean;
   hasAnimation?: boolean;
 }
 
@@ -29,7 +28,6 @@ const Header = ({
   headerType,
   children,
   initialTheme,
-  showScrollProgress = false,
   hasAnimation = false,
 }: HeaderProps) => {
   const [isMounted, setIsMounted] = useState(false);
@@ -37,7 +35,7 @@ const Header = ({
   const { isDarkMode, setDarkMode, setLightMode } = useThemeStore();
   const isDarkTheme = isMounted ? isDarkMode : initialTheme === "dark";
   const router = useRouter();
-  const scrollDirection = useScrollDirection(50);
+  const scrollDirection = useScrollDirection(HEADER_SCROLL_THRESHOLD);
 
   useTheme();
 
@@ -113,8 +111,6 @@ const Header = ({
           <MenuIcon width={24} height={24} alt="menu" />
         </button>
       </div>
-      {/* FIXME: ScrollProgressBar 미노출 이슈 수정  */}
-      {showScrollProgress && <ScrollProgressBar />}
       <MobileNavigation isOpen={isMoNavOpen} toggleMoMenu={toggleMoMenu} />
     </header>
   );

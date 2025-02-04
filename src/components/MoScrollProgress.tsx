@@ -1,27 +1,13 @@
 "use client";
 
+import useScrollPosition from "@/hooks/useScrollPosition";
 import useScrollProgress from "@/hooks/useScrollProgress";
 import ArrowTop from "@/icon/arrow_top.svg";
 import classNames from "classnames";
-import { useEffect, useState } from "react";
 
 const MoScrollProgress = () => {
   const progressWidth = useScrollProgress();
-
-  const [isScrollTop, setIsScrollTop] = useState(true);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrollTop(window.scrollY === 0);
-    };
-
-    handleScroll();
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  const { isScrollTop } = useScrollPosition();
 
   const scrollToTop = () => {
     window.scrollTo({

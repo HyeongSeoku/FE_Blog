@@ -7,14 +7,12 @@ import { LIGHT_DARK_THEME } from "@/constants/cookie.constants";
 export interface DefaultLayoutProps {
   children: ReactNode;
   headerType?: HeaderType;
-  showScrollProgress?: boolean;
   hasHeaderAnimation?: boolean;
 }
 
 const DefaultLayout = ({
   children,
   headerType = "DEFAULT",
-  showScrollProgress = false,
   hasHeaderAnimation = false,
 }: DefaultLayoutProps) => {
   const cookieStore = cookies();
@@ -25,7 +23,6 @@ const DefaultLayout = ({
       <Header
         headerType={headerType}
         initialTheme={initialTheme}
-        showScrollProgress={showScrollProgress}
         hasAnimation={hasHeaderAnimation}
       />
       <main className="box-border w-full h-full min-h-fit flex flex-col flex-grow">

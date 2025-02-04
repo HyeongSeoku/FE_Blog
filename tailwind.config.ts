@@ -12,6 +12,7 @@ export default {
       xl: { max: "1280px" },
       "2xl": { max: "1536px" },
       "min-md": { min: "768px" },
+      "min-lg": { min: "1024px" },
       "md-lg": { min: "769px", max: "1023px" },
     },
     extend: {

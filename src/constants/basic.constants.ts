@@ -22,3 +22,5 @@ export const POST_PATH = path.join(
 );
 
 export const SKILL_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/skill`);
+
+export const HEADER_SCROLL_THRESHOLD = 20;

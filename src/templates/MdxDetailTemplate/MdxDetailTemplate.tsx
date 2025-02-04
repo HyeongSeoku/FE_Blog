@@ -8,11 +8,15 @@ import MdxLink from "@/components/MdxLink";
 import MdxSideBar from "@/components/MdxSideBar";
 import AnimationContainer from "@/components/AnimationContainer";
 import Giscus from "@/components/Giscus";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import Link from "next/link";
 import RightArrow from "@/icon/arrow_right.svg";
 import LeftArrow from "@/icon/arrow_left.svg";
 import dynamic from "next/dynamic";
+import DoubleArrow from "@/icon/arrow_right_double.svg";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
+import classNames from "classnames";
+import useScrollPosition from "@/hooks/useScrollPosition";
 
 // MDXRemote를 동적으로 import
 const MDXRemote = dynamic(
@@ -22,8 +26,6 @@ const MDXRemote = dynamic(
     loading: () => <div className="min-h-40 py-5">Loading...</div>,
   },
 );
-
-import DoubleArrow from "@/icon/arrow_right_double.svg";
 
 type MdxDetailRelatedPost = {
   slug: string;
@@ -50,9 +52,73 @@ const MdxDetailTemplate = ({
   relatedPosts,
 }: MdxDetailTemplateProps) => {
   const commentRef = useRef<HTMLElement>(null);
+  const { isScrollTop } = useScrollPosition();
+  const MdxContent = useMemo(() => {
+    return (
+      <MDXRemote
+        {...source}
+        components={{
+          code: ({ className, children }) => (
+            <CodeBlock
+              hasCopyBtn={className?.includes("block-code")}
+              className={className}
+            >
+              {children}
+            </CodeBlock>
+          ),
+          a: ({ children, href, target = "_blank" }) => (
+            <MdxLink href={href} target={target}>
+              {children}
+            </MdxLink>
+          ),
+          p: ({ children, ...rest }) => (
+            <AnimationContainer tag="p" {...rest}>
+              {children}
+            </AnimationContainer>
+          ),
+          h1: ({ children, ...rest }) => (
+            <AnimationContainer tag="h1" {...rest}>
+              {children}
+            </AnimationContainer>
+          ),
+          h2: ({ children, ...rest }) => (
+            <AnimationContainer tag="h2" {...rest}>
+              {children}
+            </AnimationContainer>
+          ),
+          h3: ({ children, ...rest }) => (
+            <AnimationContainer tag="h3" {...rest}>
+              {children}
+            </AnimationContainer>
+          ),
+          ul: ({ children, ...rest }) => (
+            <AnimationContainer tag="ul" {...rest}>
+              {children}
+            </AnimationContainer>
+          ),
+          li: ({ children, ...rest }) => (
+            <AnimationContainer tag="li" {...rest}>
+              {children}
+            </AnimationContainer>
+          ),
+        }}
+      />
+    );
+  }, [source]);
 
   return (
     <>
+      <div
+        className={classNames(
+          "fixed left-0 right-0 z-10 h-1 transition-[top,opacity] duration-300",
+          {
+            "top-0 opacity-1": !isScrollTop,
+            "-top-14 opacity-0": isScrollTop,
+          },
+        )}
+      >
+        <ScrollProgressBar />
+      </div>
       <header className="border-b border-b-[var(--border-color)] mb-4 pb-4">
         <h1 className="text-4xl font-bold mb-1">{title}</h1>
         <p className="text-gray-400 text-xl mb-3">{description}</p>
@@ -75,56 +141,7 @@ const MdxDetailTemplate = ({
       <MdxSideBar headings={heading} commentRef={commentRef} />
 
       <section className="relative border-b py-5">
-        <article className="markdown-contents">
-          <MDXRemote
-            {...source}
-            components={{
-              code: ({ className, children }) => (
-                <CodeBlock
-                  hasCopyBtn={className?.includes("block-code")}
-                  className={className}
-                >
-                  {children}
-                </CodeBlock>
-              ),
-              a: ({ children, href, target = "_blank" }) => (
-                <MdxLink href={href} target={target}>
-                  {children}
-                </MdxLink>
-              ),
-              p: ({ children, ...rest }) => (
-                <AnimationContainer tag="p" {...rest}>
-                  {children}
-                </AnimationContainer>
-              ),
-              h1: ({ children, ...rest }) => (
-                <AnimationContainer tag="h1" {...rest}>
-                  {children}
-                </AnimationContainer>
-              ),
-              h2: ({ children, ...rest }) => (
-                <AnimationContainer tag="h2" {...rest}>
-                  {children}
-                </AnimationContainer>
-              ),
-              h3: ({ children, ...rest }) => (
-                <AnimationContainer tag="h3" {...rest}>
-                  {children}
-                </AnimationContainer>
-              ),
-              ul: ({ children, ...rest }) => (
-                <AnimationContainer tag="ul" {...rest}>
-                  {children}
-                </AnimationContainer>
-              ),
-              li: ({ children, ...rest }) => (
-                <AnimationContainer tag="li" {...rest}>
-                  {children}
-                </AnimationContainer>
-              ),
-            }}
-          />
-        </article>
+        <article className="markdown-contents">{MdxContent}</article>
       </section>
 
       {(previousPost || nextPost) && (
