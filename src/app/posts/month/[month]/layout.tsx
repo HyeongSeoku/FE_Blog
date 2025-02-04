@@ -4,7 +4,9 @@ import React, { ReactNode } from "react";
 const BlogMonthLayout = ({ children }: { children: ReactNode }) => {
   return (
     <DefaultLayout>
-      <div className="px-44 py-10 md-lg:px-32 md:px-12">{children}</div>
+      <div className="px-44 md-lg:px-32 md:px-12 flex flex-col flex-grow">
+        {children}
+      </div>
     </DefaultLayout>
   );
 };
