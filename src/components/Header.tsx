@@ -14,11 +14,12 @@ import useScrollDirection from "@/hooks/useScrollDirection";
 import classNames from "classnames";
 import { triggerAnimation } from "@/utils/styles";
 import { HEADER_SCROLL_THRESHOLD } from "@/constants/basic.constants";
+import { getCookie } from "@/utils/cookies";
+import { LIGHT_DARK_THEME } from "@/constants/cookie.constants";
 
 export interface HeaderProps {
   headerType: HeaderType;
   children?: ReactNode;
-  initialTheme?: string;
   hasAnimation?: boolean;
 }
 
@@ -27,18 +28,20 @@ export type HeaderType = "DEFAULT" | "BACK" | "NONE";
 const Header = ({
   headerType,
   children,
-  initialTheme,
   hasAnimation = false,
 }: HeaderProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isMoNavOpen, setIsMoNavOpen] = useState(false);
   const { isDarkMode, setDarkMode, setLightMode } = useThemeStore();
-  const isDarkTheme = isMounted ? isDarkMode : initialTheme === "dark";
+  const isDarkTheme = isMounted
+    ? isDarkMode
+    : getCookie(LIGHT_DARK_THEME) || "light";
   const router = useRouter();
   const scrollDirection = useScrollDirection(HEADER_SCROLL_THRESHOLD);
 
   useTheme();
 
+  // **초기 테마 설정**
   useEffect(() => {
     setIsMounted(true);
   }, []);

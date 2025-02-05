@@ -4,6 +4,8 @@ import { HomeClient } from "./pageClient";
 import { fetchGithubUserInfo } from "@/api/github";
 import DefaultLayout from "@/layout/DefaultLayout";
 
+export const dynamic = "force-static";
+
 export default async function Home() {
   const { postList, totalPostCount } = await getAllPosts({ maxCount: 3 });
   const githubData = await fetchGithubUserInfo();
