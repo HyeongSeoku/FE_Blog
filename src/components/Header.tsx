@@ -14,8 +14,7 @@ import useScrollDirection from "@/hooks/useScrollDirection";
 import classNames from "classnames";
 import { triggerAnimation } from "@/utils/styles";
 import { HEADER_SCROLL_THRESHOLD } from "@/constants/basic.constants";
-import { getCookie } from "@/utils/cookies";
-import { LIGHT_DARK_THEME } from "@/constants/cookie.constants";
+import ThemeButton from "./ThemeButton/ThemeButton";
 
 export interface HeaderProps {
   headerType: HeaderType;
@@ -30,21 +29,12 @@ const Header = ({
   children,
   hasAnimation = false,
 }: HeaderProps) => {
-  const [isMounted, setIsMounted] = useState(false);
   const [isMoNavOpen, setIsMoNavOpen] = useState(false);
   const { isDarkMode, setDarkMode, setLightMode } = useThemeStore();
-  const isDarkTheme = isMounted
-    ? isDarkMode
-    : getCookie(LIGHT_DARK_THEME) || "light";
   const router = useRouter();
   const scrollDirection = useScrollDirection(HEADER_SCROLL_THRESHOLD);
 
   useTheme();
-
-  // **초기 테마 설정**
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const toggleTheme = () => {
     if (isDarkMode) {
@@ -90,23 +80,7 @@ const Header = ({
       {children && <>{children}</>}
 
       <div className="flex items-center ml-auto">
-        <button
-          className="flex flex-col flex-shrink-0 w-10 h-10 overflow-hidden hover:bg-gray-400/20 rounded-sm"
-          onClick={toggleTheme}
-        >
-          <div
-            className={`flex flex-col flex-shrink-0 w-10 h-20 transition-transform duration-200 ease-in-out ${
-              isDarkTheme ? "transform translate-y-[-2.5rem]" : ""
-            }`}
-          >
-            <div className="flex items-center justify-center w-10 h-10 hover:animate-rotateFull">
-              <SunIcon width={24} height={24} />
-            </div>
-            <div className="flex items-center justify-center w-10 h-10 hover:animate-rotateQuarter">
-              <MoonIcon width={24} height={24} />
-            </div>
-          </div>
-        </button>
+        <ThemeButton />
         <button
           className="ml-1 h-10 w-10 flex items-center justify-center relative z-30 hover:bg-gray-400/20 rounded-sm"
           onClick={toggleMoMenu}
