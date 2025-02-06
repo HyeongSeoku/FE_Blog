@@ -17,6 +17,9 @@ export interface MdxSideBarProps {
 const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
   const [activeId, setActiveId] = useState<string | null>(null);
 
+  const HEADER_HEIGHT = 56;
+
+  // FIXME: 초기에 observer 감지 못하는 이슈
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -49,7 +52,8 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
   const handleClick = (id: string) => {
     const target = document.getElementById(id);
     if (target) {
-      const yPosition = target.getBoundingClientRect().top + window.scrollY;
+      const yPosition =
+        target.getBoundingClientRect().top + window.scrollY - HEADER_HEIGHT;
 
       window.scrollTo({ top: yPosition, behavior: "smooth" });
       setActiveId(id);
@@ -79,8 +83,7 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
             <li
               key={`${heading}_${idx}`}
               className={classNames(
-                "text-sm hover:text-theme transform transition-colors duration-100",
-                ANIMAITE_FADE_IN_UP,
+                "text-sm hover:text-theme transition-colors duration-100",
                 {
                   "ml-4": heading.level === 3,
                   "text-blue-600 font-bold": activeId === heading.id,

@@ -17,13 +17,21 @@ import DoubleArrow from "@/icon/arrow_right_double.svg";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import classNames from "classnames";
 import useScrollPosition from "@/hooks/useScrollPosition";
+import SkeletonBar from "@/components/SkeletonBar";
 
 // MDXRemote를 동적으로 import
 const MDXRemote = dynamic(
   () => import("next-mdx-remote").then((mod) => mod.MDXRemote),
   {
     ssr: false,
-    loading: () => <div className="min-h-40 py-5">Loading...</div>,
+    loading: () => (
+      <div className="min-h-40 py-5 flex flex-col gap-2">
+        <SkeletonBar className="w-1/5 h-10" />
+        <SkeletonBar className="w-1/3 h-8" />
+        <SkeletonBar />
+        <SkeletonBar />
+      </div>
+    ),
   },
 );
 
