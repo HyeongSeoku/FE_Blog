@@ -33,7 +33,6 @@ const MoScrollProgress = () => {
         xmlns="http://www.w3.org/2000/svg"
       >
         <circle
-          className="text-gray-300"
           strokeWidth="8"
           stroke="currentColor"
           fill="transparent"
