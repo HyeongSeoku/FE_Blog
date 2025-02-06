@@ -8,6 +8,8 @@ export const metadata = {
   description: "최신 블로그 글 목록을 확인하세요.",
 };
 
+export const revalidate = 60;
+
 export const generateStaticParams = async () => {
   const { postList } = await getAllPosts({
     page: 1,

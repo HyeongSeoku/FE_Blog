@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { getAllPosts, getPostsDetail } from "@/utils/post";
 import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
 
+export const dynamic = "error";
+
 export async function generateStaticParams() {
   const { postList } = await getAllPosts({});
   return postList.map((post) => ({ slug: post.slug.split("/") }));
