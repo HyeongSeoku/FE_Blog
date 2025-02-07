@@ -11,6 +11,7 @@ const TagPage = async ({ params }: { params: { tag: string } }) => {
     <div>
       <h3 className="text-4xl font-bold">{tag}</h3>
       <span>총 {count}개의 포스트</span>
+      {/* TODO: tag가 일정 갯수 넘어갈때 hide show 버튼 추가 */}
       <ul className="flex flex-wrap gap-2">
         {tagList.map(({ key, value }) => (
           <Link

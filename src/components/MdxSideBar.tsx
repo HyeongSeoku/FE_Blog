@@ -19,7 +19,6 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
 
   const HEADER_HEIGHT = 56;
 
-  // FIXME: 초기에 observer 감지 못하는 이슈
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -35,17 +34,37 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
       },
     );
 
-    const targets = headings.map((heading) =>
-      document.getElementById(heading.id),
-    );
-    targets.forEach((target) => {
-      if (target) observer.observe(target);
+    const observeHeadings = () => {
+      const targets = headings.map((heading) =>
+        document.getElementById(heading.id),
+      );
+
+      targets.forEach((target) => {
+        if (target) observer.observe(target);
+      });
+
+      return () => {
+        targets.forEach((target) => {
+          if (target) observer.unobserve(target);
+        });
+      };
+    };
+
+    observeHeadings(); // 최초 실행
+
+    // DOM 변경을 감지하여 observer 재설정
+    const mutationObserver = new MutationObserver(() => {
+      observeHeadings();
+    });
+
+    mutationObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
     });
 
     return () => {
-      targets.forEach((target) => {
-        if (target) observer.unobserve(target);
-      });
+      mutationObserver.disconnect();
+      observer.disconnect();
     };
   }, [headings]);
 
@@ -117,7 +136,7 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
       </aside>
 
       {/* NOTE: MO용 side */}
-      <aside className="fixed bottom-10 right-2 p-1 z-10 flex flex-col items-center gap-2 min-lg:hidden bg-gray-400/20 rounded-lg">
+      <aside className="fixed bottom-10 right-2 p-1 z-10 flex flex-col items-center gap-2 min-md:hidden bg-gray-400/20 rounded-lg">
         <button
           className="w-8 h-8 rounded-sm hover:bg-gray-400/20 flex items-center justify-center"
           onClick={handleScrollToCommentSection}

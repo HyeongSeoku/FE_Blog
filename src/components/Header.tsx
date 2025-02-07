@@ -1,14 +1,10 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import BackButton from "./backButton";
 import MenuIcon from "@/icon/menu.svg";
-import SunIcon from "@/icon/sun.svg";
-import MoonIcon from "@/icon/moon.svg";
-
 import { useRouter } from "next/navigation";
 import MobileNavigation from "@/components/MobileNavigation";
-import useThemeStore from "@/store/theme";
 import useTheme from "@/hooks/useTheme";
 import useScrollDirection from "@/hooks/useScrollDirection";
 import classNames from "classnames";
@@ -30,26 +26,16 @@ const Header = ({
   hasAnimation = false,
 }: HeaderProps) => {
   const [isMoNavOpen, setIsMoNavOpen] = useState(false);
-  const { isDarkMode, setDarkMode, setLightMode } = useThemeStore();
   const router = useRouter();
   const scrollDirection = useScrollDirection(HEADER_SCROLL_THRESHOLD);
 
   useTheme();
 
-  const toggleTheme = () => {
-    if (isDarkMode) {
-      setLightMode();
-      return;
-    }
-
-    setDarkMode();
-  };
-
   const toggleMoMenu = () => {
     const breadOpenStatusText = isMoNavOpen ? "close" : "open";
     triggerAnimation("id", `bread-top-${breadOpenStatusText}`);
     triggerAnimation("id", `bread-bottom-${breadOpenStatusText}`);
-    setIsMoNavOpen(!isMoNavOpen);
+    setIsMoNavOpen((cur) => !cur);
   };
 
   const handleLogoButton = () => {
