@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getAllPosts, getPostsDetail } from "@/utils/post";
 import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
+import SkeletonBar from "@/components/SkeletonBar";
 
 export const dynamic = "error";
 
@@ -71,6 +72,7 @@ const PostPage = async ({ params }: { params: { slug: string[] } }) => {
       nextPost={nextPost}
       previousPost={previousPost}
       relatedPosts={relatedPosts}
+      mdxComponents={{ SkeletonBar }}
     />
   );
 };

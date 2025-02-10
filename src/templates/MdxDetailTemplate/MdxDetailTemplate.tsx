@@ -1,7 +1,7 @@
 "use client";
 
 import CodeBlock from "@/components/CodeBlock";
-import { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { MDXRemoteProps, MDXRemoteSerializeResult } from "next-mdx-remote";
 import TimeIcon from "@/icon/time.svg";
 import { FrontMatterProps, HeadingsProps } from "@/types/mdx";
 import MdxLink from "@/components/MdxLink";
@@ -48,6 +48,7 @@ interface MdxDetailTemplateProps {
   previousPost: MdxDetailRelatedPost | null;
   nextPost: MdxDetailRelatedPost | null;
   relatedPosts: MdxDetailRelatedPost[] | null;
+  mdxComponents?: MDXRemoteProps["components"];
 }
 
 const MdxDetailTemplate = ({
@@ -58,6 +59,7 @@ const MdxDetailTemplate = ({
   previousPost,
   nextPost,
   relatedPosts,
+  mdxComponents,
 }: MdxDetailTemplateProps) => {
   const commentRef = useRef<HTMLElement>(null);
   const { isScrollTop } = useScrollPosition();
@@ -109,6 +111,7 @@ const MdxDetailTemplate = ({
               {children}
             </AnimationContainer>
           ),
+          ...(mdxComponents || {}),
         }}
       />
     );
