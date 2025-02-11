@@ -45,7 +45,7 @@ const Header = ({
   return (
     <header
       className={classNames(
-        "sticky left-0 right-0 z-10 h-14 py-2 flex items-center px-8 w-full box-border backdrop-blur-sm transition-[top,opacity] duration-300 md:px-4",
+        "sticky left-0 right-0 z-20 h-14 py-2 flex items-center px-8 w-full box-border backdrop-blur-sm transition-[top,opacity] duration-300 md:px-4",
         {
           "top-0 opacity-1": !hasAnimation || scrollDirection === "up",
           "-top-14 opacity-0": hasAnimation && scrollDirection === "down",
