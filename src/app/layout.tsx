@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
 import { ReactNode } from "react";
+import GA from "@/components/GA";
 
 export const metadata: Metadata = {
   title: "SEOK 개발 블로그",
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <script src="/theme.js" />
+        <GA />
       </head>
       <body>
         {children}

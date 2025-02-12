@@ -96,7 +96,7 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
 
   return (
     <>
-      <aside className="fixed top-[100px] right-[50px] p-4 w-fit h-fit max-w-[150px] max-h-[700px] border-gray-200 flex flex-col transform duration-300 lg:opacity-0 md:hidden">
+      <aside className="fixed top-[100px] right-[20px] p-4 w-fit h-fit max-w-[150px] max-h-[700px] border-gray-200 flex flex-col transform duration-300 lg:opacity-0 md:hidden">
         <ul className="space-y-2 h-fit max-h-[500px] overflow-y-scroll scroll-bar-thin">
           {headings.map((heading, idx) => (
             <li
