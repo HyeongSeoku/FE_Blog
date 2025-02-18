@@ -1,6 +1,20 @@
+"use client";
+
 import Script from "next/script";
+import { useEffect, useState } from "react";
 
 export default function GA() {
+  const [isConsentGiven, setIsConsentGiven] = useState(false);
+
+  useEffect(() => {
+    const consent = localStorage.getItem("cookie_consent");
+    if (consent === "true") {
+      setIsConsentGiven(true);
+    }
+  }, []);
+
+  if (!isConsentGiven) return null;
+
   return (
     <>
       <Script
