@@ -21,7 +21,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <script src="/theme.js" />
-        {/* <GA /> */}
       </head>
       <body>
         <CookieBanner />
