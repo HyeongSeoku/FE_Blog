@@ -13,6 +13,7 @@ import useGithubInfoStore from "@/store/githubInfo";
 import SkillChip from "@/components/SkillChip";
 import Link from "next/link";
 import { SKILL_LIST } from "@/constants/post.constants";
+import BottomSheet from "@/components/BottomSheet/BottomSheet";
 
 const Modal = dynamic(() => import("@/components/Modal/Modal"), {
   ssr: false,
