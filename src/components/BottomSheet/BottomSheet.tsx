@@ -1,15 +1,17 @@
 "use client";
 
-import { ReactNode } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import styles from "./index.module.css";
 import classNames from "classnames";
 import useScrollDisable from "@/hooks/useScrollDisable";
+import CloseIcon from "@/icon/close_icon.svg";
 
 export interface BottomSheetProps {
   title: string;
   children: ReactNode;
   hasCloseBtn?: boolean;
   isOpen: boolean;
+  bottomChildren?: ReactNode;
   onClose?: () => void;
 }
 
@@ -18,6 +20,7 @@ const BottomSheet = ({
   children,
   hasCloseBtn = false,
   isOpen,
+  bottomChildren,
   onClose,
 }: BottomSheetProps) => {
   useScrollDisable(isOpen);
@@ -48,7 +51,7 @@ const BottomSheet = ({
           <h3 className="text-lg">{title}</h3>
           {!hasCloseBtn && (
             <button onClick={handelClose} className="ml-auto">
-              X
+              <CloseIcon />
             </button>
           )}
         </header>
@@ -58,6 +61,7 @@ const BottomSheet = ({
         >
           {children}
         </div>
+        {bottomChildren}
       </div>
     </div>
   );

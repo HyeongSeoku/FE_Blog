@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import BottomSheet, { BottomSheetProps } from "./BottomSheet/BottomSheet";
 
 export interface BottomFormSheetProps extends BottomSheetProps {
@@ -12,33 +13,48 @@ export interface BottomFormSheetProps extends BottomSheetProps {
 export default function BottomFormSheet({
   title,
   children,
-  hasCloseBtn,
+  hasCloseBtn = true,
   isOpen,
-  onClose,
   confirmText = "확인",
   cancelText = "취소",
+  onClose,
   onConfirm,
   onCancel,
 }: BottomFormSheetProps) {
-  const handleConfirm = () => {
-    onConfirm();
-  };
+  const handleConfirm = useCallback(() => {
+    onClose?.();
+    onConfirm?.();
+  }, [onConfirm, onClose]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
+    onClose?.();
     onCancel?.();
-  };
+  }, [onCancel, onClose]);
 
   return (
-    <BottomSheet title={title} isOpen={isOpen}>
+    <BottomSheet
+      title={title}
+      isOpen={isOpen}
+      onClose={onClose}
+      hasCloseBtn={hasCloseBtn}
+      bottomChildren={
+        <div className="flex gap-2 px-5 py-1">
+          <button
+            className="rounded-md flex-1 bg-red-300"
+            onClick={handleConfirm}
+          >
+            {confirmText}
+          </button>
+          <button
+            className="rounded-md flex-1 bg-red-300"
+            onClick={handleCancel}
+          >
+            {cancelText}
+          </button>
+        </div>
+      }
+    >
       {children}
-      <div className="absolute bottom-0 flex gap-2">
-        <button className="rounded-md flex-1" onClick={handleConfirm}>
-          {confirmText}
-        </button>
-        <button className="rounded-md flex-1" onClick={handleCancel}>
-          {cancelText}
-        </button>
-      </div>
     </BottomSheet>
   );
 }

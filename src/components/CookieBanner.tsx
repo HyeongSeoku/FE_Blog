@@ -1,46 +1,53 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
-import { COOKIE_CONSENT } from "@/constants/localStorage.constant";
+import {
+  COOKIE_GA_CONSENT,
+  COOKIE_GA_DIS_AGREE,
+} from "@/constants/storage.constant";
 import BottomFormSheet from "./BottomFormSheet";
+import { getCookie, removeCookie, setCookie } from "@/utils/cookies";
 
 const GA = dynamic(() => import("@/components/GA"), { ssr: false });
 
 export default function CookieBanner() {
-  const isAlreadyConsent = localStorage.getItem(COOKIE_CONSENT) === "true";
+  const isAlreadyConsent = getCookie(COOKIE_GA_CONSENT) === "true";
+  const isGaDisAgree = getCookie(COOKIE_GA_DIS_AGREE) === "false";
   const [isConsentGiven, setIsConsentGiven] = useState(isAlreadyConsent);
   const [isOpen, setIsOpen] = useState(!isAlreadyConsent);
 
-  useEffect(() => {
-    const consent = localStorage.getItem(COOKIE_CONSENT);
-    const isConsent = consent === "true";
-    setIsConsentGiven(isConsent);
-  }, []);
-
   const handleAccept = () => {
-    localStorage.setItem(COOKIE_CONSENT, "true");
+    setCookie(COOKIE_GA_CONSENT, "true", 365);
+    removeCookie(COOKIE_GA_DIS_AGREE);
+
+    localStorage.removeItem(COOKIE_GA_DIS_AGREE);
     setIsConsentGiven(true);
     setIsOpen(false);
     window.location.reload();
   };
 
   const handleDecline = () => {
-    localStorage.setItem(COOKIE_CONSENT, "false");
+    setCookie(COOKIE_GA_CONSENT, "false", 365);
+    setCookie(COOKIE_GA_DIS_AGREE, "false", 7);
+
     setIsOpen(false);
     setIsConsentGiven(true);
   };
 
-  // if (isConsentGiven) return <GA />;
+  if (isGaDisAgree) return;
+  if (isConsentGiven) return <GA />;
 
   return (
     <BottomFormSheet
       title="GA 수집 동의"
       isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
       confirmText="동의"
       cancelText="거부"
       onConfirm={handleAccept}
       onCancel={handleDecline}
+      hasCloseBtn={false}
     >
       <div className="h-96">
         <p>

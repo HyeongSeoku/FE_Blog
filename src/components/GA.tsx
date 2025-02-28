@@ -1,20 +1,17 @@
 "use client";
 
-import { COOKIE_CONSENT } from "@/constants/localStorage.constant";
+import { COOKIE_GA_CONSENT } from "@/constants/storage.constant";
+import { getCookie, removeCookie } from "@/utils/cookies";
 import Script from "next/script";
-import { useEffect, useState } from "react";
 
 export default function GA() {
-  const [isConsentGiven, setIsConsentGiven] = useState(false);
+  const isAgreeGA = getCookie(COOKIE_GA_CONSENT) === "true";
 
-  useEffect(() => {
-    const consent = localStorage.getItem(COOKIE_CONSENT);
-    if (consent === "true") {
-      setIsConsentGiven(true);
-    }
-  }, []);
-
-  if (!isConsentGiven) return null;
+  if (!isAgreeGA) {
+    removeCookie("_ga");
+    removeCookie(`_ga_${process.env.NEXT_PUBLIC_GA_ID}`);
+    return null;
+  }
 
   return (
     <>
