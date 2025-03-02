@@ -13,6 +13,8 @@ export interface BottomSheetProps {
   isOpen: boolean;
   bottomChildren?: ReactNode;
   onClose?: () => void;
+  modalClassName?: string;
+  backDropClassName?: string;
 }
 
 const BottomSheet = ({
@@ -21,6 +23,8 @@ const BottomSheet = ({
   hasCloseBtn = false,
   isOpen,
   bottomChildren,
+  modalClassName = "",
+  backDropClassName = "",
   onClose,
 }: BottomSheetProps) => {
   useScrollDisable(isOpen);
@@ -35,6 +39,7 @@ const BottomSheet = ({
         "fixed inset-0 z-30 overflow-hidden transition-[backdrop-filter]",
         { "backdrop-blur-[1px]": isOpen },
         { "backdrop-blur-none": !isOpen },
+        backDropClassName,
       )}
     >
       <div
@@ -45,6 +50,7 @@ const BottomSheet = ({
           {
             "bottom-0 min-md:bottom-5": isOpen,
           },
+          modalClassName,
         )}
       >
         <header className="flex items-center px-5 mb-1">

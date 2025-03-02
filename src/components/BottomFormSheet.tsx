@@ -37,16 +37,17 @@ export default function BottomFormSheet({
       isOpen={isOpen}
       onClose={onClose}
       hasCloseBtn={hasCloseBtn}
+      modalClassName="pt-7 py-3"
       bottomChildren={
-        <div className="flex gap-2 px-5 py-1">
+        <div className="flex gap-2 px-5 py-1 leading-8 shadow-2xl">
           <button
-            className="rounded-md flex-1 bg-red-300"
+            className="rounded-md flex-1 bg-primary hover:bg-primary-hover transition-colors duration-300"
             onClick={handleConfirm}
           >
             {confirmText}
           </button>
           <button
-            className="rounded-md flex-1 bg-red-300"
+            className="rounded-md flex-1 bg-red-400 hover:bg-red-300 transition-colors duration-300"
             onClick={handleCancel}
           >
             {cancelText}
