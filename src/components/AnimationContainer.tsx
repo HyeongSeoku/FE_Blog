@@ -12,14 +12,14 @@ export type AnimationNameType =
   | "animate-fadeInLeft";
 
 interface AnimationContainerProps {
-  tag?: ElementType;
+  htmlTag?: ElementType;
   animationName?: AnimationNameType;
   children: ReactNode;
   className?: string;
 }
 
 const AnimationContainer = ({
-  tag: Tag = "div",
+  htmlTag: HtmlTag = "div",
   animationName = ANIMAITE_FADE_IN_UP,
   children,
   className,
@@ -28,7 +28,7 @@ const AnimationContainer = ({
   const [isVisible, ref] = useAnimationVisibility();
 
   return (
-    <Tag
+    <HtmlTag
       ref={ref}
       className={classNames(
         "opacity-0 transition duration-300 will-change-transform-opacity",
@@ -40,7 +40,7 @@ const AnimationContainer = ({
       {...props}
     >
       {children}
-    </Tag>
+    </HtmlTag>
   );
 };
 
