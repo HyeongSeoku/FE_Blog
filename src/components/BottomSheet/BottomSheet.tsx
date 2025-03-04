@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, ReactNode, SetStateAction } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import styles from "./index.module.css";
 import classNames from "classnames";
 import useScrollDisable from "@/hooks/useScrollDisable";
@@ -15,6 +15,7 @@ export interface BottomSheetProps {
   onClose?: () => void;
   modalClassName?: string;
   backDropClassName?: string;
+  hasBackDropClose?: boolean;
 }
 
 const BottomSheet = ({
@@ -25,30 +26,47 @@ const BottomSheet = ({
   bottomChildren,
   modalClassName = "",
   backDropClassName = "",
+  hasBackDropClose = false,
   onClose,
 }: BottomSheetProps) => {
   useScrollDisable(isOpen);
 
-  const handelClose = () => {
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isRendered, setIsRendered] = useState(isOpen);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsRendered(true);
+      setTimeout(() => setIsAnimating(true), 10);
+    } else {
+      setIsAnimating(false);
+      setTimeout(() => setIsRendered(false), 300);
+    }
+  }, [isOpen]);
+
+  const handleClose = () => {
     onClose?.();
   };
+
+  if (!isRendered) return null;
 
   return (
     <div
       className={classNames(
-        "fixed inset-0 z-30 overflow-hidden transition-[backdrop-filter] bg-gray-500 bg-opacity-20",
-        { "backdrop-blur-[1px]": isOpen },
-        { "backdrop-blur-none hidden": !isOpen },
+        "fixed inset-0 z-30 overflow-hidden transition-opacity bg-gray-500 bg-opacity-20",
+        { "opacity-0 pointer-events-none": !isAnimating },
+        { "opacity-100": isAnimating },
         backDropClassName,
       )}
+      onClick={hasBackDropClose ? handleClose : () => {}}
     >
       <div
         className={classNames(
           "absolute max-w-3xl shadow-2xl left-0 right-0 rounded-t-lg py-7 bg-white text-black transition-[bottom] duration-300",
           "min-md:rounded-b-lg min-md:left-1/2 min-md:-translate-x-1/2",
-          { "-bottom-full": !isOpen },
+          { "-bottom-full": !isAnimating },
           {
-            "bottom-0 min-md:bottom-5": isOpen,
+            "bottom-0 min-md:bottom-5": isAnimating,
           },
           modalClassName,
         )}
@@ -56,7 +74,7 @@ const BottomSheet = ({
         <header className="flex items-center px-5 mb-1">
           <h3 className="text-lg font-bold">{title}</h3>
           {!hasCloseBtn && (
-            <button onClick={handelClose} className="ml-auto">
+            <button onClick={handleClose} className="ml-auto">
               <CloseIcon />
             </button>
           )}
