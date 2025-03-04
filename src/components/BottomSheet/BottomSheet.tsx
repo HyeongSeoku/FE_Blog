@@ -36,15 +36,15 @@ const BottomSheet = ({
   return (
     <div
       className={classNames(
-        "fixed inset-0 z-30 overflow-hidden transition-[backdrop-filter]",
+        "fixed inset-0 z-30 overflow-hidden transition-[backdrop-filter] bg-gray-500 bg-opacity-20",
         { "backdrop-blur-[1px]": isOpen },
-        { "backdrop-blur-none": !isOpen },
+        { "backdrop-blur-none hidden": !isOpen },
         backDropClassName,
       )}
     >
       <div
         className={classNames(
-          "absolute max-w-3xl shadow-md left-0 right-0 rounded-lg rounded-b-none py-7 bg-white text-black transition-[bottom] duration-300",
+          "absolute max-w-3xl shadow-2xl left-0 right-0 rounded-t-lg py-7 bg-white text-black transition-[bottom] duration-300",
           "min-md:rounded-b-lg min-md:left-1/2 min-md:-translate-x-1/2",
           { "-bottom-full": !isOpen },
           {
@@ -54,7 +54,7 @@ const BottomSheet = ({
         )}
       >
         <header className="flex items-center px-5 mb-1">
-          <h3 className="text-lg">{title}</h3>
+          <h3 className="text-lg font-bold">{title}</h3>
           {!hasCloseBtn && (
             <button onClick={handelClose} className="ml-auto">
               <CloseIcon />
@@ -63,7 +63,7 @@ const BottomSheet = ({
         </header>
 
         <div
-          className={`${styles.contentWrapper} min-h-20 max-h-40 overflow-y-auto scroll px-5 py-2`}
+          className={`${styles.contentWrapper} min-h-20 max-h-40 overflow-y-auto scroll px-5 py-5`}
         >
           {children}
         </div>

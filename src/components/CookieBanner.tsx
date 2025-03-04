@@ -49,14 +49,12 @@ export default function CookieBanner() {
       onCancel={handleDecline}
       hasCloseBtn={false}
     >
-      <div className="h-96">
-        <p>
-          이 웹사이트는 Google Analytics를 사용하여 방문자의 웹사이트 이용
-          방식을 분석하고, 사용자 경험을 개선하기 위해 쿠키를 사용합니다. Google
-          Analytics를 통해 수집된 데이터는 익명으로 처리되며, 개인 식별 정보는
-          저장되지 않습니다.
-        </p>
-      </div>
+      <p>
+        이 웹사이트는 Google Analytics를 사용하여 방문자의 웹사이트 이용 방식을
+        분석하고, 사용자 경험을 개선하기 위해 쿠키를 사용합니다. Google
+        Analytics를 통해 수집된 데이터는 익명으로 처리되며, 개인 식별 정보는
+        저장되지 않습니다.
+      </p>
     </BottomFormSheet>
   );
 }

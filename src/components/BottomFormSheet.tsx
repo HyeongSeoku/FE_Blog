@@ -47,7 +47,7 @@ export default function BottomFormSheet({
             {confirmText}
           </button>
           <button
-            className="rounded-md flex-1 bg-red-400 hover:bg-red-300 transition-colors duration-300"
+            className="rounded-md flex-1 bg-gray-400 hover:bg-gray-200  transition-colors duration-300"
             onClick={handleCancel}
           >
             {cancelText}
