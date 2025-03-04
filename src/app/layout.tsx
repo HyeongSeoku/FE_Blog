@@ -3,7 +3,7 @@ import "@/app/globals.css";
 import { ReactNode } from "react";
 import dynamic from "next/dynamic";
 
-const CookieBanner = dynamic(() => import("@/components/CookieBanner"), {
+const GaBanner = dynamic(() => import("@/components/GaBanner"), {
   ssr: false,
 });
 
@@ -23,7 +23,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <script src="/theme.js" />
       </head>
       <body>
-        <CookieBanner />
+        <GaBanner />
         {children}
         <div id="modal-root"></div>
       </body>

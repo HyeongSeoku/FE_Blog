@@ -11,7 +11,7 @@ import { getCookie, removeCookie, setCookie } from "@/utils/cookies";
 
 const GA = dynamic(() => import("@/components/GA"), { ssr: false });
 
-export default function CookieBanner() {
+function GaBanner() {
   const isAlreadyConsent = getCookie(COOKIE_GA_CONSENT) === "true";
   const isGaDisAgree = getCookie(COOKIE_GA_DIS_AGREE) === "false";
   const [isConsentGiven, setIsConsentGiven] = useState(isAlreadyConsent);
@@ -58,3 +58,5 @@ export default function CookieBanner() {
     </BottomFormSheet>
   );
 }
+
+export default GaBanner;
