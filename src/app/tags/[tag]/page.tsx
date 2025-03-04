@@ -1,7 +1,6 @@
 import BlogPostCard from "@/components/BlogPostCard";
+import Tag from "@/components/Tag";
 import { getPostsByTag } from "@/utils/post";
-import classNames from "classnames";
-import Link from "next/link";
 
 const TagPage = async ({ params }: { params: { tag: string } }) => {
   const { tag } = params;
@@ -14,21 +13,18 @@ const TagPage = async ({ params }: { params: { tag: string } }) => {
       {/* TODO: tag가 일정 갯수 넘어갈때 hide show 버튼 추가 */}
       <ul className="flex flex-wrap gap-2">
         {tagList.map(({ key, value }) => (
-          <Link
+          <Tag
             key={key}
+            title={key}
+            value={value}
             href={`/tags/${key}`}
-            replace
-            className={classNames(
-              "bg-[var(--bg-gray-color)] hover:bg-[var(--bg-gray-hover-color)] transition-[background-color] duration-300 px-3 py-1 rounded-full",
-              {
-                "bg-[var(--contrasting-bg-color)] text-[var(--contrasting-text-color)] hover:bg-[var(--contrasting-bg-color)]":
-                  tag === key,
-              },
-            )}
+            isSelected={tag === key}
           >
-            <span>{key}</span>
-            <span>{value}</span>
-          </Link>
+            <div className="flex gap-[2px] items-center">
+              <span>{key}</span>
+              <span className="text-sm">({value})</span>
+            </div>
+          </Tag>
         ))}
       </ul>
 

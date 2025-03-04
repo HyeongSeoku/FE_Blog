@@ -1,9 +1,7 @@
-import BlogPostCard from "@/components/BlogPostCard";
 import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
 import BlogDateTemplate from "@/templates/BlogDateTemplate";
-import { formatToKoreanMonth, getDate } from "@/utils/date";
+import { formatToKoreanMonth } from "@/utils/date";
 import { getPostsByDate } from "@/utils/post";
-import dayjs from "dayjs";
 import { redirect } from "next/navigation";
 
 interface BlogMonthPageProps {

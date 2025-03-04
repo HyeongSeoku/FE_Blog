@@ -38,5 +38,5 @@ export const formatToKoreanMonth = (date: string): string => {
     return "Invalid Date";
   }
 
-  return parsedDate.format("YYYY년MM월");
+  return parsedDate.format("YYYY년 MM월");
 };

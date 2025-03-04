@@ -8,7 +8,7 @@ export default function PostsDetailLayout({
 }) {
   return (
     <DefaultLayout hasHeaderAnimation={true}>
-      <div className="px-44 py-10 md-lg:px-32 md:px-12">{children}</div>
+      <div className="px-44 py-10 md-lg:px-32 md:px-5">{children}</div>
     </DefaultLayout>
   );
 }
