@@ -82,32 +82,32 @@ const MdxDetailTemplate = ({
             </MdxLink>
           ),
           p: ({ children, ...rest }) => (
-            <AnimationContainer tag="p" {...rest}>
+            <AnimationContainer htmlTag="p" {...rest}>
               {children}
             </AnimationContainer>
           ),
           h1: ({ children, ...rest }) => (
-            <AnimationContainer tag="h1" {...rest}>
+            <AnimationContainer htmlTag="h1" {...rest}>
               {children}
             </AnimationContainer>
           ),
           h2: ({ children, ...rest }) => (
-            <AnimationContainer tag="h2" {...rest}>
+            <AnimationContainer htmlTag="h2" {...rest}>
               {children}
             </AnimationContainer>
           ),
           h3: ({ children, ...rest }) => (
-            <AnimationContainer tag="h3" {...rest}>
+            <AnimationContainer htmlTag="h3" {...rest}>
               {children}
             </AnimationContainer>
           ),
           ul: ({ children, ...rest }) => (
-            <AnimationContainer tag="ul" {...rest}>
+            <AnimationContainer htmlTag="ul" {...rest}>
               {children}
             </AnimationContainer>
           ),
           li: ({ children, ...rest }) => (
-            <AnimationContainer tag="li" {...rest}>
+            <AnimationContainer htmlTag="li" {...rest}>
               {children}
             </AnimationContainer>
           ),
