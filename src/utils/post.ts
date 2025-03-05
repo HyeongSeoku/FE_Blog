@@ -168,7 +168,7 @@ export const getPostsByTag = async (
   );
 
   const tagList = Object.keys(tagCounts).map((key) => {
-    return { key, value: tagCounts[key] * 2 };
+    return { key, value: tagCounts[key] };
   });
 
   return { list: filteredPosts, count: filteredPosts.length, tagList };
