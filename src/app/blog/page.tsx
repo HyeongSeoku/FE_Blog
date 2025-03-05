@@ -6,6 +6,12 @@ import { redirect } from "next/navigation";
 export const metadata = {
   title: "블로그 페이지",
   description: "최신 블로그 글 목록을 확인하세요.",
+  openGraph: {
+    title: "블로그 페이지",
+    description: "최신 블로그 글 목록을 확인하세요.",
+    url: "/blog",
+    type: "website",
+  },
 };
 
 export const revalidate = 60;
