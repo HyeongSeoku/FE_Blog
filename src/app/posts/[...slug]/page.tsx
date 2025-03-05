@@ -32,6 +32,14 @@ async function getPostDataWithMetadata(slug: string[]) {
       frontMatter.description ||
       "프론트엔드 개발자 김형석의 개발 블로그입니다.",
     other: { keyword: frontMatter.tags?.join(",") || "" },
+    openGraph: {
+      title: frontMatter.title || "SEOK 개발 블로그",
+      description:
+        frontMatter.description ||
+        "프론트엔드 개발자 김형석의 개발 블로그입니다.",
+      url: `/posts/${slug.join("/")}`,
+      type: "website",
+    },
   };
 
   return { postData, metadata };
@@ -43,6 +51,7 @@ export async function generateMetadata({
   params: { slug: string[] };
 }) {
   const { metadata } = await getPostDataWithMetadata(params.slug);
+
   return metadata;
 }
 

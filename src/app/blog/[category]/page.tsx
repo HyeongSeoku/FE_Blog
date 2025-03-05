@@ -13,6 +13,12 @@ export const generateMetadata = async ({
   const metadata = {
     title: `${categoryTitle} 카테고리`,
     description: `${params.category} 관련 블로그 글 목록을 확인하세요.`,
+    openGraph: {
+      title: `${categoryTitle} 카테고리`,
+      description: `${params.category} 관련 블로그 글 목록을 확인하세요.`,
+      url: `/blog/${categoryTitle}`,
+      type: "website",
+    },
   };
 
   return metadata;

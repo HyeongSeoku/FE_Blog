@@ -3,6 +3,27 @@ import BlogDateTemplate from "@/templates/BlogDateTemplate";
 import { getPostsByDate } from "@/utils/post";
 import { redirect } from "next/navigation";
 
+export const generateMetadata = async ({
+  params,
+}: {
+  params: { year: string };
+}) => {
+  const { year } = params;
+
+  const metadata = {
+    title: `${year}년도 게시물`,
+    description: `${year}년도 작성된 블로그 글 목록을 확인하세요.`,
+    openGraph: {
+      title: `${year}년도 게시물`,
+      description: `${year}년도 작성된 블로그 글 목록을 확인하세요.`,
+      url: `/blog/year/${year}`,
+      type: "website",
+    },
+  };
+
+  return metadata;
+};
+
 interface BlogYearPageProps {
   params: { year: string };
   searchParams: { [key: string]: string | undefined };
