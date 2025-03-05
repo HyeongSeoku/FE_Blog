@@ -1,6 +1,26 @@
 import BlogPostCard from "@/components/BlogPostCard";
 import Tag from "@/components/Tag";
 import { getPostsByTag } from "@/utils/post";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { tag: string };
+}): Promise<Metadata> {
+  const { tag } = params;
+  return {
+    title: `#${tag} 게시물`,
+    description: `${tag} 태그가 포함된 블로그 게시글 목록입니다.`,
+    openGraph: {
+      title: `#${tag} 게시물`,
+      description: `${tag} 태그가 포함된 블로그 게시글 목록입니다.`,
+      url: `/tags/${tag}`,
+      type: "website",
+      images: [],
+    },
+  };
+}
 
 const TagPage = async ({ params }: { params: { tag: string } }) => {
   const { tag } = params;
