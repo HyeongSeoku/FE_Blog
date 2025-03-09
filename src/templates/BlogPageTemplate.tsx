@@ -115,7 +115,6 @@ const BlogPageTemplate = ({
     );
   }
 
-  //TODO: 게시물이 없을때의 화면 처리 필요
   return (
     <BlogPageTemplateWrapper>
       <CategoryList

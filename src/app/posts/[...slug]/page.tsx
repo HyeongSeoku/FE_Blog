@@ -25,6 +25,7 @@ async function getPostDataWithMetadata(slug: string[]) {
   }
 
   const { frontMatter } = postData;
+  console.log("TEST frontMatter", frontMatter.thumbnail);
 
   const metadata = {
     title: frontMatter.title || "SEOK 개발 블로그",

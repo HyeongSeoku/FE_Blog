@@ -86,6 +86,7 @@ export const getMdxContents = async (
   // Find related posts based on tags and category
   const currentTags = frontMatter.tags || [];
   const currentCategory = frontMatter.category;
+  frontMatter.thumbnail = getRepresentativeImage(data, content);
 
   const relatedPosts = sortedPosts
     .filter(

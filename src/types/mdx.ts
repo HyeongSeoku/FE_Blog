@@ -7,6 +7,7 @@ export interface FrontMatterProps {
   createdAt: string;
   subCategory?: string;
   tags?: string[];
+  thumbnail?: string;
 }
 
 export interface HeadingsProps {
