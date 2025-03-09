@@ -16,7 +16,8 @@ const PostCategoryCount = ({
   isDefault,
 }: PostCategoryCountProps) => {
   const pathname = usePathname();
-  const isReplace = pathname.includes("blog");
+  // const isReplace = pathname.includes("blog");
+  const isReplace = false;
   const isBlogPath = pathname === "/blog";
   const isCategorySamePath = pathname === `/blog/${categoryKey.toLowerCase()}`;
 
@@ -25,9 +26,14 @@ const PostCategoryCount = ({
       <li>
         <Link href={`/blog`} replace={isReplace} className="flex gap-1 group">
           <div
-            className={classNames("text-3xl group-hover:underline", {
-              underline: isBlogPath,
-            })}
+            className={classNames(
+              "text-3xl relative group",
+              "after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-current after:scale-x-0 after:transition-transform after:duration-300 after:origin-left",
+              "group-hover:after:scale-x-100",
+              {
+                "after:scale-x-100": isBlogPath,
+              },
+            )}
           >
             {categoryKey}
           </div>
@@ -45,9 +51,14 @@ const PostCategoryCount = ({
         className="flex gap-1 group"
       >
         <div
-          className={classNames("text-3xl group-hover:underline", {
-            underline: isCategorySamePath,
-          })}
+          className={classNames(
+            "text-3xl relative group",
+            "after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-[2px] after:bg-current after:scale-x-0 after:transition-transform after:duration-300 after:origin-left",
+            "group-hover:after:scale-x-100",
+            {
+              "after:scale-x-100": isCategorySamePath,
+            },
+          )}
         >
           {categoryKey}
         </div>

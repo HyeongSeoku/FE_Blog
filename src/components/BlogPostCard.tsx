@@ -32,7 +32,10 @@ const BlogPostCard = ({
 
   return (
     <li className="py-5 flex gap-4">
-      <Link href={`/posts/${slug}`} className="w-[150px] h-[150px] relative">
+      <Link
+        href={`/posts/${slug}`}
+        className="w-[150px] h-[150px] relative md:w-[75px] md:h-[75px]"
+      >
         <Image
           src={thumbnail}
           alt="Post Thumbnail"
