@@ -39,7 +39,7 @@ export default function BottomFormSheet({
       hasCloseBtn={hasCloseBtn}
       modalClassName="pt-7 py-3"
       bottomChildren={
-        <div className="flex gap-2 px-5 py-1 leading-8 shadow-2xl">
+        <div className="flex gap-2 px-5 py-1 leading-8">
           <button
             className="rounded-md flex-1 bg-primary hover:bg-primary-hover transition-colors duration-300"
             onClick={handleConfirm}
