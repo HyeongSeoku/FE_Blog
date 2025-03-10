@@ -10,6 +10,7 @@ tags:
 ---
 
 import SkeletonBar from "@/components/SkeletonBar";
+import MdxComponentWrapper from "@/components/MDX/MdxComponentWrapper";
 
 # Hello, MDX!
 
@@ -19,4 +20,16 @@ This is a sample MDX file with **Markdown** and <span style={{ color: 'red' }}>J
 
 This is a test file
 
+## 컴포넌트 to mdx 파일 테스트입니다.
+
+### code
+
+```
 <SkeletonBar />
+```
+
+### 실행 결과
+
+<MdxComponentWrapper>
+  <SkeletonBar />
+</MdxComponentWrapper>
