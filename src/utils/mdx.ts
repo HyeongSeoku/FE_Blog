@@ -29,7 +29,16 @@ export const getMdxContents = async (
   // Read and parse the MDX file
   const source = await fs.readFile(filePath, "utf8");
   const { content, data } = matter(source);
-  const frontMatter = data as FrontMatterProps;
+
+  const thumbnail = (data.thumbnail ||
+    getRepresentativeImage(data, content)) as string;
+  const frontMatter: FrontMatterProps = {
+    ...(data as FrontMatterProps),
+    thumbnail,
+  };
+  // Find related posts based on tags and category
+  const currentTags = frontMatter.tags || [];
+  const currentCategory = frontMatter.category;
 
   if (!frontMatter.title) {
     throw new Error("Front matter does not contain required 'title' field");
@@ -82,11 +91,6 @@ export const getMdxContents = async (
           title: sortedPosts[currentIndex + 1].title,
         }
       : null;
-
-  // Find related posts based on tags and category
-  const currentTags = frontMatter.tags || [];
-  const currentCategory = frontMatter.category;
-  frontMatter.thumbnail = getRepresentativeImage(data, content);
 
   const relatedPosts = sortedPosts
     .filter(
