@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getAllPosts, getPostsDetail } from "@/utils/post";
 import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
 import SkeletonBar from "@/components/SkeletonBar";
+import { PUBLIC_CONTENT_IMG_PATH } from "@/constants/basic.constants";
 
 export const dynamic = "error";
 
@@ -25,7 +26,6 @@ async function getPostDataWithMetadata(slug: string[]) {
   }
 
   const { frontMatter } = postData;
-  console.log("TEST frontMatter", frontMatter.thumbnail);
 
   const metadata = {
     title: frontMatter.title || "SEOK 개발 블로그",
@@ -40,6 +40,14 @@ async function getPostDataWithMetadata(slug: string[]) {
         "프론트엔드 개발자 김형석의 개발 블로그입니다.",
       url: `/posts/${slug.join("/")}`,
       type: "website",
+      images: [
+        {
+          url:
+            frontMatter.thumbnail ||
+            `${PUBLIC_CONTENT_IMG_PATH}/default-og-image.jpeg`,
+          alt: frontMatter.title || "SEOK 개발 블로그",
+        },
+      ],
     },
   };
 
