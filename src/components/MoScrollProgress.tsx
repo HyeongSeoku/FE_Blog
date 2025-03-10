@@ -1,27 +1,13 @@
 "use client";
 
+import useScrollPosition from "@/hooks/useScrollPosition";
 import useScrollProgress from "@/hooks/useScrollProgress";
 import ArrowTop from "@/icon/arrow_top.svg";
 import classNames from "classnames";
-import { useEffect, useState } from "react";
 
 const MoScrollProgress = () => {
   const progressWidth = useScrollProgress();
-
-  const [isScrollTop, setIsScrollTop] = useState(true);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrollTop(window.scrollY === 0);
-    };
-
-    handleScroll();
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  const { isScrollTop } = useScrollPosition();
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -47,7 +33,6 @@ const MoScrollProgress = () => {
         xmlns="http://www.w3.org/2000/svg"
       >
         <circle
-          className="text-gray-300"
           strokeWidth="8"
           stroke="currentColor"
           fill="transparent"
@@ -56,7 +41,7 @@ const MoScrollProgress = () => {
           r="45"
         />
         <circle
-          className="text-blue-500"
+          className="text-primary"
           strokeWidth="8"
           strokeLinecap="round"
           stroke="currentColor"

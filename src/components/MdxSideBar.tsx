@@ -17,6 +17,8 @@ export interface MdxSideBarProps {
 const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
   const [activeId, setActiveId] = useState<string | null>(null);
 
+  const HEADER_HEIGHT = 56;
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -32,24 +34,45 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
       },
     );
 
-    const targets = headings.map((heading) =>
-      document.getElementById(heading.id),
-    );
-    targets.forEach((target) => {
-      if (target) observer.observe(target);
+    const observeHeadings = () => {
+      const targets = headings.map((heading) =>
+        document.getElementById(heading.id),
+      );
+
+      targets.forEach((target) => {
+        if (target) observer.observe(target);
+      });
+
+      return () => {
+        targets.forEach((target) => {
+          if (target) observer.unobserve(target);
+        });
+      };
+    };
+
+    observeHeadings(); // 최초 실행
+
+    // DOM 변경을 감지하여 observer 재설정
+    const mutationObserver = new MutationObserver(() => {
+      observeHeadings();
+    });
+
+    mutationObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
     });
 
     return () => {
-      targets.forEach((target) => {
-        if (target) observer.unobserve(target);
-      });
+      mutationObserver.disconnect();
+      observer.disconnect();
     };
   }, [headings]);
 
   const handleClick = (id: string) => {
     const target = document.getElementById(id);
     if (target) {
-      const yPosition = target.getBoundingClientRect().top + window.scrollY;
+      const yPosition =
+        target.getBoundingClientRect().top + window.scrollY - HEADER_HEIGHT;
 
       window.scrollTo({ top: yPosition, behavior: "smooth" });
       setActiveId(id);
@@ -73,14 +96,13 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
 
   return (
     <>
-      <aside className="fixed top-[100px] right-[50px] p-4 w-fit h-fit max-w-[150px] max-h-[700px] border-gray-200 flex flex-col xl:opacity-0 transform duration-300 md:hidden">
+      <aside className="fixed top-[100px] right-[20px] p-4 w-fit h-fit max-w-[150px] max-h-[700px] border-gray-200 flex flex-col transform duration-300 lg:opacity-0 md:hidden">
         <ul className="space-y-2 h-fit max-h-[500px] overflow-y-scroll scroll-bar-thin">
           {headings.map((heading, idx) => (
             <li
               key={`${heading}_${idx}`}
               className={classNames(
-                "text-sm hover:text-[var(--text-color)] transform transition-colors duration-100",
-                ANIMAITE_FADE_IN_UP,
+                "text-sm hover:text-theme transition-colors duration-100",
                 {
                   "ml-4": heading.level === 3,
                   "text-blue-600 font-bold": activeId === heading.id,

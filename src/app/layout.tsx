@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
-
 import { ReactNode } from "react";
-import { cookies } from "next/headers";
-import { LIGHT_DARK_THEME } from "@/constants/cookie.constants";
+import dynamic from "next/dynamic";
+
+const GaBanner = dynamic(() => import("@/components/GaBanner"), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: "SEOK 개발 블로그",
@@ -15,12 +17,13 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
-  const cookieStore = cookies();
-  const theme = cookieStore.get(LIGHT_DARK_THEME)?.value || "light";
-
   return (
-    <html lang="en" data-theme={theme === "dark" ? "dark" : "light"}>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script src="/theme.js" />
+      </head>
       <body>
+        <GaBanner />
         {children}
         <div id="modal-root"></div>
       </body>

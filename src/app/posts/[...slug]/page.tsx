@@ -1,6 +1,12 @@
 import { redirect } from "next/navigation";
-import { getAllPosts, getPostsDetail } from "@/utils/mdxServer";
+import { getAllPosts, getPostsDetail } from "@/utils/post";
 import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
+import SkeletonBar from "@/components/SkeletonBar";
+
+import MdxComponentWrapper from "@/components/MDX/MdxComponentWrapper";
+import { PUBLIC_CONTENT_IMG_PATH } from "@/constants/basic.constants";
+
+export const dynamic = "error";
 
 export async function generateStaticParams() {
   const { postList } = await getAllPosts({});
@@ -29,6 +35,22 @@ async function getPostDataWithMetadata(slug: string[]) {
       frontMatter.description ||
       "프론트엔드 개발자 김형석의 개발 블로그입니다.",
     other: { keyword: frontMatter.tags?.join(",") || "" },
+    openGraph: {
+      title: frontMatter.title || "SEOK 개발 블로그",
+      description:
+        frontMatter.description ||
+        "프론트엔드 개발자 김형석의 개발 블로그입니다.",
+      url: `/posts/${slug.join("/")}`,
+      type: "website",
+      images: [
+        {
+          url:
+            frontMatter.thumbnail ||
+            `${PUBLIC_CONTENT_IMG_PATH}/default-og-image.jpeg`,
+          alt: frontMatter.title || "SEOK 개발 블로그",
+        },
+      ],
+    },
   };
 
   return { postData, metadata };
@@ -40,6 +62,7 @@ export async function generateMetadata({
   params: { slug: string[] };
 }) {
   const { metadata } = await getPostDataWithMetadata(params.slug);
+
   return metadata;
 }
 
@@ -61,17 +84,16 @@ const PostPage = async ({ params }: { params: { slug: string[] } }) => {
   } = postData;
 
   return (
-    <>
-      <MdxDetailTemplate
-        source={source}
-        readingTime={readingTime}
-        frontMatter={frontMatter}
-        heading={heading}
-        nextPost={nextPost}
-        previousPost={previousPost}
-        relatedPosts={relatedPosts}
-      />
-    </>
+    <MdxDetailTemplate
+      source={source}
+      readingTime={readingTime}
+      frontMatter={frontMatter}
+      heading={heading}
+      nextPost={nextPost}
+      previousPost={previousPost}
+      relatedPosts={relatedPosts}
+      mdxComponents={{ MdxComponentWrapper, SkeletonBar }}
+    />
   );
 };
 

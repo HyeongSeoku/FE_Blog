@@ -12,6 +12,10 @@ interface ThemeState {
 const getInitialTheme = (): boolean => {
   if (typeof window !== "undefined") {
     const cookieTheme = getCookie(LIGHT_DARK_THEME);
+    // document.documentElement.setAttribute(
+    //   "data-theme",
+    //   cookieTheme === "dark" ? "dark" : "light",
+    // );
 
     return (
       cookieTheme === "dark" ??
@@ -28,14 +32,20 @@ const useThemeStore = create<ThemeState>((set) => {
       set((state) => {
         const newTheme = !state.isDarkMode;
         setCookie(LIGHT_DARK_THEME, newTheme ? "dark" : "light", 365);
+        // document.documentElement.setAttribute(
+        //   "data-theme",
+        //   newTheme ? "dark" : "light",
+        // );
         return { isDarkMode: newTheme };
       }),
     setDarkMode: () => {
       setCookie(LIGHT_DARK_THEME, "dark", 365);
+      // document.documentElement.setAttribute("data-theme", "dark");
       set({ isDarkMode: true });
     },
     setLightMode: () => {
       setCookie(LIGHT_DARK_THEME, "light", 365);
+      // document.documentElement.setAttribute("data-theme", "light");
       set({ isDarkMode: false });
     },
   };

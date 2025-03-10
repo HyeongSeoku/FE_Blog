@@ -6,5 +6,9 @@ export default function PostsDetailLayout({
 }: {
   children: ReactNode;
 }) {
-  return <DefaultLayout showScrollProgress={true}>{children}</DefaultLayout>;
+  return (
+    <DefaultLayout hasHeaderAnimation={true}>
+      <div className="px-44 py-10 md-lg:px-32 md:px-5">{children}</div>
+    </DefaultLayout>
+  );
 }

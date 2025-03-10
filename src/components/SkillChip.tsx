@@ -7,6 +7,7 @@ export interface SkillChipProps {
   skillName: SkillName;
   backGroundColor?: string;
   index: number;
+  onClick: (title: string) => void;
 }
 
 export type SkillName =
@@ -15,7 +16,7 @@ export type SkillName =
   | "React"
   | "JavaScript"
   | "TypeScript"
-  | "NextJs";
+  | "Next.js";
 
 type SkillColor = {
   [key in SkillName]: string;
@@ -27,7 +28,7 @@ const skillColors: SkillColor = {
   React: "#53C1DE",
   JavaScript: "#FFCA27",
   TypeScript: "#3178C6",
-  NextJs: "#000000",
+  "Next.js": "#000000",
 };
 
 const SkillChip = ({
@@ -35,6 +36,7 @@ const SkillChip = ({
   imgSrc,
   backGroundColor,
   index,
+  onClick,
 }: SkillChipProps) => {
   const chipRef = useRef<HTMLButtonElement>(null);
 
@@ -57,8 +59,9 @@ const SkillChip = ({
         animationDelay: `${index * 0.1}s`,
       }}
       onAnimationEnd={handleAnimationEnd}
+      onClick={() => onClick(skillName)}
     >
-      <Image width={18} height={18} src={imgSrc} alt={skillName} />
+      <Image width={18} height={18} src={imgSrc} alt={skillName} priority />
       <div className="font-semibold text-sm">{skillName}</div>
     </button>
   );

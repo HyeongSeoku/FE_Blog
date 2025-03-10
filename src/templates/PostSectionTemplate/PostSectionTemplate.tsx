@@ -1,11 +1,10 @@
 "use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { PostDataProps } from "@/utils/mdxServer";
-import PostCard from "@/components/PostCard";
+import { PostDataProps } from "@/types/posts";
+import MainPostCard from "@/components/MainPostCard";
 
 import "./post-section-template.css";
-import classNames from "classnames";
 
 export interface PostSectionProps {
   postData: PostDataProps[];
@@ -29,9 +28,10 @@ const PostSectionTemplate = ({ postData }: PostSectionProps) => {
             tags,
             category,
             subCategory,
+            thumbnail,
           }) => (
             <SwiperSlide key={slug} tag="li">
-              <PostCard
+              <MainPostCard
                 link={`/posts/${slug}`}
                 title={title}
                 description={description}
@@ -39,6 +39,7 @@ const PostSectionTemplate = ({ postData }: PostSectionProps) => {
                 tags={tags}
                 category={category}
                 subCategory={subCategory}
+                thumbnail={thumbnail}
               />
             </SwiperSlide>
           ),
@@ -54,8 +55,9 @@ const PostSectionTemplate = ({ postData }: PostSectionProps) => {
             tags,
             category,
             subCategory,
+            thumbnail,
           }) => (
-            <PostCard
+            <MainPostCard
               key={slug}
               link={`/posts/${slug}`}
               title={title}
@@ -64,6 +66,7 @@ const PostSectionTemplate = ({ postData }: PostSectionProps) => {
               tags={tags}
               category={category}
               subCategory={subCategory}
+              thumbnail={thumbnail}
             />
           ),
         )}

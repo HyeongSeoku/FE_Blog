@@ -42,7 +42,7 @@ const IntroSectionTemplate = () => {
 
       <div className="flex items-center gap-1">
         <Link
-          className="text-[var(--text-color)] p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"
+          className="text-theme p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"
           href="mailto:gudtjr3437@gmail.com"
           passHref
           target="_blank"
@@ -50,7 +50,7 @@ const IntroSectionTemplate = () => {
           <EmailIcon alt="email" width={20} height={20} />
         </Link>
         <Link
-          className="text-[var(--text-color)] p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"
+          className="text-theme p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"
           href="https://github.com/HyeongSeoku"
           passHref
           target="_blank"
@@ -58,7 +58,7 @@ const IntroSectionTemplate = () => {
           <GithubIcon alt="email" width={20} height={20} />
         </Link>
         <Link
-          className="text-[var(--text-color)] p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"
+          className="text-theme p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"
           href="https://www.linkedin.com/in/%ED%98%95%EC%84%9D-%EA%B9%80-901539232/"
           passHref
           target="_blank"

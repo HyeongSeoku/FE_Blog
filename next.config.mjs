@@ -2,6 +2,9 @@ import withMDX from "@next/mdx";
 
 const nextConfig = withMDX({
   extension: /\.mdx?$/,
+  experimental: {
+    esmExternals: true,
+  },
   transpilePackages: ["next-mdx-remote"],
 })({
   pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
@@ -21,16 +24,7 @@ const nextConfig = withMDX({
     return config;
   },
 
-  transpilePackages: ["next-mdx-remote"],
   images: {
-    // remotePatterns: [
-    //   {
-    //     protocol: "https",
-    //     hostname: "avatars.githubusercontent.com",
-    //     port: "",
-    //     search: "",
-    //   },
-    // ],
     domains: ["avatars.githubusercontent.com"],
   },
 });

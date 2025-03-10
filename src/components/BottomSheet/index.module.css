@@ -1,0 +1,14 @@
+.contentWrapper::-webkit-scrollbar {
+  width: 4px;
+}
+
+.contentWrapper::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 10px;
+  /* margin-top: 1.75rem; */
+}
+
+.contentWrapper::-webkit-scrollbar-thumb {
+  background-color: #0ff;
+  border-radius: 10px;
+}

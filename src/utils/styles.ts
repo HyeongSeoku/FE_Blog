@@ -26,3 +26,22 @@ export const setRootProperty = (propertyName: string, value: string) => {
     console.error("propertyName 또는 value가 유효하지 않습니다.");
   }
 };
+
+export const triggerAnimation = (type: "id" | "class", target: string) => {
+  let elements: NodeListOf<SVGAnimateElement> | SVGAnimateElement | null = null;
+
+  if (type === "id") {
+    elements = document.getElementById(target) as SVGAnimateElement | null;
+    if (elements) {
+      // SVG엘리먼트 애니메이션 즉시 시작 트리거
+      elements.beginElement();
+    }
+  } else if (type === "class") {
+    elements = document.querySelectorAll(`.${target}`);
+    elements.forEach((element) => {
+      if (element instanceof SVGAnimateElement) {
+        element.beginElement();
+      }
+    });
+  }
+};

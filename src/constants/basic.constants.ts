@@ -1,29 +1,26 @@
-import { SkillName } from "@/components/SkillChip";
+import path from "path";
 
 export const PUBLIC_IMG_PATH = "/image";
+export const PUBLIC_CONTENT_IMG_PATH = "/content-image";
 
 export const MOBILE_WIDTH = 768;
 export const GISCUS_SECTION = "giscusSection";
 
-export const SKILL_LIST: {
-  skillName: SkillName;
-  bgColor?: `#${string}`;
-  imgSrc: string;
-}[] = [
-  { skillName: "React", imgSrc: `${PUBLIC_IMG_PATH}/skill/react.svg` },
-  {
-    skillName: "TypeScript",
-    imgSrc: `${PUBLIC_IMG_PATH}/skill/typescript.svg`,
-  },
-  {
-    skillName: "NextJs",
-    bgColor: "#363636",
-    imgSrc: `${PUBLIC_IMG_PATH}/skill/nextjs.svg`,
-  },
-  {
-    skillName: "JavaScript",
-    imgSrc: `${PUBLIC_IMG_PATH}/skill/javascript.svg`,
-  },
-  { skillName: "HTML", imgSrc: `${PUBLIC_IMG_PATH}/skill/html5.svg` },
-  { skillName: "CSS", imgSrc: `${PUBLIC_IMG_PATH}/skill/css3.svg` },
-];
+// 이미지 경로와 설정
+export const CONTENT_IMAGE_DIR = path.join(
+  process.cwd(),
+  "public/content-image",
+);
+export const DEFAULT_MDX_PATH = "src/mdx";
+export const PROJECT_PATH = path.join(
+  process.cwd(),
+  `${DEFAULT_MDX_PATH}/project`,
+);
+export const POST_PATH = path.join(
+  process.cwd(),
+  `${DEFAULT_MDX_PATH}/content`,
+);
+
+export const SKILL_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/skill`);
+
+export const HEADER_SCROLL_THRESHOLD = 20;

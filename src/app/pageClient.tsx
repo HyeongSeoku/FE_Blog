@@ -1,25 +1,25 @@
 "use client";
 
 import useDeviceType from "@/hooks/useDeviceType";
-import { PostDataProps, ProjectDataProps } from "@/utils/mdxServer";
+import { PostDataProps } from "@/types/posts";
 import MainSection from "@/components/MainSection";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionTemplate";
 import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
 import { GithubUserInfo } from "@/api/github";
 import useGithubInfoStore from "@/store/githubInfo";
-import { SKILL_LIST } from "@/constants/basic.constants";
 import SkillChip from "@/components/SkillChip";
 import Link from "next/link";
+import { SKILL_LIST } from "@/constants/post.constants";
+import BottomSheet from "@/components/BottomSheet/BottomSheet";
 
 const Modal = dynamic(() => import("@/components/Modal/Modal"), {
   ssr: false,
 });
 
 interface HomeClientProps {
-  projectData: ProjectDataProps[];
   postList: PostDataProps[];
   githubData: GithubUserInfo;
   postCount: number;
@@ -30,8 +30,20 @@ export const HomeClient = ({
   githubData,
   postCount,
 }: HomeClientProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [targetSkill, setTargetSkill] = useState("");
   const { setGithubUser } = useGithubInfoStore();
+
+  const isOpen = useMemo(() => {
+    return !!targetSkill;
+  }, [targetSkill]);
+
+  const onClickSkillChip = (skillName: string) => {
+    setTargetSkill(skillName);
+  };
+
+  const onCloseSkillModal = () => {
+    setTargetSkill("");
+  };
 
   useEffect(() => {
     setGithubUser({
@@ -44,11 +56,11 @@ export const HomeClient = ({
   useDeviceType();
 
   return (
-    <div className="h-full flex flex-col gap-4">
+    <div className="h-full flex flex-col gap-4 px-44 py-10 md-lg:px-32 md:px-5">
       <IntroSectionTemplate />
 
       <section className="flex flex-col gap-2">
-        <h3>Skills</h3>
+        <h3 className="text-lg font-bold">Skills</h3>
         <ul className="inline-flex flex-wrap gap-3 w-80">
           {SKILL_LIST.map(({ skillName, bgColor, imgSrc }, idx) => (
             <SkillChip
@@ -57,6 +69,7 @@ export const HomeClient = ({
               backGroundColor={bgColor}
               imgSrc={imgSrc}
               index={idx + 1}
+              onClick={() => onClickSkillChip(skillName)}
             />
           ))}
         </ul>
@@ -67,7 +80,7 @@ export const HomeClient = ({
           postCount > 3 ? (
             <Link
               href="/blog"
-              className="text-sm text-gray-500 hover:text-[var(--text-color)] transition-colors"
+              className="text-sm text-gray-500 hover:text-theme transition-colors"
             >
               더보기
             </Link>
@@ -78,15 +91,14 @@ export const HomeClient = ({
       </MainSection>
 
       <Modal
-        title="모달"
+        title={targetSkill}
         isOpen={isOpen}
-        setIsOpen={setIsOpen}
         hasCloseBtn={true}
+        onClose={onCloseSkillModal}
+        className="w-1/2"
       >
         test
       </Modal>
-
-      <button onClick={() => setIsOpen((prev) => !prev)}>toggle modal</button>
     </div>
   );
 };

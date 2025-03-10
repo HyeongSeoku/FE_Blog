@@ -12,13 +12,20 @@ export default {
       xl: { max: "1280px" },
       "2xl": { max: "1536px" },
       "min-md": { min: "768px" },
+      "min-lg": { min: "1024px" },
+      "md-lg": { min: "769px", max: "1023px" },
     },
     extend: {
+      textColor: {
+        theme: "var(--text-color)",
+        "opposite-theme": "var(--contrasting-text-color)",
+      },
       scale: {
         "102": "1.02",
       },
       colors: {
         primary: "var(--primary-color)",
+        "primary-hover": "var(--primary-hover-color)",
         theme: "var(--bg-color)",
       },
       transitionDuration: {
@@ -62,6 +69,14 @@ export default {
         blink: {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0" },
+        },
+        shimmer: {
+          "0%": {
+            "background-position": "-100% 0",
+          },
+          "100%": {
+            "background-position": "100% 0",
+          },
         },
         fadeInUp: {
           "0%": { opacity: "0", transform: "translateY(5px)" },
@@ -192,10 +207,10 @@ export default {
         rotateFull: "rotateFull 3s linear infinite",
         rotateQuarter: "rotateQuarter 1s linear infinite",
         bounceJelly: "bounceJelly 1s linear both",
-        fadeInUp: "fadeInUp 0.3s ease-in-out forwards",
-        fadeInDown: "fadeInDown 0.3s ease-in-out forwards",
-        fadeInLeft: "fadeInLeft 0.3s ease-in-out forwards",
-        fadeInRight: "fadeInRight 0.3s ease-in-out forwards",
+        fadeInUp: "fadeInUp 0.5s ease-in-out forwards",
+        fadeInDown: "fadeInDown 0.5s ease-in-out forwards",
+        fadeInLeft: "fadeInLeft 0.5s ease-in-out forwards",
+        fadeInRight: "fadeInRight 0.5s ease-in-out forwards",
         bounceSlight: "bounceSlight 1s infinite",
       },
     },
