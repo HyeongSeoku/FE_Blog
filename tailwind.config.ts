@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss";
 
 export default {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
-  darkMode: "class",
+  darkMode: ["class", '[data-theme="dark"]'],
   theme: {
     screens: {
       xs: { max: "375px" },
@@ -71,12 +71,8 @@ export default {
           "50%": { opacity: "0" },
         },
         shimmer: {
-          "0%": {
-            "background-position": "-100% 0",
-          },
-          "100%": {
-            "background-position": "100% 0",
-          },
+          "0%": { "background-position": "-100% 0" },
+          "100%": { "background-position": "100% 0" },
         },
         fadeInUp: {
           "0%": { opacity: "0", transform: "translateY(5px)" },
@@ -212,6 +208,7 @@ export default {
         fadeInLeft: "fadeInLeft 0.5s ease-in-out forwards",
         fadeInRight: "fadeInRight 0.5s ease-in-out forwards",
         bounceSlight: "bounceSlight 1s infinite",
+        shimmer: "shimmer 1.5s linear infinite",
       },
     },
   },
@@ -238,6 +235,9 @@ export default {
         },
         ".will-change-transform-opacity": {
           willChange: "transform, opacity",
+        },
+        ".bg-size-200": {
+          "background-size": "200% 100%",
         },
       };
 
