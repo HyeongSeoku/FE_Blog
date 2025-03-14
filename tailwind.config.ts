@@ -13,6 +13,7 @@ export default {
       "2xl": { max: "1536px" },
       "min-md": { min: "768px" },
       "min-lg": { min: "1024px" },
+      "lg-xl": { min: "1024px", max: "1280px" },
       "md-lg": { min: "769px", max: "1023px" },
     },
     extend: {

@@ -56,7 +56,7 @@ export const HomeClient = ({
   useDeviceType();
 
   return (
-    <div className="h-full flex flex-col gap-4 px-44 py-10 md-lg:px-32 md:px-5">
+    <div className="h-full flex flex-col gap-4 px-64 py-10 lg-xl:px-44 md-lg:px-32 md:px-5">
       <IntroSectionTemplate />
 
       <section className="flex flex-col gap-2">
