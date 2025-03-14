@@ -135,8 +135,6 @@ const MdxDetailTemplate = ({
   }, [source]);
   const postThumbnail = thumbnail ?? DEFAULT_POST_THUMBNAIL;
 
-  console.log("TEST thumbnail", thumbnail);
-
   return (
     <>
       <div
@@ -180,9 +178,10 @@ const MdxDetailTemplate = ({
         <Image
           src={postThumbnail}
           alt={title}
-          width={600}
-          height={600}
+          width={500}
+          height={500}
           className="rounded-md"
+          loading="lazy"
         />
       </div>
 
