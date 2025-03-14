@@ -18,6 +18,8 @@ import ScrollProgressBar from "@/components/ScrollProgressBar";
 import classNames from "classnames";
 import useScrollPosition from "@/hooks/useScrollPosition";
 import SkeletonBar from "@/components/SkeletonBar";
+import Image from "next/image";
+import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
 
 // MDXRemote를 동적으로 import
 const MDXRemote = dynamic(
@@ -60,7 +62,15 @@ interface MdxDetailTemplateProps {
 
 const MdxDetailTemplate = ({
   source,
-  frontMatter: { title, createdAt, description, category, subCategory, tags },
+  frontMatter: {
+    title,
+    createdAt,
+    description,
+    category,
+    subCategory,
+    tags,
+    thumbnail,
+  },
   readingTime,
   heading = [],
   previousPost,
@@ -123,6 +133,9 @@ const MdxDetailTemplate = ({
       />
     );
   }, [source]);
+  const postThumbnail = thumbnail ?? DEFAULT_POST_THUMBNAIL;
+
+  console.log("TEST thumbnail", thumbnail);
 
   return (
     <>
@@ -140,6 +153,7 @@ const MdxDetailTemplate = ({
       <header className="border-b border-b-[var(--border-color)] mb-4 pb-4">
         <h1 className="text-4xl font-bold mb-1">{title}</h1>
         <p className="text-gray-400 text-xl mb-3">{description}</p>
+
         <section className="flex items-center gap-3 mb-3 text-gray-400">
           <time>{createdAt}</time>
           <div className="flex items-center gap-[2px]">
@@ -151,11 +165,27 @@ const MdxDetailTemplate = ({
         {!!tags?.length && (
           <section className="flex items-center gap-2">
             {tags.map((tagItem, idx) => (
-              <div key={`${tagItem}_${idx}`}>{tagItem}</div>
+              <Link
+                href={`/tags/${tagItem}`}
+                key={`${tagItem}_${idx}`}
+                className="text-primary hover:text-primary-hover transition-colors duration-300"
+              >
+                #{tagItem}
+              </Link>
             ))}
           </section>
         )}
       </header>
+      <div className="flex items-center justify-center">
+        <Image
+          src={postThumbnail}
+          alt={title}
+          width={600}
+          height={600}
+          className="rounded-md"
+        />
+      </div>
+
       <MdxSideBar headings={heading} commentRef={commentRef} />
 
       <section className="relative border-b py-5">
