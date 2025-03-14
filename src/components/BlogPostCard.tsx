@@ -42,7 +42,7 @@ const BlogPostCard = ({
           fill
           className="bg-[var(--bg-gray-color)] rounded-md"
           style={{ objectFit: "cover" }}
-          priority={true}
+          loading="lazy"
         />
       </Link>
       <div className="flex-1">
