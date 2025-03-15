@@ -51,7 +51,7 @@ const BlogPostCard = ({
           href={`/posts/${slug}`}
           className="flex flex-col transition-colors duration-300 hover:text-gray-400"
         >
-          <h3 className="text-3xl mb-1">{title}</h3>
+          <h3 className="text-3xl mb-1 md:text-2xl">{title}</h3>
         </Link>
         <div className="text-sm flex items-center gap-1">
           <Link
