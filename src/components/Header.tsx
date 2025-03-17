@@ -11,6 +11,8 @@ import classNames from "classnames";
 import { triggerAnimation } from "@/utils/styles";
 import { HEADER_SCROLL_THRESHOLD } from "@/constants/basic.constants";
 import ThemeButton from "./ThemeButton/ThemeButton";
+import useDeviceStore from "@/store/deviceType";
+import Navigation from "./Navigation";
 
 export interface HeaderProps {
   headerType: HeaderType;
@@ -28,7 +30,7 @@ const Header = ({
   const [isMoNavOpen, setIsMoNavOpen] = useState(false);
   const router = useRouter();
   const scrollDirection = useScrollDirection(HEADER_SCROLL_THRESHOLD);
-
+  const { isMobile } = useDeviceStore();
   useTheme();
 
   const toggleMoMenu = () => {
@@ -64,17 +66,22 @@ const Header = ({
       )}
       {headerType === "BACK" && <BackButton />}
       {children && <>{children}</>}
+      {!isMobile && <Navigation className="ml-2" />}
 
-      <div className="flex items-center ml-auto">
+      <div className="flex items-center ml-auto gap-2">
         <ThemeButton />
-        <button
-          className="ml-1 h-10 w-10 flex items-center justify-center relative z-30 hover:bg-gray-400/20 rounded-sm"
-          onClick={toggleMoMenu}
-        >
-          <MenuIcon width={24} height={24} alt="menu" />
-        </button>
+        {isMobile && (
+          <button
+            className="ml-1 h-10 w-10 flex items-center justify-center relative z-30 hover:bg-gray-400/20 rounded-sm"
+            onClick={toggleMoMenu}
+          >
+            <MenuIcon width={24} height={24} alt="menu" />
+          </button>
+        )}
       </div>
-      <MobileNavigation isOpen={isMoNavOpen} toggleMoMenu={toggleMoMenu} />
+      {isMobile && (
+        <MobileNavigation isOpen={isMoNavOpen} toggleMoMenu={toggleMoMenu} />
+      )}
     </header>
   );
 };

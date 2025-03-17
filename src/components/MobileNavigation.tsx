@@ -1,6 +1,7 @@
 import { NAV_GITHUB_ISSUE, NAV_LIST } from "@/constants/navigation.constants";
 import useIssueInfo from "@/hooks/useIssueInfo";
 import useScrollDisable from "@/hooks/useScrollDisable";
+import { issueUrl } from "@/utils/util";
 import classNames from "classnames";
 import Link from "next/link";
 
@@ -12,9 +13,7 @@ export interface MobileNavigationProps {
 const MobileNavigation = ({ isOpen, toggleMoMenu }: MobileNavigationProps) => {
   useScrollDisable(isOpen);
   const { title, body } = useIssueInfo();
-  const issueQueryString = `title=${encodeURIComponent(
-    `${title}`,
-  )}&body=${encodeURIComponent(`${body}`)}`;
+  const issueQueryString = issueUrl(title, body);
 
   const handleLinkClick = () => {
     toggleMoMenu();
