@@ -10,7 +10,6 @@ import { issueUrl } from "@/utils/util";
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRouter } from "next/router";
 
 function NavigationItem({
   item,
@@ -26,7 +25,12 @@ function NavigationItem({
   const isSelected = baseUrl?.includes(pathBaseUrl);
 
   return (
-    <li className="">
+    <li
+      className={classNames(
+        "transition-opacity duration-300 hover:opacity-100",
+        { "opacity-50": !isSelected, "opacity-100": isSelected },
+      )}
+    >
       {isExternalLink ? (
         <a
           href={handleExternalLink(link, id)}
