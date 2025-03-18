@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NotFound from "@/components/NotFound";
 import NoneLayout from "@/layout/NoneLayout";
@@ -13,6 +14,7 @@ export default function Custom404() {
     <NoneLayout>
       <Header headerType="BACK" hideNavigation={true}></Header>
       <NotFound />
+      <Footer />
     </NoneLayout>
   );
 }
