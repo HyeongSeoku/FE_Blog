@@ -1,3 +1,4 @@
+import Header from "@/components/Header";
 import NotFound from "@/components/NotFound";
 import NoneLayout from "@/layout/NoneLayout";
 import { Metadata } from "next";
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 export default function Custom404() {
   return (
     <NoneLayout>
+      <Header headerType="BACK" hideNavigation={true}></Header>
       <NotFound />
     </NoneLayout>
   );
