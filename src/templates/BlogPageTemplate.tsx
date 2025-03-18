@@ -45,7 +45,7 @@ const CategoryList = ({
   );
 };
 
-const CateogryPostList = ({ postList }: { postList: PostDataProps[] }) => {
+const CategoryPostList = ({ postList }: { postList: PostDataProps[] }) => {
   return (
     <ul>
       {postList.map(
@@ -121,7 +121,7 @@ const BlogPageTemplate = ({
         totalPostCount={totalPostCount}
         categoryCounts={categoryCounts}
       />
-      <CateogryPostList postList={postList} />
+      <CategoryPostList postList={postList} />
 
       <section className="mt-auto">
         <Pagination
