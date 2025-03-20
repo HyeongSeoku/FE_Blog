@@ -1,11 +1,11 @@
 "use client";
 
+import useDetectResize from "@/hooks/useDetectResize";
 import useTheme from "@/hooks/useTheme";
-import { useDeviceDetect } from "@/store/deviceType";
 import { ReactNode } from "react";
 
 function ClientProvider({ children }: { children: ReactNode }) {
-  useDeviceDetect();
+  useDetectResize();
   useTheme();
 
   return <>{children}</>;
