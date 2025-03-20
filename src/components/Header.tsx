@@ -5,7 +5,6 @@ import BackButton from "./backButton";
 import MenuIcon from "@/icon/menu.svg";
 import { useRouter } from "next/navigation";
 import MobileNavigation from "@/components/MobileNavigation";
-import useTheme from "@/hooks/useTheme";
 import useScrollDirection from "@/hooks/useScrollDirection";
 import classNames from "classnames";
 import { triggerAnimation } from "@/utils/styles";
@@ -33,7 +32,6 @@ const Header = ({
   const router = useRouter();
   const scrollDirection = useScrollDirection(HEADER_SCROLL_THRESHOLD);
   const { isMobile } = useDeviceStore();
-  useTheme();
 
   const toggleMoMenu = () => {
     const breadOpenStatusText = isMoNavOpen ? "close" : "open";
