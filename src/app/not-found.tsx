@@ -5,7 +5,7 @@ import NoneLayout from "@/layout/NoneLayout";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "페이지를 찾을 수 없습니다.",
+  title: "SEOK 개발블로그 | 페이지를 찾을 수 없습니다.",
   description: "페이지를 찾을 수 없습니다",
 };
 
