@@ -1,6 +1,7 @@
 import { SkillName } from "@/components/SkillChip";
 import { PUBLIC_IMG_PATH, SKILL_PATH } from "./basic.constants";
 import { Category, SubCategory } from "@/types/posts";
+import { CATEGORY_COLORS } from "./style.constants";
 
 export const SKILL_LIST: {
   skillName: SkillName;
@@ -41,10 +42,16 @@ export const SKILL_LIST: {
   },
 ];
 
-export const CATEGORY_MAP: Record<Category, true> = {
-  DEV: true,
-  LIFE: true,
-  ETC: true,
+export const CATEGORY_MAP: Record<
+  Category,
+  {
+    title: string;
+    color: (typeof CATEGORY_COLORS)[keyof typeof CATEGORY_COLORS];
+  }
+> = {
+  DEV: { title: "개발", color: CATEGORY_COLORS.DEV },
+  LIFE: { title: "일상", color: CATEGORY_COLORS.LIFE },
+  ETC: { title: "기타", color: CATEGORY_COLORS.ETC },
 };
 
 export const SUB_CATEGORY_MAP: Record<Category, SubCategory[]> = {
