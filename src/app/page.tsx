@@ -1,4 +1,3 @@
-import "swiper/css";
 import { getAllPosts } from "@/utils/post";
 import { HomeClient } from "./pageClient";
 import { fetchGithubUserInfo } from "@/api/github";

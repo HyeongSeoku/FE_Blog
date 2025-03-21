@@ -28,7 +28,6 @@
     "rehype-pretty-code": "^0.14.0",
     "remark": "^15.0.1",
     "sharp": "^0.33.5",
-    "swiper": "^11.1.12",
     "unist-util-visit": "^5.0.0",
     "zustand": "^4.5.4"
   },
