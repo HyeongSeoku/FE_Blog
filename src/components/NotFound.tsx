@@ -15,7 +15,7 @@ const NotFound = () => {
 
         <nav className="flex flex-col items-center">
           <Link
-            className="rounded-md bg-primary hover:bg-primary-hover py-2 px-3 trnasition-[background-color] duration-300 mt-5"
+            className="rounded-md bg-primary hover:bg-primary-hover py-2 px-3 transition-[background-color] duration-300 mt-5"
             href="/"
             replace
           >
