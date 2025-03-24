@@ -219,8 +219,6 @@ export const getPostsByDate = async ({
     pageSize,
   });
 
-  console.log("TEST filteredPosts.length", filteredPosts.length);
-
   return {
     postList: resultPosts,
     totalPostCount: filteredPosts.length,
@@ -300,14 +298,6 @@ export const sortAndPaginatePosts = (
     const start = (options.page - 1) * options.pageSize;
 
     result = result.slice(start, start + options.pageSize);
-    console.log(
-      "TEST start",
-      start,
-      "result",
-      result.length,
-      "pageSize",
-      options.pageSize,
-    );
   }
 
   return result;
