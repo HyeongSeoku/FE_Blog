@@ -13,6 +13,7 @@ export default {
       "2xl": { max: "1536px" },
       "min-md": { min: "768px" },
       "min-lg": { min: "1024px" },
+      "min-xl": { min: "1280px" },
       "lg-xl": { min: "1024px", max: "1280px" },
       "md-lg": { min: "769px", max: "1023px" },
     },
@@ -28,6 +29,7 @@ export default {
         primary: "var(--primary-color)",
         "primary-hover": "var(--primary-hover-color)",
         theme: "var(--bg-color)",
+        "opposite-theme": "var(--contrasting-bg-color)",
       },
       transitionDuration: {
         custom: "var(--transition-duration)",
