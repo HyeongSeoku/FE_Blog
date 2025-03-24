@@ -9,7 +9,7 @@ export interface PostSectionProps {
 
 const PostSectionTemplate = ({ postData }: PostSectionProps) => {
   return (
-    <ul>
+    <div className="grid [grid-template-columns:repeat(auto-fill,minmax(260px,1fr))] gap-4 min-xl:[grid-template-columns:repeat(auto-fill,minmax(320px,1fr))]">
       {postData.map(
         ({
           title,
@@ -32,18 +32,9 @@ const PostSectionTemplate = ({ postData }: PostSectionProps) => {
             subCategory={subCategory}
             thumbnail={thumbnail}
           />
-          // <BlogPostCard
-          //   key={slug}
-          //   title={title}
-          //   description={description}
-          //   slug={slug}
-          //   tagList={tags}
-          //   createdAt={createdAt}
-          //   thumbnail={thumbnail}
-          // />
         ),
       )}
-    </ul>
+    </div>
   );
 };
 
