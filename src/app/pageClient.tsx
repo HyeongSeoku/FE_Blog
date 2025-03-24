@@ -12,7 +12,10 @@ import { GithubUserInfo } from "@/api/github";
 import useGithubInfoStore from "@/store/githubInfo";
 import SkillChip from "@/components/SkillChip";
 import Link from "next/link";
-import { SKILL_LIST } from "@/constants/post.constants";
+import {
+  DEFAULT_MAIN_POST_COUNT,
+  SKILL_LIST,
+} from "@/constants/post.constants";
 
 const Modal = dynamic(() => import("@/components/Modal/Modal"), {
   ssr: false,
@@ -76,7 +79,7 @@ export const HomeClient = ({
       <MainSection
         title="게시물"
         titleChildren={
-          postCount > 3 ? (
+          postCount > DEFAULT_MAIN_POST_COUNT ? (
             <Link
               href="/blog"
               className="text-sm text-gray-500 hover:text-theme transition-colors"
