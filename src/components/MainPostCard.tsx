@@ -75,7 +75,10 @@ const MainPostCard = ({
             {tags.map((tagTitle, idx) => (
               <li
                 key={`${idx}_${tagTitle}`}
-                className="w-fit h-5 rounded-md border px-2 py-1 text-xs box-border flex items-center justify-center"
+                className={classNames(
+                  "w-fit rounded-md border px-2 py-1 text-xs box-border flex items-center justify-center",
+                  "transition-colors duration-300 dark:text-gray-300 text-gray-500 hover:text-theme hover:dark:text-theme",
+                )}
               >
                 <Link href={`/tags/${tagTitle}`}>{tagTitle}</Link>
               </li>
