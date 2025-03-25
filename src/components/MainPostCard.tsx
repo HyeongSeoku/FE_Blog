@@ -80,7 +80,7 @@ const MainPostCard = ({
                   "transition-colors duration-300 dark:text-gray-300 text-gray-500 hover:text-theme hover:dark:text-theme",
                 )}
               >
-                <Link href={`/tags/${tagTitle}`}>{tagTitle}</Link>
+                <Link href={`/tags/${tagTitle.toLowerCase()}`}>{tagTitle}</Link>
               </li>
             ))}
           </ul>
