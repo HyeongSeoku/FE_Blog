@@ -1,3 +1,4 @@
+/**해당 파일은 server 전용 파일 */
 import { getMdxFilesRecursively } from "@/utils/file";
 import fs from "fs/promises";
 import path from "path";

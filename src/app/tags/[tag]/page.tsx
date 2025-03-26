@@ -1,5 +1,6 @@
 import BlogPostCard from "@/components/BlogPostCard";
 import Tag from "@/components/Tag";
+import { getTagPath } from "@/utils/path";
 import { getPostsByTag } from "@/utils/post";
 import { Metadata } from "next";
 
@@ -33,7 +34,7 @@ const TagPage = async ({ params }: { params: { tag: string } }) => {
       {/* TODO: tag가 일정 갯수 넘어갈때 hide show 버튼 추가 */}
       <ul className="flex flex-wrap gap-2">
         {tagList.map(({ key, value }) => (
-          <Tag key={key} href={`/tags/${key}`} isSelected={tag === key}>
+          <Tag key={key} href={getTagPath(key)} isSelected={tag === key}>
             <div className="flex gap-[2px] items-center">
               <span>{key}</span>
               <span className="text-sm">({value})</span>

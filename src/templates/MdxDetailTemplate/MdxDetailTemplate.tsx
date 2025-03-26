@@ -20,6 +20,7 @@ import useScrollPosition from "@/hooks/useScrollPosition";
 import SkeletonBar from "@/components/SkeletonBar";
 import Image from "next/image";
 import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
+import { getTagPath } from "@/utils/path";
 
 // MDXRemote를 동적으로 import
 const MDXRemote = dynamic(
@@ -164,7 +165,7 @@ const MdxDetailTemplate = ({
           <section className="flex items-center gap-2">
             {tags.map((tagItem, idx) => (
               <Link
-                href={`/tags/${tagItem}`}
+                href={getTagPath(tagItem)}
                 key={`${tagItem}_${idx}`}
                 className="text-primary hover:text-primary-hover transition-colors duration-300"
               >

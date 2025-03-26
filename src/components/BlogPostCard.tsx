@@ -4,6 +4,7 @@ import { getDate } from "@/utils/date";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { getTagPath } from "@/utils/path";
 
 export interface BlogPostCardProps {
   title: string;
@@ -81,7 +82,7 @@ const BlogPostCard = ({
               >
                 <Link
                   replace={isReplace}
-                  href={`/tags/${item.toLocaleLowerCase()}`}
+                  href={getTagPath(item)}
                   className="w-full h-full block"
                 >
                   {item}

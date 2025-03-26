@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CATEGORY_MAP } from "@/constants/post.constants";
 import { CATEGORY_COLORS } from "@/constants/style.constants";
-import Tag from "./Tag";
+import { getTagPath } from "@/utils/path";
 
 export interface MainPostCardProps
   extends Omit<PostDataProps, "slug" | "content"> {
@@ -80,7 +80,7 @@ const MainPostCard = ({
                   "transition-colors duration-300 dark:text-gray-300 text-gray-500 hover:text-theme hover:dark:text-theme",
                 )}
               >
-                <Link href={`/tags/${tagTitle.toLowerCase()}`}>{tagTitle}</Link>
+                <Link href={getTagPath(tagTitle)}>{tagTitle}</Link>
               </li>
             ))}
           </ul>
