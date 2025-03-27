@@ -3,6 +3,7 @@
 import React, { ReactNode } from "react";
 import useIssueInfo from "@/hooks/useIssueInfo";
 import GithubIcon from "@/icon/github.svg";
+import GithubIssueIcon from "@/icon/github_issue.svg";
 
 import classNames from "classnames";
 
@@ -26,12 +27,13 @@ const GitHubIssueButton = ({
     <a href={issueUrl} target="_blank" rel="noopener noreferrer">
       <button
         className={classNames(
-          "ml-1 h-10 min-w-10 w-fit flex items-center justify-center rounded-sm",
+          "ml-1 h-10 px-2 py-1 min-w-10 w-fit flex items-center justify-center rounded-sm",
           "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400/20",
           className,
         )}
       >
-        <GithubIcon width={20} height={20} />
+        <GithubIssueIcon width={32} height={32} />
+
         {children}
       </button>
     </a>
