@@ -7,6 +7,7 @@ export type NAV_LIST_TYPE = {
   isExternalLink?: boolean;
   target?: HTMLAttributeAnchorTarget;
   baseUrl?: string[];
+  isMobile?: boolean;
 };
 
 export const NAV_HOME = "HOME";
@@ -24,5 +25,6 @@ export const NAV_LIST: NAV_LIST_TYPE[] = [
     link: `${process.env.NEXT_PUBLIC_REPO_URL}/issues/new` || "",
     isExternalLink: true,
     target: "_blank",
+    isMobile: true,
   },
 ];

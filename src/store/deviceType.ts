@@ -2,7 +2,7 @@ import { MOBILE_WIDTH } from "@/constants/basic.constants";
 import { create } from "zustand";
 
 interface DeviceTypeState {
-  isMobile: boolean;
+  isMobileSize: boolean;
   setIsMobile: (state: boolean) => void;
 }
 
@@ -15,8 +15,8 @@ const getInitialDeviceType = () => {
 
 const useDeviceStore = create<DeviceTypeState>((set) => {
   return {
-    isMobile: getInitialDeviceType(),
-    setIsMobile: (isMobile) => set({ isMobile: isMobile }),
+    isMobileSize: getInitialDeviceType(),
+    setIsMobile: (isMobileSize) => set({ isMobileSize: isMobileSize }),
   };
 });
 

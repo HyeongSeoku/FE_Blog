@@ -8,9 +8,14 @@ import Link from "next/link";
 export interface MobileNavigationProps {
   isOpen: boolean;
   toggleMoMenu: () => void;
+  className?: string;
 }
 
-const MobileNavigation = ({ isOpen, toggleMoMenu }: MobileNavigationProps) => {
+const MobileNavigation = ({
+  isOpen,
+  toggleMoMenu,
+  className = "",
+}: MobileNavigationProps) => {
   useScrollDisable(isOpen);
   const { title, body } = useIssueInfo();
   const issueQueryString = issueUrl(title, body);
@@ -30,12 +35,16 @@ const MobileNavigation = ({ isOpen, toggleMoMenu }: MobileNavigationProps) => {
 
   return (
     <nav
-      className={`fixed inset-0 pt-16 flex flex-col bg-[var(--bg-color)] shadow-lg transform z-20 
-         transition-[opacity,transform,height] ${
-           isOpen
-             ? "opacity-100 translate-y-0 h-dvh w-dvw duration-300"
-             : "opacity-0 -translate-y-full h-0 duration-300"
-         }`}
+      className={classNames(
+        "fixed inset-0 pt-16 flex flex-col bg-[var(--bg-color)] shadow-lg transform z-20",
+        "transition-[opacity,transform,height] duration-300",
+        {
+          "opacity-100 translate-y-0 h-dvh w-dvw": isOpen,
+          "opacity-0 -translate-y-full h-0": !isOpen,
+        },
+        "min-md:hidden",
+        className,
+      )}
     >
       <ul className={classNames("h-dvh", isOpen ? "visible" : "hidden")}>
         {NAV_LIST.map(({ id, title, link, isExternalLink, target }, idx) => (

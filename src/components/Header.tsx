@@ -10,8 +10,7 @@ import classNames from "classnames";
 import { triggerAnimation } from "@/utils/styles";
 import { HEADER_SCROLL_THRESHOLD } from "@/constants/basic.constants";
 import ThemeButton from "./ThemeButton/ThemeButton";
-import useDeviceStore from "@/store/deviceType";
-import Navigation from "./Navigation";
+import Navigation from "@/components/Navigation";
 
 export interface HeaderProps {
   headerType: HeaderType;
@@ -31,7 +30,6 @@ const Header = ({
   const [isMoNavOpen, setIsMoNavOpen] = useState(false);
   const router = useRouter();
   const scrollDirection = useScrollDirection(HEADER_SCROLL_THRESHOLD);
-  const { isMobile } = useDeviceStore();
 
   const toggleMoMenu = () => {
     const breadOpenStatusText = isMoNavOpen ? "close" : "open";
@@ -68,24 +66,21 @@ const Header = ({
       {children && <>{children}</>}
       {!hideNavigation && (
         <>
-          {!isMobile && <Navigation className="ml-4" />}
+          <Navigation className="ml-4 md:hidden" />
           <div className="flex items-center ml-auto gap-2">
             <ThemeButton />
-            {isMobile && (
-              <button
-                className="ml-1 h-10 w-10 flex items-center justify-center relative z-30 hover:bg-gray-400/20 rounded-sm"
-                onClick={toggleMoMenu}
-              >
-                <MenuIcon width={24} height={24} alt="menu" />
-              </button>
-            )}
+
+            <button
+              className={classNames(
+                "ml-1 h-10 w-10 flex items-center justify-center relative z-30 hover:bg-gray-400/20 rounded-sm",
+                "min-md:hidden",
+              )}
+              onClick={toggleMoMenu}
+            >
+              <MenuIcon width={24} height={24} alt="menu" />
+            </button>
           </div>
-          {isMobile && (
-            <MobileNavigation
-              isOpen={isMoNavOpen}
-              toggleMoMenu={toggleMoMenu}
-            />
-          )}
+          <MobileNavigation isOpen={isMoNavOpen} toggleMoMenu={toggleMoMenu} />
         </>
       )}
     </header>

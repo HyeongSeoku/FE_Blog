@@ -69,7 +69,7 @@ function Navigation({ className = "" }: NavigationProps) {
   return (
     <nav className={classNames(className)}>
       <ul className="flex gap-4 font-semibold text-lg">
-        {NAV_LIST.map((item) => (
+        {NAV_LIST.filter((item) => !item.isMobile).map((item) => (
           <NavigationItem
             key={item.id}
             item={item}
