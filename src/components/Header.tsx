@@ -5,17 +5,18 @@ import BackButton from "./backButton";
 import MenuIcon from "@/icon/menu.svg";
 import { useRouter } from "next/navigation";
 import MobileNavigation from "@/components/MobileNavigation";
-import useTheme from "@/hooks/useTheme";
 import useScrollDirection from "@/hooks/useScrollDirection";
 import classNames from "classnames";
 import { triggerAnimation } from "@/utils/styles";
 import { HEADER_SCROLL_THRESHOLD } from "@/constants/basic.constants";
 import ThemeButton from "./ThemeButton/ThemeButton";
+import Navigation from "@/components/Navigation";
 
 export interface HeaderProps {
   headerType: HeaderType;
   children?: ReactNode;
   hasAnimation?: boolean;
+  hideNavigation?: boolean;
 }
 
 export type HeaderType = "DEFAULT" | "BACK" | "NONE";
@@ -24,12 +25,11 @@ const Header = ({
   headerType,
   children,
   hasAnimation = false,
+  hideNavigation = false,
 }: HeaderProps) => {
   const [isMoNavOpen, setIsMoNavOpen] = useState(false);
   const router = useRouter();
   const scrollDirection = useScrollDirection(HEADER_SCROLL_THRESHOLD);
-
-  useTheme();
 
   const toggleMoMenu = () => {
     const breadOpenStatusText = isMoNavOpen ? "close" : "open";
@@ -64,17 +64,25 @@ const Header = ({
       )}
       {headerType === "BACK" && <BackButton />}
       {children && <>{children}</>}
+      {!hideNavigation && (
+        <>
+          <Navigation className="ml-4 md:hidden" />
+          <div className="flex items-center ml-auto gap-2">
+            <ThemeButton />
 
-      <div className="flex items-center ml-auto">
-        <ThemeButton />
-        <button
-          className="ml-1 h-10 w-10 flex items-center justify-center relative z-30 hover:bg-gray-400/20 rounded-sm"
-          onClick={toggleMoMenu}
-        >
-          <MenuIcon width={24} height={24} alt="menu" />
-        </button>
-      </div>
-      <MobileNavigation isOpen={isMoNavOpen} toggleMoMenu={toggleMoMenu} />
+            <button
+              className={classNames(
+                "ml-1 h-10 w-10 flex items-center justify-center relative z-30 hover:bg-gray-400/20 rounded-sm",
+                "min-md:hidden",
+              )}
+              onClick={toggleMoMenu}
+            >
+              <MenuIcon width={24} height={24} alt="menu" />
+            </button>
+          </div>
+          <MobileNavigation isOpen={isMoNavOpen} toggleMoMenu={toggleMoMenu} />
+        </>
+      )}
     </header>
   );
 };

@@ -15,6 +15,7 @@ interface PaginationProps {
   pageParam?: string;
   perPageCount?: number;
   isReplace?: boolean;
+  preserveScroll?: boolean;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -26,6 +27,7 @@ const Pagination: React.FC<PaginationProps> = ({
   pageParam = "",
   perPageCount = 5,
   isReplace = false,
+  preserveScroll = true,
 }) => {
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
@@ -80,6 +82,7 @@ const Pagination: React.FC<PaginationProps> = ({
           <Link
             href={href(1)}
             replace={isReplace}
+            scroll={!preserveScroll}
             className={classNames(
               "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
               {
@@ -95,6 +98,8 @@ const Pagination: React.FC<PaginationProps> = ({
         {!isSinglePage && (
           <Link
             href={href(currentPage - 1)}
+            replace={isReplace}
+            scroll={!preserveScroll}
             className={classNames(
               "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
               {
@@ -112,6 +117,7 @@ const Pagination: React.FC<PaginationProps> = ({
           <Link
             href={href(page)}
             replace={isReplace}
+            scroll={!preserveScroll}
             key={page}
             className={classNames("px-3 py-1 rounded-md border", {
               "border-gray-200": page === currentPage,
@@ -125,6 +131,8 @@ const Pagination: React.FC<PaginationProps> = ({
         {!isSinglePage && (
           <Link
             href={href(currentPage + 1)}
+            replace={isReplace}
+            scroll={!preserveScroll}
             className={classNames(
               "flex items-center justify-center h-full w-8 p-1 rounded-md  transition-[background-color,color]",
               {
@@ -142,6 +150,7 @@ const Pagination: React.FC<PaginationProps> = ({
           <Link
             href={href(totalPages)}
             replace={isReplace}
+            scroll={!preserveScroll}
             className={classNames(
               "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
               {

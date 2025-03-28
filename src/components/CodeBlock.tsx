@@ -70,7 +70,10 @@ const CodeBlock = ({
       {hasCopyBtn && (
         <button
           onClick={handleCopy}
-          className="absolute top-2 right-2 p-1 bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 flex items-center justify-center w-16 h-8 transition-opacity duration-200"
+          className={classNames(
+            "absolute top-2 right-2 p-1 bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 flex items-center justify-center w-16 h-8 transition-[opacity colors] duration-200 border border-transparent",
+            { "border-green-500 text-green-500": copied },
+          )}
         >
           <span
             className={`transition-opacity duration-300 ${copied ? "opacity-100" : "opacity-0"} absolute`}

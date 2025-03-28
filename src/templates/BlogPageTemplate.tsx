@@ -45,7 +45,7 @@ const CategoryList = ({
   );
 };
 
-const CateogryPostList = ({ postList }: { postList: PostDataProps[] }) => {
+const CategoryPostList = ({ postList }: { postList: PostDataProps[] }) => {
   return (
     <ul>
       {postList.map(
@@ -105,7 +105,7 @@ const BlogPageTemplate = ({
         <div className="flex flex-col items-center justify-center w-full h-full my-auto gap-4">
           <h3 className="text-2xl font-semibold">등록된 게시물이 없습니다.</h3>
           <button
-            className="rounded-md bg-primary hover:bg-primary-hover py-2 px-3 trnasition-[background-color] duration-300"
+            className="rounded-md bg-primary hover:bg-primary-hover py-2 px-3 transition-[background-color] duration-300"
             onClick={() => router.back()}
           >
             뒤로가기
@@ -121,7 +121,7 @@ const BlogPageTemplate = ({
         totalPostCount={totalPostCount}
         categoryCounts={categoryCounts}
       />
-      <CateogryPostList postList={postList} />
+      <CategoryPostList postList={postList} />
 
       <section className="mt-auto">
         <Pagination

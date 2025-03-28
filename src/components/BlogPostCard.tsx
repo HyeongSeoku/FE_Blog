@@ -4,6 +4,7 @@ import { getDate } from "@/utils/date";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { getTagPath } from "@/utils/path";
 
 export interface BlogPostCardProps {
   title: string;
@@ -42,7 +43,7 @@ const BlogPostCard = ({
           fill
           className="bg-[var(--bg-gray-color)] rounded-md"
           style={{ objectFit: "cover" }}
-          priority={true}
+          loading="lazy"
         />
       </Link>
       <div className="flex-1">
@@ -51,7 +52,7 @@ const BlogPostCard = ({
           href={`/posts/${slug}`}
           className="flex flex-col transition-colors duration-300 hover:text-gray-400"
         >
-          <h3 className="text-3xl mb-1">{title}</h3>
+          <h2 className="text-3xl mb-1 md:text-2xl">{title}</h2>
         </Link>
         <div className="text-sm flex items-center gap-1">
           <Link
@@ -81,7 +82,7 @@ const BlogPostCard = ({
               >
                 <Link
                   replace={isReplace}
-                  href={`/tags/${item.toLocaleLowerCase()}`}
+                  href={getTagPath(item)}
                   className="w-full h-full block"
                 >
                   {item}

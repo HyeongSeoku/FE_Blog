@@ -1,10 +1,7 @@
 "use client";
 
-import { Swiper, SwiperSlide } from "swiper/react";
 import { PostDataProps } from "@/types/posts";
 import MainPostCard from "@/components/MainPostCard";
-
-import "./post-section-template.css";
 
 export interface PostSectionProps {
   postData: PostDataProps[];
@@ -12,66 +9,32 @@ export interface PostSectionProps {
 
 const PostSectionTemplate = ({ postData }: PostSectionProps) => {
   return (
-    <>
-      <Swiper
-        tag="ul"
-        slidesPerView="auto"
-        pagination={{ clickable: true }}
-        className="md:!hidden"
-      >
-        {postData.map(
-          ({
-            title,
-            description,
-            createdAt,
-            slug,
-            tags,
-            category,
-            subCategory,
-            thumbnail,
-          }) => (
-            <SwiperSlide key={slug} tag="li">
-              <MainPostCard
-                link={`/posts/${slug}`}
-                title={title}
-                description={description}
-                createdAt={createdAt}
-                tags={tags}
-                category={category}
-                subCategory={subCategory}
-                thumbnail={thumbnail}
-              />
-            </SwiperSlide>
-          ),
-        )}
-      </Swiper>
-      <ul className="min-md:hidden">
-        {postData.map(
-          ({
-            title,
-            description,
-            createdAt,
-            slug,
-            tags,
-            category,
-            subCategory,
-            thumbnail,
-          }) => (
-            <MainPostCard
-              key={slug}
-              link={`/posts/${slug}`}
-              title={title}
-              description={description}
-              createdAt={createdAt}
-              tags={tags}
-              category={category}
-              subCategory={subCategory}
-              thumbnail={thumbnail}
-            />
-          ),
-        )}
-      </ul>
-    </>
+    <div className="grid [grid-template-columns:repeat(auto-fill,minmax(260px,1fr))] gap-4 min-xl:[grid-template-columns:repeat(auto-fill,minmax(320px,1fr))]">
+      {postData.map(
+        ({
+          title,
+          description,
+          createdAt,
+          slug,
+          tags,
+          category,
+          subCategory,
+          thumbnail,
+        }) => (
+          <MainPostCard
+            key={slug}
+            link={`/posts/${slug}`}
+            title={title}
+            description={description}
+            createdAt={createdAt}
+            tags={tags}
+            category={category}
+            subCategory={subCategory}
+            thumbnail={thumbnail}
+          />
+        ),
+      )}
+    </div>
   );
 };
 

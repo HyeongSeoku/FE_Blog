@@ -3,7 +3,7 @@ export interface NoneLayoutProps {
 }
 
 const NoneLayout = ({ children }: NoneLayoutProps) => {
-  return <>{children}</>;
+  return <main className="w-full h-dvh flex flex-col">{children}</main>;
 };
 
 export default NoneLayout;

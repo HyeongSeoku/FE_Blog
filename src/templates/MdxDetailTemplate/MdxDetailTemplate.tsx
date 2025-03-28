@@ -18,6 +18,9 @@ import ScrollProgressBar from "@/components/ScrollProgressBar";
 import classNames from "classnames";
 import useScrollPosition from "@/hooks/useScrollPosition";
 import SkeletonBar from "@/components/SkeletonBar";
+import Image from "next/image";
+import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
+import { getTagPath } from "@/utils/path";
 
 // MDXRemote를 동적으로 import
 const MDXRemote = dynamic(
@@ -26,8 +29,15 @@ const MDXRemote = dynamic(
     ssr: false,
     loading: () => (
       <div className="min-h-40 py-5 flex flex-col gap-2">
-        <SkeletonBar className="w-1/5 h-10" />
-        <SkeletonBar className="w-1/3 h-8" />
+        <SkeletonBar className="!w-1/5 !h-10 md:!w-1/3" />
+        <SkeletonBar />
+        <SkeletonBar />
+        <SkeletonBar className="!w-1/3 !h-8 md:!w-1/2 mt-4" />
+        <SkeletonBar />
+        <SkeletonBar />
+        <SkeletonBar />
+
+        <SkeletonBar className="!w-1/3 !h-8 md:!w-1/2 mt-4" />
         <SkeletonBar />
         <SkeletonBar />
       </div>
@@ -53,7 +63,15 @@ interface MdxDetailTemplateProps {
 
 const MdxDetailTemplate = ({
   source,
-  frontMatter: { title, createdAt, description, category, subCategory, tags },
+  frontMatter: {
+    title,
+    createdAt,
+    description,
+    category,
+    subCategory,
+    tags,
+    thumbnail,
+  },
   readingTime,
   heading = [],
   previousPost,
@@ -116,6 +134,7 @@ const MdxDetailTemplate = ({
       />
     );
   }, [source]);
+  const postThumbnail = thumbnail ?? DEFAULT_POST_THUMBNAIL;
 
   return (
     <>
@@ -133,6 +152,7 @@ const MdxDetailTemplate = ({
       <header className="border-b border-b-[var(--border-color)] mb-4 pb-4">
         <h1 className="text-4xl font-bold mb-1">{title}</h1>
         <p className="text-gray-400 text-xl mb-3">{description}</p>
+
         <section className="flex items-center gap-3 mb-3 text-gray-400">
           <time>{createdAt}</time>
           <div className="flex items-center gap-[2px]">
@@ -144,11 +164,28 @@ const MdxDetailTemplate = ({
         {!!tags?.length && (
           <section className="flex items-center gap-2">
             {tags.map((tagItem, idx) => (
-              <div key={`${tagItem}_${idx}`}>{tagItem}</div>
+              <Link
+                href={getTagPath(tagItem)}
+                key={`${tagItem}_${idx}`}
+                className="text-primary hover:text-primary-hover transition-colors duration-300"
+              >
+                #{tagItem}
+              </Link>
             ))}
           </section>
         )}
       </header>
+      <div className="flex items-center justify-center">
+        <Image
+          src={postThumbnail}
+          alt={title}
+          width={500}
+          height={500}
+          className="rounded-md"
+          loading="lazy"
+        />
+      </div>
+
       <MdxSideBar headings={heading} commentRef={commentRef} />
 
       <section className="relative border-b py-5">

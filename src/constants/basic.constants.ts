@@ -24,3 +24,5 @@ export const POST_PATH = path.join(
 export const SKILL_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/skill`);
 
 export const HEADER_SCROLL_THRESHOLD = 20;
+
+export const DEFAULT_POST_THUMBNAIL = `${CONTENT_IMAGE_DIR}/default-loading-image.jpeg`;

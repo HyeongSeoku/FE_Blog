@@ -1,3 +1,4 @@
+/**해당 파일은 server 전용 파일 */
 import { getMdxFilesRecursively } from "@/utils/file";
 import fs from "fs/promises";
 import path from "path";
@@ -219,8 +220,6 @@ export const getPostsByDate = async ({
     pageSize,
   });
 
-  console.log("TEST filteredPosts.length", filteredPosts.length);
-
   return {
     postList: resultPosts,
     totalPostCount: filteredPosts.length,
@@ -300,14 +299,6 @@ export const sortAndPaginatePosts = (
     const start = (options.page - 1) * options.pageSize;
 
     result = result.slice(start, start + options.pageSize);
-    console.log(
-      "TEST start",
-      start,
-      "result",
-      result.length,
-      "pageSize",
-      options.pageSize,
-    );
   }
 
   return result;

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@/app/globals.css";
 import { ReactNode } from "react";
 import dynamic from "next/dynamic";
+import ClientProvider from "@/components/ClientProvider";
 
 const GaBanner = dynamic(() => import("@/components/GaBanner"), {
   ssr: false,
@@ -23,9 +24,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <script src="/theme.js" />
       </head>
       <body>
-        <GaBanner />
-        {children}
-        <div id="modal-root"></div>
+        <ClientProvider>
+          <GaBanner />
+          {children}
+          <div id="modal-root"></div>
+        </ClientProvider>
       </body>
     </html>
   );

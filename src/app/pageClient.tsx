@@ -12,8 +12,10 @@ import { GithubUserInfo } from "@/api/github";
 import useGithubInfoStore from "@/store/githubInfo";
 import SkillChip from "@/components/SkillChip";
 import Link from "next/link";
-import { SKILL_LIST } from "@/constants/post.constants";
-import BottomSheet from "@/components/BottomSheet/BottomSheet";
+import {
+  DEFAULT_MAIN_POST_COUNT,
+  SKILL_LIST,
+} from "@/constants/post.constants";
 
 const Modal = dynamic(() => import("@/components/Modal/Modal"), {
   ssr: false,
@@ -56,7 +58,7 @@ export const HomeClient = ({
   useDeviceType();
 
   return (
-    <div className="h-full flex flex-col gap-4 px-44 py-10 md-lg:px-32 md:px-5">
+    <div className="h-full flex flex-col gap-3">
       <IntroSectionTemplate />
 
       <section className="flex flex-col gap-2">
@@ -77,7 +79,7 @@ export const HomeClient = ({
       <MainSection
         title="게시물"
         titleChildren={
-          postCount > 3 ? (
+          postCount > DEFAULT_MAIN_POST_COUNT ? (
             <Link
               href="/blog"
               className="text-sm text-gray-500 hover:text-theme transition-colors"

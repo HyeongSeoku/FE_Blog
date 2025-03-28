@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import backIconSrc from "/public/image/back_icon.svg";
+import BackIcon from "@/icon/back_icon.svg";
 
 export interface BackButtonProps {
   customClassName?: string;
@@ -24,7 +24,7 @@ const BackButton = ({ customClassName = "", onBackClick }: BackButtonProps) => {
       className={`flex w-3 ${customClassName}`}
       onClick={handleBackButton}
     >
-      <img className="w-full" src={backIconSrc} />
+      <BackIcon />
     </button>
   );
 };

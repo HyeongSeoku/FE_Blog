@@ -1,10 +1,21 @@
 "use client";
 
-import React from "react";
+import React, { ReactNode } from "react";
 import useIssueInfo from "@/hooks/useIssueInfo";
-import GitIssueIcon from "@/icon/warn_msg_icon.svg";
+import GithubIcon from "@/icon/github.svg";
+import GithubIssueIcon from "@/icon/github_issue.svg";
 
-const GitHubIssueButton = () => {
+import classNames from "classnames";
+
+export interface GithubIssueButtonProps {
+  children?: ReactNode;
+  className?: string;
+}
+
+const GitHubIssueButton = ({
+  children,
+  className = "",
+}: GithubIssueButtonProps) => {
   const repoUrl = process.env.NEXT_PUBLIC_REPO_URL;
   const { title, body } = useIssueInfo();
 
@@ -14,8 +25,16 @@ const GitHubIssueButton = () => {
 
   return (
     <a href={issueUrl} target="_blank" rel="noopener noreferrer">
-      <button className="ml-1 h-10 w-10 flex items-center justify-center relative hover:bg-gray-400/20 rounded-sm">
-        <GitIssueIcon width={20} height={20} />
+      <button
+        className={classNames(
+          "ml-1 h-10 px-2 py-1 min-w-10 w-fit flex items-center justify-center rounded-sm",
+          "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400/20",
+          className,
+        )}
+      >
+        <GithubIssueIcon width={32} height={32} />
+
+        {children}
       </button>
     </a>
   );
