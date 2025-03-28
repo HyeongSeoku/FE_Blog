@@ -50,7 +50,7 @@ const MobileNavigation = ({
         {NAV_LIST.map(({ id, title, link, isExternalLink, target }, idx) => (
           <li
             key={`${id}_${idx}`}
-            className="px-4 py-2 cursor-pointer flex max-w-[var(--mobile-nav-max-width)]"
+            className="px-4 py-2 cursor-pointer flex max-w-[var(--mobile-nav-max-width)] text-xl font-semibold"
           >
             {isExternalLink ? (
               <a

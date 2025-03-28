@@ -6,9 +6,7 @@ const Footer = () => {
       <section className="flex items-center justify-center mt-1">
         <span className="text-xl font-semibold mr-2">ⓒ 2024 seoku</span>
         <span className="text-xs font-thin">powered by Vercel</span>
-        <GitHubIssueButton className="!bg-transparent hover:!bg-gray-400/20">
-          Report Issue
-        </GitHubIssueButton>
+        <GitHubIssueButton className="!bg-transparent hover:!bg-gray-400/20" />
       </section>
     </footer>
   );
