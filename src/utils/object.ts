@@ -1,8 +1,8 @@
-export const isObject = (obj: any) => {
-  return obj !== null && typeof obj === "object";
-};
+export function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
 
-export const deepEqual = (obj1: any, obj2: any) => {
+export function deepEqual(obj1: unknown, obj2: unknown): boolean {
   if (obj1 === obj2) {
     return true;
   }
@@ -19,10 +19,13 @@ export const deepEqual = (obj1: any, obj2: any) => {
   }
 
   for (const key of keys1) {
-    if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
+    const val1 = obj1[key];
+    const val2 = obj2[key];
+
+    if (!keys2.includes(key) || !deepEqual(val1, val2)) {
       return false;
     }
   }
 
   return true;
-};
+}

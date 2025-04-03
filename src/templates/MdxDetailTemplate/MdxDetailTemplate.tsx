@@ -63,15 +63,7 @@ interface MdxDetailTemplateProps {
 
 const MdxDetailTemplate = ({
   source,
-  frontMatter: {
-    title,
-    createdAt,
-    description,
-    category,
-    subCategory,
-    tags,
-    thumbnail,
-  },
+  frontMatter: { title, createdAt, description, tags, thumbnail },
   readingTime,
   heading = [],
   previousPost,
