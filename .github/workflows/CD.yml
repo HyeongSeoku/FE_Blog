@@ -1,0 +1,56 @@
+name: CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # 조건부 캐시: main 브랜치만 캐시 활성화
+      - name: Cache pnpm store
+        if: github.ref == 'refs/heads/main'
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      - name: Cache Next.js build cache
+        if: github.ref == 'refs/heads/main'
+        uses: actions/cache@v3
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml', 'next.config.js') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Create .env file
+        run: |
+          echo "NEXT_PUBLIC_GITHUB_TOKEN=${{ secrets.NEXT_PUBLIC_GITHUB_TOKEN }}" >> .env
+          echo "NEXT_PUBLIC_GISCUS_REPO_ID=${{ secrets.NEXT_PUBLIC_GISCUS_REPO_ID }}" >> .env
+          echo "NEXT_PUBLIC_GISCUS_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GISCUS_CLIENT_ID }}" >> .env
+          echo "NEXT_PUBLIC_REPO_URL=${{ secrets.NEXT_PUBLIC_REPO_URL }}" >> .env
+          echo "NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}" >> .env
+
+      - name: Build project
+        run: pnpm run build
+
+      - name: Export (static site)
+        run: pnpm run export
