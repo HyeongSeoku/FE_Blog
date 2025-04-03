@@ -19,6 +19,9 @@ jobs:
         with:
           node-version: 18
 
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       # 조건부 캐시: main 브랜치만 캐시 활성화
       - name: Cache pnpm store
         if: github.ref == 'refs/heads/main'
