@@ -32,5 +32,6 @@ module.exports = {
     "@typescript-eslint/no-unused-expressions": "warn",
     "@typescript-eslint/no-non-null-assertion": "warn",
     "prettier/prettier": "error",
+    "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
   },
 };
