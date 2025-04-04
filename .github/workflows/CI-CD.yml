@@ -7,10 +7,10 @@ on:
     branches: [main, develop]
 
 jobs:
-  lint:
+  ci:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Use Node.js
@@ -30,38 +30,8 @@ jobs:
       - name: Run Prettier (check only)
         run: pnpm run format:check
 
-  spell-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-
       - name: Run cSpell
         run: pnpm run spell-check
-
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install pnpm
-        run: npm install -g pnpm
 
       - name: Cache pnpm store
         if: github.ref == 'refs/heads/main'
@@ -80,9 +50,6 @@ jobs:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml', 'next.config.js') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-
-
-      - name: Install dependencies
-        run: pnpm install
 
       - name: Create .env file
         run: |
