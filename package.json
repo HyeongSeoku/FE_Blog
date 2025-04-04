@@ -9,7 +9,9 @@
     "dev": "next dev",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@mdx-js/loader": "^3.0.1",
