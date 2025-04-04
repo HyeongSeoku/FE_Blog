@@ -10,5 +10,5 @@
   "jsxSingleQuote": false,
   "jsxBracketSameLine": false,
   "endOfLine": "auto",
-  "overrides": [{ "files": "*.mdx", "options": { "proseWrap": "preserve" } }],
+  "overrides": [{ "files": "*.mdx", "options": { "proseWrap": "preserve" } }]
 }
