@@ -17,10 +17,9 @@ const getInitialTheme = (): boolean => {
     //   cookieTheme === "dark" ? "dark" : "light",
     // );
 
-    return (
-      cookieTheme === "dark" ??
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    );
+    return cookieTheme !== null
+      ? cookieTheme === "dark"
+      : window.matchMedia("(prefers-color-scheme: dark)").matches;
   }
   return false;
 };
