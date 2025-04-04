@@ -40,7 +40,7 @@ export const rehypeHeadingsWithIds = (headingData: HeadingsProps[]) => {
 
 export const rehypeCodeBlockClassifier = () => {
   return (tree: any) => {
-    visit(tree, "element", (node, index, parent) => {
+    visit(tree, "element", (node, _, parent) => {
       const elementNode = node as ExtendedElement;
 
       if (elementNode.tagName === "code") {
