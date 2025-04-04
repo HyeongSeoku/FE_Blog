@@ -5,7 +5,7 @@ import classNames from "classnames";
 
 import { ReactNode, useState, useMemo } from "react";
 import { AnimationNameType } from "./AnimationContainer";
-import { ANIMAITE_FADE_IN_UP } from "@/constants/animation.constants";
+import { ANIMATE_FADE_IN_UP } from "@/constants/animation.constants";
 
 interface CodeBlockProps {
   children: ReactNode;
@@ -63,7 +63,7 @@ const CodeBlock = ({
         {
           "opacity-0 transition duration-300 will-change-transform":
             hasAnimation,
-          [animationName || ANIMAITE_FADE_IN_UP]: hasAnimation && isVisible,
+          [animationName || ANIMATE_FADE_IN_UP]: hasAnimation && isVisible,
         },
         className,
       )}

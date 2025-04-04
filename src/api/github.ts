@@ -1,4 +1,4 @@
-const GITAPI_URL = "https://api.github.com";
+const GIT_API_URL = "https://api.github.com";
 const TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
 
 export interface GithubUserInfo {
@@ -39,7 +39,7 @@ export interface GithubUserInfo {
 }
 
 export const fetchGithubUserInfo = async (): Promise<GithubUserInfo> => {
-  const response = await fetch(`${GITAPI_URL}/user`, {
+  const response = await fetch(`${GIT_API_URL}/user`, {
     headers: {
       Authorization: `Bearer ${TOKEN}`,
     },
