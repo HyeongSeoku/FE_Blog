@@ -2,7 +2,6 @@
 
 import React, { ReactNode } from "react";
 import useIssueInfo from "@/hooks/useIssueInfo";
-import GithubIcon from "@/icon/github.svg";
 import GithubIssueIcon from "@/icon/github_issue.svg";
 
 import classNames from "classnames";
