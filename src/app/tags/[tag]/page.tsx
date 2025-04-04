@@ -4,11 +4,11 @@ import { getTagPath } from "@/utils/path";
 import { getPostsByTag } from "@/utils/post";
 import { Metadata } from "next";
 
-export async function generateMetadata({
+export function generateMetadata({
   params,
 }: {
   params: { tag: string };
-}): Promise<Metadata> {
+}): Metadata {
   const { tag } = params;
   return {
     title: `#${tag} 게시물`,
