@@ -2,7 +2,6 @@
 
 import { HeadingsProps } from "@/types/mdx";
 import Link from "next/link";
-import { ANIMAITE_FADE_IN_UP } from "@/constants/animation.constants";
 import { RefObject, useEffect, useState } from "react";
 import classNames from "classnames";
 import MoScrollProgress from "./MoScrollProgress";
@@ -100,7 +99,7 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
         <ul className="space-y-2 h-fit max-h-[500px] overflow-y-scroll scroll-bar-thin">
           {headings.map((heading, idx) => (
             <li
-              key={`${heading}_${idx}`}
+              key={`${heading.id}_${idx}`}
               className={classNames(
                 "text-sm hover:text-theme transition-colors duration-100",
                 {
