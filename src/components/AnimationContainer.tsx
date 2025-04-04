@@ -3,7 +3,7 @@
 import { ElementType, ReactNode } from "react";
 import classNames from "classnames";
 import useAnimationVisibility from "@/hooks/useAnimationVisibility";
-import { ANIMAITE_FADE_IN_UP } from "@/constants/animation.constants";
+import { ANIMATE_FADE_IN_UP } from "@/constants/animation.constants";
 
 export type AnimationNameType =
   | "animate-fadeInUp"
@@ -20,7 +20,7 @@ interface AnimationContainerProps {
 
 const AnimationContainer = ({
   htmlTag: HtmlTag = "div",
-  animationName = ANIMAITE_FADE_IN_UP,
+  animationName = ANIMATE_FADE_IN_UP,
   children,
   className,
   ...props

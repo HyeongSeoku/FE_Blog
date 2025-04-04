@@ -3,11 +3,7 @@ import BlogDateTemplate from "@/templates/BlogDateTemplate";
 import { getPostsByDate } from "@/utils/post";
 import { redirect } from "next/navigation";
 
-export const generateMetadata = async ({
-  params,
-}: {
-  params: { year: string };
-}) => {
+export const generateMetadata = ({ params }: { params: { year: string } }) => {
   const { year } = params;
 
   const metadata = {

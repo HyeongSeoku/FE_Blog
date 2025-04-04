@@ -22,12 +22,10 @@ const MainPostCard = ({
   title,
   description,
   category,
-  subCategory,
   tags,
   createdAt,
   imgSrc = "/image/default_img.png",
   imgAlt = "default image alt",
-  categoryType = "MAIN",
 }: MainPostCardProps) => {
   return (
     <article className="flex flex-col h-72 box-border group min-xl:min-w-80">

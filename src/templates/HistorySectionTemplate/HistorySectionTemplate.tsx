@@ -34,7 +34,7 @@ const HistoryItem = ({ targetYear, currentJob }: HistoryItemProps) => {
       </div>
       {!!yearData.length ? (
         <div className="history-detail-container ">
-          {yearData.map(({ month, title, description, tag, logoSrc }, idx) => (
+          {yearData.map(({ month, title, description, logoSrc }, idx) => (
             <div
               key={`${month}_${idx}`}
               className="flex items-center gap-2 pl-3 mb-2 min-h-20"

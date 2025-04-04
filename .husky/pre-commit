@@ -1,0 +1,23 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"  # husky helper (있으면 유지)
+
+set -e
+
+# 스테이지 된 JS/TS 파일만 선택
+FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|jsx|ts|tsx)$' || true)
+
+if [ -z "$FILES" ]; then
+  echo "✅ No JavaScript/TypeScript files to lint or format."
+  exit 0
+fi
+
+echo "🔍 Running ESLint..."
+echo "$FILES" | xargs npx eslint --fix
+
+echo "🎨 Running Prettier..."
+echo "$FILES" | xargs npx prettier --write
+
+echo "➕ Restaging formatted files..."
+echo "$FILES" | xargs git add
+
+echo "✅ Pre-commit checks completed."

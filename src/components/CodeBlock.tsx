@@ -5,7 +5,7 @@ import classNames from "classnames";
 
 import { ReactNode, useState, useMemo } from "react";
 import { AnimationNameType } from "./AnimationContainer";
-import { ANIMAITE_FADE_IN_UP } from "@/constants/animation.constants";
+import { ANIMATE_FADE_IN_UP } from "@/constants/animation.constants";
 
 interface CodeBlockProps {
   children: ReactNode;
@@ -46,11 +46,14 @@ const CodeBlock = ({
     return extractTextFromChildren(children);
   }, [children]);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(codeText).then(() => {
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(codeText);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    });
+    } catch (error) {
+      console.error("복사 실패:", error);
+    }
   };
 
   return (
@@ -60,7 +63,7 @@ const CodeBlock = ({
         {
           "opacity-0 transition duration-300 will-change-transform":
             hasAnimation,
-          [animationName || ANIMAITE_FADE_IN_UP]: hasAnimation && isVisible,
+          [animationName || ANIMATE_FADE_IN_UP]: hasAnimation && isVisible,
         },
         className,
       )}
@@ -69,7 +72,7 @@ const CodeBlock = ({
       {children}
       {hasCopyBtn && (
         <button
-          onClick={handleCopy}
+          onClick={() => void handleCopy()}
           className={classNames(
             "absolute top-2 right-2 p-1 bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 flex items-center justify-center w-16 h-8 transition-[opacity colors] duration-200 border border-transparent",
             { "border-green-500 text-green-500": copied },

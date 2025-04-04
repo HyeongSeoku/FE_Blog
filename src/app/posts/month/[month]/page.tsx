@@ -4,11 +4,7 @@ import { formatToKoreanMonth } from "@/utils/date";
 import { getPostsByDate } from "@/utils/post";
 import { redirect } from "next/navigation";
 
-export const generateMetadata = async ({
-  params,
-}: {
-  params: { month: string };
-}) => {
+export const generateMetadata = ({ params }: { params: { month: string } }) => {
   const { month } = params;
 
   const metadata = {

@@ -3,7 +3,7 @@ import BlogPageTemplate from "@/templates/BlogPageTemplate";
 import { getPostsByCategory } from "@/utils/post";
 import { redirect } from "next/navigation";
 
-export const generateMetadata = async ({
+export const generateMetadata = ({
   params,
 }: {
   params: { category: string };
@@ -24,7 +24,7 @@ export const generateMetadata = async ({
   return metadata;
 };
 
-export const generateStaticParams = async () => {
+export const generateStaticParams = () => {
   const categories = Object.keys(CATEGORY_MAP);
 
   return categories.map((category) => ({ category }));

@@ -218,7 +218,6 @@ export default {
   plugins: [
     function ({
       addUtilities,
-      addBase,
     }: {
       addUtilities: (utilities: Record<string, Record<string, string>>) => void;
       addBase: (baseStyles: Record<string, Record<string, string>>) => void;

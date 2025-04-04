@@ -211,7 +211,7 @@ const Pagination: React.FC<PaginationProps> = ({
               "border-[var(--bg-color)]": page !== currentPage,
             },
           )}
-          onClick={() => handlePageChange(page as number)}
+          onClick={() => handlePageChange(page)}
         >
           {page}
         </button>
