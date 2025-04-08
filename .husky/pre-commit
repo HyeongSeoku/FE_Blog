@@ -3,15 +3,22 @@
 
 set -e
 
+# Intel Mac, Apple Silicon, NVM 사용자를 위한 fallback 경로 추가
+export PATH="./node_modules/.bin:$PATH:/usr/local/bin:/opt/homebrew/bin"
+
+# NVM 사용자의 경우: 가장 최신 Node 버전 자동 추가 
+if [ -d "$HOME/.nvm/versions/node" ]; then
+  LATEST_NODE=$(ls "$HOME/.nvm/versions/node" | sort -V | tail -n 1)
+  export PATH="$HOME/.nvm/versions/node/$LATEST_NODE/bin:$PATH"
+fi
+
+# 🔍 변경된 파일 중 JS/TS만 선택
 FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|jsx|ts|tsx)$' || true)
 
 if [ -z "$FILES" ]; then
   echo "✅ No JavaScript/TypeScript files to lint or format."
   exit 0
 fi
-
-# node_modules/.bin 경로 우선 등록
-export PATH="./node_modules/.bin:$PATH"
 
 echo "🔍 Running ESLint..."
 echo "$FILES" | xargs eslint --fix
