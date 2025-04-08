@@ -3,9 +3,6 @@
 
 set -e
 
-# 기본 shell PATH가 부족할 수 있으므로 node_modules/.bin 추가
-export PATH="./node_modules/.bin:$PATH"
-
 FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|jsx|ts|tsx)$' || true)
 
 if [ -z "$FILES" ]; then
@@ -13,11 +10,14 @@ if [ -z "$FILES" ]; then
   exit 0
 fi
 
+# node_modules/.bin 경로 우선 등록
+export PATH="./node_modules/.bin:$PATH"
+
 echo "🔍 Running ESLint..."
-echo "$FILES" | xargs npx eslint --fix
+echo "$FILES" | xargs eslint --fix
 
 echo "🎨 Running Prettier..."
-echo "$FILES" | xargs npx prettier --write
+echo "$FILES" | xargs prettier --write
 
 echo "➕ Restaging formatted files..."
 echo "$FILES" | xargs git add
