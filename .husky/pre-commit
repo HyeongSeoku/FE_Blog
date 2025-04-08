@@ -1,9 +1,10 @@
+export PATH="/Users/nhn/.nvm/versions/node/v20.15.0/bin:$PATH"
+
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"  # husky helper
+. "$(dirname "$0")/_/husky.sh"
 
 set -e
 
-# 스테이지 된 JS/TS 파일만 선택
 FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|jsx|ts|tsx)$' || true)
 
 if [ -z "$FILES" ]; then
@@ -12,10 +13,10 @@ if [ -z "$FILES" ]; then
 fi
 
 echo "🔍 Running ESLint..."
-echo "$FILES" | xargs pnpm exec eslint --fix
+echo "$FILES" | xargs npx eslint --fix
 
 echo "🎨 Running Prettier..."
-echo "$FILES" | xargs pnpm exec prettier --write
+echo "$FILES" | xargs npx prettier --write
 
 echo "➕ Restaging formatted files..."
 echo "$FILES" | xargs git add
