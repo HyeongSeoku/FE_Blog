@@ -58,7 +58,8 @@ const MobileNavigation = ({
           <li
             key={`${id}_${idx}`}
             className={classNames(
-              "px-4 py-2 cursor-pointer flex max-w-[var(--mobile-nav-max-width)] text-xl font-semibold text-center transition-transform will-change-transform hover:scale-105",
+              "px-4 py-2 cursor-pointer flex max-w-[var(--mobile-nav-max-width)] text-xl font-semibold text-center transition-transform will-change-transform",
+              "hover:scale-105",
               {
                 "text-primary": link === basePathname,
               },
