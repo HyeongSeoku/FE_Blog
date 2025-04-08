@@ -1,9 +1,10 @@
-export PATH="/Users/nhn/.nvm/versions/node/v20.15.0/bin:$PATH"
-
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
 set -e
+
+# 기본 shell PATH가 부족할 수 있으므로 node_modules/.bin 추가
+export PATH="./node_modules/.bin:$PATH"
 
 FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|jsx|ts|tsx)$' || true)
 
