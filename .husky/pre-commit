@@ -1,9 +1,18 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"  # husky helper (있으면 유지)
+. "$(dirname "$0")/_/husky.sh"
 
 set -e
 
-# 스테이지 된 JS/TS 파일만 선택
+# Intel Mac, Apple Silicon, NVM 사용자를 위한 fallback 경로 추가
+export PATH="./node_modules/.bin:$PATH:/usr/local/bin:/opt/homebrew/bin"
+
+# NVM 사용자의 경우: 가장 최신 Node 버전 자동 추가 
+if [ -d "$HOME/.nvm/versions/node" ]; then
+  LATEST_NODE=$(ls "$HOME/.nvm/versions/node" | sort -V | tail -n 1)
+  export PATH="$HOME/.nvm/versions/node/$LATEST_NODE/bin:$PATH"
+fi
+
+# 🔍 변경된 파일 중 JS/TS만 선택
 FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|jsx|ts|tsx)$' || true)
 
 if [ -z "$FILES" ]; then
@@ -12,10 +21,10 @@ if [ -z "$FILES" ]; then
 fi
 
 echo "🔍 Running ESLint..."
-echo "$FILES" | xargs npx eslint --fix
+echo "$FILES" | xargs eslint --fix
 
 echo "🎨 Running Prettier..."
-echo "$FILES" | xargs npx prettier --write
+echo "$FILES" | xargs prettier --write
 
 echo "➕ Restaging formatted files..."
 echo "$FILES" | xargs git add
