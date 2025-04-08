@@ -1,9 +1,12 @@
+"use client";
+
 import { NAV_GITHUB_ISSUE, NAV_LIST } from "@/constants/navigation.constants";
 import useIssueInfo from "@/hooks/useIssueInfo";
 import useScrollDisable from "@/hooks/useScrollDisable";
 import { issueUrl } from "@/utils/util";
 import classNames from "classnames";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export interface MobileNavigationProps {
   isOpen: boolean;
@@ -19,6 +22,10 @@ const MobileNavigation = ({
   useScrollDisable(isOpen);
   const { title, body } = useIssueInfo();
   const issueQueryString = issueUrl(title, body);
+
+  const pathname = usePathname();
+  const baseSegment = pathname.split("/").filter(Boolean)[0];
+  const basePathname = baseSegment ? `/${baseSegment}` : "/";
 
   const handleLinkClick = () => {
     toggleMoMenu();
@@ -50,7 +57,12 @@ const MobileNavigation = ({
         {NAV_LIST.map(({ id, title, link, isExternalLink, target }, idx) => (
           <li
             key={`${id}_${idx}`}
-            className="px-4 py-2 cursor-pointer flex max-w-[var(--mobile-nav-max-width)] text-xl font-semibold"
+            className={classNames(
+              "px-4 py-2 cursor-pointer flex max-w-[var(--mobile-nav-max-width)] text-xl font-semibold text-center transition-transform will-change-transform hover:scale-105",
+              {
+                "text-primary": link === basePathname,
+              },
+            )}
           >
             {isExternalLink ? (
               <a
