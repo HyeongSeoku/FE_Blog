@@ -12,7 +12,8 @@
     "prepare": "husky install",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "spell-check": "cspell \"src/**/*.{ts,tsx,js,jsx,md,mdx}\""
+    "spell-check": "cspell \"src/**/*.{ts,tsx,js,jsx,md,mdx}\"",
+    "type-check": "npx tsc --noEmit"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.0.1",

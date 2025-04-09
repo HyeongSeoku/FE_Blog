@@ -5,6 +5,8 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": true,
+    "noEmit": true,
+    "incremental": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
@@ -14,9 +16,7 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
     "jsx": "preserve",
-    "incremental": true,
     "paths": {
       "@/*": ["./src/*"]
     },
