@@ -1,0 +1,9 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+branch_name=$(git symbolic-ref --short HEAD)
+
+if [ "$branch_name" = "main" ]; then
+  echo "🚫 직접 merge는 금지되어 있습니다. PR을 사용해주세요."
+  exit 1
+fi
