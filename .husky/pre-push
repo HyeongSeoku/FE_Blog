@@ -1,0 +1,9 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+branch_name=$(git symbolic-ref --short HEAD)
+
+if [ "$branch_name" = "main" ]; then
+  echo "🚫 main 브랜치에는 직접 push할 수 없습니다. PR을 사용해주세요."
+  exit 1
+fi
