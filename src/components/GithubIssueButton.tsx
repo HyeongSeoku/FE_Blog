@@ -31,7 +31,7 @@ const GitHubIssueButton = ({
           className,
         )}
       >
-        <GithubIssueIcon width={32} height={32} />
+        <GithubIssueIcon style={{ width: 24, height: 24 }} />
 
         {children}
       </button>

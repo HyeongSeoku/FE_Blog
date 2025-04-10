@@ -130,7 +130,7 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
           className="w-8 p-1 mt-5 rounded-sm hover:bg-gray-400/20"
           onClick={handleScrollToCommentSection}
         >
-          <CommentIcon width={24} height={24} />
+          <CommentIcon style={{ width: 24, height: 24 }} />
         </button>
       </aside>
 
@@ -140,7 +140,7 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
           className="w-8 h-8 rounded-sm hover:bg-gray-400/20 flex items-center justify-center"
           onClick={handleScrollToCommentSection}
         >
-          <CommentIcon width={26} height={26} />
+          <CommentIcon style={{ width: 24, height: 24 }} />
         </button>
         <MoScrollProgress />
       </aside>
