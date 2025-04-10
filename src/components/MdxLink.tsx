@@ -17,7 +17,7 @@ const MdxLink = ({ href = "", target = "_self", children }: MdxLinkProps) => {
       className="flex items-center hover:underline"
     >
       {children}
-      <ExternalIcon width={16} height={16} />
+      <ExternalIcon style={{ width: 16, height: 16 }} />
     </Link>
   );
 };

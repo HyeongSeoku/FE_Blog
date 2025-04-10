@@ -47,7 +47,7 @@ const IntroSectionTemplate = () => {
           passHref
           target="_blank"
         >
-          <EmailIcon alt="email" width={20} height={20} />
+          <EmailIcon title="email" style={{ width: 20, height: 20 }} />
         </Link>
         <Link
           className="text-theme p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"
@@ -55,7 +55,7 @@ const IntroSectionTemplate = () => {
           passHref
           target="_blank"
         >
-          <GithubIcon alt="email" width={20} height={20} />
+          <GithubIcon title="email" style={{ width: 20, height: 20 }} />
         </Link>
         <Link
           className="text-theme p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"
@@ -63,7 +63,7 @@ const IntroSectionTemplate = () => {
           passHref
           target="_blank"
         >
-          <LinkedInIcon alt="email" width={20} height={20} />
+          <LinkedInIcon title="email" style={{ width: 20, height: 20 }} />
         </Link>
       </div>
     </section>

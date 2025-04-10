@@ -148,7 +148,7 @@ const MdxDetailTemplate = ({
         <section className="flex items-center gap-3 mb-3 text-gray-400">
           <time>{createdAt}</time>
           <div className="flex items-center gap-[2px]">
-            <TimeIcon width={14} height={14} stroke="black" />
+            <TimeIcon style={{ width: 14, height: 14 }} stroke="black" />
             <time>{readingTime}</time>
             <span>분</span>
           </div>
@@ -191,7 +191,7 @@ const MdxDetailTemplate = ({
               {previousPost && (
                 <button className="group flex flex-col items-start">
                   <div className="flex items-center group-hover:text-theme">
-                    <LeftArrow width={16} height={16} />
+                    <LeftArrow style={{ width: 16, height: 16 }} />
                     <span>Previous</span>
                   </div>
                   <Link
@@ -208,7 +208,7 @@ const MdxDetailTemplate = ({
                 <button className="group flex flex-col items-end ml-auto">
                   <div className="flex items-center group-hover:text-theme">
                     <span>Next</span>
-                    <RightArrow width={16} height={16} />
+                    <RightArrow style={{ width: 16, height: 16 }} />
                   </div>
                   <Link
                     className="group-hover:text-theme group-hover:bg-gray-100/5 rounded-sm p-0.5"
@@ -226,7 +226,7 @@ const MdxDetailTemplate = ({
               <div className="text-gray-400">
                 <div className="flex items-center text-sm">
                   <span>Related Posts</span>
-                  <DoubleArrow width={16} height={16} />
+                  <DoubleArrow style={{ width: 16, height: 16 }} />
                 </div>
                 <ul className="text-sm">
                   {relatedPosts.map(({ slug, title }) => (

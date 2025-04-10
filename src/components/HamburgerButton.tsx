@@ -19,7 +19,7 @@ const HamburgerButton = () => {
   return (
     <>
       <button className="hamburger-container" onClick={toggleMenu}>
-        <MenuIcon width={18} height={18} fill="black" />
+        <MenuIcon style={{ width: 18, height: 18 }} fill="black" />
       </button>
 
       <div
