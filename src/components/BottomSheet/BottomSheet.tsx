@@ -59,6 +59,7 @@ const BottomSheet = ({
         backDropClassName,
       )}
       onClick={hasBackDropClose ? handleClose : () => {}}
+      role="presentation"
     >
       <div
         className={classNames(

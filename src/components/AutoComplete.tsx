@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import classNames from "classnames";
+import { handleKeyboardClick } from "@/utils/eventListener";
 
 interface AutoCompleteProps {
   suggestions: string[];
@@ -41,11 +42,13 @@ const AutoComplete = ({
     setActiveSuggestionIndex(-1);
   };
 
-  const handleClick = (e: MouseEvent<HTMLElement>) => {
-    const value = e.currentTarget.innerText;
-    setInputValue(value);
-    onSelectSuggestion(value);
-  };
+  function handleClick(
+    e: MouseEvent<HTMLLIElement> | KeyboardEvent<HTMLLIElement>,
+  ) {
+    const { innerText } = e.currentTarget;
+    setInputValue(innerText);
+    onSelectSuggestion(innerText);
+  }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -75,15 +78,19 @@ const AutoComplete = ({
   };
   const SuggestionsListComponent = () => {
     return filteredSuggestions.length ? (
-      <ul className="suggestions">
+      <ul className="suggestions" role="listbox">
         {filteredSuggestions.map((suggestion, index) => {
           return (
             <li
+              role="option"
+              aria-selected={index === activeSuggestionIndex}
+              tabIndex={0}
               className={classNames("p-2 cursor-pointer", {
                 "bg-gray-200 text-blue-500": index === activeSuggestionIndex,
               })}
               key={suggestion}
               onClick={handleClick}
+              onKeyDown={(e) => handleKeyboardClick(e, () => handleClick(e))}
             >
               {suggestion}
             </li>
