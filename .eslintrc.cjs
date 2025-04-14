@@ -1,4 +1,3 @@
-// .eslintrc.js
 module.exports = {
   root: true,
   env: {
@@ -42,7 +41,7 @@ module.exports = {
     "no-debugger": "error",
   },
   ignorePatterns: [
-    "eslint.config.js",
+    ".eslintrc.cjs",
     "next.config.mjs",
     "dist/",
     ".next/",
