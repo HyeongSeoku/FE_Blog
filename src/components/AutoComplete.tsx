@@ -50,6 +50,16 @@ const AutoComplete = ({
     onSelectSuggestion(innerText);
   }
 
+  const handleSuggestionKeyDown = (
+    e: KeyboardEvent<HTMLLIElement>,
+    suggestion: string,
+  ) => {
+    handleKeyboardClick(e, () => {
+      setInputValue(suggestion);
+      onSelectSuggestion(suggestion);
+    });
+  };
+
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       if (activeSuggestionIndex === -1) {
@@ -76,27 +86,31 @@ const AutoComplete = ({
       return;
     }
   };
+
+  const renderSuggestion = (suggestion: string, index: number) => {
+    const isActive = index === activeSuggestionIndex;
+    return (
+      <li
+        key={suggestion}
+        id={`suggestion-${suggestion}`}
+        role="option"
+        aria-selected={isActive}
+        tabIndex={0}
+        className={classNames("p-2 cursor-pointer", {
+          "bg-gray-200 text-blue-500": isActive,
+        })}
+        onClick={handleClick}
+        onKeyDown={(e) => handleSuggestionKeyDown(e, suggestion)}
+      >
+        {suggestion}
+      </li>
+    );
+  };
+
   const SuggestionsListComponent = () => {
     return filteredSuggestions.length ? (
       <ul className="suggestions" role="listbox" id="autocomplete-listbox">
-        {filteredSuggestions.map((suggestion, index) => {
-          return (
-            <li
-              role="option"
-              id={`suggestion-${suggestion}`}
-              aria-selected={index === activeSuggestionIndex}
-              className={classNames("p-2 cursor-pointer", {
-                "bg-gray-200 text-blue-500": index === activeSuggestionIndex,
-              })}
-              tabIndex={-1}
-              key={suggestion}
-              onClick={handleClick}
-              onKeyDown={(e) => handleKeyboardClick(e, () => handleClick(e))}
-            >
-              {suggestion}
-            </li>
-          );
-        })}
+        {filteredSuggestions.map(renderSuggestion)}
       </ul>
     ) : (
       <div className="no-suggestions"></div>
