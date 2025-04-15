@@ -78,16 +78,17 @@ const AutoComplete = ({
   };
   const SuggestionsListComponent = () => {
     return filteredSuggestions.length ? (
-      <ul className="suggestions" role="listbox">
+      <ul className="suggestions" role="listbox" id="autocomplete-listbox">
         {filteredSuggestions.map((suggestion, index) => {
           return (
             <li
               role="option"
+              id={`suggestion-${suggestion}`}
               aria-selected={index === activeSuggestionIndex}
-              tabIndex={0}
               className={classNames("p-2 cursor-pointer", {
                 "bg-gray-200 text-blue-500": index === activeSuggestionIndex,
               })}
+              tabIndex={-1}
               key={suggestion}
               onClick={handleClick}
               onKeyDown={(e) => handleKeyboardClick(e, () => handleClick(e))}
@@ -109,6 +110,13 @@ const AutoComplete = ({
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         value={inputValue}
+        aria-autocomplete="list"
+        aria-controls="autocomplete-listbox"
+        aria-activedescendant={
+          activeSuggestionIndex >= 0
+            ? `suggestion-${filteredSuggestions[activeSuggestionIndex]}`
+            : undefined
+        }
       />
       {inputValue && <SuggestionsListComponent />}
     </div>
