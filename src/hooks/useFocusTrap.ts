@@ -41,16 +41,19 @@ export default function useFocusTrap(
       const last = focusableElements[focusableElements.length - 1];
       const active = document.activeElement;
 
+      const isOutside = !container.contains(active);
+
       if (e.shiftKey) {
-        if (active === first || !container.contains(active)) {
+        if (active === first || isOutside) {
           e.preventDefault();
           last.focus();
         }
-      } else {
-        if (active === last || !container.contains(active)) {
-          e.preventDefault();
-          first.focus();
-        }
+        return;
+      }
+
+      if (active === last || isOutside) {
+        e.preventDefault();
+        first.focus();
       }
     };
 
