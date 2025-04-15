@@ -1,23 +1,28 @@
 {
   "version": "0.2",
   "language": "en",
-  "ignorePaths": ["node_modules", "dist", ".next"],
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    ".next"
+  ],
   "words": [
+    "contenteditable",
+    "dirents",
     "giscus",
     "Giscus",
     "GISCUS",
     "Hyeong",
-    "Seoku",
-    "SEOK",
-    "SEOKU",
     "jobkorea",
     "noborder",
     "noopener",
     "noreferrer",
-    "zustand",
-    "TOASTCAM",
+    "SEOK",
+    "Seoku",
+    "SEOKU",
     "toastcam",
+    "TOASTCAM",
     "Visiblilty",
-    "dirents"
+    "zustand"
   ]
 }
