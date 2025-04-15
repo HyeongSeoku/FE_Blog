@@ -6,8 +6,9 @@ module.exports = {
       numberOfRuns: 1,
     },
     upload: {
-      target: "github",
-      githubToken: process.env.LHCI_GITHUB_APP_TOKEN,
+      target: "filesystem",
+      outputDir: "./.lighthouseci",
+      reportFilenamePattern: "report.html",
     },
   },
 };

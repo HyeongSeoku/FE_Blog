@@ -45,13 +45,31 @@ jobs:
           echo "NEXT_PUBLIC_GISCUS_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GISCUS_CLIENT_ID }}" >> .env
           echo "NEXT_PUBLIC_REPO_URL=${{ secrets.NEXT_PUBLIC_REPO_URL }}" >> .env
           echo "NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}" >> .env
-          echo "LHCI_GITHUB_APP_TOKEN=${{ secrets.LHCI_GITHUB_APP_TOKEN }}" >> .env
 
       - name: Build project (for verification only)
         run: pnpm run build
 
       - name: Run Lighthouse CI
         run: pnpm run lhci
+
+      - name: Upload Lighthouse Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: lighthouse-report
+          path: .lighthouseci/report.html
+
+      - name: Create PR comment
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            🚨 Lighthouse Report 결과입니다!
+
+            ✅ [리포트 다운로드 및 확인](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            위 링크 하단의 "Artifacts > lighthouse-report" 항목을 클릭하면 리포트를 확인할 수 있습니다.
 
       - name: Cache pnpm store
         if: github.ref == 'refs/heads/main'
