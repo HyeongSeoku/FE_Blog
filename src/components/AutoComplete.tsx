@@ -121,6 +121,7 @@ const AutoComplete = ({
     <div>
       <input
         type="text"
+        role="combobox"
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         value={inputValue}
@@ -131,6 +132,7 @@ const AutoComplete = ({
             ? `suggestion-${filteredSuggestions[activeSuggestionIndex]}`
             : undefined
         }
+        aria-expanded={filteredSuggestions.length > 0}
       />
       {inputValue && <SuggestionsListComponent />}
     </div>
