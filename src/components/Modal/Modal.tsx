@@ -71,7 +71,7 @@ const Modal = ({
         modalContainerClassName,
       )}
       onClick={handleDimmedClick}
-      role="presentation"
+      aria-hidden="true"
       style={{
         backgroundColor: "rgba(0, 0, 0, 0.4)",
       }}
