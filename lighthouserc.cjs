@@ -6,7 +6,8 @@ module.exports = {
       numberOfRuns: 1,
     },
     upload: {
-      target: "temporary-public-storage", // or use your own server
+      target: "github",
+      githubToken: process.env.LHCI_GITHUB_APP_TOKEN,
     },
   },
 };
