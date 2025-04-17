@@ -59,7 +59,7 @@ const BottomSheet = ({
         backDropClassName,
       )}
       onClick={hasBackDropClose ? handleClose : () => {}}
-      role="presentation"
+      aria-hidden="true"
     >
       <div
         className={classNames(

@@ -50,6 +50,16 @@ const AutoComplete = ({
     onSelectSuggestion(innerText);
   }
 
+  const handleSuggestionKeyDown = (
+    e: KeyboardEvent<HTMLLIElement>,
+    suggestion: string,
+  ) => {
+    handleKeyboardClick(e, () => {
+      setInputValue(suggestion);
+      onSelectSuggestion(suggestion);
+    });
+  };
+
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       if (activeSuggestionIndex === -1) {
@@ -76,26 +86,31 @@ const AutoComplete = ({
       return;
     }
   };
+
+  const renderSuggestion = (suggestion: string, index: number) => {
+    const isActive = index === activeSuggestionIndex;
+    return (
+      <li
+        key={suggestion}
+        id={`suggestion-${suggestion}`}
+        role="option"
+        aria-selected={isActive}
+        tabIndex={0}
+        className={classNames("p-2 cursor-pointer", {
+          "bg-gray-200 text-blue-500": isActive,
+        })}
+        onClick={handleClick}
+        onKeyDown={(e) => handleSuggestionKeyDown(e, suggestion)}
+      >
+        {suggestion}
+      </li>
+    );
+  };
+
   const SuggestionsListComponent = () => {
     return filteredSuggestions.length ? (
-      <ul className="suggestions" role="listbox">
-        {filteredSuggestions.map((suggestion, index) => {
-          return (
-            <li
-              role="option"
-              aria-selected={index === activeSuggestionIndex}
-              tabIndex={0}
-              className={classNames("p-2 cursor-pointer", {
-                "bg-gray-200 text-blue-500": index === activeSuggestionIndex,
-              })}
-              key={suggestion}
-              onClick={handleClick}
-              onKeyDown={(e) => handleKeyboardClick(e, () => handleClick(e))}
-            >
-              {suggestion}
-            </li>
-          );
-        })}
+      <ul className="suggestions" role="listbox" id="autocomplete-listbox">
+        {filteredSuggestions.map(renderSuggestion)}
       </ul>
     ) : (
       <div className="no-suggestions"></div>
@@ -106,9 +121,18 @@ const AutoComplete = ({
     <div>
       <input
         type="text"
+        role="combobox"
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         value={inputValue}
+        aria-autocomplete="list"
+        aria-controls="autocomplete-listbox"
+        aria-activedescendant={
+          activeSuggestionIndex >= 0
+            ? `suggestion-${filteredSuggestions[activeSuggestionIndex]}`
+            : undefined
+        }
+        aria-expanded={filteredSuggestions.length > 0}
       />
       {inputValue && <SuggestionsListComponent />}
     </div>
