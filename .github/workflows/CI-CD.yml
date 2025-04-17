@@ -122,7 +122,11 @@ jobs:
         run: pnpm run build
 
       - name: Run Lighthouse CI
-        run: pnpm run lhci
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        run: |
+          npm i -g @lhci/cli
+          lhci autorun
 
       - name: Upload Lighthouse Report
         uses: actions/upload-artifact@v4
