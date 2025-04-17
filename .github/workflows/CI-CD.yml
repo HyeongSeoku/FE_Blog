@@ -135,6 +135,7 @@ jobs:
           path: .lighthouseci/report.html
 
       - name: Create PR comment
+        if: github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
