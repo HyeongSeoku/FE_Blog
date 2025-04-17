@@ -59,7 +59,7 @@ const MoScrollProgress = () => {
         />
       </svg>
       <div className="absolute group-hover:animate-bounceSlight">
-        <ArrowTop width={18} />
+        <ArrowTop style={{ width: 18, height: 18 }} />
       </div>
     </button>
   );

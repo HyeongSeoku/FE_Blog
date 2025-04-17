@@ -25,7 +25,6 @@ module.exports = {
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/no-misused-promises": "error",
     "@typescript-eslint/no-unsafe-return": "warn",
-
     "@typescript-eslint/no-unsafe-assignment": "warn",
     "@typescript-eslint/no-unsafe-member-access": "warn",
     "@typescript-eslint/no-unsafe-call": "warn",
@@ -41,5 +40,12 @@ module.exports = {
     "no-console": ["error", { allow: ["warn", "error"] }],
     "no-debugger": "error",
   },
-  ignorePatterns: [".eslintrc.js", "next.config.js", "dist/", ".next/"],
+  ignorePatterns: [
+    ".eslintrc.cjs",
+    "next.config.mjs",
+    "dist/",
+    ".next/",
+    "public/theme.js",
+    "lighthouserc.cjs",
+  ],
 };

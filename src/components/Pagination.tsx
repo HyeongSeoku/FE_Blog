@@ -92,7 +92,7 @@ const Pagination: React.FC<PaginationProps> = ({
             )}
             aria-label="First Page"
           >
-            <DoubleLeftArrow width={15} height={15} />
+            <DoubleLeftArrow style={{ width: 15, height: 15 }} />
           </Link>
         )}
         {!isSinglePage && (
@@ -109,7 +109,7 @@ const Pagination: React.FC<PaginationProps> = ({
             )}
             aria-label="Previous Page"
           >
-            <LeftArrow width={15} height={15} />
+            <LeftArrow style={{ width: 15, height: 15 }} />
           </Link>
         )}
 
@@ -142,7 +142,7 @@ const Pagination: React.FC<PaginationProps> = ({
             )}
             aria-label="Next Page"
           >
-            <RightArrow width={15} height={15} />
+            <RightArrow style={{ width: 15, height: 15 }} />
           </Link>
         )}
 
@@ -160,7 +160,7 @@ const Pagination: React.FC<PaginationProps> = ({
             )}
             aria-label="Last Page"
           >
-            <DoubleRightArrow width={15} height={15} />
+            <DoubleRightArrow style={{ width: 15, height: 15 }} />
           </Link>
         )}
       </nav>
@@ -182,7 +182,7 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={isPrevBtnDisabled}
           aria-label="First Page"
         >
-          <DoubleLeftArrow width={15} height={15} />
+          <DoubleLeftArrow style={{ width: 15, height: 15 }} />
         </button>
       )}
       {!isSinglePage && (
@@ -197,7 +197,7 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={isPrevBtnDisabled}
           aria-label="Previous Page"
         >
-          <LeftArrow width={15} height={15} />
+          <LeftArrow style={{ width: 15, height: 15 }} />
         </button>
       )}
 
@@ -245,7 +245,7 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={isNextBtnDisabled}
           aria-label="Last Page"
         >
-          <DoubleRightArrow width={15} height={15} />
+          <DoubleRightArrow style={{ width: 15, height: 15 }} />
         </button>
       )}
     </nav>

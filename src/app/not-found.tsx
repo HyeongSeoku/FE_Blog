@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "페이지를 찾을 수 없습니다",
 };
 
-export default function Custom404() {
+function Custom404() {
   return (
     <NoneLayout>
       <Header headerType="BACK" hideNavigation={true}></Header>
@@ -18,3 +18,5 @@ export default function Custom404() {
     </NoneLayout>
   );
 }
+
+export default Custom404;

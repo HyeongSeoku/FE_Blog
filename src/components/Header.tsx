@@ -77,7 +77,7 @@ const Header = ({
               )}
               onClick={toggleMoMenu}
             >
-              <MenuIcon width={24} height={24} alt="menu" />
+              <MenuIcon title="menu" style={{ width: 24, height: 24 }} />
             </button>
           </div>
           <MobileNavigation isOpen={isMoNavOpen} toggleMoMenu={toggleMoMenu} />
