@@ -53,7 +53,7 @@ const BottomSheet = ({
   return (
     <div
       className={classNames(
-        "fixed inset-0 z-30 overflow-hidden transition-opacity bg-gray-500 bg-opacity-20",
+        "fixed inset-0 z-30 overflow-hidden transition-opacity bg-gray-500 bg-opacity-20 will-change-[opacity]",
         { "opacity-0 pointer-events-none": !isAnimating },
         { "opacity-100": isAnimating },
         backDropClassName,

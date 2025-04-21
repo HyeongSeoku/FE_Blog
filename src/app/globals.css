@@ -1,4 +1,4 @@
-@import "../styles/fonts.css";
+/* @import "../styles/fonts.css"; */
 @import "../styles/markdown.css";
 
 /* Tailwind 설정 */
@@ -12,7 +12,6 @@
   --light-bg-color: #fafafa;
   --light-text-color: #121212;
   --light-second-bg-color: rgba(0, 144, 255, 0.3);
-  --light-theme-color: #f5c525;
   --light-bg-gray-color: #f1f3f5;
   --light-bg-gray-hover-color: #dee2e6;
 
@@ -20,7 +19,6 @@
   --dark-bg-color: #121212;
   --dark-text-color: #fafafa;
   --dark-second-bg-color: rgba(63, 63, 63, 0.3);
-  --dark-theme-color: #6a0dad;
   --dark-bg-gray-color: #2d2d2d;
   --dark-bg-gray-hover-color: #404040;
 

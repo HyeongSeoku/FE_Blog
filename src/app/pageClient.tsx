@@ -2,20 +2,13 @@
 
 import useDeviceType from "@/hooks/useDeviceType";
 import { PostDataProps } from "@/types/posts";
-import MainSection from "@/components/MainSection";
 
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionTemplate";
-import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
 import { GithubUserInfo } from "@/api/github";
 import useGithubInfoStore from "@/store/githubInfo";
 import SkillChip from "@/components/SkillChip";
-import Link from "next/link";
-import {
-  DEFAULT_MAIN_POST_COUNT,
-  SKILL_LIST,
-} from "@/constants/post.constants";
+import { SKILL_LIST } from "@/constants/post.constants";
 
 const Modal = dynamic(() => import("@/components/Modal/Modal"), {
   ssr: false,
@@ -27,11 +20,7 @@ interface HomeClientProps {
   postCount: number;
 }
 
-export const HomeClient = ({
-  postList,
-  githubData,
-  postCount,
-}: HomeClientProps) => {
+export const HomeClient = ({ githubData }: HomeClientProps) => {
   const [targetSkill, setTargetSkill] = useState("");
   const { setGithubUser } = useGithubInfoStore();
 
@@ -59,8 +48,6 @@ export const HomeClient = ({
 
   return (
     <div className="h-full flex flex-col gap-3">
-      <IntroSectionTemplate />
-
       <section className="flex flex-col gap-2">
         <h3 className="text-lg font-bold">Skills</h3>
         <ul className="inline-flex flex-wrap gap-3 w-80">
@@ -76,21 +63,6 @@ export const HomeClient = ({
           ))}
         </ul>
       </section>
-      <MainSection
-        title="게시물"
-        titleChildren={
-          postCount > DEFAULT_MAIN_POST_COUNT ? (
-            <Link
-              href="/blog"
-              className="text-sm text-gray-500 hover:text-theme transition-colors"
-            >
-              더보기
-            </Link>
-          ) : null
-        }
-      >
-        <PostSectionTemplate postData={postList} />
-      </MainSection>
 
       <Modal
         title={targetSkill}
