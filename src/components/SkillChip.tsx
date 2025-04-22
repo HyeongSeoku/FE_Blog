@@ -61,7 +61,13 @@ const SkillChip = ({
       onAnimationEnd={handleAnimationEnd}
       onClick={() => onClick(skillName)}
     >
-      <Image width={18} height={18} src={imgSrc} alt={skillName} priority />
+      <Image
+        width={18}
+        height={18}
+        src={imgSrc}
+        alt={skillName}
+        loading="lazy"
+      />
       <div className="font-semibold text-sm">{skillName}</div>
     </button>
   );
