@@ -7,7 +7,6 @@ import { FrontMatterProps, HeadingsProps } from "@/types/mdx";
 import MdxLink from "@/components/MdxLink";
 import MdxSideBar from "@/components/MdxSideBar";
 import AnimationContainer from "@/components/AnimationContainer";
-import Giscus from "@/components/Giscus";
 import { useMemo, useRef } from "react";
 import Link from "next/link";
 import RightArrow from "@/icon/arrow_right.svg";
@@ -21,6 +20,11 @@ import SkeletonBar from "@/components/SkeletonBar";
 import Image from "next/image";
 import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
 import { getTagPath } from "@/utils/path";
+
+const Giscus = dynamic(() => import("@/components/Giscus"), {
+  ssr: false,
+  loading: () => <div>댓글 불러오는 중...</div>,
+});
 
 // MDXRemote를 동적으로 import
 const MDXRemote = dynamic(

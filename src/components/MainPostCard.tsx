@@ -31,9 +31,21 @@ const MainPostCard = ({
     <article className="flex flex-col h-72 box-border group min-xl:min-w-80">
       <Link
         href={link}
-        className="aspect-[3/2] bg-opposite-theme rounded-md flex items-center justify-center p-3 relative overflow-hidden transform duration-300 group-hover:scale-105 will-change-transform"
+        className={classNames(
+          "aspect-[3/2] bg-opposite-theme rounded-md flex items-center justify-center p-3 relative overflow-hidden",
+          "duration-300 group-hover:-translate-y-2",
+          "group-hover:shadow-md",
+          "dark:group-hover:shadow-[0_4px_12px_#ffffff1a]",
+        )}
       >
-        <Image src={imgSrc} alt={imgAlt} fill objectFit="contain" />
+        <Image
+          src={imgSrc}
+          alt={imgAlt}
+          fill
+          objectFit="contain"
+          priority
+          className="bg-gray-100 dark:bg-gray-300"
+        />
         <div
           className={classNames(
             "w-fit h-6 rounded-md border px-2 py-1 text-xs box-border flex items-center justify-center absolute top-2 right-2",
@@ -50,7 +62,7 @@ const MainPostCard = ({
         <Link href={link}>
           <h2
             className={classNames(
-              "text-xl font-semibold mt-1",
+              "text-2xl font-semibold mt-1",
               "transition-colors duration-300 dark:text-gray-300 text-gray-500 hover:text-theme hover:dark:text-theme",
             )}
           >

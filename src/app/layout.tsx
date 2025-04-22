@@ -3,6 +3,8 @@ import "@/app/globals.css";
 import { ReactNode } from "react";
 import dynamic from "next/dynamic";
 import ClientProvider from "@/components/ClientProvider";
+import { pretendard } from "@/styles/font";
+import ThemeScript from "@/components/ThemeScript";
 
 const GaBanner = dynamic(() => import("@/components/GaBanner"), {
   ssr: false,
@@ -19,9 +21,10 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={pretendard.className} suppressHydrationWarning>
       <head>
-        <script src="/theme.js" />
+        <link rel="preload" as="image" href="/image/default_img.png" />
+        <ThemeScript />
       </head>
       <body>
         <ClientProvider>
