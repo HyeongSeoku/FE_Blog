@@ -1,30 +1,28 @@
 import Link from "next/link";
 import Image from "next/image";
-import { useMemo } from "react";
 
 import EmailIcon from "@/icon/email.svg";
 import GithubIcon from "@/icon/github.svg";
 import LinkedInIcon from "@/icon/linkedIn.svg";
-import useGithubInfoStore from "@/store/githubInfo";
+import { GithubUserInfo } from "@/api/github";
 
-const IntroSectionTemplate = () => {
-  const { githubUser } = useGithubInfoStore();
-  const isGithubData = useMemo(() => {
-    return githubUser?.imgSrc && githubUser?.githubUrl;
-  }, [githubUser]);
+interface IntroSectionTemplateProps {
+  githubData?: GithubUserInfo;
+}
 
+const IntroSectionTemplate = ({ githubData }: IntroSectionTemplateProps) => {
   return (
     <section className="flex flex-col gap-2">
       <div className="flex gap-1 items-center h-8">
         <strong className="text-xl">김형석</strong>
-        {isGithubData && (
+        {githubData && (
           <a
-            href={githubUser.githubUrl}
+            href={githubData.html_url}
             target="_blank"
-            className="transform duration-300 will-change-transform hover:bg-gray-400/20 p-1 rounded-sm"
+            className="p-1 rounded-sm transform duration-300 will-change-transform hover:bg-gray-400/20"
           >
             <Image
-              src={githubUser.imgSrc}
+              src={githubData.avatar_url}
               alt=""
               width={22}
               height={22}
@@ -34,11 +32,11 @@ const IntroSectionTemplate = () => {
         )}
       </div>
 
-      <p className="flex text-sm text-[var(--description-text-color)]">
-        3년차 프론트엔드 개발자로 일하고 있습니다.
-        <br /> 제가 느끼는 가치는.... 일할때는....
-        <br /> 어떻게 되고 싶은...
-      </p>
+      <div className="flex flex-col text-sm text-gray-400">
+        <p>3년차 프론트엔드 개발자로 일하고 있습니다.</p>
+        <p>제가 느끼는 가치는.... 일할때는....</p>
+        <p>어떻게 되고 싶은...</p>
+      </div>
 
       <div className="flex items-center gap-1">
         <Link

@@ -27,7 +27,7 @@ function NavigationItem({
   return (
     <li
       className={classNames(
-        "transition-opacity duration-300 hover:opacity-100",
+        "transition-opacity duration-300 hover:opacity-100 will-change-[opacity]",
         { "opacity-50": !isSelected, "opacity-100": isSelected },
       )}
     >
