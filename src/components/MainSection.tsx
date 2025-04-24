@@ -10,7 +10,7 @@ const MainSection = ({ title, titleChildren, children }: MainSectionProps) => {
   return (
     <section className="my-10 flex flex-col justify-center">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-bold mb-2">{title}</h3>
+        <strong className="text-lg font-bold mb-2">{title}</strong>
         {titleChildren && titleChildren}
       </div>
       <div className="w-full h-fit">{children}</div>

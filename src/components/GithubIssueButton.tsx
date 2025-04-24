@@ -23,18 +23,20 @@ const GitHubIssueButton = ({
   )}&body=${encodeURIComponent(`${body}`)}`;
 
   return (
-    <a href={issueUrl} target="_blank" rel="noopener noreferrer">
-      <button
-        className={classNames(
-          "ml-1 h-10 px-2 py-1 min-w-10 w-fit flex items-center justify-center rounded-sm",
-          "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400/20",
-          className,
-        )}
-      >
-        <GithubIssueIcon style={{ width: 24, height: 24 }} />
-
-        {children}
-      </button>
+    <a
+      href={issueUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={classNames(
+        "ml-1 h-10 px-2 py-1 min-w-10 w-fit flex items-center justify-center rounded-sm",
+        "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400/20",
+        className,
+      )}
+      title="Report Issue Button"
+      aria-label="Report Issue Button"
+    >
+      <GithubIssueIcon style={{ width: 32, height: 32 }} />
+      {children ?? <span className="sr-only">Report Issue</span>}
     </a>
   );
 };
