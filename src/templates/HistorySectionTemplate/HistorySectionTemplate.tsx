@@ -44,6 +44,7 @@ const HistoryItem = ({ targetYear, currentJob }: HistoryItemProps) => {
                 src={`${PUBLIC_IMG_PATH}/${logoSrc}`}
                 className="bg-slate-400"
                 width={30}
+                alt={title}
               />
               <div>
                 <div className="">{title}</div>
@@ -62,6 +63,7 @@ const HistoryItem = ({ targetYear, currentJob }: HistoryItemProps) => {
               src={`${PUBLIC_IMG_PATH}/${currentJob?.logoSrc}`}
               className="bg-slate-400"
               width={30}
+              title={currentJob?.title}
             />
             <div>
               <div className="">{currentJob?.title}</div>

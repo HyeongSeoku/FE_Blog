@@ -1,5 +1,3 @@
-"use client";
-
 import { getDate } from "@/utils/date";
 import { PostDataProps } from "@/types/posts";
 import classNames from "classnames";

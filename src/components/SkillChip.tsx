@@ -47,29 +47,32 @@ const SkillChip = ({
   };
 
   return (
-    <button
-      ref={chipRef}
-      className="flex items-center gap-1 w-fit py-1 px-2 rounded-md animate-bounceJelly transform duration-300 hover:scale-110"
-      style={{
-        backgroundColor: hexToRgba(
-          backGroundColor || skillColors[skillName],
-          40,
-        ),
-        color: skillColors[skillName],
-        animationDelay: `${index * 0.1}s`,
-      }}
-      onAnimationEnd={handleAnimationEnd}
-      onClick={() => onClick?.(skillName)}
-    >
-      <Image
-        width={18}
-        height={18}
-        src={imgSrc}
-        alt={skillName}
-        loading="lazy"
-      />
-      <div className="font-semibold text-sm">{skillName}</div>
-    </button>
+    <li>
+      <button
+        ref={chipRef}
+        className="flex items-center gap-1 w-fit py-1 px-2 rounded-md animate-bounceJelly transform duration-300 hover:scale-110"
+        style={{
+          backgroundColor: hexToRgba(
+            backGroundColor || skillColors[skillName],
+            20,
+          ),
+          color: skillColors[skillName],
+          animationDelay: `${index * 0.1}s`,
+        }}
+        onAnimationEnd={handleAnimationEnd}
+        onClick={() => onClick(skillName)}
+      >
+        <Image
+          width={18}
+          height={18}
+          src={imgSrc}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+        />
+        <div className="font-semibold text-sm">{skillName}</div>
+      </button>
+    </li>
   );
 };
 

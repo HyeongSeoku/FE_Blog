@@ -1,5 +1,5 @@
 import { LIGHT_DARK_THEME } from "@/constants/cookie.constants";
-import { getCookie, setCookie } from "@/utils/cookies";
+import { setCookie } from "@/utils/cookies";
 import { create } from "zustand";
 
 interface ThemeState {
@@ -10,12 +10,14 @@ interface ThemeState {
 }
 
 const getInitialTheme = (): boolean => {
-  if (typeof window !== "undefined") {
-    const cookieTheme = getCookie(LIGHT_DARK_THEME);
-    return cookieTheme !== null
-      ? cookieTheme === "dark"
-      : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  if (typeof document !== "undefined") {
+    const htmlTheme = document.documentElement.getAttribute("data-theme");
+    if (htmlTheme === "dark") return true;
+    if (htmlTheme === "light") return false;
+
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
   }
+
   return false;
 };
 
