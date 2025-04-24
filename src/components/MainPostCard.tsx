@@ -1,5 +1,3 @@
-"use client";
-
 import { getDate } from "@/utils/date";
 import { PostDataProps } from "@/types/posts";
 import classNames from "classnames";
@@ -32,11 +30,12 @@ const MainPostCard = ({
       <Link
         href={link}
         className={classNames(
-          "aspect-[3/2] bg-opposite-theme rounded-md flex items-center justify-center p-3 relative overflow-hidden",
+          "bg-opposite-theme rounded-md flex items-center justify-center p-3 relative overflow-hidden",
           "duration-300 group-hover:-translate-y-2",
           "group-hover:shadow-md",
           "dark:group-hover:shadow-[0_4px_12px_#ffffff1a]",
         )}
+        style={{ aspectRatio: "3 / 2" }}
       >
         <Image
           src={imgSrc}

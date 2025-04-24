@@ -49,7 +49,7 @@ export const HomeClient = ({ githubData }: HomeClientProps) => {
   return (
     <div className="h-full flex flex-col gap-3">
       <section className="flex flex-col gap-2">
-        <h3 className="text-lg font-bold">Skills</h3>
+        <strong className="text-lg font-bold">Skills</strong>
         <ul className="inline-flex flex-wrap gap-3 w-80">
           {SKILL_LIST.map(({ skillName, bgColor, imgSrc }, idx) => (
             <SkillChip

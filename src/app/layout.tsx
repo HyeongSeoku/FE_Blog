@@ -23,7 +23,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={pretendard.className} suppressHydrationWarning>
       <head>
-        <link rel="preload" as="image" href="/image/default_img.png" />
         <ThemeScript />
       </head>
       <body>

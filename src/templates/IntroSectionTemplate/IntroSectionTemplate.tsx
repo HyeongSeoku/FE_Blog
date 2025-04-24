@@ -23,7 +23,7 @@ const IntroSectionTemplate = ({ githubData }: IntroSectionTemplateProps) => {
           >
             <Image
               src={githubData.avatar_url}
-              alt=""
+              alt={githubData.name}
               width={22}
               height={22}
               className="w-6 h-6 rounded-3xl"
