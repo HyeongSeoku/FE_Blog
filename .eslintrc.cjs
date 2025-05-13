@@ -47,5 +47,6 @@ module.exports = {
     ".next/",
     "public/theme.js",
     "lighthouserc.cjs",
+    "script",
   ],
 };
