@@ -34,8 +34,8 @@ const IntroSectionTemplate = ({ githubData }: IntroSectionTemplateProps) => {
 
       <div className="flex flex-col text-sm text-gray-400">
         <p>3년차 프론트엔드 개발자로 일하고 있습니다.</p>
-        <p>제가 느끼는 가치는.... 일할때는....</p>
-        <p>어떻게 되고 싶은...</p>
+        <p>코드를 넘어 사용자와 제품을 이해하는 개발자가 되고 싶습니다.</p>
+        <p>지속적으로 성장하며 좋은 경험을 만드는 일을 하고 싶습니다.</p>
       </div>
 
       <div className="flex items-center gap-1">
