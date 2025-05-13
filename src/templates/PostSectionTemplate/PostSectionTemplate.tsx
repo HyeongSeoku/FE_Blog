@@ -6,6 +6,14 @@ export interface PostSectionProps {
 }
 
 const PostSectionTemplate = ({ postList }: PostSectionProps) => {
+  if (!postList.length) {
+    return (
+      <div className="flex items-center w-full justify-center text-gray-500">
+        게시물이 없습니다
+      </div>
+    );
+  }
+
   return (
     <div className="grid [grid-template-columns:repeat(auto-fill,minmax(260px,1fr))] gap-4 min-xl:[grid-template-columns:repeat(auto-fill,minmax(320px,1fr))]">
       {postList.map(
