@@ -8,7 +8,7 @@ export interface PostSectionProps {
 const PostSectionTemplate = ({ postList }: PostSectionProps) => {
   if (!postList.length) {
     return (
-      <div className="flex items-center w-full justify-center text-gray-500">
+      <div className="flex items-center w-full justify-center text-gray-500 p-3 min-h-60 md:min-h-30">
         게시물이 없습니다
       </div>
     );
