@@ -44,7 +44,7 @@ const BlogPage = async ({ searchParams }: BlogPageProps) => {
 
   const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
 
-  if (totalPages < currentPage) {
+  if (!!totalPages && totalPages < currentPage) {
     redirect("/blog");
   }
 

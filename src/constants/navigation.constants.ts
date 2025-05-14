@@ -18,7 +18,7 @@ export const NAV_GITHUB_ISSUE = "GITHUB_ISSUE";
 export const NAV_LIST: NAV_LIST_TYPE[] = [
   { id: NAV_HOME, title: "Home", link: "/", baseUrl: ["/"] },
   { id: NAV_BLOG, title: "Blog", link: "/blog", baseUrl: ["/blog", "/posts"] },
-  { id: NAV_RESUME, title: "Resume", link: "/resume", baseUrl: ["/resume"] },
+  // { id: NAV_RESUME, title: "Resume", link: "/resume", baseUrl: ["/resume"] },
   {
     id: NAV_GITHUB_ISSUE,
     title: "Github Issue Report",
