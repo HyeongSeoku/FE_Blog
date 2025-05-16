@@ -1,5 +1,6 @@
 import BlogPostCard from "@/components/BlogPostCard";
 import Tag from "@/components/Tag";
+import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { getTagPath } from "@/utils/path";
 import { getPostsByTag } from "@/utils/post";
 import { Metadata } from "next";
@@ -10,15 +11,20 @@ export function generateMetadata({
   params: { tag: string };
 }): Metadata {
   const { tag } = params;
+  const metaTitle = `${BASE_META_TITLE} #${tag} 게시물`;
+
   return {
-    title: `#${tag} 게시물`,
+    title: metaTitle,
     description: `${tag} 태그가 포함된 블로그 게시글 목록입니다.`,
     openGraph: {
-      title: `#${tag} 게시물`,
+      title: metaTitle,
       description: `${tag} 태그가 포함된 블로그 게시글 목록입니다.`,
-      url: `/tags/${tag}`,
+      url: `${BASE_URL}/tags/${tag}`,
       type: "website",
       images: [],
+    },
+    alternates: {
+      canonical: `${BASE_URL}/tags/${tag}`,
     },
   };
 }

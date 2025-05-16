@@ -1,14 +1,22 @@
+import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { CATEGORY_MAP, DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
 import BlogPageTemplate from "@/templates/BlogPageTemplate";
 import { getPostsByCategory } from "@/utils/post";
 import { redirect } from "next/navigation";
 
+interface BlogCategoryPageProps {
+  params: { category: string };
+  searchParams: { [key: string]: string | undefined };
+}
+
 export const generateMetadata = ({
   params,
-}: {
-  params: { category: string };
-}) => {
-  const categoryTitle = `블로그 | ${params.category}`;
+  searchParams,
+}: BlogCategoryPageProps) => {
+  const categoryTitle = `${BASE_META_TITLE} | ${params.category}`;
+
+  const pageParam = searchParams.page;
+  const isFirstPage = !pageParam || pageParam === "1";
 
   const metadata = {
     title: `${categoryTitle} 카테고리`,
@@ -16,8 +24,15 @@ export const generateMetadata = ({
     openGraph: {
       title: `${categoryTitle} 카테고리`,
       description: `${params.category} 관련 블로그 글 목록을 확인하세요.`,
-      url: `/blog/${categoryTitle}`,
+      url: isFirstPage
+        ? `${BASE_URL}/blog/${categoryTitle}`
+        : `${BASE_URL}/blog/${categoryTitle}?page=${pageParam}`,
       type: "website",
+    },
+    alternates: {
+      canonical: isFirstPage
+        ? `${BASE_URL}/blog/${categoryTitle}`
+        : `${BASE_URL}/blog/${categoryTitle}?page=${pageParam}`,
     },
   };
 
@@ -29,11 +44,6 @@ export const generateStaticParams = () => {
 
   return categories.map((category) => ({ category }));
 };
-
-interface BlogCategoryPageProps {
-  params: { category: string };
-  searchParams: { [key: string]: string | undefined };
-}
 
 const BlogCategoryPage = async ({
   params,
