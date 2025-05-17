@@ -45,10 +45,41 @@ export const generateStaticParams = () => {
   return categories.map((category) => ({ category }));
 };
 
+const getBreadcrumbStructuredData = (category: string) => {
+  const categoryKey = category.toUpperCase() as keyof typeof CATEGORY_MAP;
+  const categoryName = CATEGORY_MAP[categoryKey]?.title || categoryKey;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "홈",
+        item: BASE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "블로그",
+        item: `${BASE_URL}/blog`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: categoryName,
+        item: `${BASE_URL}/blog/${categoryKey}`,
+      },
+    ],
+  };
+};
+
 const BlogCategoryPage = async ({
   params,
   searchParams,
 }: BlogCategoryPageProps) => {
+  const breadcrumbStructuredData = getBreadcrumbStructuredData(params.category);
   const currentPage = parseInt(searchParams.page || "1", 10);
   const pageSize = DEFAULT_PAGE_SIZE;
   const isCategoryKeyAll = params.category.toLowerCase() === "all";
@@ -73,13 +104,21 @@ const BlogCategoryPage = async ({
   }
 
   return (
-    <BlogPageTemplate
-      postList={postList}
-      currentPage={currentPage}
-      totalPostCount={totalPostCount}
-      categoryCounts={categoryCounts}
-      totalPages={totalPages}
-    />
+    <>
+      <BlogPageTemplate
+        postList={postList}
+        currentPage={currentPage}
+        totalPostCount={totalPostCount}
+        categoryCounts={categoryCounts}
+        totalPages={totalPages}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbStructuredData),
+        }}
+      />
+    </>
   );
 };
 

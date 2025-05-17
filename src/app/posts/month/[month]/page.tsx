@@ -39,6 +39,30 @@ export const generateMetadata = ({
 
 const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
   const { month } = params;
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "홈",
+        item: BASE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: `블로그`,
+        item: `${BASE_URL}/blog`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: `${month}월`,
+        item: `${BASE_URL}/blog/month/${month}`,
+      },
+    ],
+  };
 
   const pageParam = searchParams.page;
   const currentPage = pageParam ? parseInt(pageParam, 10) : 1;
@@ -58,13 +82,21 @@ const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
   const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
 
   return (
-    <BlogDateTemplate
-      dateText={formattedMonth}
-      postList={postList}
-      postCount={totalPostCount}
-      currentPage={currentPage}
-      totalPages={totalPages}
-    />
+    <>
+      <BlogDateTemplate
+        dateText={formattedMonth}
+        postList={postList}
+        postCount={totalPostCount}
+        currentPage={currentPage}
+        totalPages={totalPages}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbStructuredData),
+        }}
+      />
+    </>
   );
 };
 

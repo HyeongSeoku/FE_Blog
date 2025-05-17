@@ -38,6 +38,31 @@ export const generateMetadata = ({
 
 const BlogYearPage = async ({ params, searchParams }: BlogYearPageProps) => {
   const { year } = params;
+
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "홈",
+        item: BASE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: `블로그`,
+        item: `${BASE_URL}/blog`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: `${year}년`,
+        item: `${BASE_URL}/blog/year/${year}`,
+      },
+    ],
+  };
   const pageParam = searchParams.page;
   const currentPage = pageParam ? parseInt(pageParam, 10) : 1;
   const isInvalidPageParam = isNaN(currentPage) || currentPage <= 0;
@@ -57,13 +82,21 @@ const BlogYearPage = async ({ params, searchParams }: BlogYearPageProps) => {
   const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
 
   return (
-    <BlogDateTemplate
-      dateText={yearText}
-      postList={postList}
-      postCount={totalPostCount}
-      currentPage={currentPage}
-      totalPages={totalPages}
-    />
+    <>
+      <BlogDateTemplate
+        dateText={yearText}
+        postList={postList}
+        postCount={totalPostCount}
+        currentPage={currentPage}
+        totalPages={totalPages}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbStructuredData),
+        }}
+      />
+    </>
   );
 };
 

@@ -7,7 +7,7 @@ import MainSection from "@/components/MainSection";
 import Link from "next/link";
 import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
 import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionTemplate";
-import { BASE_META_TITLE } from "@/constants/basic.constants";
+import { getStructuredData } from "@/utils/structure";
 
 export default async function Home() {
   const { postList, totalPostCount } = await getAllPosts({
@@ -15,17 +15,7 @@ export default async function Home() {
   });
   const githubData = await fetchGithubUserInfo();
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: BASE_META_TITLE,
-    url: "https://seok.dev",
-    logo: {
-      "@type": "ImageObject",
-      url: "https://seok.dev/image/logo.svg",
-    },
-    sameAs: ["https://github.com/seok"],
-  };
+  const structuredData = getStructuredData();
 
   return (
     <DefaultLayout structuredData={structuredData}>
