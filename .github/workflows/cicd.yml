@@ -90,6 +90,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-
 
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: seoku-blog-build
+          path: |
+            .next
+            public
+            package.json
+            pnpm-lock.yaml
+            next.config.js
+            tsconfig.json
+            postcss.config.*
+            tailwind.config.*
+
   lighthouse:
     name: Lighthouse
     runs-on: ubuntu-latest
@@ -147,29 +161,27 @@ jobs:
 
             위 링크 하단의 "Artifacts > lighthouse-report" 항목을 클릭하면 리포트를 확인할 수 있습니다.
 
-  sonar:
-    name: SonarQube Analyze
-    runs-on: ubuntu-latest
+  deploy:
+    name: Deploy to EC2
     needs: build
-    if: github.ref == 'refs/heads/develop'
+    runs-on: [self-hosted]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Use Node.js
-        uses: actions/setup-node@v3
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
         with:
-          node-version: 18
+          name: seoku-blog-build
+          path: ./
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: Install production deps
+        run: pnpm install --prod
 
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Create .env.development
-        run: echo "SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}" >> .env.development
-
-      - name: Run SonarQube Analysis
-        run: pnpm run sonar
+      - name: Start or Restart Server
+        run: |
+          if pm2 describe seoku-blog > /dev/null; then
+            pm2 restart seoku-blog
+          else
+            pm2 start "pnpm start" --name seoku-blog
+          fi
+          pm2 save
