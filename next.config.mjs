@@ -1,5 +1,12 @@
 import withMDX from "@next/mdx";
-import withBundleAnalyzer from "@next/bundle-analyzer";
+import { createRequire } from "module";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const require = createRequire(import.meta.url);
+
 const withMDXConfig = withMDX({
   extension: /\.mdx?$/,
   experimental: {
@@ -8,11 +15,19 @@ const withMDXConfig = withMDX({
   transpilePackages: ["next-mdx-remote"],
 });
 
-const withAnalyzer = withBundleAnalyzer({
-  enabled: process.env.ANALYZE === "true",
-});
+// 조건부로 bundle-analyzer 적용
+let withAnalyzer = (config) => config;
+if (process.env.NODE_ENV !== "production") {
+  try {
+    withAnalyzer = require("@next/bundle-analyzer")({
+      enabled: process.env.ANALYZE === "true",
+    });
+  } catch (e) {
+    console.warn("⚠️ bundle-analyzer 로딩 실패, 개발 환경에서만 작동합니다.");
+  }
+}
 
-// 중첩해서 구성: MDX → Analyzer → Config
+// 중첩: MDX → Analyzer → Config
 const nextConfig = withAnalyzer(
   withMDXConfig({
     pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
@@ -28,6 +43,11 @@ const nextConfig = withAnalyzer(
           },
         ],
       });
+      config.resolve.alias = {
+        ...(config.resolve.alias || {}),
+        "@": path.resolve(__dirname, "src"),
+      };
+
       return config;
     },
     images: {
