@@ -90,19 +90,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-
 
+      - name: Archive production build
+        run: |
+          tar -czf build.tar.gz \
+            .next \
+            public \
+            package.json \
+            pnpm-lock.yaml \
+            next.config.js \
+            tsconfig.json \
+            postcss.config.* \
+            tailwind.config.*
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: seoku-blog-build
-          path: |
-            .next/**
-            public
-            package.json
-            pnpm-lock.yaml
-            next.config.js
-            tsconfig.json
-            postcss.config.*
-            tailwind.config.*
+          path: build.tar.gz
 
   lighthouse:
     name: Lighthouse
@@ -173,6 +177,11 @@ jobs:
         with:
           name: seoku-blog-build
           path: ./
+
+      - name: Extract build artifact
+        run: |
+          rm -rf .next
+          tar -xzf build.tar.gz
 
       - name: Install production deps
         run: pnpm install --prod
