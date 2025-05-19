@@ -5,13 +5,14 @@ import dynamic from "next/dynamic";
 import ClientProvider from "@/components/ClientProvider";
 import { pretendard } from "@/styles/font";
 import ThemeScript from "@/components/ThemeScript";
+import { BASE_META_TITLE } from "@/constants/basic.constants";
 
 const GaBanner = dynamic(() => import("@/components/GaBanner"), {
   ssr: false,
 });
 
 export const metadata: Metadata = {
-  title: "SEOK 개발 블로그",
+  title: BASE_META_TITLE,
   description: "프론트엔드 개발자 김형석의 개발 블로그 입니다.",
 };
 
@@ -23,7 +24,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={pretendard.className} suppressHydrationWarning>
       <head>
-        <link rel="preload" as="image" href="/image/default_img.png" />
+        <link rel="canonical" href="https://seok.dev/" />
         <ThemeScript />
       </head>
       <body>

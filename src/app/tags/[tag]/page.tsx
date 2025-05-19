@@ -1,5 +1,6 @@
 import BlogPostCard from "@/components/BlogPostCard";
 import Tag from "@/components/Tag";
+import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { getTagPath } from "@/utils/path";
 import { getPostsByTag } from "@/utils/post";
 import { Metadata } from "next";
@@ -10,21 +11,45 @@ export function generateMetadata({
   params: { tag: string };
 }): Metadata {
   const { tag } = params;
+  const metaTitle = `${BASE_META_TITLE} #${tag} 게시물`;
+
   return {
-    title: `#${tag} 게시물`,
+    title: metaTitle,
     description: `${tag} 태그가 포함된 블로그 게시글 목록입니다.`,
     openGraph: {
-      title: `#${tag} 게시물`,
+      title: metaTitle,
       description: `${tag} 태그가 포함된 블로그 게시글 목록입니다.`,
-      url: `/tags/${tag}`,
+      url: `${BASE_URL}/tags/${tag}`,
       type: "website",
       images: [],
+    },
+    alternates: {
+      canonical: `${BASE_URL}/tags/${tag}`,
     },
   };
 }
 
 const TagPage = async ({ params }: { params: { tag: string } }) => {
   const { tag } = params;
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "홈",
+        item: BASE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: tag,
+        item: `${BASE_URL}/tags/${tag}`,
+      },
+    ],
+  };
+
   const { list: postList, count, tagList } = await getPostsByTag(tag);
 
   return (
@@ -58,6 +83,13 @@ const TagPage = async ({ params }: { params: { tag: string } }) => {
           ),
         )}
       </ul>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbStructuredData),
+        }}
+      />
     </div>
   );
 };

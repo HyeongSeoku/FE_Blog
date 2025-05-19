@@ -7,6 +7,7 @@ import MainSection from "@/components/MainSection";
 import Link from "next/link";
 import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
 import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionTemplate";
+import { getStructuredData } from "@/utils/structure";
 
 export default async function Home() {
   const { postList, totalPostCount } = await getAllPosts({
@@ -14,8 +15,10 @@ export default async function Home() {
   });
   const githubData = await fetchGithubUserInfo();
 
+  const structuredData = getStructuredData();
+
   return (
-    <DefaultLayout>
+    <DefaultLayout structuredData={structuredData}>
       <IntroSectionTemplate githubData={githubData} />
 
       <HomeClient
