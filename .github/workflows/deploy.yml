@@ -27,6 +27,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Create .env file
+        run: |
+          echo "NEXT_PUBLIC_GITHUB_TOKEN=${{ secrets.NEXT_PUBLIC_GITHUB_TOKEN }}" >> .env
+          echo "NEXT_PUBLIC_GISCUS_REPO_ID=${{ secrets.NEXT_PUBLIC_GISCUS_REPO_ID }}" >> .env
+          echo "NEXT_PUBLIC_GISCUS_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GISCUS_CLIENT_ID }}" >> .env
+          echo "NEXT_PUBLIC_REPO_URL=${{ secrets.NEXT_PUBLIC_REPO_URL }}" >> .env
+          echo "NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}" >> .env
+
       - name: Build
         run: pnpm run build
 
