@@ -9,7 +9,7 @@
     "dev": "next dev",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky install",
+    "prepare": "node -e \"const fs = require('fs'); const hasHusky = fs.existsSync('./node_modules/.bin/husky'); if (process.env.NODE_ENV !== 'production' && hasHusky) require('child_process').execSync('husky install', { stdio: 'inherit' })\"",    
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "spell-check": "cspell \"src/**/*.{ts,tsx,js,jsx,md,mdx}\"",
