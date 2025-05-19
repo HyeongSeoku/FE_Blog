@@ -4,7 +4,17 @@ import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
 import SkeletonBar from "@/components/SkeletonBar";
 
 import MdxComponentWrapper from "@/components/MDX/MdxComponentWrapper";
-import { PUBLIC_CONTENT_IMG_PATH } from "@/constants/basic.constants";
+import {
+  BASE_META_TITLE,
+  BASE_URL,
+  PUBLIC_CONTENT_IMG_PATH,
+} from "@/constants/basic.constants";
+import {
+  getStructuredData,
+  OrganizationData,
+  PersonData,
+} from "@/utils/structure";
+import { FrontMatterProps } from "@/types/mdx";
 
 export const dynamic = "error";
 
@@ -30,24 +40,24 @@ async function getPostDataWithMetadata(slug: string[]) {
   const { frontMatter } = postData;
 
   const metadata = {
-    title: frontMatter.title || "SEOK 개발 블로그",
+    title: frontMatter.title || BASE_META_TITLE,
     description:
       frontMatter.description ||
       "프론트엔드 개발자 김형석의 개발 블로그입니다.",
     other: { keyword: frontMatter.tags?.join(",") || "" },
     openGraph: {
-      title: frontMatter.title || "SEOK 개발 블로그",
+      title: frontMatter.title || BASE_META_TITLE,
       description:
         frontMatter.description ||
         "프론트엔드 개발자 김형석의 개발 블로그입니다.",
-      url: `/posts/${slug.join("/")}`,
+      url: `${BASE_URL}/posts/${slug.join("/")}`,
       type: "website",
       images: [
         {
           url:
             frontMatter.thumbnail ||
             `${PUBLIC_CONTENT_IMG_PATH}/default-og-image.jpeg`,
-          alt: frontMatter.title || "SEOK 개발 블로그",
+          alt: frontMatter.title || BASE_META_TITLE,
         },
       ],
     },
@@ -63,11 +73,54 @@ export async function generateMetadata({
 }) {
   const { metadata } = await getPostDataWithMetadata(params.slug);
 
-  return metadata;
+  return {
+    ...metadata,
+    alternates: {
+      canonical: `${BASE_URL}/posts/${params.slug.join("/")}`,
+    },
+  };
+}
+
+function getPostsStructuredData(slug: string[], frontMatter: FrontMatterProps) {
+  const postUrl = `${BASE_URL}/posts/${slug.join("/")}`;
+  const publisher: OrganizationData = {
+    type: "Organization",
+    name: BASE_META_TITLE,
+    logo: {
+      type: "ImageObject",
+      url: `${BASE_URL}/image/logo.svg`,
+    },
+  };
+
+  const author: PersonData = {
+    type: "Person",
+    name: "김형석",
+  };
+
+  const mainEntityOfPage = {
+    id: postUrl,
+  };
+
+  const structuredData = getStructuredData({
+    type: "Article",
+    url: postUrl,
+    headline: frontMatter?.title || BASE_META_TITLE,
+    description:
+      frontMatter?.description || "프론트엔드 개발자 김형석의 블로그",
+    image:
+      frontMatter.thumbnail ||
+      `${PUBLIC_CONTENT_IMG_PATH}/default-og-image.jpeg`,
+    author,
+    publisher,
+    datePublished: frontMatter.createdAt,
+    mainEntityOfPage,
+  });
+
+  return structuredData;
 }
 
 const PostPage = async ({ params }: { params: { slug: string[] } }) => {
-  const { postData } = await getPostDataWithMetadata(params.slug);
+  const postData = await getPostsDetail(params.slug);
 
   if (!postData) {
     redirect("/not-found");
@@ -83,17 +136,25 @@ const PostPage = async ({ params }: { params: { slug: string[] } }) => {
     relatedPosts,
   } = postData;
 
+  const structuredData = getPostsStructuredData(params.slug, frontMatter);
+
   return (
-    <MdxDetailTemplate
-      source={source}
-      readingTime={readingTime}
-      frontMatter={frontMatter}
-      heading={heading}
-      nextPost={nextPost}
-      previousPost={previousPost}
-      relatedPosts={relatedPosts}
-      mdxComponents={{ MdxComponentWrapper, SkeletonBar }}
-    />
+    <>
+      <MdxDetailTemplate
+        source={source}
+        readingTime={readingTime}
+        frontMatter={frontMatter}
+        heading={heading}
+        nextPost={nextPost}
+        previousPost={previousPost}
+        relatedPosts={relatedPosts}
+        mdxComponents={{ MdxComponentWrapper, SkeletonBar }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+    </>
   );
 };
 

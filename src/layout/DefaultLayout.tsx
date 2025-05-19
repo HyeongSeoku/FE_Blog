@@ -6,12 +6,14 @@ export interface DefaultLayoutProps {
   children: ReactNode;
   headerType?: HeaderType;
   hasHeaderAnimation?: boolean;
+  structuredData?: object;
 }
 
 const DefaultLayout = ({
   children,
   headerType = "DEFAULT",
   hasHeaderAnimation = false,
+  structuredData,
 }: DefaultLayoutProps) => {
   return (
     <div className="w-full h-auto min-h-fit flex flex-col flex-grow">
@@ -20,6 +22,12 @@ const DefaultLayout = ({
         {children}
       </main>
       <Footer />
+      {structuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      )}
     </div>
   );
 };
