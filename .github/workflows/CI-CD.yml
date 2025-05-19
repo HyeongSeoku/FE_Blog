@@ -195,4 +195,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-        #TODO: Deploy 작업
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/seoku-blog
+            git pull origin main
+            pnpm install
+            pnpm run build
+            pm2 restart seoku-blog
