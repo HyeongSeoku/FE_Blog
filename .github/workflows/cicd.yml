@@ -86,7 +86,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml', 'next.config.js') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml', 'next.config.mjs') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-
 
@@ -97,7 +97,7 @@ jobs:
             public \
             package.json \
             pnpm-lock.yaml \
-            next.config.js \
+            next.config.mjs \
             tsconfig.json \
             postcss.config.* \
             tailwind.config.*
