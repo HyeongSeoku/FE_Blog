@@ -95,7 +95,7 @@ jobs:
         with:
           name: seoku-blog-build
           path: |
-            .next
+            .next/**
             public
             package.json
             pnpm-lock.yaml
