@@ -10,7 +10,7 @@ permissions:
 jobs:
   cd:
     name: Deploy
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
 
     steps:
       - name: Checkout repository
@@ -29,25 +29,20 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "NEXT_PUBLIC_GITHUB_TOKEN=${{ secrets.NEXT_PUBLIC_GITHUB_TOKEN }}" >> .env
-          echo "NEXT_PUBLIC_GISCUS_REPO_ID=${{ secrets.NEXT_PUBLIC_GISCUS_REPO_ID }}" >> .env
-          echo "NEXT_PUBLIC_GISCUS_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GISCUS_CLIENT_ID }}" >> .env
-          echo "NEXT_PUBLIC_REPO_URL=${{ secrets.NEXT_PUBLIC_REPO_URL }}" >> .env
-          echo "NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}" >> .env
+          echo "NEXT_PUBLIC_GITHUB_TOKEN=${{ secrets.NEXT_PUBLIC_GITHUB_TOKEN }}" >> .env.production
+          echo "NEXT_PUBLIC_GISCUS_REPO_ID=${{ secrets.NEXT_PUBLIC_GISCUS_REPO_ID }}" >> .env.production
+          echo "NEXT_PUBLIC_GISCUS_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GISCUS_CLIENT_ID }}" >> .env.production
+          echo "NEXT_PUBLIC_REPO_URL=${{ secrets.NEXT_PUBLIC_REPO_URL }}" >> .env.production
+          echo "NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}" >> .env.production
 
       - name: Build
         run: pnpm run build
 
-      - name: Deploy via SSH
-
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd /home/ubuntu/seoku-blog
-            git pull origin main
-            pnpm install
-            pnpm run build
+      - name: Start or Restart Server
+        run: |
+          if pm2 describe seoku-blog > /dev/null; then
             pm2 restart seoku-blog
+          else
+            pm2 start "pnpm start" --name seoku-blog
+          fi
+          pm2 save
