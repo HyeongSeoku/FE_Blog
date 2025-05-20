@@ -7,7 +7,7 @@ export interface SkillChipProps {
   skillName: SkillName;
   backGroundColor?: string;
   index: number;
-  onClick: (title: string) => void;
+  onClick?: (title: string) => void;
 }
 
 export type SkillName =
@@ -59,7 +59,7 @@ const SkillChip = ({
         animationDelay: `${index * 0.1}s`,
       }}
       onAnimationEnd={handleAnimationEnd}
-      onClick={() => onClick(skillName)}
+      onClick={() => onClick?.(skillName)}
     >
       <Image
         width={18}
