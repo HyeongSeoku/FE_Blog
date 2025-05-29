@@ -11,6 +11,7 @@ import { triggerAnimation } from "@/utils/styles";
 import { HEADER_SCROLL_THRESHOLD } from "@/constants/basic.constants";
 import ThemeButton from "./ThemeButton/ThemeButton";
 import Navigation from "@/components/Navigation";
+import Logo from "@/icon/logo.svg";
 
 export interface HeaderProps {
   headerType: HeaderType;
@@ -57,9 +58,11 @@ const Header = ({
           className={`z-10 flex gap-2 items-center ${isMoNavOpen ? "opacity-0 transition-opacity" : "opacity-100"}`}
           onClick={handleLogoButton}
         >
-          <h1 className="text-3xl font-bold transition-[color] text-primary hover:text-primary-hover md:text-2xl">
-            SEOKU
-          </h1>
+          <Logo
+            width={90}
+            height={30}
+            className="text-3xl font-bold transition-[color] text-primary hover:text-primary-hover md:text-2xl"
+          />
         </button>
       )}
       {headerType === "BACK" && <BackButton />}
