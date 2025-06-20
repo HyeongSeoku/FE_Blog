@@ -26,7 +26,7 @@ function RecentPostCard({
   const isoDate = dayjs(date, "YYYY.MM.DD").format("YYYY-MM-DD");
 
   return (
-    <div className="flex flex-col gap-2 items-center w-full overflow-hidden rounded-md bg-primary p-5 aspect-[333/377] max-w-[390px]">
+    <div className="flex flex-col gap-2 items-center w-full overflow-hidden rounded-md bg-primary p-5 max-w-[333px] self-center">
       <span className="text-opposite-theme bg-opposite-theme rounded-2xl px-5 py-1 font-semibold text-sm">
         새로운 콘텐츠
       </span>

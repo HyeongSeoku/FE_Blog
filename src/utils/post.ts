@@ -32,12 +32,13 @@ export const getAllPosts = async ({
   const categoryCounts: Record<Category, number> = Object.fromEntries(
     Object.keys(CATEGORY_MAP).map((key) => [key, 0]),
   ) as Record<Category, number>;
+  const seriesCounts: Record<string, number> = {};
 
   const posts = await Promise.all(
     filePaths.map(async (filePath) => {
       const fileContents = await fs.readFile(filePath, "utf8");
       const { data, content } = matter(fileContents);
-      const thumbnail = getRepresentativeImage(data, content);
+      const thumbnail = await getRepresentativeImage(data, content);
 
       if (
         !data?.title ||
@@ -75,6 +76,21 @@ export const getAllPosts = async ({
         categoryCounts[category] += 1;
       }
 
+      const series = data.series;
+      const seriesOrder = data.seriesOrder;
+
+      const hasValidSeries =
+        typeof series === "string" &&
+        series.trim() !== "" &&
+        typeof seriesOrder === "number";
+
+      if (hasValidSeries) {
+        if (!seriesCounts[series]) {
+          seriesCounts[series] = 0;
+        }
+        seriesCounts[series] += 1;
+      }
+
       return {
         slug: path.relative(POST_PATH, filePath).replace(/\.mdx$/, ""),
         title: data.title,
@@ -85,6 +101,10 @@ export const getAllPosts = async ({
         category: data.category,
         subCategory,
         thumbnail,
+        ...(hasValidSeries && {
+          series,
+          seriesOrder,
+        }),
       };
     }),
   );
@@ -110,6 +130,7 @@ export const getAllPosts = async ({
     postList: resultPosts,
     totalPostCount: validPosts.length,
     categoryCounts,
+    seriesCounts,
   };
 };
 
@@ -135,7 +156,7 @@ export const getPostsByTag = async (
     filePaths.map(async (filePath) => {
       const fileContents = await fs.readFile(filePath, "utf8");
       const { data, content } = matter(fileContents);
-      const thumbnail = getRepresentativeImage(data, content);
+      const thumbnail = await getRepresentativeImage(data, content);
 
       if (!data?.title || !data?.tags || !data?.category || !data?.createdAt) {
         console.warn(`🛠️  ${filePath} 파일에서 필수 메타데이터가 없습니다.`);

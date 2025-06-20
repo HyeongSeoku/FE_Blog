@@ -9,12 +9,17 @@ import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemp
 import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionTemplate";
 import { getStructuredData } from "@/utils/structure";
 import RecentPostCard from "@/components/RecentContentCard";
+import { getAllSeriesMetadata } from "@/utils/series";
+import { SeriesSection } from "@/components/\bSeriesSection";
 
 export default async function Home() {
   const { postList, totalPostCount } = await getAllPosts({
     maxCount: DEFAULT_MAIN_POST_COUNT,
     isSorted: true,
   });
+  const seriesData = await getAllSeriesMetadata();
+  const seriesList = Object.entries(seriesData);
+
   const githubData = await fetchGithubUserInfo();
 
   const structuredData = getStructuredData();
@@ -40,6 +45,10 @@ export default async function Home() {
           thumbnailAlt={recentPost.title}
         />
       )}
+      <MainSection title="시리즈">
+        <SeriesSection seriesList={seriesList} />
+      </MainSection>
+
       <MainSection
         title="게시물"
         titleChildren={

@@ -22,12 +22,15 @@ export interface PostProps {
 export interface PostDataProps extends PostProps {
   slug: string;
   content: string;
+  series?: string;
+  seriesOrder?: number;
 }
 
 export interface getAllPostResponse {
   postList: PostDataProps[];
   totalPostCount: number;
   categoryCounts: Record<string, number>;
+  seriesCounts?: Record<string, number>;
 }
 
 export interface getAllPostsRequest {
