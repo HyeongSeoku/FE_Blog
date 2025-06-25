@@ -1,17 +1,1 @@
-{
-  "CS_PROFESSIONAL": {
-    "title": "CS 공학",
-    "description": "우리가 사용하는 컴퓨터 공학에 대해 파해쳐봐요.",
-    "thumbnail": "/content-image/cs-series.png"
-  },
-  "TS_JUNIOR": {
-    "title": "TypeScript 입문 시리즈",
-    "description": "TS 개념을 처음부터 끝까지 정리하는 시리즈입니다.",
-    "thumbnail": "/content-image/ts-series.jpeg"
-  },
-  "BROWSER": {
-    "title": "브라우저 탐구 시리즈",
-    "description": "브라우저 기본 동작 원리, 숨은 기능 등 브라우저의 모든 것을 정리하는 시리즈",
-    "thumbnail": "/content-image/browser-series.jpeg"
-  }
-}
+{}
