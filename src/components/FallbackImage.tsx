@@ -41,5 +41,5 @@ export default function FallbackImage({
     return <Image {...rest} src={currentSrc} alt={alt} onError={handleError} />;
   }
 
-  return <DefaultImg {...rest} />;
+  return <DefaultImg aria-label={alt} />;
 }
