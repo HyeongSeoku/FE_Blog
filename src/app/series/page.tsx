@@ -21,6 +21,8 @@ export function generateMetadata(): Metadata {
   };
 }
 
-export function SeriesPage() {
+function SeriesPage() {
   return <div>series</div>;
 }
+
+export default SeriesPage;
