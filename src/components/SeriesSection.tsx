@@ -8,15 +8,17 @@ import { Navigation } from "swiper/modules";
 import { useState } from "react";
 import classNames from "classnames";
 
-export interface SeriesSectionProps {
-  seriesList: [string, SeriesResponse][];
+type SeriesListType = [string, SeriesResponse][];
+
+interface MoSeriesSectionProps {
+  seriesList: SeriesListType;
 }
 
-export function SeriesSection({ seriesList }: SeriesSectionProps) {
+function MoSeriesSection({ seriesList }: MoSeriesSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <section className="overflow-hidden">
+    <section className="overflow-hidden py-4 min-md:hidden">
       <SwiperComponent
         modules={[Navigation]}
         spaceBetween={4}
@@ -37,10 +39,45 @@ export function SeriesSection({ seriesList }: SeriesSectionProps) {
                 "transition-transform",
                 idx === activeIndex ? "scale-100" : "scale-90",
               )}
+              isSelected={idx === activeIndex}
             />
           </SwiperSlide>
         ))}
       </SwiperComponent>
     </section>
+  );
+}
+
+interface PcSeriesSectionProps {
+  seriesList: SeriesListType;
+}
+
+function PcSeriesSection({ seriesList }: PcSeriesSectionProps) {
+  return (
+    <section className="md:hidden grid grid-cols-4 gap-3">
+      {seriesList.slice(0, 4).map(([key, value]) => (
+        <SeriesCard
+          key={key}
+          seriesKey={key}
+          title={value.title}
+          description={value.description}
+          thumbnail={value.thumbnail}
+          seriesCount={value.count}
+        />
+      ))}
+    </section>
+  );
+}
+
+export interface SeriesSectionProps {
+  seriesList: SeriesListType;
+}
+
+export function SeriesSection({ seriesList }: SeriesSectionProps) {
+  return (
+    <>
+      <MoSeriesSection seriesList={seriesList} />
+      <PcSeriesSection seriesList={seriesList} />
+    </>
   );
 }

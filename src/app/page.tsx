@@ -34,20 +34,19 @@ export default async function Home() {
         postCount={totalPostCount}
         githubData={githubData}
       />
-      {recentPost && (
-        <RecentPostCard
-          key={recentPost.slug}
-          title={recentPost.title}
-          subTitle={recentPost.description}
-          date={recentPost.createdAt}
-          thumbnail={recentPost.thumbnail}
-          link={`/posts/${recentPost.slug}`}
-          thumbnailAlt={recentPost.title}
-        />
-      )}
-      <MainSection title="시리즈">
-        <SeriesSection seriesList={seriesList} />
-      </MainSection>
+      <section className="mt-10">
+        {recentPost && (
+          <RecentPostCard
+            key={recentPost.slug}
+            title={recentPost.title}
+            subTitle={recentPost.description}
+            date={recentPost.createdAt}
+            thumbnail={recentPost.thumbnail}
+            link={`/posts/${recentPost.slug}`}
+            thumbnailAlt={recentPost.title}
+          />
+        )}
+      </section>
 
       <MainSection
         title="게시물"
@@ -64,6 +63,12 @@ export default async function Home() {
       >
         <PostSectionTemplate postList={postList} />
       </MainSection>
+
+      {!!seriesList.length && (
+        <MainSection title="시리즈">
+          <SeriesSection seriesList={seriesList} />
+        </MainSection>
+      )}
     </DefaultLayout>
   );
 }

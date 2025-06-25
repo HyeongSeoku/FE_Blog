@@ -8,6 +8,7 @@ export interface SeriesCardProps extends SeriesMetadata {
   seriesKey: string;
   seriesCount: number;
   className?: string;
+  isSelected?: boolean;
 }
 
 export default function SeriesCard({
@@ -17,6 +18,7 @@ export default function SeriesCard({
   thumbnail,
   seriesCount,
   className = "",
+  isSelected = false,
 }: SeriesCardProps) {
   return (
     <Link
@@ -24,6 +26,12 @@ export default function SeriesCard({
       className={classNames(
         "flex flex-col items-center h-[445px] rounded-lg overflow-hidden border",
         className,
+        {
+          "shadow-[0_8px_24px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.06)]":
+            isSelected,
+          "dark:shadow-[0_8px_24px_rgba(0,32,64,0.5),0_2px_4px_rgba(0,32,64,0.3)]":
+            isSelected,
+        },
       )}
     >
       <FallbackImage
