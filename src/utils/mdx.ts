@@ -159,19 +159,6 @@ export const getMdxContents = async (
   };
 };
 
-// export const getRepresentativeImage = (data: any, content: string): string => {
-//   if (data.thumbnail) {
-//     return data.thumbnail;
-//   }
-
-//   const firstImageMatch = content.match(/!\[.*\]\((.*)\)/);
-//   if (firstImageMatch && firstImageMatch[1]) {
-//     return firstImageMatch[1]; // 첫 번째 이미지의 URL 반환
-//   }
-
-//   return DEFAULT_POST_THUMBNAIL;
-// };
-
 export const getRepresentativeImage = async (
   data: any,
   content: string,
@@ -241,9 +228,20 @@ export const isValidImageUrl = async (url?: string): Promise<boolean> => {
   if (!url) return false;
 
   try {
-    const protocol = url.startsWith("https") ? https : http;
+    // ✅ BASE_URL 가져오기 (.env나 fallback)
+    const BASE_URL =
+      process.env.NEXT_PUBLIC_SITE_URL || "https://your-site.com";
+
+    // ✅ 상대 경로면 절대 URL로 변환
+    let absoluteUrl = url;
+    if (url.startsWith("/")) {
+      absoluteUrl = BASE_URL + url;
+    }
+
+    const protocol = absoluteUrl.startsWith("https") ? https : http;
+
     return await new Promise((resolve) => {
-      const req = protocol.request(url, { method: "HEAD" }, (res) => {
+      const req = protocol.request(absoluteUrl, { method: "HEAD" }, (res) => {
         const contentType = res.headers["content-type"];
         resolve(res.statusCode === 200 && !!contentType?.startsWith("image/"));
       });

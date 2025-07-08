@@ -7,6 +7,7 @@ export interface SeriesMetadata {
 
 export interface SeriesResponse extends SeriesMetadata {
   count: number;
+  latestDate?: string;
 }
 
 export type SeriesListData = Record<string, SeriesResponse>;

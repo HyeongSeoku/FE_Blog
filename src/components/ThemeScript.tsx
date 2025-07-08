@@ -1,38 +1,5 @@
 import { LIGHT_DARK_THEME } from "@/constants/cookie.constants";
 
-// export default function ThemeScript() {
-//   return (
-//     <script
-//       dangerouslySetInnerHTML={{
-//         __html: `(function () {
-//               try {
-//                 var cookies = document.cookie.split("; ");
-//                 var theme = "light";
-//                 for (var i = 0; i < cookies.length; i++) {
-//                   var cookie = cookies[i].split("=");
-//                   if (cookie[0] === "LIGHT_DARK_THEME") {
-//                     theme = cookie[1];
-//                     break;
-//                   }
-//                 }
-//                 if (theme !== "dark" && theme !== "light") {
-//                   console.log("TEST",theme)
-//                   theme = "light";
-//                   document.cookie = "${LIGHT_DARK_THEME}=" + theme + "; path=/; SameSite=Lax";
-//                 }
-//                 document.documentElement.setAttribute(
-//                   "data-theme",
-//                   theme === "dark" ? "dark" : "light"
-//                 );
-//               } catch (e) {
-//                 console.error("Theme script error:", e);
-//               }
-//             })();`,
-//       }}
-//     />
-//   );
-// }
-
 export default function ThemeScript() {
   return (
     <script

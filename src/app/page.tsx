@@ -2,7 +2,10 @@ import { getAllPosts } from "@/utils/post";
 import { HomeClient } from "./pageClient";
 import { fetchGithubUserInfo } from "@/api/github";
 import DefaultLayout from "@/layout/DefaultLayout";
-import { DEFAULT_MAIN_POST_COUNT } from "@/constants/post.constants";
+import {
+  DEFAULT_MAIN_POST_COUNT,
+  SERIES_MAX_LENGTH,
+} from "@/constants/post.constants";
 import MainSection from "@/components/MainSection";
 import Link from "next/link";
 import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
@@ -10,14 +13,14 @@ import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionT
 import { getStructuredData } from "@/utils/structure";
 import RecentPostCard from "@/components/RecentContentCard";
 import { getAllSeriesMetadata } from "@/utils/series";
-import { SeriesSection } from "@/components/\bSeriesSection";
+import { SeriesSection } from "@/components/SeriesSection";
 
 export default async function Home() {
   const { postList, totalPostCount } = await getAllPosts({
     maxCount: DEFAULT_MAIN_POST_COUNT,
     isSorted: true,
   });
-  const seriesData = await getAllSeriesMetadata();
+  const seriesData = await getAllSeriesMetadata({ sortByLatestPost: true });
   const seriesList = Object.entries(seriesData);
 
   const githubData = await fetchGithubUserInfo();
@@ -34,7 +37,7 @@ export default async function Home() {
         postCount={totalPostCount}
         githubData={githubData}
       />
-      <section className="mt-10">
+      <section className="mt-10 flex flex-col md:justify-center">
         {recentPost && (
           <RecentPostCard
             key={recentPost.slug}
@@ -66,7 +69,10 @@ export default async function Home() {
 
       {!!seriesList.length && (
         <MainSection title="시리즈">
-          <SeriesSection seriesList={seriesList} />
+          <SeriesSection
+            seriesList={seriesList}
+            maxLength={SERIES_MAX_LENGTH}
+          />
         </MainSection>
       )}
     </DefaultLayout>

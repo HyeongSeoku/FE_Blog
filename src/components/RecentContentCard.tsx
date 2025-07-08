@@ -4,6 +4,10 @@ import TimeIcon from "@/icon/time.svg";
 import Link from "next/link";
 import DefaultImg from "@/icon/default_img.svg";
 
+interface MoRecentPostCardProps extends RecentPostCardProps {
+  isoDate: string;
+}
+
 export interface RecentPostCardProps {
   title: string;
   date: string;
@@ -14,7 +18,7 @@ export interface RecentPostCardProps {
   thumbnailAlt?: string;
 }
 
-function RecentPostCard({
+function MoRecentPostCard({
   title,
   date,
   link,
@@ -22,18 +26,17 @@ function RecentPostCard({
   thumbnail = "",
   readingTime,
   thumbnailAlt = "default image alt",
-}: RecentPostCardProps) {
-  const isoDate = dayjs(date, "YYYY.MM.DD").format("YYYY-MM-DD");
-
+  isoDate,
+}: MoRecentPostCardProps) {
   return (
-    <div className="flex flex-col gap-2 items-center w-full overflow-hidden rounded-md bg-primary p-5 max-w-[333px] self-center">
+    <div className="flex flex-col gap-2 items-center w-full overflow-hidden rounded-md bg-primary p-5 max-w-[333px] self-center min-md:hidden">
       <span className="text-opposite-theme bg-opposite-theme rounded-2xl px-5 py-1 font-semibold text-sm">
         새로운 콘텐츠
       </span>
       <h2 className="text-2xl font-bold">{title}</h2>
       <p className="text-lg">{subTitle}</p>
       <div className="w-full h-auto flex items-center aspect-[303/175] relative rounded-md">
-        {!thumbnail ? (
+        {thumbnail ? (
           <Image
             src={thumbnail}
             alt={thumbnailAlt}
@@ -65,6 +68,95 @@ function RecentPostCard({
         확인하기
       </Link>
     </div>
+  );
+}
+
+function PcRecentPostCard({
+  title,
+  date,
+  link,
+  subTitle,
+  thumbnail = "",
+  readingTime,
+  thumbnailAlt = "default image alt",
+  isoDate,
+}: MoRecentPostCardProps) {
+  return (
+    <Link
+      href={link}
+      className="h-96 flex gap-6 items-center w-full overflow-hidden rounded-md md:hidden group"
+    >
+      <div className="flex-[5] h-auto flex items-center aspect-[500/384] relative rounded-md overflow-hidden">
+        {thumbnail ? (
+          <Image
+            src={thumbnail}
+            alt={thumbnailAlt}
+            priority
+            fill
+            className="transition-transform duration-300 bg-opposite-theme object-cover rounded-lg group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-opposite-theme rounded-lg">
+            <DefaultImg />
+          </div>
+        )}
+      </div>
+      <div className="flex-[2] flex flex-col gap-2">
+        <span className="rounded-2xl font-semibold text-lg">새로운 콘텐츠</span>
+        <div className="transition-[color] group-hover:text-primary">
+          <h2 className="text-3xl font-bold">{title}</h2>
+          <p className="text-lg mt">{subTitle}</p>
+        </div>
+        <div className="flex items-center justify-start w-full">
+          <time dateTime={isoDate}>{date}</time>
+          {readingTime !== undefined && (
+            <div className="flex items-center">
+              <TimeIcon style={{ width: 14, height: 14 }} stroke="black" />
+              <p>{readingTime}</p>
+              {/* TODO: 분,초 계산 필요 */}
+              <span>분</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function RecentPostCard({
+  title,
+  date,
+  link,
+  subTitle,
+  thumbnail = "",
+  readingTime,
+  thumbnailAlt = "default image alt",
+}: RecentPostCardProps) {
+  const isoDate = dayjs(date, "YYYY.MM.DD").format("YYYY-MM-DD");
+
+  return (
+    <>
+      <MoRecentPostCard
+        title={title}
+        date={date}
+        link={link}
+        subTitle={subTitle}
+        thumbnail={thumbnail}
+        readingTime={readingTime}
+        thumbnailAlt={thumbnailAlt}
+        isoDate={isoDate}
+      />
+      <PcRecentPostCard
+        title={title}
+        date={date}
+        link={link}
+        subTitle={subTitle}
+        thumbnail={thumbnail}
+        readingTime={readingTime}
+        thumbnailAlt={thumbnailAlt}
+        isoDate={isoDate}
+      />
+    </>
   );
 }
 

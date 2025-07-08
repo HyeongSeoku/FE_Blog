@@ -13,6 +13,7 @@ export default function FallbackImage({
   src,
   fallbackSrc,
   alt,
+  className = "",
   ...rest
 }: FallbackImageProps) {
   const [currentSrc, setCurrentSrc] = useState<string | StaticImageData | null>(
@@ -38,8 +39,16 @@ export default function FallbackImage({
   };
 
   if (currentSrc) {
-    return <Image {...rest} src={currentSrc} alt={alt} onError={handleError} />;
+    return (
+      <Image
+        {...rest}
+        className={className}
+        src={currentSrc || ""}
+        alt={alt}
+        onError={handleError}
+      />
+    );
   }
 
-  return <DefaultImg aria-label={alt} />;
+  return <DefaultImg className={className} aria-label={alt} />;
 }
