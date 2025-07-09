@@ -60,7 +60,7 @@ const SkillChip = ({
           animationDelay: `${index * 0.1}s`,
         }}
         onAnimationEnd={handleAnimationEnd}
-        onClick={() => onClick(skillName)}
+        onClick={() => onClick?.(skillName)}
       >
         <Image
           width={18}
