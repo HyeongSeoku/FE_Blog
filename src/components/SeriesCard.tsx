@@ -1,4 +1,3 @@
-import { BASE_URL } from "@/constants/basic.constants";
 import { SeriesMetadata } from "@/types/series";
 import Link from "next/link";
 import FallbackImage from "./FallbackImage";
@@ -22,7 +21,7 @@ export default function SeriesCard({
 }: SeriesCardProps) {
   return (
     <Link
-      href={`${BASE_URL}/series/${seriesKey}`}
+      href={`/series/${seriesKey}`}
       className={classNames(
         "flex flex-col items-center h-[445px] rounded-lg overflow-hidden border group",
         className,
