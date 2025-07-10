@@ -20,6 +20,7 @@ import SkeletonBar from "@/components/SkeletonBar";
 import Image from "next/image";
 import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
 import { getTagPath } from "@/utils/path";
+import dayjs from "dayjs";
 
 const Giscus = dynamic(() => import("@/components/Giscus"), {
   ssr: false,
@@ -75,6 +76,10 @@ const MdxDetailTemplate = ({
   relatedPosts,
   mdxComponents,
 }: MdxDetailTemplateProps) => {
+  const isoDate = dayjs(createdAt, "YYYY.MM.DD").isValid()
+    ? dayjs(createdAt, "YYYY.MM.DD").format("YYYY-MM-DD")
+    : new Date().toISOString().split("T")[0];
+
   const commentRef = useRef<HTMLElement>(null);
   const { isScrollTop } = useScrollPosition();
   const MdxContent = useMemo(() => {
@@ -150,10 +155,10 @@ const MdxDetailTemplate = ({
         <p className="text-gray-400 text-xl mb-3">{description}</p>
 
         <section className="flex items-center gap-3 mb-3 text-gray-400">
-          <time>{createdAt}</time>
+          <time dateTime={isoDate}>{createdAt}</time>
           <div className="flex items-center gap-[2px]">
             <TimeIcon style={{ width: 14, height: 14 }} stroke="black" />
-            <time>{readingTime}</time>
+            <p>{readingTime}</p>
             <span>분</span>
           </div>
         </section>

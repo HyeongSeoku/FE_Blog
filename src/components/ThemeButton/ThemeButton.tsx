@@ -10,11 +10,20 @@ const cx = (...args: string[]) =>
   classNames(...args.map((arg) => styles[arg] || arg));
 
 const ThemeButton = () => {
-  const { toggleTheme } = useThemeStore();
+  const toggleTheme = useThemeStore((state) => state.toggleTheme);
+  const isDarkMode = useThemeStore((state) => state.isDarkMode);
+
+  // const ariaLabel = isClient
+  //   ? `change ${isDarkMode ? "Light" : "Dark"} mode`
+  //   : "change theme";
+
+  const ariaLabel = `change ${isDarkMode ? "Light" : "Dark"} mode`;
 
   return (
     <button
       className="flex flex-col flex-shrink-0 w-10 h-10 overflow-hidden hover:bg-gray-400/20 rounded-sm"
+      aria-label={ariaLabel}
+      title={ariaLabel}
       onClick={toggleTheme}
     >
       <div

@@ -63,3 +63,4 @@ export const SUB_CATEGORY_MAP: Record<Category, SubCategory[]> = {
 export const DEFAULT_CATEGORY_ALL = "All";
 export const DEFAULT_PAGE_SIZE = 10;
 export const DEFAULT_MAIN_POST_COUNT = 9;
+export const SERIES_MAX_LENGTH = 4;

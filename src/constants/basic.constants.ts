@@ -22,10 +22,10 @@ export const POST_PATH = path.join(
 );
 
 export const SKILL_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/skill`);
-export const DEFAULT_POST_THUMBNAIL = `${CONTENT_IMAGE_DIR}/default-loading-image.jpeg`;
+export const DEFAULT_POST_THUMBNAIL = `${PUBLIC_IMG_PATH}/default_img.png`;
 
 export const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_SITE_URL || "http://local-sseoku.com:3000";
 
 export const BASE_META_TITLE = "SEOK 블로그";
 

@@ -15,7 +15,7 @@ const PostSectionTemplate = ({ postList }: PostSectionProps) => {
   }
 
   return (
-    <div className="grid [grid-template-columns:repeat(auto-fill,minmax(260px,1fr))] gap-4 min-xl:[grid-template-columns:repeat(auto-fill,minmax(320px,1fr))]">
+    <div className="">
       {postList.map(
         ({
           title,

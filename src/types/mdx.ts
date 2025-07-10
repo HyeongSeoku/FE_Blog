@@ -8,6 +8,8 @@ export interface FrontMatterProps {
   subCategory?: string;
   tags?: string[];
   thumbnail?: string;
+  series?: string;
+  seriesOrder?: number;
 }
 
 export interface HeadingsProps {
