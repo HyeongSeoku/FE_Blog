@@ -10,7 +10,7 @@ import fs from "fs/promises";
 import path from "path";
 import rehypeExternalLinks from "rehype-external-links";
 import { rehypeCodeBlockClassifier, rehypeHeadingsWithIds } from "./mdxPlugin";
-import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
+import { BASE_URL, DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
 import { getMdxFilesRecursively } from "./file";
 
 import http from "http";
@@ -228,14 +228,11 @@ export const isValidImageUrl = async (url?: string): Promise<boolean> => {
   if (!url) return false;
 
   try {
-    // ✅ BASE_URL 가져오기 (.env나 fallback)
-    const BASE_URL =
-      process.env.NEXT_PUBLIC_SITE_URL || "https://your-site.com";
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || BASE_URL;
 
-    // ✅ 상대 경로면 절대 URL로 변환
     let absoluteUrl = url;
     if (url.startsWith("/")) {
-      absoluteUrl = BASE_URL + url;
+      absoluteUrl = baseUrl + url;
     }
 
     const protocol = absoluteUrl.startsWith("https") ? https : http;
