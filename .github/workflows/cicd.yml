@@ -77,6 +77,7 @@ jobs:
           echo "NEXT_PUBLIC_GISCUS_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GISCUS_CLIENT_ID }}" >> .env
           echo "NEXT_PUBLIC_REPO_URL=${{ secrets.NEXT_PUBLIC_REPO_URL }}" >> .env
           echo "NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}" >> .env
+          echo "NEXT_PUBLIC_SITE_URL=${{ secrets.NEXT_PUBLIC_SITE_URL }}">> .env
 
       - name: Build project
         run: pnpm run build
@@ -135,6 +136,7 @@ jobs:
           echo "NEXT_PUBLIC_GISCUS_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GISCUS_CLIENT_ID }}" >> .env
           echo "NEXT_PUBLIC_REPO_URL=${{ secrets.NEXT_PUBLIC_REPO_URL }}" >> .env
           echo "NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}" >> .env
+          echo "NEXT_PUBLIC_SITE_URL=${{ secrets.NEXT_PUBLIC_SITE_URL }}">> .env
 
       - name: Build project
         run: pnpm run build
