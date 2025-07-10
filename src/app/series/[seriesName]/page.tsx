@@ -16,12 +16,12 @@ export function generateMetadata({
     openGraph: {
       title: metaTitle,
       description: metaDescription,
-      url: `${BASE_URL}/series/${seriesName}`,
+      url: `${BASE_URL}/series/${encodeURIComponent(seriesName)}`,
       type: "website",
       images: [],
     },
     alternates: {
-      canonical: `${BASE_URL}/series/${seriesName}`,
+      canonical: `${BASE_URL}/series/${encodeURIComponent(seriesName)}`,
     },
   };
 }

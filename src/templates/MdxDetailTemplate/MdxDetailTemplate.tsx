@@ -76,7 +76,10 @@ const MdxDetailTemplate = ({
   relatedPosts,
   mdxComponents,
 }: MdxDetailTemplateProps) => {
-  const isoDate = dayjs(createdAt, "YYYY.MM.DD").format("YYYY-MM-DD");
+  const isoDate = dayjs(createdAt, "YYYY.MM.DD").isValid()
+    ? dayjs(createdAt, "YYYY.MM.DD").format("YYYY-MM-DD")
+    : new Date().toISOString().split("T")[0];
+
   const commentRef = useRef<HTMLElement>(null);
   const { isScrollTop } = useScrollPosition();
   const MdxContent = useMemo(() => {
