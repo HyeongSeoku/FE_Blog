@@ -178,21 +178,21 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: seoku-blog-build
-          path: ./
+          path: /my-app/seoku-blog
 
       - name: Extract build artifact
         run: |
+          cd /my-app/seoku-blog
           rm -rf .next
           tar -xzf build.tar.gz
 
       - name: Install production deps
-        run: pnpm install --prod
+        run: |
+          cd /my-app/seoku-blog
+          pnpm install --prod
 
       - name: Start or Restart Server
         run: |
-          if pm2 describe seoku-blog > /dev/null; then
-            pm2 restart seoku-blog
-          else
-            pm2 start "pnpm start" --name seoku-blog
-          fi
+          cd /my-app/seoku-blog
+          pm2 startOrRestart ecosystem.config.js
           pm2 save

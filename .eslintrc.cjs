@@ -49,5 +49,6 @@ module.exports = {
     "lighthouserc.cjs",
     "script",
     "postcss.config.mjs",
+    "*.config.js",
   ],
 };
