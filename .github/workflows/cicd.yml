@@ -174,25 +174,39 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Ensure pnpm
+        run: npm install -g pnpm
+
+      - name: Prepare release dir
+        run: mkdir -p "${{ github.workspace }}/release"
+
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: seoku-blog-build
-          path: /my-app/seoku-blog
+          path: ${{ github.workspace }}/release
 
       - name: Extract build artifact
+        working-directory: ${{ github.workspace }}/release
         run: |
-          cd /my-app/seoku-blog
           rm -rf .next
           tar -xzf build.tar.gz
 
       - name: Install production deps
-        run: |
-          cd /my-app/seoku-blog
-          pnpm install --prod
+        working-directory: ${{ github.workspace }}/release
+        run: pnpm install --prod --frozen-lockfile
 
-      - name: Start or Restart Server
+      - name: Start or Restart Server (PM2)
+        working-directory: ${{ github.workspace }}/release
         run: |
-          cd /my-app/seoku-blog
-          pm2 startOrRestart ecosystem.config.js
+          if pm2 describe seoku-blog > /dev/null; then
+            pm2 restart seoku-blog
+          else
+            pm2 start "pnpm start" --name seoku-blog
+          fi
           pm2 save
