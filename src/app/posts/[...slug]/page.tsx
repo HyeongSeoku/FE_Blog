@@ -1,19 +1,14 @@
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation"; // ← 선택: redirect 대신 notFound 사용 권장
 import { getAllPosts, getPostsDetail } from "@/utils/post";
 import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
 import SkeletonBar from "@/components/SkeletonBar";
-
 import MdxComponentWrapper from "@/components/MDX/MdxComponentWrapper";
 import {
   BASE_META_TITLE,
   BASE_URL,
   PUBLIC_CONTENT_IMG_PATH,
 } from "@/constants/basic.constants";
-import {
-  getStructuredData,
-  OrganizationData,
-  PersonData,
-} from "@/utils/structure";
+import { getStructuredData } from "@/utils/structure";
 import { FrontMatterProps } from "@/types/mdx";
 
 export const dynamic = "error";
@@ -51,7 +46,7 @@ async function getPostDataWithMetadata(slug: string[]) {
         frontMatter.description ||
         "프론트엔드 개발자 김형석의 개발 블로그입니다.",
       url: `${BASE_URL}/posts/${slug.join("/")}`,
-      type: "website",
+      type: "article",
       images: [
         {
           url:
@@ -60,6 +55,12 @@ async function getPostDataWithMetadata(slug: string[]) {
           alt: frontMatter.title || BASE_META_TITLE,
         },
       ],
+      article: {
+        publishedTime: frontMatter.createdAt,
+        modifiedTime: frontMatter.createdAt,
+        authors: ["김형석"],
+        tags: frontMatter.tags ?? [],
+      },
     },
   };
 
@@ -71,7 +72,8 @@ export async function generateMetadata({
 }: {
   params: { slug: string[] };
 }) {
-  const { metadata } = await getPostDataWithMetadata(params.slug);
+  const { metadata, postData } = await getPostDataWithMetadata(params.slug);
+  if (!postData) return metadata;
 
   return {
     ...metadata,
@@ -81,49 +83,54 @@ export async function generateMetadata({
   };
 }
 
-function getPostsStructuredData(slug: string[], frontMatter: FrontMatterProps) {
+function getPostsStructuredData(
+  slug: string[],
+  frontMatter: FrontMatterProps,
+  readingWords?: number,
+) {
   const postUrl = `${BASE_URL}/posts/${slug.join("/")}`;
-  const publisher: OrganizationData = {
-    type: "Organization",
-    name: BASE_META_TITLE,
-    logo: {
-      type: "ImageObject",
-      url: `${BASE_URL}/image/logo.svg`,
-    },
-  };
 
-  const author: PersonData = {
-    type: "Person",
-    name: "김형석",
-  };
-
-  const mainEntityOfPage = {
-    id: postUrl,
-  };
-
-  const structuredData = getStructuredData({
-    type: "Article",
-    url: postUrl,
-    headline: frontMatter?.title || BASE_META_TITLE,
-    description:
-      frontMatter?.description || "프론트엔드 개발자 김형석의 블로그",
+  const blogPosting = getStructuredData({
+    type: "BlogPosting",
+    headline: frontMatter.title ?? BASE_META_TITLE,
+    description: frontMatter.description ?? "프론트엔드 개발자 김형석의 블로그",
     image:
-      frontMatter.thumbnail ||
-      `${PUBLIC_CONTENT_IMG_PATH}/default-og-image.jpeg`,
-    author,
-    publisher,
+      frontMatter.thumbnail ?? `${PUBLIC_CONTENT_IMG_PATH}/default_image.png`,
+    author: { type: "Person", name: "김형석", url: `${BASE_URL}/about` },
+    publisher: {
+      type: "Organization",
+      name: BASE_META_TITLE,
+      url: BASE_URL,
+      logo: { url: `${BASE_URL}/image/logo.svg`, width: 256, height: 256 },
+    },
     datePublished: frontMatter.createdAt,
-    mainEntityOfPage,
+    dateModified: frontMatter.createdAt,
+    url: postUrl,
+    mainEntityOfPage: { id: postUrl },
+    inLanguage: "ko-KR",
+    keywords: frontMatter.tags ?? [],
+    articleSection: frontMatter.category ?? "Tech",
+    wordCount: typeof readingWords === "number" ? readingWords : undefined,
   });
 
-  return structuredData;
+  const breadcrumbs = getStructuredData({
+    type: "BreadcrumbList",
+    itemListElement: [
+      { position: 1, name: "Home", item: BASE_URL },
+      { position: 2, name: "Posts", item: `${BASE_URL}/posts` },
+      { position: 3, name: frontMatter.title ?? "Post", item: postUrl },
+    ],
+  });
+
+  return { blogPosting, breadcrumbs };
 }
 
 const PostPage = async ({ params }: { params: { slug: string[] } }) => {
   const postData = await getPostsDetail(params.slug);
 
   if (!postData) {
-    redirect("/not-found");
+    // redirect("/not-found");
+    return notFound();
   }
 
   const {
@@ -136,7 +143,11 @@ const PostPage = async ({ params }: { params: { slug: string[] } }) => {
     relatedPosts,
   } = postData;
 
-  const structuredData = getPostsStructuredData(params.slug, frontMatter);
+  const { blogPosting, breadcrumbs } = getPostsStructuredData(
+    params.slug,
+    frontMatter,
+    typeof readingTime === "number" ? readingTime : undefined,
+  );
 
   return (
     <>
@@ -152,7 +163,11 @@ const PostPage = async ({ params }: { params: { slug: string[] } }) => {
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPosting) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
       />
     </>
   );
