@@ -1,0 +1,13 @@
+# *
+User-agent: *
+Allow: /
+
+# *
+User-agent: *
+Disallow: /api/
+
+# Host
+Host: https://sseoku.com
+
+# Sitemaps
+Sitemap: https://sseoku.com/sitemap.xml
