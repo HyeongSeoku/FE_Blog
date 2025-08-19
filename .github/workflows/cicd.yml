@@ -82,6 +82,13 @@ jobs:
       - name: Build project
         run: pnpm run build
 
+      - name: Run next-sitemap (postbuild)
+        run: pnpm run postbuild
+
+      - name: Verify sitemap & robots exist
+        run: |
+          ls -al public | grep -E 'sitemap|robots' || (echo "❌ no sitemap/robots" && exit 1)
+
       - name: Cache Next.js build cache
         if: github.ref == 'refs/heads/main'
         uses: actions/cache@v3
@@ -196,6 +203,7 @@ jobs:
         run: |
           rm -rf .next
           tar -xzf build.tar.gz
+          ls -al public | grep -E 'sitemap|robots'
 
       - name: Install production deps
         working-directory: ${{ github.workspace }}/release
