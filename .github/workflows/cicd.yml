@@ -213,11 +213,23 @@ jobs:
       - name: Start or Reload (PM2)
         working-directory: ${{ github.workspace }}/release
         run: |
-          pm2 start ecosystem.config.cjs --only seoku-blog --update-env || true
-          pm2 reload ecosystem.config.cjs --only seoku-blog --update-env
+          if pm2 describe seoku-blog >/dev/null 2>&1; then
+            pm2 reload ecosystem.config.cjs --only seoku-blog --update-env
+          else
+            pm2 start  ecosystem.config.cjs --only seoku-blog --update-env
+          fi
           pm2 save
 
-      - name: Health check via Next (loopback)
+      - name: Health check via Next (loopback, retry)
         run: |
-          curl -f http://127.0.0.1:3000/sitemap.xml >/dev/null
-          curl -f http://127.0.0.1:3000/robots.txt >/dev/null
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:3000/sitemap.xml >/dev/null; then
+              echo "Health OK"; exit 0
+            fi
+            echo "Waiting for app... ($i/30)"
+            sleep 2
+          done
+          echo "App did not become healthy in time"
+          pm2 status
+          pm2 logs seoku-blog --lines 200
+          exit 1
