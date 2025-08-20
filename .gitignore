@@ -45,3 +45,6 @@ report/*
 
 #lighthouse
 .lighthouseci
+
+#sitemap
+/public/*sitemap*.xml

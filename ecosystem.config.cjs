@@ -7,6 +7,7 @@ module.exports = {
       cwd: "/home/ubuntu/actions-runner/_work/FE_Blog/FE_Blog/release",
       env: {
         PORT: 3000,
+        NODE_ENV: "production",
       },
     },
   ],
