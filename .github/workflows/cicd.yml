@@ -109,7 +109,7 @@ jobs:
             tsconfig.json \
             postcss.config.* \
             tailwind.config.* \
-            ecosystem.config.js
+            ecosystem.config.cjs
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -213,8 +213,8 @@ jobs:
       - name: Start or Reload (PM2)
         working-directory: ${{ github.workspace }}/release
         run: |
-          pm2 start ecosystem.config.js --only seoku-blog --update-env || true
-          pm2 reload ecosystem.config.js --only seoku-blog --update-env
+          pm2 start ecosystem.config.cjs --only seoku-blog --update-env || true
+          pm2 reload ecosystem.config.cjs --only seoku-blog --update-env
           pm2 save
 
       - name: Health check via Next (loopback)

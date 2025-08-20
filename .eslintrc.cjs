@@ -50,5 +50,6 @@ module.exports = {
     "script",
     "postcss.config.mjs",
     "*.config.js",
+    "*.config.cjs",
   ],
 };
