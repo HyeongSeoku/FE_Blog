@@ -108,7 +108,8 @@ jobs:
             next.config.mjs \
             tsconfig.json \
             postcss.config.* \
-            tailwind.config.*
+            tailwind.config.* \
+            ecosystem.config.js
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -209,12 +210,14 @@ jobs:
         working-directory: ${{ github.workspace }}/release
         run: pnpm install --prod --frozen-lockfile
 
-      - name: Start or Restart Server (PM2)
+      - name: Start or Reload (PM2)
         working-directory: ${{ github.workspace }}/release
         run: |
-          if pm2 describe seoku-blog > /dev/null; then
-            pm2 restart seoku-blog
-          else
-            pm2 start "pnpm start" --name seoku-blog
-          fi
+          pm2 start ecosystem.config.js --only seoku-blog --update-env || true
+          pm2 reload ecosystem.config.js --only seoku-blog --update-env
           pm2 save
+
+      - name: Health check via Next (loopback)
+        run: |
+          curl -f http://127.0.0.1:3000/sitemap.xml >/dev/null
+          curl -f http://127.0.0.1:3000/robots.txt >/dev/null
