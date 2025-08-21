@@ -27,13 +27,13 @@ const MainPostCard = ({
       )}
     >
       <Link href={link} className="flex items-center gap-2 w-full h-full">
-        <div className="relative min-w-[120px] max-w-[25%] rounded-md bg-gray-100 aspect-[85/55]">
+        <div className="relative min-w-[120px] max-w-[25%] rounded-md aspect-[85/55]">
           <div className="w-full h-full relative">
             <Image
               src={thumbnail}
               alt={imgAlt}
               className={classNames(
-                "w-full h-full rounded-md",
+                "w-full h-full rounded-md bg-gray-100",
                 isDefaultThumbnail ? "object-contain" : "object-cover",
               )}
               fill
