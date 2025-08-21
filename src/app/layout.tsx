@@ -38,7 +38,7 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" className={pretendard.className} suppressHydrationWarning>
+    <html lang="en" className={pretendard.variable} suppressHydrationWarning>
       <head>
         <link rel="canonical" href={BASE_URL} />
         <ThemeScript />

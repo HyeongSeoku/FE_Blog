@@ -50,12 +50,6 @@
   --transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 폰트 */
-:root {
-  --font-family1: "Pretendard";
-  --font-family2: "Nanum MiraeNamu";
-}
-
 /* 카테고리 색상 */
 :root {
   /* Category */
@@ -108,7 +102,15 @@ main {
   color: var(--text-color);
   transition-timing-function: var(--transition-timing-function);
   transition-duration: var(--transition-duration);
-  font-family: var(--font-family1);
+  font-family:
+    var(--font-pretendard),
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Noto Sans KR",
+    "Apple SD Gothic Neo",
+    sans-serif;
 }
 
 /* Scrollbar Styles */
