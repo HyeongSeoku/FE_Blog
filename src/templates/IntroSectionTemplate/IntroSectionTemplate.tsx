@@ -5,12 +5,19 @@ import EmailIcon from "@/icon/email.svg";
 import GithubIcon from "@/icon/github.svg";
 import LinkedInIcon from "@/icon/linkedIn.svg";
 import { GithubUserInfo } from "@/api/github";
+import { getYearsWorked } from "@/utils/util";
+import {
+  EMAIL_ADDRESS,
+  LINKED_IN_URL,
+  MY_GITHUB_URL,
+} from "@/constants/basic.constants";
 
 interface IntroSectionTemplateProps {
   githubData?: GithubUserInfo;
 }
 
 const IntroSectionTemplate = ({ githubData }: IntroSectionTemplateProps) => {
+  const workedYear = getYearsWorked();
   return (
     <section className="flex flex-col gap-2">
       <div className="flex gap-1 items-center h-8">
@@ -33,7 +40,7 @@ const IntroSectionTemplate = ({ githubData }: IntroSectionTemplateProps) => {
       </div>
 
       <div className="flex flex-col text-sm text-gray-400">
-        <p>3년차 프론트엔드 개발자로 일하고 있습니다.</p>
+        <p>{workedYear}년차 프론트엔드 개발자로 일하고 있습니다.</p>
         <p>코드를 넘어 사용자와 제품을 이해하는 개발자가 되고 싶습니다.</p>
         <p>지속적으로 성장하며 좋은 경험을 만드는 일을 하고 싶습니다.</p>
       </div>
@@ -41,7 +48,7 @@ const IntroSectionTemplate = ({ githubData }: IntroSectionTemplateProps) => {
       <div className="flex items-center gap-1">
         <Link
           className="text-theme p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"
-          href="mailto:gudtjr3437@gmail.com"
+          href={`mailto:${EMAIL_ADDRESS}`}
           passHref
           target="_blank"
         >
@@ -49,7 +56,7 @@ const IntroSectionTemplate = ({ githubData }: IntroSectionTemplateProps) => {
         </Link>
         <Link
           className="text-theme p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"
-          href="https://github.com/HyeongSeoku"
+          href={MY_GITHUB_URL}
           passHref
           target="_blank"
         >
@@ -57,7 +64,7 @@ const IntroSectionTemplate = ({ githubData }: IntroSectionTemplateProps) => {
         </Link>
         <Link
           className="text-theme p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"
-          href="https://www.linkedin.com/in/%ED%98%95%EC%84%9D-%EA%B9%80-901539232/"
+          href={LINKED_IN_URL}
           passHref
           target="_blank"
         >
