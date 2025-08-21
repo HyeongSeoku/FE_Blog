@@ -137,7 +137,7 @@ export const getAllPosts = async ({
 export const getPostsDetail = async (
   slug: string[],
 ): Promise<getMdxContentsResponse | null> => {
-  const mdxContentData = await getMdxContents(slug, POST_PATH);
+  const mdxContentData = await getMdxContents(slug, POST_PATH, false);
   return mdxContentData;
 };
 

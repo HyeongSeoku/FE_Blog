@@ -15,7 +15,7 @@ const PostSectionTemplate = ({ postList }: PostSectionProps) => {
   }
 
   return (
-    <div className="">
+    <div className="flex flex-col gap-3">
       {postList.map(
         ({
           title,

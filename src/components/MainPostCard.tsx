@@ -7,7 +7,6 @@ import Link from "next/link";
 export interface MainPostCardProps
   extends Omit<PostDataProps, "slug" | "content"> {
   link: string;
-  imgSrc?: string;
   imgAlt?: string;
   categoryType?: "SUB" | "MAIN";
 }
@@ -16,18 +15,27 @@ const MainPostCard = ({
   link,
   title,
   createdAt,
-  imgSrc = "/image/default_img.png",
   imgAlt = "default image alt",
+  thumbnail = "/image/default_img.png",
 }: MainPostCardProps) => {
+  const isDefaultThumbnail = thumbnail === "/image/default_img.png";
   return (
-    <article className="py-2 px-1 h-[100px] box-border">
+    <article
+      className={classNames(
+        "py-2 px-1 h-[100px] box-border rounded-lg",
+        "transition-transform transform duration-300 hover:scale-102",
+      )}
+    >
       <Link href={link} className="flex items-center gap-2 w-full h-full">
-        <div className="relative min-w-[120px] max-w-[25%] rounded-md bg-gray-100 aspect-[85/55] p-[5px]">
+        <div className="relative min-w-[120px] max-w-[25%] rounded-md bg-gray-100 aspect-[85/55]">
           <div className="w-full h-full relative">
             <Image
-              src={imgSrc}
+              src={thumbnail}
               alt={imgAlt}
-              className="w-full h-full object-cover rounded-md"
+              className={classNames(
+                "w-full h-full rounded-md",
+                isDefaultThumbnail ? "object-contain" : "object-cover",
+              )}
               fill
               priority
             />

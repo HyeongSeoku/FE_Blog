@@ -19,6 +19,7 @@ import https from "https";
 export const getMdxContents = async (
   slug: string[],
   fileDirectory: string,
+  hasDefaultImg: boolean = true,
 ): Promise<getMdxContentsResponse | null> => {
   const filePath = path.join(fileDirectory, ...slug) + ".mdx";
 
@@ -33,8 +34,9 @@ export const getMdxContents = async (
   const source = await fs.readFile(filePath, "utf8");
   const { content, data } = matter(source);
 
-  const thumbnail = (data.thumbnail ||
-    getRepresentativeImage(data, content)) as string;
+  const thumbnail =
+    (data.thumbnail as string) ||
+    (await getRepresentativeImage(data, content, hasDefaultImg));
   const frontMatter: FrontMatterProps = {
     ...(data as FrontMatterProps),
     thumbnail,
@@ -162,6 +164,7 @@ export const getMdxContents = async (
 export const getRepresentativeImage = async (
   data: any,
   content: string,
+  returnDefaultImg: boolean = true, // 기본값 true
 ): Promise<string> => {
   let candidate = data.thumbnail;
 
@@ -179,7 +182,11 @@ export const getRepresentativeImage = async (
   }
 
   // fallback 이미지 반환
-  return DEFAULT_POST_THUMBNAIL;
+  if (returnDefaultImg) {
+    return DEFAULT_POST_THUMBNAIL;
+  }
+
+  return "";
 };
 
 export const extractHeadings = (content: string): HeadingsProps[] => {

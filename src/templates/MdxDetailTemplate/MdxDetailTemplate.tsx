@@ -177,14 +177,16 @@ const MdxDetailTemplate = ({
         )}
       </header>
       <div className="flex items-center justify-center">
-        <Image
-          src={postThumbnail}
-          alt={title}
-          width={500}
-          height={500}
-          className="rounded-md"
-          loading="lazy"
-        />
+        {postThumbnail && (
+          <Image
+            src={postThumbnail}
+            alt={title}
+            width={500}
+            height={500}
+            className="rounded-md"
+            loading="lazy"
+          />
+        )}
       </div>
 
       <MdxSideBar headings={heading} commentRef={commentRef} />

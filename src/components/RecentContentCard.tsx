@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import TimeIcon from "@/icon/time.svg";
 import Link from "next/link";
-import DefaultImg from "@/icon/default_img.svg";
+import classNames from "classnames";
 
 interface MoRecentPostCardProps extends RecentPostCardProps {
   isoDate: string;
@@ -45,11 +45,13 @@ function MoRecentPostCard({
   date,
   link,
   subTitle,
-  thumbnail = "",
+  thumbnail = "/image/default_img.png",
   readingTime,
   thumbnailAlt = "default image alt",
   isoDate,
 }: MoRecentPostCardProps) {
+  const isDefaultThumbnail = thumbnail === "/image/default_img.png";
+
   return (
     <div className="flex flex-col gap-2 items-center w-full overflow-hidden rounded-md bg-primary p-5 max-w-[333px] self-center min-md:hidden">
       <span className="text-opposite-theme bg-opposite-theme rounded-2xl px-5 py-1 font-semibold text-sm">
@@ -57,20 +59,17 @@ function MoRecentPostCard({
       </span>
       <h2 className="text-2xl font-bold">{title}</h2>
       <p className="text-lg">{subTitle}</p>
-      <div className="w-full h-auto flex items-center aspect-[303/175] relative rounded-md">
-        {thumbnail ? (
-          <Image
-            src={thumbnail}
-            alt={thumbnailAlt}
-            priority
-            fill
-            className="bg-opposite-theme object-cover rounded-lg"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-opposite-theme rounded-lg">
-            <DefaultImg />
-          </div>
-        )}
+      <div className="w-full h-auto max-h-full flex items-center aspect-[303/175] relative rounded-md">
+        <Image
+          src={thumbnail}
+          alt={thumbnailAlt}
+          priority
+          fill
+          className={classNames(
+            "bg-opposite-theme rounded-lg",
+            isDefaultThumbnail ? "object-contain" : "object-cover",
+          )}
+        />
       </div>
       <ReadingTimeDisplay
         isoDate={isoDate}
@@ -97,25 +96,24 @@ function PcRecentPostCard({
   thumbnailAlt = "default image alt",
   isoDate,
 }: MoRecentPostCardProps) {
+  const isDefaultThumbnail = thumbnail === "/image/default_img.png";
+
   return (
     <Link
       href={link}
       className="h-96 flex gap-6 items-center w-full overflow-hidden rounded-md md:hidden group"
     >
-      <div className="flex-[5] h-auto flex items-center aspect-[500/384] relative rounded-md overflow-hidden">
-        {thumbnail ? (
-          <Image
-            src={thumbnail}
-            alt={thumbnailAlt}
-            priority
-            fill
-            className="transition-transform duration-300 bg-opposite-theme object-cover rounded-lg group-hover:scale-105"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-opposite-theme rounded-lg">
-            <DefaultImg />
-          </div>
-        )}
+      <div className="flex-[5] h-auto max-h-full flex items-center aspect-[500/384] relative rounded-md overflow-hidden">
+        <Image
+          src={thumbnail}
+          alt={thumbnailAlt}
+          priority
+          fill
+          className={classNames(
+            "transition-transform duration-300 bg-opposite-theme rounded-lg group-hover:scale-105",
+            isDefaultThumbnail ? "object-contain" : "object-cover",
+          )}
+        />
       </div>
       <div className="flex-[2] flex flex-col gap-2">
         <span className="rounded-2xl font-semibold text-lg">새로운 콘텐츠</span>
