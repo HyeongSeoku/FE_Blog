@@ -30,14 +30,6 @@ export const generateMetadata = ({ searchParams }: BlogPageProps) => {
 
 export const revalidate = 60;
 
-export const generateStaticParams = async () => {
-  const { postList } = await getAllPosts({
-    page: 1,
-    pageSize: DEFAULT_PAGE_SIZE,
-  });
-  return postList.map((post) => ({ slug: post.slug }));
-};
-
 interface BlogPageProps {
   searchParams: { [key: string]: string | undefined };
 }

@@ -25,14 +25,14 @@ export const generateMetadata = ({
       title: `${categoryTitle} 카테고리`,
       description: `${params.category} 관련 블로그 글 목록을 확인하세요.`,
       url: isFirstPage
-        ? `${BASE_URL}/blog/${categoryTitle}`
-        : `${BASE_URL}/blog/${categoryTitle}?page=${pageParam}`,
+        ? `${BASE_URL}/blog/${params.category}`
+        : `${BASE_URL}/blog/${params.category}?page=${pageParam}`,
       type: "website",
     },
     alternates: {
       canonical: isFirstPage
-        ? `${BASE_URL}/blog/${categoryTitle}`
-        : `${BASE_URL}/blog/${categoryTitle}?page=${pageParam}`,
+        ? `${BASE_URL}/blog/${params.category}`
+        : `${BASE_URL}/blog/${params.category}?page=${pageParam}`,
     },
   };
 
