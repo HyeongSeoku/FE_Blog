@@ -22,6 +22,7 @@ export function MoSeriesSection({
 }: MoSeriesSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const showMoreBtn = !!maxLength && seriesList.length > maxLength;
+  const validSeriesList = seriesList.filter(([, value]) => !!value?.title);
 
   return (
     <section className="overflow-hidden py-4 min-md:hidden">
@@ -30,7 +31,7 @@ export function MoSeriesSection({
         spaceBetween={4}
         slidesPerView="auto"
         centeredSlides={true}
-        initialSlide={1}
+        initialSlide={validSeriesList.length > 1 ? 1 : 0}
         // loop
         onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
       >

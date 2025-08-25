@@ -30,7 +30,6 @@ async function SeriesPage() {
   return (
     <div>
       <strong className="text-3xl">시리즈 리스트</strong>
-      {/* <SeriesSection seriesList={seriesList} /> */}
       <section className="grid grid-cols-4 gap-3 md-lg:grid-cols-2 md:grid-cols-2">
         {seriesList.map(([key, value]) => (
           <SeriesCard
