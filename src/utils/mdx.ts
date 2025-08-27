@@ -36,7 +36,7 @@ export const getMdxContents = async (
 
   const thumbnail =
     (data.thumbnail as string) ||
-    (await getRepresentativeImage(data, content, hasDefaultImg));
+    getRepresentativeImage(data, content, hasDefaultImg);
   const frontMatter: FrontMatterProps = {
     ...(data as FrontMatterProps),
     thumbnail,
@@ -161,33 +161,37 @@ export const getMdxContents = async (
   };
 };
 
-export const getRepresentativeImage = async (
-  data: any,
+/**
+ * 대표 이미지 추출 유틸
+ * @param frontMatter - mdx 메타 정보
+ * @param content - mdx 본문
+ * @param returnDefaultImg - true면 fallback 이미지 반환 (default: true)
+ */
+export function getRepresentativeImage(
+  frontMatter: any,
   content: string,
-  returnDefaultImg: boolean = true, // 기본값 true
-): Promise<string> => {
-  let candidate = data.thumbnail;
+  returnDefaultImg: boolean = true,
+): string {
+  // frontMatter.thumbnail 우선 사용
+  let candidate = frontMatter?.thumbnail;
 
-  // content에서 첫 번째 이미지가 있는 경우 candidate로 설정
+  // fallback으로 content 내 첫 번째 마크다운 이미지
   if (!candidate) {
-    const firstImageMatch = content.match(/!\[.*\]\((.*)\)/);
-    if (firstImageMatch && firstImageMatch[1]) {
-      candidate = firstImageMatch[1];
-    }
+    const match = content.match(/!\[.*?\]\((.*?)\)/);
+    candidate = match?.[1] ?? "";
   }
 
-  // 이미지 유효성 검사
-  if (await isValidImageUrl(candidate)) {
-    return candidate;
-  }
+  // 이미지 유효성 검사: SSR 안전하게 fetch 없이 판단
+  const isValid =
+    typeof candidate === "string" &&
+    (candidate.startsWith("/") || candidate.startsWith("http"));
 
-  // fallback 이미지 반환
-  if (returnDefaultImg) {
-    return DEFAULT_POST_THUMBNAIL;
-  }
+  // 유효하면 반환
+  if (isValid) return candidate;
 
-  return "";
-};
+  // 유효하지 않고 fallback 허용 시 기본 이미지 반환
+  return returnDefaultImg ? DEFAULT_POST_THUMBNAIL : "";
+}
 
 export const extractHeadings = (content: string): HeadingsProps[] => {
   const headings: HeadingsProps[] = [];
