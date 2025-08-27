@@ -200,6 +200,23 @@ jobs:
           name: seoku-blog-build
           path: ${{ github.workspace }}/release
 
+      - name: 🔥 Clean up previous build in release folder
+        working-directory: ${{ github.workspace }}/release
+        run: |
+          echo "🧹 Cleaning old build files..."
+          rm -rf \
+            .next \
+            public \
+            src/mdx \
+            .env \
+            package.json \
+            pnpm-lock.yaml \
+            next.config.mjs \
+            tsconfig.json \
+            postcss.config.* \
+            tailwind.config.* \
+            ecosystem.config.cjs
+
       - name: Extract build artifact
         working-directory: ${{ github.workspace }}/release
         run: |
