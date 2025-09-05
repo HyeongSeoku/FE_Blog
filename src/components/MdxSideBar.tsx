@@ -95,7 +95,7 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
 
   return (
     <>
-      <aside className="fixed top-[100px] right-[20px] p-4 w-fit h-fit max-w-[150px] max-h-[700px] border-gray-200 flex flex-col transform duration-300 lg:opacity-0 md:hidden">
+      <aside className="fixed top-[100px] right-[20px] p-4 w-fit h-fit max-w-[150px] max-h-[700px] border-gray-200 flex flex-col transform duration-300 lg:opacity-0 md:hidden z-50">
         <ul className="space-y-2 h-fit max-h-[500px] overflow-y-scroll scroll-bar-thin">
           {headings.map((heading, idx) => (
             <li
@@ -135,7 +135,7 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
       </aside>
 
       {/* NOTE: MO용 side */}
-      <aside className="fixed bottom-10 right-2 p-1 z-10 flex flex-col items-center gap-2 min-md:hidden bg-gray-400/20 rounded-lg">
+      <aside className="fixed bottom-10 right-2 p-1 z-50 flex flex-col items-center gap-2 min-md:hidden bg-gray-400/20 rounded-lg">
         <button
           className="w-8 h-8 rounded-sm hover:bg-gray-400/20 flex items-center justify-center"
           onClick={handleScrollToCommentSection}
