@@ -1,5 +1,10 @@
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
+import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
+import BlogDateTemplate from "@/templates/BlogDateTemplate";
+import { getAllPosts } from "@/utils/post";
+import { getPostsBySeries, getSeriesMetadata } from "@/utils/series";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 export function generateMetadata({
   params,
@@ -26,11 +31,42 @@ export function generateMetadata({
   };
 }
 
-export default function SeriesDetailPage({
-  params,
-}: {
+export interface SeriesDetailPageProps {
   params: { seriesName: string };
-}) {
+  searchParams?: { page?: string };
+}
+
+export default async function SeriesDetailPage({
+  params,
+  searchParams,
+}: SeriesDetailPageProps) {
   const { seriesName } = params;
-  return <div>{seriesName}</div>;
+  const page = Number(searchParams?.page ?? 1);
+  const pageSize = DEFAULT_PAGE_SIZE;
+
+  const seriesMeta = getSeriesMetadata(seriesName);
+  if (!seriesMeta) {
+    return notFound();
+  }
+
+  const { postList: allPosts } = await getAllPosts({});
+  const seriesPosts = getPostsBySeries(allPosts, seriesName);
+
+  const totalCount = seriesPosts.length;
+  const totalPages = Math.ceil(totalCount / pageSize);
+  const currentPage = Math.max(1, Math.min(page, totalPages));
+  const paginated = seriesPosts.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
+  );
+
+  return (
+    <BlogDateTemplate
+      dateText={seriesMeta.title}
+      postCount={totalCount}
+      postList={paginated}
+      currentPage={currentPage}
+      totalPages={totalPages}
+    />
+  );
 }

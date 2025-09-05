@@ -41,12 +41,20 @@
 }
 
 .markdown-contents code.inline-code {
+  @apply inline bg-gray-300 p-1;
+}
+
+[data-theme="dark"] .markdown-contents code.inline-code {
   @apply inline bg-gray-500 p-1;
 }
 
 /* 링크 스타일 */
 .markdown-contents a {
   @apply text-[var(--link-text-color)] hover:text-[var(--link-text-hover-color)];
+}
+
+[data-theme="dark"] .markdown-contents a {
+  @apply text-[var(--dark-link-text-color)] hover:text-[var(--link-text-hover-color)];
 }
 
 /* 이미지 스타일 */
@@ -70,7 +78,11 @@
 }
 
 .markdown-contents th {
-  @apply bg-gray-100 font-semibold;
+  @apply bg-gray-300 font-semibold;
+}
+
+[data-theme="dark"] .markdown-contents th {
+  @apply bg-gray-500 font-semibold;
 }
 
 .markdown-contents pre {
