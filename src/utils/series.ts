@@ -1,7 +1,7 @@
 import rawSeriesData from "@/data/series.json";
-import { FrontMatterProps } from "@/types/mdx";
 import { SeriesListData, SeriesMetadata } from "@/types/series";
 import { getAllPosts } from "./post";
+import { PostDataProps } from "@/types/posts";
 
 interface GetAllSeriesMetadataProps {
   sortByLatestPost?: boolean; // undefined면 정렬 안함
@@ -71,9 +71,9 @@ export const getSeriesMetadata = (seriesKey: string): SeriesMetadata | null => {
 
 // 특정 시리즈에 속한 글 모으기 및 정렬
 export const getPostsBySeries = (
-  allPosts: FrontMatterProps[],
+  allPosts: PostDataProps[],
   seriesKey: string,
-): FrontMatterProps[] => {
+): PostDataProps[] => {
   return allPosts
     .filter((post) => post.series === seriesKey)
     .sort((a, b) => (a.seriesOrder ?? 0) - (b.seriesOrder ?? 0));
