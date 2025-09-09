@@ -1,5 +1,3 @@
-"use client";
-
 import CodeBlock from "@/components/CodeBlock";
 import { MDXRemoteProps, MDXRemoteSerializeResult } from "next-mdx-remote";
 import TimeIcon from "@/icon/time.svg";
@@ -16,7 +14,7 @@ import DoubleArrow from "@/icon/arrow_right_double.svg";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import classNames from "classnames";
 import useScrollPosition from "@/hooks/useScrollPosition";
-import SkeletonBar from "@/components/SkeletonBar";
+import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
 import { getTagPath } from "@/utils/path";
@@ -26,29 +24,6 @@ const Giscus = dynamic(() => import("@/components/Giscus"), {
   ssr: false,
   loading: () => <div>댓글 불러오는 중...</div>,
 });
-
-// MDXRemote를 동적으로 import
-const MDXRemote = dynamic(
-  () => import("next-mdx-remote").then((mod) => mod.MDXRemote),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="min-h-40 py-5 flex flex-col gap-2">
-        <SkeletonBar className="!w-1/5 !h-10 md:!w-1/3" />
-        <SkeletonBar />
-        <SkeletonBar />
-        <SkeletonBar className="!w-1/3 !h-8 md:!w-1/2 mt-4" />
-        <SkeletonBar />
-        <SkeletonBar />
-        <SkeletonBar />
-
-        <SkeletonBar className="!w-1/3 !h-8 md:!w-1/2 mt-4" />
-        <SkeletonBar />
-        <SkeletonBar />
-      </div>
-    ),
-  },
-);
 
 type MdxDetailRelatedPost = {
   slug: string;
@@ -85,7 +60,7 @@ const MdxDetailTemplate = ({
   const MdxContent = useMemo(() => {
     return (
       <MDXRemote
-        {...source}
+        source={source}
         components={{
           code: ({ className, children }) => (
             <CodeBlock
