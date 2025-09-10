@@ -41,7 +41,6 @@ const config = {
       { userAgent: "*", allow: "/" },
       { userAgent: "*", disallow: ["/api/"] },
     ],
-    additionalSitemaps: [`${process.env.NEXT_PUBLIC_SITE_URL}/sitemap.xml`],
   },
 };
 
