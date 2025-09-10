@@ -5,15 +5,13 @@ import { FrontMatterProps, HeadingsProps } from "@/types/mdx";
 import MdxLink from "@/components/MdxLink";
 import MdxSideBar from "@/components/MdxSideBar";
 import AnimationContainer from "@/components/AnimationContainer";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import RightArrow from "@/icon/arrow_right.svg";
 import LeftArrow from "@/icon/arrow_left.svg";
 import dynamic from "next/dynamic";
 import DoubleArrow from "@/icon/arrow_right_double.svg";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
-import classNames from "classnames";
-import useScrollPosition from "@/hooks/useScrollPosition";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
@@ -22,7 +20,6 @@ import dayjs from "dayjs";
 
 const Giscus = dynamic(() => import("@/components/Giscus"), {
   ssr: false,
-  loading: () => <div>댓글 불러오는 중...</div>,
 });
 
 type MdxDetailRelatedPost = {
@@ -55,8 +52,6 @@ const MdxDetailTemplate = ({
     ? dayjs(createdAt, "YYYY.MM.DD").format("YYYY-MM-DD")
     : new Date().toISOString().split("T")[0];
 
-  const commentRef = useRef<HTMLElement>(null);
-  const { isScrollTop } = useScrollPosition();
   const MdxContent = useMemo(() => {
     return (
       <MDXRemote
@@ -114,17 +109,7 @@ const MdxDetailTemplate = ({
 
   return (
     <>
-      <div
-        className={classNames(
-          "fixed left-0 right-0 z-10 h-1 transition-[top,opacity] duration-300",
-          {
-            "top-0 opacity-1": !isScrollTop,
-            "-top-14 opacity-0": isScrollTop,
-          },
-        )}
-      >
-        <ScrollProgressBar />
-      </div>
+      <ScrollProgressBar />
       <header className="border-b border-b-[var(--border-color)] mb-4 pb-4">
         <h1 className="text-4xl font-bold mb-1">{title}</h1>
         <p className="text-gray-400 text-xl mb-3">{description}</p>
@@ -164,7 +149,7 @@ const MdxDetailTemplate = ({
         )}
       </div>
 
-      <MdxSideBar headings={heading} commentRef={commentRef} />
+      <MdxSideBar headings={heading} />
 
       <section className="relative border-b py-5">
         <article className="markdown-contents">{MdxContent}</article>
@@ -235,9 +220,7 @@ const MdxDetailTemplate = ({
         </section>
       )}
 
-      <section ref={commentRef}>
-        <Giscus />
-      </section>
+      <Giscus />
     </>
   );
 };

@@ -10,10 +10,15 @@ import CommentIcon from "@/icon/comment.svg";
 
 export interface MdxSideBarProps {
   headings: HeadingsProps[];
-  commentRef: RefObject<HTMLElement>;
+  commentRef?: RefObject<HTMLElement>;
+  commentTargetId?: string;
 }
 
-const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
+const MdxSideBar = ({
+  headings,
+  commentRef,
+  commentTargetId = "giscusSection",
+}: MdxSideBarProps) => {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const HEADER_HEIGHT = 56;
@@ -79,12 +84,12 @@ const MdxSideBar = ({ headings, commentRef }: MdxSideBarProps) => {
   };
 
   const handleScrollToCommentSection = () => {
-    if (commentRef.current) {
+    const el = commentRef?.current ?? document.getElementById(commentTargetId); // ref 없으면 id로 찾기
+
+    if (el) {
       const yOffset = -50;
       const yPosition =
-        commentRef.current.getBoundingClientRect().top +
-        window.scrollY +
-        yOffset;
+        el.getBoundingClientRect().top + window.scrollY + yOffset;
 
       window.scrollTo({
         top: yPosition,
