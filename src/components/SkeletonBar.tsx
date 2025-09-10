@@ -1,5 +1,3 @@
-"use client";
-
 import classNames from "classnames";
 
 const SkeletonBar = ({ className = "" }: { className?: string }) => {

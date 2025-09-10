@@ -1,5 +1,3 @@
-"use client";
-
 import CodeBlock from "@/components/CodeBlock";
 import { MDXRemoteProps, MDXRemoteSerializeResult } from "next-mdx-remote";
 import TimeIcon from "@/icon/time.svg";
@@ -7,16 +5,14 @@ import { FrontMatterProps, HeadingsProps } from "@/types/mdx";
 import MdxLink from "@/components/MdxLink";
 import MdxSideBar from "@/components/MdxSideBar";
 import AnimationContainer from "@/components/AnimationContainer";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import RightArrow from "@/icon/arrow_right.svg";
 import LeftArrow from "@/icon/arrow_left.svg";
 import dynamic from "next/dynamic";
 import DoubleArrow from "@/icon/arrow_right_double.svg";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
-import classNames from "classnames";
-import useScrollPosition from "@/hooks/useScrollPosition";
-import SkeletonBar from "@/components/SkeletonBar";
+import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
 import { getTagPath } from "@/utils/path";
@@ -24,31 +20,7 @@ import dayjs from "dayjs";
 
 const Giscus = dynamic(() => import("@/components/Giscus"), {
   ssr: false,
-  loading: () => <div>댓글 불러오는 중...</div>,
 });
-
-// MDXRemote를 동적으로 import
-const MDXRemote = dynamic(
-  () => import("next-mdx-remote").then((mod) => mod.MDXRemote),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="min-h-40 py-5 flex flex-col gap-2">
-        <SkeletonBar className="!w-1/5 !h-10 md:!w-1/3" />
-        <SkeletonBar />
-        <SkeletonBar />
-        <SkeletonBar className="!w-1/3 !h-8 md:!w-1/2 mt-4" />
-        <SkeletonBar />
-        <SkeletonBar />
-        <SkeletonBar />
-
-        <SkeletonBar className="!w-1/3 !h-8 md:!w-1/2 mt-4" />
-        <SkeletonBar />
-        <SkeletonBar />
-      </div>
-    ),
-  },
-);
 
 type MdxDetailRelatedPost = {
   slug: string;
@@ -80,12 +52,10 @@ const MdxDetailTemplate = ({
     ? dayjs(createdAt, "YYYY.MM.DD").format("YYYY-MM-DD")
     : new Date().toISOString().split("T")[0];
 
-  const commentRef = useRef<HTMLElement>(null);
-  const { isScrollTop } = useScrollPosition();
   const MdxContent = useMemo(() => {
     return (
       <MDXRemote
-        {...source}
+        source={source}
         components={{
           code: ({ className, children }) => (
             <CodeBlock
@@ -139,17 +109,7 @@ const MdxDetailTemplate = ({
 
   return (
     <>
-      <div
-        className={classNames(
-          "fixed left-0 right-0 z-10 h-1 transition-[top,opacity] duration-300",
-          {
-            "top-0 opacity-1": !isScrollTop,
-            "-top-14 opacity-0": isScrollTop,
-          },
-        )}
-      >
-        <ScrollProgressBar />
-      </div>
+      <ScrollProgressBar />
       <header className="border-b border-b-[var(--border-color)] mb-4 pb-4">
         <h1 className="text-4xl font-bold mb-1">{title}</h1>
         <p className="text-gray-400 text-xl mb-3">{description}</p>
@@ -189,7 +149,7 @@ const MdxDetailTemplate = ({
         )}
       </div>
 
-      <MdxSideBar headings={heading} commentRef={commentRef} />
+      <MdxSideBar headings={heading} />
 
       <section className="relative border-b py-5">
         <article className="markdown-contents">{MdxContent}</article>
@@ -260,9 +220,7 @@ const MdxDetailTemplate = ({
         </section>
       )}
 
-      <section ref={commentRef}>
-        <Giscus />
-      </section>
+      <Giscus />
     </>
   );
 };

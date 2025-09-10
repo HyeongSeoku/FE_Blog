@@ -129,7 +129,6 @@ const PostPage = async ({ params }: { params: { slug: string[] } }) => {
   const postData = await getPostsDetail(params.slug);
 
   if (!postData) {
-    // redirect("/not-found");
     return notFound();
   }
 
