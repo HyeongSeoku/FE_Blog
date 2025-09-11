@@ -12,12 +12,13 @@ import {
   getPostsByCategoryResponse,
 } from "@/types/posts";
 import { getMdxContents, getRepresentativeImage } from "./mdx";
-import { getMdxContentsResponse } from "@/types/mdx";
+
 import {
   CATEGORY_MAP,
   DEFAULT_PAGE_SIZE,
   SUB_CATEGORY_MAP,
 } from "@/constants/post.constants";
+import { GetMdxContentsBase } from "@/types/mdx";
 
 const POST_PATH = path.join(process.cwd(), "src/mdx/content");
 
@@ -136,8 +137,10 @@ export const getAllPosts = async ({
 
 export const getPostsDetail = async (
   slug: string[],
-): Promise<getMdxContentsResponse | null> => {
-  const mdxContentData = await getMdxContents(slug, POST_PATH, false);
+): Promise<GetMdxContentsBase<string> | null> => {
+  const mdxContentData = await getMdxContents(slug, POST_PATH, false, {
+    serialize: false as const,
+  });
   return mdxContentData;
 };
 
