@@ -1,5 +1,5 @@
 import CodeBlock from "@/components/CodeBlock";
-import { MDXRemoteProps, MDXRemoteSerializeResult } from "next-mdx-remote";
+import { MDXRemoteProps } from "next-mdx-remote";
 import TimeIcon from "@/icon/time.svg";
 import { FrontMatterProps, HeadingsProps } from "@/types/mdx";
 import MdxLink from "@/components/MdxLink";
@@ -28,7 +28,7 @@ type MdxDetailRelatedPost = {
 };
 
 interface MdxDetailTemplateProps {
-  source: MDXRemoteSerializeResult;
+  source: string;
   frontMatter: FrontMatterProps;
   readingTime?: number;
   heading?: HeadingsProps[];

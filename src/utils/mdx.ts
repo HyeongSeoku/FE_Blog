@@ -2,8 +2,9 @@ import matter from "gray-matter";
 import { serialize } from "next-mdx-remote/serialize";
 import {
   FrontMatterProps,
-  getMdxContentsResponse,
+  GetMdxContentsBase,
   HeadingsProps,
+  SerializeOptions,
 } from "@/types/mdx";
 import rehypePrettyCode, { Options } from "rehype-pretty-code";
 import fs from "fs/promises";
@@ -15,12 +16,20 @@ import { getMdxFilesRecursively } from "./file";
 
 import http from "http";
 import https from "https";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
-export const getMdxContents = async (
+export async function getMdxContents<T extends boolean>(
   slug: string[],
   fileDirectory: string,
   hasDefaultImg: boolean = true,
-): Promise<getMdxContentsResponse | null> => {
+  opts?: {
+    serialize?: T;
+    mdxOptions?: any;
+    scope?: Record<string, any>;
+  },
+): Promise<GetMdxContentsBase<
+  T extends true ? MDXRemoteSerializeResult : string
+> | null> {
   const filePath = path.join(fileDirectory, ...slug) + ".mdx";
 
   try {
@@ -30,57 +39,46 @@ export const getMdxContents = async (
     return null;
   }
 
-  // Read and parse the MDX file
-  const source = await fs.readFile(filePath, "utf8");
-  const { content, data } = matter(source);
+  const raw = await fs.readFile(filePath, "utf8");
+  const { content, data } = matter(raw);
 
   const thumbnail =
     (data.thumbnail as string) ||
     getRepresentativeImage(data, content, hasDefaultImg);
+
   const frontMatter: FrontMatterProps = {
     ...(data as FrontMatterProps),
     thumbnail,
   };
-  // Find related posts based on tags and category
-  const currentTags = frontMatter.tags || [];
-  const currentCategory = frontMatter.category;
 
   if (!frontMatter.title) {
     throw new Error("Front matter does not contain required 'title' field");
   }
 
+  // 관련 포스트 계산 (기존 로직 그대로)
   const filePaths = await getMdxFilesRecursively(fileDirectory);
-  const posts: {
-    slug: string;
-    title: string;
-    tags: string[];
-    category: string;
-    createdAt: string;
-  }[] = await Promise.all(
+  const posts = await Promise.all(
     filePaths.map(async (file) => {
       const fileContents = await fs.readFile(file, "utf8");
       const { data } = matter(fileContents);
       return {
         slug: path.relative(fileDirectory, file).replace(/\.mdx$/, ""),
-        title: data.title || "",
-        tags: data.tags || [],
-        category: data.category || "",
-        createdAt: data.createdAt || "",
+        title: (data.title as string) || "",
+        tags: (data.tags as string[]) || [],
+        category: (data.category as string) || "",
+        createdAt: (data.createdAt as string) || "",
       };
     }),
   );
 
-  // Sort posts by createdAt (descending) or alphabetically as fallback
   const sortedPosts = posts.sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 
-  // Determine current index
   const currentIndex = sortedPosts.findIndex(
     (post) => post.slug === slug.join("/"),
   );
 
-  // Calculate previous and next posts
   const previousPost =
     currentIndex > 0
       ? {
@@ -97,26 +95,24 @@ export const getMdxContents = async (
         }
       : null;
 
+  const currentTags = frontMatter.tags || [];
+  const currentCategory = frontMatter.category;
+
   const relatedPosts = sortedPosts
     .filter(
       (post) =>
         post.slug !== slug.join("/") &&
         (post.category === currentCategory ||
-          post.tags.some((tag: string) => currentTags.includes(tag))),
+          post.tags.some((tag) => currentTags.includes(tag))),
     )
     .slice(0, 3)
-    .map((post) => ({
-      slug: post.slug,
-      title: post.title,
-    }));
+    .map((post) => ({ slug: post.slug, title: post.title }));
 
-  // MDX plugins
   const rehypePrettyCodeOptions: Options = {
     theme: "github-dark",
     onVisitLine(node) {
-      if (node.children.length === 0) {
+      if (node.children.length === 0)
         node.children = [{ type: "text", value: " " }];
-      }
     },
     onVisitHighlightedLine(node) {
       node.properties.className = [
@@ -131,35 +127,48 @@ export const getMdxContents = async (
 
   const heading = extractHeadings(content);
 
-  const mdxSource = await serialize(content, {
-    mdxOptions: {
-      rehypePlugins: [
-        [rehypeHeadingsWithIds, heading],
-        [rehypePrettyCode, rehypePrettyCodeOptions],
-        [
-          rehypeExternalLinks,
-          { target: "_blank", rel: ["noopener", "noreferrer"] },
-        ],
-        rehypeCodeBlockClassifier,
+  const defaultMdxOptions: SerializeOptions["mdxOptions"] = {
+    rehypePlugins: [
+      [rehypeHeadingsWithIds, heading],
+      [rehypePrettyCode, rehypePrettyCodeOptions],
+      [
+        rehypeExternalLinks,
+        { target: "_blank", rel: ["noopener", "noreferrer"] },
       ],
-    },
-    scope: data,
-  });
+      rehypeCodeBlockClassifier,
+    ],
+  };
 
-  // Additional processing
+  const mdxOptionsMerged: SerializeOptions["mdxOptions"] = {
+    ...defaultMdxOptions,
+    ...(opts?.mdxOptions || {}),
+  };
+
+  let source: T extends true ? MDXRemoteSerializeResult : string;
+
+  if (opts?.serialize) {
+    source = (await serialize(content, {
+      mdxOptions: mdxOptionsMerged,
+      scope: { ...(data as object), ...(opts.scope || {}) },
+    })) as T extends true ? MDXRemoteSerializeResult : string;
+  } else {
+    source = content as T extends true ? MDXRemoteSerializeResult : string;
+  }
+
   const plainTextContent = extractPlainText(content);
   const readingTime = calculateReadingTime(plainTextContent);
 
   return {
-    source: mdxSource,
+    source,
     frontMatter,
     readingTime,
     heading,
     previousPost,
     nextPost,
     relatedPosts,
+    rehypePlugins: mdxOptionsMerged?.rehypePlugins || [],
   };
-};
+}
 
 /**
  * 대표 이미지 추출 유틸
