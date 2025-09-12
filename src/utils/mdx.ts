@@ -6,6 +6,12 @@ import {
   HeadingsProps,
   SerializeOptions,
 } from "@/types/mdx";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
+import remarkRehype from "remark-rehype";
+import rehypeStringify from "rehype-stringify";
+import rehypeRaw from "rehype-raw";
 import rehypePrettyCode, { Options } from "rehype-pretty-code";
 import fs from "fs/promises";
 import path from "path";
@@ -152,7 +158,24 @@ export async function getMdxContents<T extends boolean>(
       scope: { ...(data as object), ...(opts.scope || {}) },
     })) as T extends true ? MDXRemoteSerializeResult : string;
   } else {
-    source = content as T extends true ? MDXRemoteSerializeResult : string;
+    const processed = await unified()
+      .use(remarkParse)
+      .use(remarkGfm)
+      .use(remarkRehype, { allowDangerousHtml: true }) // md -> hast
+      .use(rehypeRaw) // raw HTML 통합
+      .use(rehypeHeadingsWithIds, heading)
+      .use(rehypePrettyCode, rehypePrettyCodeOptions) // 코드 하이라이트(+line span)
+      .use(rehypeExternalLinks, {
+        target: "_blank",
+        rel: ["noopener", "noreferrer"],
+      })
+      .use(rehypeCodeBlockClassifier)
+      .use(rehypeStringify, { allowDangerousHtml: true }) // HTML 출력
+      .process(content);
+
+    source = String(processed) as T extends true
+      ? MDXRemoteSerializeResult
+      : string;
   }
 
   const plainTextContent = extractPlainText(content);

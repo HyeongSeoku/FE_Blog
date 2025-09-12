@@ -27,90 +27,39 @@ seriesOrder: 1
 
 사용자와의 상호작용 흐름을 일시적으로 차단하고 **중요한 정보나 동작을 요구**하는 UI 컴포넌트입니다. UX 상 매우 강한 개입(interruption)을 동반합니다.
 
-<h3>✅ 모달의 UX적 역할</h3>
+### ✅ 모달의 UX적 역할
 
-<table>
-  <thead>
-    <tr>
-      <th>역할</th>
-      <th>예시</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>안내</td>
-      <td>시스템 메시지, 알림 등</td>
-    </tr>
-    <tr>
-      <td>결정 유도</td>
-      <td>확인 / 취소</td>
-    </tr>
-    <tr>
-      <td>입력</td>
-      <td>로그인, 회원가입, 검색 필터 등</td>
-    </tr>
-    <tr>
-      <td>흐름 분기</td>
-      <td>예약 상세 보기, 이미지 미리보기 등</td>
-    </tr>
-  </tbody>
-</table>
+| 역할      | 예시                               |
+| --------- | ---------------------------------- |
+| 안내      | 시스템 메시지, 알림 등             |
+| 결정 유도 | 확인 / 취소                        |
+| 입력      | 로그인, 회원가입, 검색 필터 등     |
+| 흐름 분기 | 예약 상세 보기, 이미지 미리보기 등 |
 
-<blockquote>
-  잘 만든 모달은 <strong>사용자의 흐름을 안전하게 일시정지</strong>시켜야
-  합니다.
-  <br />
-  나쁜 모달은 <strong>이탈을 유도하거나 피로도를 높입니다.</strong>
-</blockquote>
+> 잘 만든 모달은 **사용자의 흐름을 안전하게 일시정지**시켜야 합니다.  
+> 나쁜 모달은 **이탈을 유도하거나 피로도를 높입니다.**
 
 ---
 
-<h3>✅ 모달의 구성 요소 분석</h3>
+### ✅ 모달의 구성 요소 분석
 
-<table>
-  <thead>
-    <tr>
-      <th>요소</th>
-      <th>설명</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Dimmed 영역</td>
-      <td>배경을 어둡게 하여 포커스를 집중시킴</td>
-    </tr>
-    <tr>
-      <td>Content Box</td>
-      <td>실제 내용을 표시하는 중심 레이어</td>
-    </tr>
-    <tr>
-      <td>Close 방식</td>
-      <td>ESC, X 버튼, 배경 클릭 등</td>
-    </tr>
-    <tr>
-      <td>Focus Trap</td>
-      <td>키보드 탐색이 모달 내에서만 가능해야 함</td>
-    </tr>
-    <tr>
-      <td>스크롤 방지</td>
-      <td>배경 스크롤 금지 (`body { overflow: hidden }`)</td>
-    </tr>
-    <tr>
-      <td>애니메이션</td>
-      <td>열리고 닫힐 때 부드러운 전환</td>
-    </tr>
-    <tr>
-      <td>접근성</td>
-      <td>ARIA 속성, 포커스 제어, 배경 비활성화 등 포함</td>
-    </tr>
-  </tbody>
-</table>
+| 요소        | 설명                                           |
+| ----------- | ---------------------------------------------- |
+| Dimmed 영역 | 배경을 어둡게 하여 포커스를 집중시킴           |
+| Content Box | 실제 내용을 표시하는 중심 레이어               |
+| Close 방식  | ESC, X 버튼, 배경 클릭 등                      |
+| Focus Trap  | 키보드 탐색이 모달 내에서만 가능해야 함        |
+| 스크롤 방지 | 배경 스크롤 금지 (`body { overflow: hidden }`) |
+| 애니메이션  | 열리고 닫힐 때 부드러운 전환                   |
+| 접근성      | ARIA 속성, 포커스 제어, 배경 비활성화 등 포함  |
+
+---
 
 ## 📐 모달을 어떻게 설계할 것인가?
 
 ### 1. Portal 구조 도입
 
-모달은 DOM의 하위 구조에 묻히면 z-index, overflow, focus 제어가 어렵습니다.
+모달은 DOM의 하위 구조에 묻히면 z-index, overflow, focus 제어가 어렵습니다.  
 → **React Portal**을 활용해 `#modal-root` 등 최상위 DOM 노드에 렌더링하는 것이 필수입니다.
 
 ```tsx
@@ -256,13 +205,15 @@ export default useScrollDisable;
 
 <img
   src="/content-image/component-anatomy/modal-anatomy/mobile_modal.jpeg"
-  style={{ width: "600px", justifySelf: "center" }}
+  className="mx-auto contents-img"
   alt="모바일 모달 디자인 가이드라인"
 />
+
 ### PC
+
 <img
   src="/content-image/component-anatomy/modal-anatomy/pc_modal.jpeg"
-  style={{ width: "600px", justifySelf: "center" }}
+  className="mx-auto contents-img"
   alt="pc 모달 디자인 가이드라인"
 />
 

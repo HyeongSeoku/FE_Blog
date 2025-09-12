@@ -1,40 +1,47 @@
 import { visit } from "unist-util-visit";
-import { ExtendedElement, HeadingItems, HeadingsProps } from "@/types/mdx";
+import type { Plugin } from "unified";
+import type { ExtendedElement, HeadingsProps } from "@/types/mdx";
 
-export const rehypeHeadingsWithIds = (headingData: HeadingsProps[]) => {
-  return (tree: any) => {
-    // 노드를 탐색하며 조작
+type ElementNode = {
+  type: "element";
+  tagName?: string;
+  properties?: Record<string, unknown>;
+  children?: any[];
+};
+
+export const rehypeHeadingsWithIds: Plugin<[HeadingsProps[]]> = (
+  headingData,
+) => {
+  return (tree) => {
+    if (!tree || typeof tree !== "object" || !("type" in tree)) {
+      return;
+    }
+
     visit(tree, "element", (node) => {
-      // 노드 조작 로직
-      const elementNode = node as ExtendedElement;
+      const elementNode = node as ElementNode;
 
       if (["h2", "h3"].includes(elementNode.tagName || "")) {
-        for (const item of elementNode.children) {
-          const headingItem = item as HeadingItems;
-          if (headingItem.value && headingItem.type === "text") {
-            const headingLevel = elementNode.tagName === "h2" ? 2 : 3;
-            const heading = headingData.find(
-              (h) =>
-                h.text === headingItem.value &&
-                !h.isVisit &&
-                h.level === headingLevel,
-            );
+        if (Array.isArray(elementNode.children)) {
+          for (const item of elementNode.children) {
+            if (item.type === "text" && item.value) {
+              const headingLevel = elementNode.tagName === "h2" ? 2 : 3;
+              const heading = headingData.find(
+                (h) =>
+                  h.text === item.value &&
+                  !h.isVisit &&
+                  h.level === headingLevel,
+              );
 
-            if (heading) {
-              heading.isVisit = true;
-            }
-
-            // 헤딩이 존재하면 id 속성 추가
-            if (heading) {
-              elementNode.properties = elementNode.properties || {};
-              elementNode.properties.id = heading.id;
+              if (heading) {
+                heading.isVisit = true;
+                elementNode.properties = elementNode.properties || {};
+                (elementNode.properties as any).id = heading.id;
+              }
             }
           }
         }
       }
     });
-
-    return tree;
   };
 };
 

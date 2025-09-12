@@ -58,8 +58,13 @@
 }
 
 /* 이미지 스타일 */
+
 .markdown-contents img {
   @apply max-w-full h-auto rounded mt-2 mb-2;
+
+  &.contents-img {
+    width: 600px;
+  }
 }
 
 /* 인용구 스타일 */
