@@ -33,7 +33,7 @@ const MdxSideBar = ({
         });
       },
       {
-        rootMargin: "-50px 0px 0px 0px",
+        rootMargin: "-50px 0px -70% 0px",
         threshold: 1,
       },
     );
@@ -74,6 +74,7 @@ const MdxSideBar = ({
 
   const handleClick = (id: string) => {
     const target = document.getElementById(id);
+
     if (target) {
       const yPosition =
         target.getBoundingClientRect().top + window.scrollY - HEADER_HEIGHT;
@@ -119,6 +120,7 @@ const MdxSideBar = ({
                 scroll={false}
                 onClick={(e) => {
                   e.preventDefault();
+
                   window.history.replaceState(null, "", `#${heading.id}`);
                   handleClick(heading.id);
                 }}
