@@ -16,7 +16,11 @@ import rehypePrettyCode, { Options } from "rehype-pretty-code";
 import fs from "fs/promises";
 import path from "path";
 import rehypeExternalLinks from "rehype-external-links";
-import { rehypeCodeBlockClassifier, rehypeHeadingsWithIds } from "./mdxPlugin";
+import {
+  rehypeAnimateFadeInUp,
+  rehypeCodeBlockClassifier,
+  rehypeHeadingsWithIds,
+} from "./mdxPlugin";
 import { BASE_URL, DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
 import { getMdxFilesRecursively } from "./file";
 
@@ -164,6 +168,7 @@ export async function getMdxContents<T extends boolean>(
       .use(remarkRehype, { allowDangerousHtml: true }) // md -> hast
       .use(rehypeRaw) // raw HTML 통합
       .use(rehypeHeadingsWithIds, heading)
+      .use(rehypeAnimateFadeInUp)
       .use(rehypePrettyCode, rehypePrettyCodeOptions) // 코드 하이라이트(+line span)
       .use(rehypeExternalLinks, {
         target: "_blank",

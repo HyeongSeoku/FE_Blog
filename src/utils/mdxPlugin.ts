@@ -1,6 +1,10 @@
 import { visit } from "unist-util-visit";
 import type { Plugin } from "unified";
 import type { ExtendedElement, HeadingsProps } from "@/types/mdx";
+import {
+  MARKUP_ANIMATE,
+  MARKUP_BEFORE_ANIMATE,
+} from "@/constants/animation.constants";
 
 type ElementNode = {
   type: "element";
@@ -60,6 +64,26 @@ export const rehypeCodeBlockClassifier = () => {
             isBlockCode ? "block-code" : "inline-code",
           ],
         };
+      }
+    });
+  };
+};
+
+export const rehypeAnimateFadeInUp: Plugin<[]> = () => {
+  return (tree) => {
+    visit(tree, "element", (node: Element) => {
+      const el = node as Element & { properties: Record<string, any> };
+      el.properties = el.properties || {};
+
+      const cls = (el.properties.className || []) as string[] | string;
+      const normalized = Array.isArray(cls) ? cls : [cls];
+
+      if (!normalized.includes(MARKUP_ANIMATE)) {
+        el.properties.className = [
+          ...normalized,
+          MARKUP_ANIMATE,
+          MARKUP_BEFORE_ANIMATE,
+        ];
       }
     });
   };

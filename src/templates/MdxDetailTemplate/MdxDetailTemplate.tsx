@@ -11,6 +11,7 @@ import Image from "next/image";
 import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
 import { getTagPath } from "@/utils/path";
 import dayjs from "dayjs";
+import MdxAnimation from "./MdxAnimation";
 
 const Giscus = dynamic(() => import("@/components/Giscus"), {
   ssr: false,
@@ -101,6 +102,7 @@ const MdxDetailTemplate = ({
 
   return (
     <>
+      <MdxAnimation />
       <ScrollProgressBar />
       <header className="border-b border-b-[var(--border-color)] mb-4 pb-4">
         <h1 className="text-4xl font-bold mb-1">{title}</h1>
