@@ -1,6 +1,6 @@
 import { visit } from "unist-util-visit";
 import type { Plugin } from "unified";
-import type { ExtendedElement, HeadingsProps } from "@/types/mdx";
+import type { HeadingsProps } from "@/types/mdx";
 import {
   MARKUP_ANIMATE,
   MARKUP_BEFORE_ANIMATE,
@@ -52,18 +52,17 @@ export const rehypeHeadingsWithIds: Plugin<[HeadingsProps[]]> = (
 export const rehypeCodeBlockClassifier = () => {
   return (tree: any) => {
     visit(tree, "element", (node, _, parent) => {
-      const elementNode = node as ExtendedElement;
-
-      if (elementNode.tagName === "code") {
+      if (node.tagName === "code") {
         const isBlockCode = parent?.tagName === "pre";
+        node.properties = node.properties || {};
 
-        node.properties = {
-          ...(node.properties || {}),
-          className: [
-            ...(node.properties.className || []),
-            isBlockCode ? "block-code" : "inline-code",
-          ],
-        };
+        const cls = node.properties.className || [];
+        const normalized = Array.isArray(cls) ? cls : [cls];
+
+        node.properties.className = [
+          ...normalized,
+          isBlockCode ? "block-code" : "inline-code",
+        ];
       }
     });
   };
@@ -84,6 +83,21 @@ export const rehypeAnimateFadeInUp: Plugin<[]> = () => {
           MARKUP_ANIMATE,
           MARKUP_BEFORE_ANIMATE,
         ];
+      }
+    });
+  };
+};
+
+export const rehypeMarkCustomElements = () => {
+  return (tree: any) => {
+    visit(tree, "element", (node: any) => {
+      if (node.tagName === "code") {
+        node.properties = node.properties || {};
+        node.properties["data-custom-code"] = "true";
+      }
+      if (node.tagName === "a") {
+        node.properties = node.properties || {};
+        node.properties["data-custom-link"] = "true";
       }
     });
   };

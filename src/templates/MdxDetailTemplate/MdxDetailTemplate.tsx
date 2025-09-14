@@ -12,6 +12,7 @@ import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
 import { getTagPath } from "@/utils/path";
 import dayjs from "dayjs";
 import MdxAnimation from "./MdxAnimation";
+import { ParsePostContent } from "./ParsePostContent";
 
 const Giscus = dynamic(() => import("@/components/Giscus"), {
   ssr: false,
@@ -145,10 +146,11 @@ const MdxDetailTemplate = ({
 
       <MdxSideBar headings={heading} />
       <section className="relative border-b py-5">
-        <article
+        {/* <article
           className="markdown-contents"
           dangerouslySetInnerHTML={{ __html: source }}
-        ></article>
+        ></article> */}
+        <ParsePostContent html={source} />
       </section>
 
       {(previousPost || nextPost) && (

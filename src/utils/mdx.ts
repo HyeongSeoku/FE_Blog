@@ -20,6 +20,7 @@ import {
   rehypeAnimateFadeInUp,
   rehypeCodeBlockClassifier,
   rehypeHeadingsWithIds,
+  rehypeMarkCustomElements,
 } from "./mdxPlugin";
 import { BASE_URL, DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
 import { getMdxFilesRecursively } from "./file";
@@ -170,6 +171,7 @@ export async function getMdxContents<T extends boolean>(
       .use(rehypeHeadingsWithIds, heading)
       .use(rehypeAnimateFadeInUp)
       .use(rehypePrettyCode, rehypePrettyCodeOptions) // 코드 하이라이트(+line span)
+      .use(rehypeMarkCustomElements)
       .use(rehypeExternalLinks, {
         target: "_blank",
         rel: ["noopener", "noreferrer"],
