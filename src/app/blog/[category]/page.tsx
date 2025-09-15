@@ -79,12 +79,13 @@ const BlogCategoryPage = async ({
   params,
   searchParams,
 }: BlogCategoryPageProps) => {
-  const breadcrumbStructuredData = getBreadcrumbStructuredData(params.category);
+  const { category } = params;
+  const breadcrumbStructuredData = getBreadcrumbStructuredData(category);
   const currentPage = parseInt(searchParams.page || "1", 10);
   const pageSize = DEFAULT_PAGE_SIZE;
-  const isCategoryKeyAll = params.category.toLowerCase() === "all";
+  const isCategoryKeyAll = category.toLowerCase() === "all";
   const isCategoryValid = Object.keys(CATEGORY_MAP).includes(
-    params.category.toUpperCase(),
+    category.toUpperCase(),
   );
   if (isCategoryKeyAll || !isCategoryValid) {
     redirect("/blog");
@@ -111,6 +112,7 @@ const BlogCategoryPage = async ({
         totalPostCount={totalPostCount}
         categoryCounts={categoryCounts}
         totalPages={totalPages}
+        category={category}
       />
       <script
         type="application/ld+json"
