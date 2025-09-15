@@ -95,7 +95,7 @@ const getCollectionStructuredData = (category: string) => {
     description,
     isPartOf: {
       "@type": "Blog",
-      name: "Seoku Blog",
+      name: BASE_META_TITLE,
       url: BASE_URL,
     },
   };
