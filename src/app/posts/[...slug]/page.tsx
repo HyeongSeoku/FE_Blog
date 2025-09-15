@@ -1,8 +1,5 @@
-import { notFound } from "next/navigation"; // ← 선택: redirect 대신 notFound 사용 권장
+import { notFound } from "next/navigation";
 import { getAllPosts, getPostsDetail } from "@/utils/post";
-import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
-import SkeletonBar from "@/components/SkeletonBar";
-import MdxComponentWrapper from "@/components/MDX/MdxComponentWrapper";
 import {
   BASE_META_TITLE,
   BASE_URL,
@@ -10,6 +7,7 @@ import {
 } from "@/constants/basic.constants";
 import { getStructuredData } from "@/utils/structure";
 import { FrontMatterProps } from "@/types/mdx";
+import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
 
 export const dynamic = "error";
 
@@ -158,8 +156,8 @@ const PostPage = async ({ params }: { params: { slug: string[] } }) => {
         nextPost={nextPost}
         previousPost={previousPost}
         relatedPosts={relatedPosts}
-        mdxComponents={{ MdxComponentWrapper, SkeletonBar }}
       />
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPosting) }}

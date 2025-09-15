@@ -1,22 +1,18 @@
-import CodeBlock from "@/components/CodeBlock";
-import { MDXRemoteProps } from "next-mdx-remote";
 import TimeIcon from "@/icon/time.svg";
 import { FrontMatterProps, HeadingsProps } from "@/types/mdx";
-import MdxLink from "@/components/MdxLink";
 import MdxSideBar from "@/components/MdxSideBar";
-import AnimationContainer from "@/components/AnimationContainer";
-import { useMemo } from "react";
 import Link from "next/link";
 import RightArrow from "@/icon/arrow_right.svg";
 import LeftArrow from "@/icon/arrow_left.svg";
 import dynamic from "next/dynamic";
 import DoubleArrow from "@/icon/arrow_right_double.svg";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
-import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
 import { getTagPath } from "@/utils/path";
 import dayjs from "dayjs";
+import MdxAnimation from "./MdxAnimation";
+import { ParsePostContent } from "./ParsePostContent";
 
 const Giscus = dynamic(() => import("@/components/Giscus"), {
   ssr: false,
@@ -35,7 +31,6 @@ interface MdxDetailTemplateProps {
   previousPost: MdxDetailRelatedPost | null;
   nextPost: MdxDetailRelatedPost | null;
   relatedPosts: MdxDetailRelatedPost[] | null;
-  mdxComponents?: MDXRemoteProps["components"];
 }
 
 const MdxDetailTemplate = ({
@@ -46,69 +41,69 @@ const MdxDetailTemplate = ({
   previousPost,
   nextPost,
   relatedPosts,
-  mdxComponents,
 }: MdxDetailTemplateProps) => {
   const isoDate = dayjs(createdAt, "YYYY.MM.DD").isValid()
     ? dayjs(createdAt, "YYYY.MM.DD").format("YYYY-MM-DD")
     : new Date().toISOString().split("T")[0];
 
-  const MdxContent = useMemo(() => {
-    return (
-      <MDXRemote
-        source={source}
-        components={{
-          code: ({ className, children }) => (
-            <CodeBlock
-              hasCopyBtn={className?.includes("block-code")}
-              className={className}
-            >
-              {children}
-            </CodeBlock>
-          ),
-          a: ({ children, href, target = "_blank" }) => (
-            <MdxLink href={href} target={target}>
-              {children}
-            </MdxLink>
-          ),
-          p: ({ children, ...rest }) => (
-            <AnimationContainer htmlTag="p" {...rest}>
-              {children}
-            </AnimationContainer>
-          ),
-          h1: ({ children, ...rest }) => (
-            <AnimationContainer htmlTag="h1" {...rest}>
-              {children}
-            </AnimationContainer>
-          ),
-          h2: ({ children, ...rest }) => (
-            <AnimationContainer htmlTag="h2" {...rest}>
-              {children}
-            </AnimationContainer>
-          ),
-          h3: ({ children, ...rest }) => (
-            <AnimationContainer htmlTag="h3" {...rest}>
-              {children}
-            </AnimationContainer>
-          ),
-          ul: ({ children, ...rest }) => (
-            <AnimationContainer htmlTag="ul" {...rest}>
-              {children}
-            </AnimationContainer>
-          ),
-          li: ({ children, ...rest }) => (
-            <AnimationContainer htmlTag="li" {...rest}>
-              {children}
-            </AnimationContainer>
-          ),
-          ...(mdxComponents || {}),
-        }}
-      />
-    );
-  }, [source]);
+  // const MdxContent = useMemo(() => {
+  //   return (
+  //     <MDXRemote
+  //       source={source}
+  //       components={{
+  //         code: ({ className, children }) => (
+  //           <CodeBlock
+  //             hasCopyBtn={className?.includes("block-code")}
+  //             className={className}
+  //           >
+  //             {children}
+  //           </CodeBlock>
+  //         ),
+  //         a: ({ children, href, target = "_blank" }) => (
+  //           <MdxLink href={href} target={target}>
+  //             {children}
+  //           </MdxLink>
+  //         ),
+  //         p: ({ children, ...rest }) => (
+  //           <AnimationContainer htmlTag="p" {...rest}>
+  //             {children}
+  //           </AnimationContainer>
+  //         ),
+  //         h1: ({ children, ...rest }) => (
+  //           <AnimationContainer htmlTag="h1" {...rest}>
+  //             {children}
+  //           </AnimationContainer>
+  //         ),
+  //         h2: ({ children, ...rest }) => (
+  //           <AnimationContainer htmlTag="h2" {...rest}>
+  //             {children}
+  //           </AnimationContainer>
+  //         ),
+  //         h3: ({ children, ...rest }) => (
+  //           <AnimationContainer htmlTag="h3" {...rest}>
+  //             {children}
+  //           </AnimationContainer>
+  //         ),
+  //         ul: ({ children, ...rest }) => (
+  //           <AnimationContainer htmlTag="ul" {...rest}>
+  //             {children}
+  //           </AnimationContainer>
+  //         ),
+  //         li: ({ children, ...rest }) => (
+  //           <AnimationContainer htmlTag="li" {...rest}>
+  //             {children}
+  //           </AnimationContainer>
+  //         ),
+  //         ...(mdxComponents || {}),
+  //       }}
+  //     />
+  //   );
+  // }, [source]);
   const postThumbnail = thumbnail ?? DEFAULT_POST_THUMBNAIL;
 
   return (
     <>
+      <MdxAnimation />
       <ScrollProgressBar />
       <header className="border-b border-b-[var(--border-color)] mb-4 pb-4">
         <h1 className="text-4xl font-bold mb-1">{title}</h1>
@@ -150,9 +145,12 @@ const MdxDetailTemplate = ({
       </div>
 
       <MdxSideBar headings={heading} />
-
       <section className="relative border-b py-5">
-        <article className="markdown-contents">{MdxContent}</article>
+        {/* <article
+          className="markdown-contents"
+          dangerouslySetInnerHTML={{ __html: source }}
+        ></article> */}
+        <ParsePostContent html={source} />
       </section>
 
       {(previousPost || nextPost) && (
