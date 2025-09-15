@@ -21,7 +21,7 @@ export default function SeriesCard({
 }: SeriesCardProps) {
   return (
     <Link
-      href={`/series/${seriesKey}`}
+      href={`/blog/series/${seriesKey}`}
       className={classNames(
         "flex flex-col items-center h-[445px] rounded-lg overflow-hidden border group",
         className,

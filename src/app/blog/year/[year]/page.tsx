@@ -1,45 +1,44 @@
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
 import BlogDateTemplate from "@/templates/BlogDateTemplate";
-import { formatToKoreanMonth } from "@/utils/date";
 import { getPostsByDate } from "@/utils/post";
 import { redirect } from "next/navigation";
 
-interface BlogMonthPageProps {
-  params: { month: string };
+interface BlogYearPageProps {
+  params: { year: string };
   searchParams: { [key: string]: string | undefined };
 }
 
 export const generateMetadata = ({
   params,
   searchParams,
-}: BlogMonthPageProps) => {
-  const { month } = params;
+}: BlogYearPageProps) => {
+  const { year } = params;
   const pageParam = searchParams.page;
   const isFirstPage = !pageParam || pageParam === "1";
 
   return {
-    title: `${BASE_META_TITLE}|${month}월 게시물`,
-    description: `${month}월 작성된 블로그 글 목록을 확인하세요.`,
+    title: `${year}년도 게시물`,
+    description: `${year}년도 작성된 블로그 글 목록을 확인하세요.`,
     openGraph: {
-      title: `${month} 게시물`,
-      description: `${month} 작성된 블로그 글 목록을 확인하세요.`,
+      title: `${year}년도 게시물`,
+      description: `${year}년도 작성된 블로그 글 목록을 확인하세요.`,
       url: isFirstPage
-        ? `${BASE_URL}/blog/month/${month}`
-        : `${BASE_URL}/blog/month/${month}?page=${pageParam}`,
+        ? `${BASE_URL}/blog/year/${year}`
+        : `${BASE_URL}/blog/year/${year}?page=${pageParam}`,
       type: "website",
     },
     alternates: {
       canonical: isFirstPage
-        ? `${BASE_URL}/blog/month/${month}`
-        : `${BASE_URL}/blog/month/${month}?page=${pageParam}`,
+        ? `${BASE_URL}/blog/year/${year}`
+        : `${BASE_URL}/blog/year/${year}?page=${pageParam}`,
     },
   };
 };
 
-const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
-  const { month } = params;
-  const formattedMonth = formatToKoreanMonth(month);
+const BlogYearPage = async ({ params, searchParams }: BlogYearPageProps) => {
+  const { year } = params;
+  const yearText = `${year}년`;
 
   const breadcrumbStructuredData = {
     "@context": "https://schema.org",
@@ -60,19 +59,18 @@ const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
       {
         "@type": "ListItem",
         position: 3,
-        name: `${month}월`,
-        item: `${BASE_URL}/blog/month/${month}`,
+        name: `${year}년`,
+        item: `${BASE_URL}/blog/year/${year}`,
       },
     ],
   };
-
   const collectionStructuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "@id": `${BASE_URL}/blog/month/${month}`,
-    url: `${BASE_URL}/blog/month/${month}`,
-    name: `${formattedMonth} 게시물`,
-    description: `${formattedMonth}에 작성된 블로그 글 모음 페이지입니다.`,
+    "@id": `${BASE_URL}/blog/year/${year}`,
+    url: `${BASE_URL}/blog/year/${year}`,
+    name: `${yearText} 게시물`,
+    description: `${yearText}에 작성된 블로그 글 모음 페이지입니다.`,
     isPartOf: {
       "@type": "Blog",
       name: BASE_META_TITLE,
@@ -85,12 +83,12 @@ const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
   const isInvalidPageParam = isNaN(currentPage) || currentPage <= 0;
 
   if (isInvalidPageParam) {
-    redirect(`/posts/month/${month}`);
+    redirect(`/blog/year/${year}`);
   }
 
   const { postList, totalPostCount } = await getPostsByDate({
-    type: "month",
-    date: month,
+    type: "year",
+    date: year,
     page: currentPage,
     pageSize: DEFAULT_PAGE_SIZE,
   });
@@ -99,7 +97,7 @@ const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
   return (
     <>
       <BlogDateTemplate
-        dateText={formattedMonth}
+        dateText={yearText}
         postList={postList}
         postCount={totalPostCount}
         currentPage={currentPage}
@@ -121,4 +119,4 @@ const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
   );
 };
 
-export default BlogMonthPage;
+export default BlogYearPage;

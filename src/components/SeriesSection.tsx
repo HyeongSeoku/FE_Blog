@@ -60,7 +60,7 @@ export function MoSeriesSection({
                   "bg-gray-400 hover:bg-gray-300",
                   "dark:bg-gray-600 dark:hover:bg-gray-500",
                 )}
-                href={"/series"}
+                href={"/blog/series"}
               >
                 전체 시리즈 보기
               </Link>
@@ -106,7 +106,7 @@ export function PcSeriesSection({
               "bg-gray-400 hover:bg-gray-300",
               "dark:bg-gray-600 dark:hover:bg-gray-500",
             )}
-            href={"/series"}
+            href={"/blog/series"}
           >
             전체 시리즈 보기
           </Link>
