@@ -39,6 +39,8 @@ export const generateMetadata = ({
 
 const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
   const { month } = params;
+  const formattedMonth = formatToKoreanMonth(month);
+
   const breadcrumbStructuredData = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -64,6 +66,20 @@ const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
     ],
   };
 
+  const collectionStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${BASE_URL}/blog/month/${month}`,
+    url: `${BASE_URL}/blog/month/${month}`,
+    name: `${formattedMonth} 게시물`,
+    description: `${formattedMonth}에 작성된 블로그 글 모음 페이지입니다.`,
+    isPartOf: {
+      "@type": "Blog",
+      name: BASE_META_TITLE,
+      url: BASE_URL,
+    },
+  };
+
   const pageParam = searchParams.page;
   const currentPage = pageParam ? parseInt(pageParam, 10) : 1;
   const isInvalidPageParam = isNaN(currentPage) || currentPage <= 0;
@@ -71,7 +87,6 @@ const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
   if (isInvalidPageParam) {
     redirect(`/posts/month/${month}`);
   }
-  const formattedMonth = formatToKoreanMonth(month);
 
   const { postList, totalPostCount } = await getPostsByDate({
     type: "month",
@@ -94,6 +109,12 @@ const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(breadcrumbStructuredData),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(collectionStructuredData),
         }}
       />
     </>
