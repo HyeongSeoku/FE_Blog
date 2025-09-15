@@ -1,5 +1,9 @@
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
-import { CATEGORY_MAP, DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
+import {
+  CATEGORY_DESCRIPTION_BIG,
+  CATEGORY_MAP,
+  DEFAULT_PAGE_SIZE,
+} from "@/constants/post.constants";
 import BlogPageTemplate from "@/templates/BlogPageTemplate";
 import { getPostsByCategory } from "@/utils/post";
 import { redirect } from "next/navigation";
@@ -75,12 +79,36 @@ const getBreadcrumbStructuredData = (category: string) => {
   };
 };
 
+const getCollectionStructuredData = (category: string) => {
+  const categoryKey = category.toUpperCase() as keyof typeof CATEGORY_MAP;
+  const categoryName = CATEGORY_MAP[categoryKey]?.title || categoryKey;
+  const description =
+    CATEGORY_DESCRIPTION_BIG[categoryKey] ??
+    `${categoryName} 관련 글 모음 페이지입니다.`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${BASE_URL}/blog/${categoryKey}`,
+    url: `${BASE_URL}/blog/${categoryKey}`,
+    name: `${categoryName} 카테고리`,
+    description,
+    isPartOf: {
+      "@type": "Blog",
+      name: "Seoku Blog",
+      url: BASE_URL,
+    },
+  };
+};
+
 const BlogCategoryPage = async ({
   params,
   searchParams,
 }: BlogCategoryPageProps) => {
   const { category } = params;
   const breadcrumbStructuredData = getBreadcrumbStructuredData(category);
+  const collectionStructuredData = getCollectionStructuredData(category);
+
   const currentPage = parseInt(searchParams.page || "1", 10);
   const pageSize = DEFAULT_PAGE_SIZE;
   const isCategoryKeyAll = category.toLowerCase() === "all";
@@ -118,6 +146,12 @@ const BlogCategoryPage = async ({
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(breadcrumbStructuredData),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(collectionStructuredData),
         }}
       />
     </>
