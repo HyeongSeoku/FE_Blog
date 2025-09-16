@@ -63,8 +63,9 @@ function MoRecentPostCard({
         <Image
           src={thumbnail}
           alt={thumbnailAlt}
-          priority
+          priority={!isDefaultThumbnail}
           fill
+          sizes="100vw"
           className={classNames(
             "bg-opposite-theme rounded-lg",
             isDefaultThumbnail ? "object-contain" : "object-cover",
@@ -107,8 +108,9 @@ function PcRecentPostCard({
         <Image
           src={thumbnail}
           alt={thumbnailAlt}
-          priority
+          priority={!isDefaultThumbnail}
           fill
+          sizes="(min-width: 768px) 760px, 100vw"
           className={classNames(
             "transition-transform duration-300 bg-opposite-theme rounded-lg group-hover:scale-105",
             isDefaultThumbnail ? "object-contain" : "object-cover",

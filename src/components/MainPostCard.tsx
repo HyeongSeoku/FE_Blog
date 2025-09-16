@@ -37,7 +37,7 @@ const MainPostCard = ({
                 isDefaultThumbnail ? "object-contain" : "object-cover",
               )}
               fill
-              priority
+              loading="lazy"
             />
           </div>
         </div>
