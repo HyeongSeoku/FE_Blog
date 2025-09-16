@@ -5,9 +5,7 @@ Allow: /
 # *
 User-agent: *
 Disallow: /api/
-
-# Host
-Host: https://sseoku.com
+Disallow: /_next/static/
 
 # Sitemaps
 Sitemap: https://sseoku.com/sitemap.xml
