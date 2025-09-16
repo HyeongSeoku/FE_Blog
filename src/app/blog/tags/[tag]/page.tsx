@@ -19,12 +19,12 @@ export function generateMetadata({
     openGraph: {
       title: metaTitle,
       description: `${tag} 태그가 포함된 블로그 게시글 목록입니다.`,
-      url: `${BASE_URL}/tags/${tag}`,
+      url: `${BASE_URL}/blog/tags/${tag}`,
       type: "website",
       images: [],
     },
     alternates: {
-      canonical: `${BASE_URL}/tags/${tag}`,
+      canonical: `${BASE_URL}/blog/tags/${tag}`,
     },
   };
 }
@@ -45,7 +45,7 @@ const TagPage = async ({ params }: { params: { tag: string } }) => {
         "@type": "ListItem",
         position: 2,
         name: tag,
-        item: `${BASE_URL}/tags/${tag}`,
+        item: `${BASE_URL}/blog/tags/${tag}`,
       },
     ],
   };

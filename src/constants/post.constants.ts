@@ -64,3 +64,9 @@ export const DEFAULT_CATEGORY_ALL = "All";
 export const DEFAULT_PAGE_SIZE = 10;
 export const DEFAULT_MAIN_POST_COUNT = 9;
 export const SERIES_MAX_LENGTH = 4;
+
+export const CATEGORY_DESCRIPTION_BIG: Record<string, string> = {
+  DEV: "프론트엔드, 백엔드, 기술 관련 개발 글을 모아둔 카테고리입니다.",
+  LIFE: "일상, 취미, 책, 사진 등 다양한 라이프 스타일 글을 모아둔 카테고리입니다.",
+  ETC: "기타 주제와 잡다한 글들을 모아둔 카테고리입니다.",
+};

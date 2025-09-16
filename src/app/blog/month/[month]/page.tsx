@@ -1,43 +1,45 @@
-import { BASE_URL } from "@/constants/basic.constants";
+import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
 import BlogDateTemplate from "@/templates/BlogDateTemplate";
+import { formatToKoreanMonth } from "@/utils/date";
 import { getPostsByDate } from "@/utils/post";
 import { redirect } from "next/navigation";
 
-interface BlogYearPageProps {
-  params: { year: string };
+interface BlogMonthPageProps {
+  params: { month: string };
   searchParams: { [key: string]: string | undefined };
 }
 
 export const generateMetadata = ({
   params,
   searchParams,
-}: BlogYearPageProps) => {
-  const { year } = params;
+}: BlogMonthPageProps) => {
+  const { month } = params;
   const pageParam = searchParams.page;
   const isFirstPage = !pageParam || pageParam === "1";
 
   return {
-    title: `${year}년도 게시물`,
-    description: `${year}년도 작성된 블로그 글 목록을 확인하세요.`,
+    title: `${BASE_META_TITLE}|${month}월 게시물`,
+    description: `${month}월 작성된 블로그 글 목록을 확인하세요.`,
     openGraph: {
-      title: `${year}년도 게시물`,
-      description: `${year}년도 작성된 블로그 글 목록을 확인하세요.`,
+      title: `${month} 게시물`,
+      description: `${month} 작성된 블로그 글 목록을 확인하세요.`,
       url: isFirstPage
-        ? `${BASE_URL}/blog/year/${year}`
-        : `${BASE_URL}/blog/year/${year}?page=${pageParam}`,
+        ? `${BASE_URL}/blog/month/${month}`
+        : `${BASE_URL}/blog/month/${month}?page=${pageParam}`,
       type: "website",
     },
     alternates: {
       canonical: isFirstPage
-        ? `${BASE_URL}/blog/year/${year}`
-        : `${BASE_URL}/blog/year/${year}?page=${pageParam}`,
+        ? `${BASE_URL}/blog/month/${month}`
+        : `${BASE_URL}/blog/month/${month}?page=${pageParam}`,
     },
   };
 };
 
-const BlogYearPage = async ({ params, searchParams }: BlogYearPageProps) => {
-  const { year } = params;
+const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
+  const { month } = params;
+  const formattedMonth = formatToKoreanMonth(month);
 
   const breadcrumbStructuredData = {
     "@context": "https://schema.org",
@@ -58,33 +60,46 @@ const BlogYearPage = async ({ params, searchParams }: BlogYearPageProps) => {
       {
         "@type": "ListItem",
         position: 3,
-        name: `${year}년`,
-        item: `${BASE_URL}/blog/year/${year}`,
+        name: `${month}월`,
+        item: `${BASE_URL}/blog/month/${month}`,
       },
     ],
   };
+
+  const collectionStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${BASE_URL}/blog/month/${month}`,
+    url: `${BASE_URL}/blog/month/${month}`,
+    name: `${formattedMonth} 게시물`,
+    description: `${formattedMonth}에 작성된 블로그 글 모음 페이지입니다.`,
+    isPartOf: {
+      "@type": "Blog",
+      name: BASE_META_TITLE,
+      url: BASE_URL,
+    },
+  };
+
   const pageParam = searchParams.page;
   const currentPage = pageParam ? parseInt(pageParam, 10) : 1;
   const isInvalidPageParam = isNaN(currentPage) || currentPage <= 0;
 
   if (isInvalidPageParam) {
-    redirect(`/posts/year/${year}`);
+    redirect(`/blog/month/${month}`);
   }
 
   const { postList, totalPostCount } = await getPostsByDate({
-    type: "year",
-    date: year,
+    type: "month",
+    date: month,
     page: currentPage,
     pageSize: DEFAULT_PAGE_SIZE,
   });
-
-  const yearText = `${year}년`;
   const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
 
   return (
     <>
       <BlogDateTemplate
-        dateText={yearText}
+        dateText={formattedMonth}
         postList={postList}
         postCount={totalPostCount}
         currentPage={currentPage}
@@ -96,8 +111,14 @@ const BlogYearPage = async ({ params, searchParams }: BlogYearPageProps) => {
           __html: JSON.stringify(breadcrumbStructuredData),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(collectionStructuredData),
+        }}
+      />
     </>
   );
 };
 
-export default BlogYearPage;
+export default BlogMonthPage;
