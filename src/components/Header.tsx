@@ -55,6 +55,7 @@ const Header = ({
     >
       {headerType === "DEFAULT" && (
         <button
+          type="button"
           className={`z-10 flex gap-2 items-center ${isMoNavOpen ? "opacity-0 transition-opacity" : "opacity-100"}`}
           onClick={handleLogoButton}
         >
