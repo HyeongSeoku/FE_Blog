@@ -6,6 +6,7 @@
   "scripts": {
     "optimize-images": "node ./script/optimize-images.js",
     "postbuild": "next-sitemap",
+    "build:analyze": "cross-env NODE_ENV=development ANALYZE=true pnpm run build",
     "build": "pnpm run optimize-images && next build",
     "dev": "next dev",
     "start": "next start",
@@ -62,6 +63,7 @@
     "@types/unist": "^3.0.3",
     "@typescript-eslint/eslint-plugin": "^8.29.0",
     "@typescript-eslint/parser": "^8.29.0",
+    "cross-env": "^10.0.0",
     "cspell": "^8.18.1",
     "dotenv-cli": "^8.0.0",
     "eslint": "^8.56.0",
