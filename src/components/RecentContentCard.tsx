@@ -59,11 +59,11 @@ function MoRecentPostCard({
       </span>
       <h2 className="text-2xl font-bold">{title}</h2>
       <p className="text-lg">{subTitle}</p>
-      <div className="w-full h-auto max-h-full flex items-center aspect-[303/175] relative rounded-md">
+      <div className="relative w-full aspect-[303/175] min-h-[100px]">
         <Image
           src={thumbnail}
           alt={thumbnailAlt}
-          priority={!isDefaultThumbnail}
+          priority
           fill
           sizes="100vw"
           className={classNames(
@@ -108,7 +108,7 @@ function PcRecentPostCard({
         <Image
           src={thumbnail}
           alt={thumbnailAlt}
-          priority={!isDefaultThumbnail}
+          priority
           fill
           sizes="(min-width: 768px) 760px, 100vw"
           className={classNames(
