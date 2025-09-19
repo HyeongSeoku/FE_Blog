@@ -49,7 +49,7 @@ async function getPostDataWithMetadata(slug: string[]) {
         {
           url:
             frontMatter.thumbnail ||
-            `${PUBLIC_CONTENT_IMG_PATH}/default-og-image.jpeg`,
+            `${PUBLIC_CONTENT_IMG_PATH}/default-og-image.webp`,
           alt: frontMatter.title || BASE_META_TITLE,
         },
       ],
@@ -93,7 +93,7 @@ function getPostsStructuredData(
     headline: frontMatter.title ?? BASE_META_TITLE,
     description: frontMatter.description ?? "프론트엔드 개발자 김형석의 블로그",
     image:
-      frontMatter.thumbnail ?? `${PUBLIC_CONTENT_IMG_PATH}/default_image.png`,
+      frontMatter.thumbnail ?? `${PUBLIC_CONTENT_IMG_PATH}/default_image.webp`,
     author: { type: "Person", name: "김형석", url: `${BASE_URL}/about` },
     publisher: {
       type: "Organization",

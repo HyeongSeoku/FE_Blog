@@ -1,106 +1,118 @@
 import fs from "fs";
+import fsp from "fs/promises";
 import path from "path";
 import sharp from "sharp";
 
-sharp.concurrency(4); // 병렬 처리 설정
+sharp.concurrency(4);
 
-const MAX_SIZE_MB = 1; // 최대 1MB
-const QUALITY = 80; // JPEG 품질
+const MAX_SIZE_MB = 1; // 원본이 1MB 초과면 재인코딩
+const QUALITY = 80; // webp 품질
 const MAX_WIDTH = 1920; // 최대 너비
 const MAX_HEIGHT = 1080; // 최대 높이
-
 const CONTENT_IMAGE_DIR = path.join(process.cwd(), "public/content-image");
 const LOW_THUMBNAIL_DIR = path.join(process.cwd(), "public/low-thumbnail");
 
-export const optimizeImage = async (filePath) => {
-  const outputFilePath = filePath.replace(/\.\w+$/, ".jpeg"); // 확장자를 .jpeg로 변경
+const SRC_EXT = /\.(jpe?g|png|webp|avif)$/i;
 
-  try {
-    // 파일 크기 확인
-    const { size } = fs.statSync(filePath);
-    const sizeMB = size / (1024 * 1024);
+const NON_WEBP_EXT = /\.(jpe?g|png|avif)$/i;
 
-    // sharp 인스턴스 준비
-    const imageSharp = sharp(filePath);
-
-    // 이미지 메타데이터 확인
-    const metadata = await imageSharp.metadata();
-    const { width, height, format } = metadata;
-
-    // 최적화 여부 판단
-    const isJPEG = format === "jpeg";
-    const shouldOptimize =
-      !isJPEG ||
-      width > MAX_WIDTH ||
-      height > MAX_HEIGHT ||
-      sizeMB > MAX_SIZE_MB;
-
-    if (!shouldOptimize) {
-      console.log(`[INFO] 이미 최적화된 파일입니다. 건너뜁니다: ${filePath}`);
-      return;
-    }
-
-    console.log(
-      `[INFO] 최적화 중: ${filePath} (${sizeMB.toFixed(2)} MB, ${width}x${height})`,
-    );
-
-    // 최적화된 이미지 저장
-    await imageSharp
-      .resize({
-        width: MAX_WIDTH,
-        height: MAX_HEIGHT,
-        fit: "inside",
-      })
-      .jpeg({ quality: QUALITY })
-      .toFile(outputFilePath);
-
-    // 썸네일 디렉터리 없으면 생성
-    if (!fs.existsSync(LOW_THUMBNAIL_DIR)) {
-      fs.mkdirSync(LOW_THUMBNAIL_DIR, { recursive: true });
-    }
-
-    // 썸네일 파일 경로 지정
-    const lowThumbnailFilePath = path.join(
-      LOW_THUMBNAIL_DIR,
-      path.basename(outputFilePath),
-    );
-
-    // 썸네일 생성 (10x10)
-    await imageSharp
-      .clone()
-      .resize(10, 10, { fit: "inside" })
-      .jpeg({ quality: 40 })
-      .toFile(lowThumbnailFilePath);
-
-    console.log(`[INFO] 썸네일 저장 완료: ${lowThumbnailFilePath}`);
-
-    // 마지막에 원본 삭제
-    fs.unlinkSync(filePath);
-
-    console.log(`[INFO] 최적화 완료 및 JPEG로 변환: ${outputFilePath}`);
-  } catch (error) {
-    console.error(
-      `[ERROR] 최적화 중 오류 발생: ${filePath} - ${error.message}`,
-    );
-  }
+const ensureDir = async (dir) => {
+  if (!fs.existsSync(dir)) await fsp.mkdir(dir, { recursive: true });
 };
 
-// 디렉토리 내 모든 이미지 최적화
-export const optimizeImagesInDir = async (dir) => {
-  const files = fs.readdirSync(dir);
+const relFromContentRoot = (p) => path.relative(CONTENT_IMAGE_DIR, p);
+const replaceToWebp = (p) => p.replace(/\.\w+$/, ".webp");
 
-  for (const file of files) {
-    const filePath = path.join(dir, file);
+const optimizeToWebp = async (filePath) => {
+  const rel = relFromContentRoot(filePath);
+  const outWebp = path.join(CONTENT_IMAGE_DIR, replaceToWebp(rel));
+  const outWebpDir = path.dirname(outWebp);
+  await ensureDir(outWebpDir);
 
-    // 이미지 파일만 처리
-    if (fs.statSync(filePath).isFile() && /\.(jpg|jpeg|png)$/i.test(file)) {
-      await optimizeImage(filePath);
+  const image = sharp(filePath);
+  const meta = await image.metadata();
+  const sizeMB = fs.statSync(filePath).size / (1024 * 1024);
+
+  const isWebp = (meta.format || "").toLowerCase() === "webp";
+  const shouldOptimize =
+    !isWebp ||
+    meta.width > MAX_WIDTH ||
+    meta.height > MAX_HEIGHT ||
+    sizeMB > MAX_SIZE_MB;
+
+  if (!shouldOptimize) {
+    // 이미 충분히 최적화된 webp면 low-thumbnail만 보장
+    await writeLowThumb(filePath, rel);
+    return { converted: false, deleted: false, out: outWebp };
+  }
+
+  console.log(
+    `[INFO] optimize → webp: ${rel} (${meta.width}x${meta.height}, ${sizeMB.toFixed(2)}MB)`,
+  );
+
+  await image
+    .rotate()
+    .resize({
+      width: MAX_WIDTH,
+      height: MAX_HEIGHT,
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .webp({ quality: QUALITY, effort: 4 })
+    .toFile(outWebp);
+
+  await writeLowThumb(outWebp, rel, /*alreadyWebp*/ true);
+
+  if (NON_WEBP_EXT.test(filePath)) {
+    await fsp.unlink(filePath);
+    return { converted: true, deleted: true, out: outWebp };
+  }
+
+  return { converted: true, deleted: false, out: outWebp };
+};
+
+const writeLowThumb = async (sourcePath, rel, alreadyWebp = false) => {
+  // low-thumbnail/아래에 동일 폴더 구조 유지
+  const lowRel = replaceToWebp(rel);
+  const lowOut = path.join(LOW_THUMBNAIL_DIR, lowRel);
+  await ensureDir(path.dirname(lowOut));
+
+  const input = alreadyWebp ? sharp(sourcePath) : sharp(sourcePath);
+  await input
+    .clone()
+    .resize(10, 10, { fit: "inside" })
+    .webp({ quality: 40, effort: 1 })
+    .toFile(lowOut);
+
+  console.log(`[INFO] low-thumb saved: ${relFromContentRoot(lowOut)}`);
+};
+
+// 디렉터리 재귀 순회
+const optimizeImagesInDir = async (dir) => {
+  const entries = await fsp.readdir(dir, { withFileTypes: true });
+
+  for (const e of entries) {
+    const p = path.join(dir, e.name);
+
+    if (e.isDirectory()) {
+      await optimizeImagesInDir(p);
+      continue;
+    }
+
+    if (!SRC_EXT.test(e.name)) continue;
+
+    try {
+      await optimizeToWebp(p);
+    } catch (err) {
+      console.error(`[ERROR] ${relFromContentRoot(p)} → ${err.message}`);
     }
   }
 };
 
 (async () => {
-  console.log(`[INFO] ${CONTENT_IMAGE_DIR} 디렉터리에서 이미지 최적화 시작`);
+  console.log(`[INFO] start optimizing under: ${CONTENT_IMAGE_DIR}`);
+  await ensureDir(CONTENT_IMAGE_DIR);
+  await ensureDir(LOW_THUMBNAIL_DIR);
   await optimizeImagesInDir(CONTENT_IMAGE_DIR);
-  console.log("[INFO] 이미지 최적화 완료");
+  console.log("[INFO] done.");
 })();

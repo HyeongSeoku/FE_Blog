@@ -16,9 +16,9 @@ const MainPostCard = ({
   title,
   createdAt,
   imgAlt = "default image alt",
-  thumbnail = "/image/default_img.png",
+  thumbnail = "/image/default_img.webp",
 }: MainPostCardProps) => {
-  const isDefaultThumbnail = thumbnail === "/image/default_img.png";
+  const isDefaultThumbnail = thumbnail === "/image/default_img.webp";
   return (
     <article
       className={classNames(

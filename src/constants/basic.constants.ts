@@ -22,7 +22,7 @@ export const POST_PATH = path.join(
 );
 
 export const SKILL_PATH = path.join(process.cwd(), `${DEFAULT_MDX_PATH}/skill`);
-export const DEFAULT_POST_THUMBNAIL = `${PUBLIC_IMG_PATH}/default_img.png`;
+export const DEFAULT_POST_THUMBNAIL = `${PUBLIC_IMG_PATH}/default_img.webp`;
 
 export const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "http://local-sseoku.com:3000";
