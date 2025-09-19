@@ -44,11 +44,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <ThemeScript />
       </head>
       <body>
-        <ClientProvider>
-          <GaBanner />
-          {children}
-          <div id="modal-root"></div>
-        </ClientProvider>
+        <ClientProvider>{children}</ClientProvider>
+        <GaBanner />
+        <div id="modal-root"></div>
       </body>
     </html>
   );
