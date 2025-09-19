@@ -45,12 +45,12 @@ function MoRecentPostCard({
   date,
   link,
   subTitle,
-  thumbnail = "/image/default_img.png",
+  thumbnail = "/image/default_img.webp",
   readingTime,
   thumbnailAlt = "default image alt",
   isoDate,
 }: MoRecentPostCardProps) {
-  const isDefaultThumbnail = thumbnail === "/image/default_img.png";
+  const isDefaultThumbnail = thumbnail === "/image/default_img.webp";
 
   return (
     <div className="flex flex-col gap-2 items-center w-full overflow-hidden rounded-md bg-primary p-5 max-w-[333px] self-center min-md:hidden">
@@ -97,7 +97,7 @@ function PcRecentPostCard({
   thumbnailAlt = "default image alt",
   isoDate,
 }: MoRecentPostCardProps) {
-  const isDefaultThumbnail = thumbnail === "/image/default_img.png";
+  const isDefaultThumbnail = thumbnail === "/image/default_img.webp";
 
   return (
     <Link
