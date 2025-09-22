@@ -14,14 +14,15 @@ const GaBanner = dynamic(() => import("@/components/GaBanner"), {
 export const metadata: Metadata = {
   title: BASE_META_TITLE,
   description: "프론트엔드 개발자 김형석의 개발 블로그 입니다.",
+  metadataBase: new URL(BASE_URL),
   openGraph: {
     title: BASE_META_TITLE,
     description: "프론트엔드 개발자 김형석의 개발 블로그 입니다.",
-    url: BASE_URL,
+    url: "/",
     siteName: "김형석 블로그",
     images: [
       {
-        url: `${BASE_URL}/image/og_image.svg`,
+        url: "/image/og_image.svg",
         width: 1200,
         height: 630,
         alt: "김형석 블로그 OG 이미지",
@@ -38,17 +39,14 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" className={pretendard.variable} suppressHydrationWarning>
+    <html lang="ko" className={pretendard.variable} suppressHydrationWarning>
       <head>
-        <link rel="canonical" href={BASE_URL} />
         <ThemeScript />
       </head>
       <body>
-        <ClientProvider>
-          <GaBanner />
-          {children}
-          <div id="modal-root"></div>
-        </ClientProvider>
+        <ClientProvider>{children}</ClientProvider>
+        <GaBanner />
+        <div id="modal-root"></div>
       </body>
     </html>
   );

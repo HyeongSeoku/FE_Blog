@@ -25,14 +25,14 @@ export const generateMetadata = ({
       title: `${month} 게시물`,
       description: `${month} 작성된 블로그 글 목록을 확인하세요.`,
       url: isFirstPage
-        ? `${BASE_URL}/blog/month/${month}`
-        : `${BASE_URL}/blog/month/${month}?page=${pageParam}`,
+        ? `/blog/month/${month}`
+        : `/blog/month/${month}?page=${pageParam}`,
       type: "website",
     },
     alternates: {
       canonical: isFirstPage
-        ? `${BASE_URL}/blog/month/${month}`
-        : `${BASE_URL}/blog/month/${month}?page=${pageParam}`,
+        ? `/blog/month/${month}`
+        : `/blog/month/${month}?page=${pageParam}`,
     },
   };
 };

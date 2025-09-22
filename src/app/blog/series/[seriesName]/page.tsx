@@ -1,4 +1,4 @@
-import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
+import { BASE_META_TITLE } from "@/constants/basic.constants";
 import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
 import BlogDateTemplate from "@/templates/BlogDateTemplate";
 import { getAllPosts } from "@/utils/post";
@@ -21,12 +21,12 @@ export function generateMetadata({
     openGraph: {
       title: metaTitle,
       description: metaDescription,
-      url: `${BASE_URL}/series/${encodeURIComponent(seriesName)}`,
+      url: `/series/${encodeURIComponent(seriesName)}`,
       type: "website",
       images: [],
     },
     alternates: {
-      canonical: `${BASE_URL}/series/${encodeURIComponent(seriesName)}`,
+      canonical: `/series/${encodeURIComponent(seriesName)}`,
     },
   };
 }

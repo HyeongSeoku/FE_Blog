@@ -14,6 +14,12 @@ import { getStructuredData } from "@/utils/structure";
 import RecentPostCard from "@/components/RecentContentCard";
 import { getAllSeriesMetadata } from "@/utils/series";
 import { SeriesSection } from "@/components/SeriesSection";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: { url: "/" },
+};
 
 export default async function Home() {
   const { postList, totalPostCount } = await getAllPosts({

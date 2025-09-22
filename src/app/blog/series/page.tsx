@@ -1,5 +1,5 @@
 import SeriesCard from "@/components/SeriesCard";
-import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
+import { BASE_META_TITLE } from "@/constants/basic.constants";
 import { getAllSeriesMetadata } from "@/utils/series";
 import { Metadata } from "next";
 
@@ -13,13 +13,11 @@ export function generateMetadata(): Metadata {
     openGraph: {
       title: metaTitle,
       description: metaDescription,
-      url: `${BASE_URL}/series`,
+      url: "/series",
       type: "website",
       images: [],
     },
-    alternates: {
-      canonical: `${BASE_URL}/series`,
-    },
+    alternates: { canonical: "/series" },
   };
 }
 

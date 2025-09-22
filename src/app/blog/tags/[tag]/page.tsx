@@ -19,12 +19,12 @@ export function generateMetadata({
     openGraph: {
       title: metaTitle,
       description: `${tag} 태그가 포함된 블로그 게시글 목록입니다.`,
-      url: `${BASE_URL}/blog/tags/${tag}`,
+      url: `/blog/tags/${tag}`,
       type: "website",
       images: [],
     },
     alternates: {
-      canonical: `${BASE_URL}/blog/tags/${tag}`,
+      canonical: `/blog/tags/${tag}`,
     },
   };
 }

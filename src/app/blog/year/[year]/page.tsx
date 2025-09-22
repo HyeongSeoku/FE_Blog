@@ -24,14 +24,14 @@ export const generateMetadata = ({
       title: `${year}년도 게시물`,
       description: `${year}년도 작성된 블로그 글 목록을 확인하세요.`,
       url: isFirstPage
-        ? `${BASE_URL}/blog/year/${year}`
-        : `${BASE_URL}/blog/year/${year}?page=${pageParam}`,
+        ? `/blog/year/${year}`
+        : `/blog/year/${year}?page=${pageParam}`,
       type: "website",
     },
     alternates: {
       canonical: isFirstPage
-        ? `${BASE_URL}/blog/year/${year}`
-        : `${BASE_URL}/blog/year/${year}?page=${pageParam}`,
+        ? `/blog/year/${year}`
+        : `/blog/year/${year}?page=${pageParam}`,
     },
   };
 };
