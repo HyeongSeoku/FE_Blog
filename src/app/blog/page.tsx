@@ -15,15 +15,11 @@ export const generateMetadata = ({ searchParams }: BlogPageProps) => {
     openGraph: {
       title: "블로그 페이지",
       description: "최신 블로그 글 목록을 확인하세요.",
-      url: isFirstPage
-        ? `${BASE_URL}/blog`
-        : `${BASE_URL}/blog?page=${pageParam}`,
+      url: isFirstPage ? `/blog` : `/blog?page=${pageParam}`,
       type: "website",
     },
     alternates: {
-      canonical: isFirstPage
-        ? `${BASE_URL}/blog`
-        : `${BASE_URL}/blog?page=${pageParam}`,
+      canonical: isFirstPage ? `/blog` : `/blog?page=${pageParam}`,
     },
   };
 };

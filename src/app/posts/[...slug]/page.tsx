@@ -37,13 +37,14 @@ async function getPostDataWithMetadata(slug: string[]) {
     description:
       frontMatter.description ||
       "프론트엔드 개발자 김형석의 개발 블로그입니다.",
+    metadataBase: new URL(BASE_URL),
     other: { keyword: frontMatter.tags?.join(",") || "" },
     openGraph: {
       title: frontMatter.title || BASE_META_TITLE,
       description:
         frontMatter.description ||
         "프론트엔드 개발자 김형석의 개발 블로그입니다.",
-      url: `${BASE_URL}/posts/${slug.join("/")}`,
+      url: `/posts/${slug.join("/")}`,
       type: "article",
       images: [
         {
@@ -76,7 +77,7 @@ export async function generateMetadata({
   return {
     ...metadata,
     alternates: {
-      canonical: `${BASE_URL}/posts/${params.slug.join("/")}`,
+      canonical: `/posts/${params.slug.join("/")}`,
     },
   };
 }
