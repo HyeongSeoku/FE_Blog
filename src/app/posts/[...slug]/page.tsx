@@ -9,7 +9,9 @@ import { getStructuredData } from "@/utils/structure";
 import { FrontMatterProps } from "@/types/mdx";
 import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
 
-export const dynamic = "error";
+export const dynamic = "force-static";
+export const dynamicParams = false;
+export const revalidate = false;
 
 export async function generateStaticParams() {
   const { postList } = await getAllPosts({});

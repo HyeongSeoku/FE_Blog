@@ -6,6 +6,7 @@ import path from "node:path";
 const config = {
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
   generateRobotsTxt: true,
+  trailingSlash: false,
   sitemapSize: 5000,
   autoLastmod: true,
   additionalPaths: async () => {
