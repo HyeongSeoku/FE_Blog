@@ -46,6 +46,7 @@ const nextConfig = withAnalyzer(
 
       return config;
     },
+    trailingSlash: false,
     images: {
       domains: ["avatars.githubusercontent.com"],
     },
