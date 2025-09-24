@@ -3,5 +3,10 @@
     "title": "컴포넌트 해부",
     "description": "핵심 프론트엔드 컴포넌트를 구조적, 시각적, 의미적으로 깊이 있게 분석합니다.",
     "thumbnail": "/content-image/component-anatomy/component-anatomy.webp"
+  },
+  "chrome-devtools": {
+    "title": "크롬 개발자 도구",
+    "description": "크롬 개발자 도구의 기본과 심화 사용법에 대해 분석",
+    "thumbnail": "/content-image/chrome-devtools/chrome_devtools.webp"
   }
 }
