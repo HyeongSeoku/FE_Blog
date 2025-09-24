@@ -90,7 +90,7 @@ export const rehypeAnimateFadeInUp: Plugin<[]> = () => {
 
 export const rehypeMarkCustomElements = () => {
   return (tree: any) => {
-    visit(tree, "element", (node: any, index, parent) => {
+    visit(tree, "element", (node: any, _index, parent) => {
       if (node.tagName === "code") {
         const isInlineCode = parent?.tagName !== "pre";
         node.properties = node.properties || {};
