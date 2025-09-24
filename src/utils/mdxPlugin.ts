@@ -90,10 +90,14 @@ export const rehypeAnimateFadeInUp: Plugin<[]> = () => {
 
 export const rehypeMarkCustomElements = () => {
   return (tree: any) => {
-    visit(tree, "element", (node: any) => {
+    visit(tree, "element", (node: any, index, parent) => {
       if (node.tagName === "code") {
+        const isInlineCode = parent?.tagName !== "pre";
         node.properties = node.properties || {};
-        node.properties["data-custom-code"] = "true";
+
+        if (!isInlineCode) {
+          node.properties["data-custom-code"] = "true";
+        }
       }
       if (node.tagName === "a") {
         node.properties = node.properties || {};

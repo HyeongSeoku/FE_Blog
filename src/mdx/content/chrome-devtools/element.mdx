@@ -1,0 +1,151 @@
+---
+title: 크롬 개발자 도구 엘리먼트 탭
+description: 크롬 개발자 도구 엘리먼트 탭에 대한 활용법
+category: DEV
+createdAt: 2025.09.24
+subCategory: FE
+tags:
+  - Chrome DevTools
+  - browser
+thumbnail: "/content-image/chrome-devtools/element/chrome_devtools_element.webp"
+series: chrome-devtools
+seriesOrder: 1
+---
+
+## Element탭이란?
+
+Chrome DevTools의 Element 탭은 브라우저에 렌더링된 HTML과 CSS를 실시간으로 확인하고 조작할 수 있는 핵심 디버깅 도구입니다. 웹 페이지의 구조(DOM)와 스타일(CSS)을 눈으로 보고 직접 수정하며, 원하는 UI가 어떻게 구성되어 있는지 파악하거나, 예상과 다르게 동작하는 문제를 빠르게 진단할 수 있죠.
+
+단순히 HTML을 보는 것에 그치지 않고,
+• 실시간으로 DOM을 편집하고 속성을 수정하거나,
+• 특정 요소의 스타일이 왜 적용되지 않는지 우선순위와 상속을 추적하거나,
+• React나 Vue처럼 동적으로 변하는 UI의 구조를 파악할 때도 매우 강력한 도구입니다.
+
+뿐만 아니라 접근성(Accessibility), 애니메이션, 이벤트 핸들러, Shadow DOM, Breakpoint 디버깅까지 Element 탭에서 모두 제어 가능하여, 단순한 뷰어를 넘어선 웹 UI 해부 도구라고도 할 수 있습니다.
+
+## 엘리먼트 의사 클래스 강제 적용
+
+- 마우스 올리거나, 포커스시만 보이는 스타일 등을 항상 보이게 강제 적용 가능
+  <img
+    src="/content-image/chrome-devtools/element/element_force.webp"
+    className="mx-auto contents-img"
+    alt="크롬 개발자도구 의사 클래스 강제 적용"
+  />
+
+## DOM Breakpoint
+
+특정 요소에 변화(추가/삭제/속성 변경)가 생길때 자동으로 중단점 걸어줌.
+
+JS로 DOM이 실시간 추가/수정 되는 경우에 Breakpoint를 통해 어느부분이 변화하게 하는지 파악하기 쉽도록 도와줌
+이렇게 추가된 중단점은 `Soruces > 우측 탭 > DOM Breakpoints`에서 확인 가능
+
+<img
+  src="/content-image/chrome-devtools/element/element_break_source.webp"
+  className="mx-auto contents-img"
+  alt="크롬 개발자도구 breakpoint source탭"
+/>
+
+## 사용법
+
+<img
+  src="/content-image/chrome-devtools/element/element_breakpoint.webp"
+  className="mx-auto contents-img"
+  alt="크롬 개발자도구 breakpoint 적용"
+/>
+
+1. 원하는 DOM 요소 우클릭
+2. Break on → subtree modifications / attribute modifications / node removal 선택
+3. 변경될 때 Sources 탭으로 자동 이동 + 중단
+
+## 종류
+
+### subtree modifications
+
+> 내 아래쪽 자식들이 추가/제거 되면 알려줘.
+
+- 선택한 요소 내부의 자식노드가 변경되면 중단!
+- innerHTML, appendChild, removeChild, textContent, React re-render
+
+**자주 감시하는 React 요소**
+
+| **요소**                       | **사용 케이스**     |
+| ------------------------------ | ------------------- |
+| `<ul>, <div className="list">` | 동적 리스트 (map)   |
+| `<div id="modal-root">`        | 모달 포탈 렌더링    |
+| `<section id="chat">`          | 채팅 메시지 append  |
+| `<main>`                       | 전체 SPA 뷰 전환 시 |
+
+```tsx
+const [items, setItems] = useState<string[]>([]);
+
+return (
+  <ul id="item-list">
+    {items.map((item) => (
+      <li key={item}>{item}</li>
+    ))}
+  </ul>
+);
+
+// 이후 버튼 클릭 시 setItems([...items, '추가된 항목']) 실행
+```
+
+### attribute modifications
+
+> 이 요소의 속성`attr` 이 바뀌면 알려줘
+
+- class, id, style, aria-label, data-\* 등 HTML 속성이 **수정/추가/삭제**될 때 중단됨
+- 즉, **DOM 구조는 그대로지만 attribute만 바뀌는 경우**
+
+**자주 감시하는 React 요소**
+
+| **요소**                | **사용 케이스**                       |
+| ----------------------- | ------------------------------------- |
+| `<button>`              | disabled, aria-pressed, aria-expanded |
+| `<div className={...}>` | 상태 기반 className 변경              |
+| `<html>, <body>`        | 테마 class 토글 (dark, light)         |
+| `<input>`               | readOnly, value, checked 변화         |
+
+```tsx
+const [active, setActive] = useState(false);
+
+return (
+  <div id="menu" className={active ? "menu open" : "menu"}>
+    ...
+  </div>
+);
+// setActive(true) 실행 시 → attribute 변경 발생
+```
+
+### node removal
+
+> 이 노드 자체가 DOM에서 제거되면 알려줘
+
+- 해당 노드가 **삭제되거나 detach**될 때 중단됨
+- 부모에서 removeChild, 혹은 노드 자신에서 remove() 호출된 경우 등
+
+**자주 감시하는 React 요소**
+
+| **요소**                             | **사용 케이스**                   |
+| ------------------------------------ | --------------------------------- |
+| `<Modal />, <Dialog />, <Tooltip />` | 조건부 렌더링 또는 포탈 제거 시   |
+| `<li key={id}>`                      | key 변경으로 인한 unmount/remount |
+| `<div>`                              | route 전환으로 컴포넌트 전체 제거 |
+
+```tsx
+const [show, setShow] = useState(true);
+
+return (
+  <>
+    {show && <div id="target">Hello</div>}
+    <button onClick={() => setShow(false)}>제거</button>
+  </>
+);
+```
+
+### 각 Breakpoint 추천
+
+| **Breakpoint 종류**       | **자주 쓰는 React 패턴**              | **JSX 변화 종류**          |
+| ------------------------- | ------------------------------------- | -------------------------- |
+| `subtree modifications`   | .map(), dangerouslySetInnerHTML, 포탈 | 자식 노드의 추가/제거      |
+| `attribute modifications` | className, aria-_, style, data-_      | 속성 변경 (setState)       |
+| `node removal`            | 조건부 렌더링, 라우팅, key 변경       | 요소 자체가 DOM에서 제거됨 |

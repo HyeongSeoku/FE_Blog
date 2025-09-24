@@ -41,7 +41,7 @@
 }
 
 .markdown-contents code.inline-code {
-  @apply inline bg-gray-300 p-1;
+  @apply inline bg-gray-300 p-1 whitespace-nowrap mx-1;
 }
 
 [data-theme="dark"] .markdown-contents code.inline-code {
