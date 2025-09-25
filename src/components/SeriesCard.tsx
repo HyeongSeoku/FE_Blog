@@ -23,7 +23,7 @@ export default function SeriesCard({
     <Link
       href={`/blog/series/${seriesKey}`}
       className={classNames(
-        "flex flex-col items-center h-[445px] rounded-lg overflow-hidden border group",
+        "flex flex-col items-center h-[445px] rounded-lg overflow-hidden border group will-change-transform",
         className,
         {
           "shadow-[0_8px_24px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.06)]":
@@ -33,12 +33,14 @@ export default function SeriesCard({
         },
       )}
     >
-      <div className="relative flex-[3_3_0%] w-full overflow-hidden">
+      <div className="relative aspect-[3/2] w-full overflow-hidden">
         <FallbackImage
           src={thumbnail}
           alt={title}
-          fill
-          className="object-cover bg-gray-200 w-full h-full self-center transition-transform group-hover:scale-105"
+          width={280}
+          height={187} // 3:2 비율
+          sizes="(max-width: 768px) 100vw, 280px"
+          className="object-cover bg-gray-200 w-full h-full self-center transition-transform group-hover:scale-105 will-change-transform"
         />
       </div>
       <div className="w-full flex-[2_2_0%] flex flex-col gap-2 p-5">

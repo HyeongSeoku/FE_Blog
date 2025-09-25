@@ -29,10 +29,9 @@ export function MoSeriesSection({
       <SwiperComponent
         modules={[Navigation]}
         spaceBetween={4}
-        slidesPerView="auto"
+        slidesPerView={1.2}
         centeredSlides={true}
         initialSlide={validSeriesList.length > 1 ? 1 : 0}
-        // loop
         onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
       >
         {seriesList.map(([key, value], idx) => (
@@ -44,7 +43,7 @@ export function MoSeriesSection({
               thumbnail={value.thumbnail}
               seriesCount={value.count}
               className={classNames(
-                "transition-transform",
+                "transition-transform will-change-transform",
                 idx === activeIndex ? "scale-100" : "scale-90",
               )}
               isSelected={idx === activeIndex}

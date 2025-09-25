@@ -49,6 +49,8 @@ const nextConfig = withAnalyzer(
     trailingSlash: false,
     images: {
       domains: ["avatars.githubusercontent.com"],
+      deviceSizes: [320, 480, 640, 768, 1024, 1280, 1440, 1920],
+      imageSizes: [16, 32, 64, 96, 128, 256, 384],
     },
     eslint: { ignoreDuringBuilds: true },
     swcMinify: true,
