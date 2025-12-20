@@ -191,8 +191,9 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "./release/build.tar.gz"
+          source: "release/build.tar.gz"
           target: "/home/ubuntu/deploy"
+          strip_components: 1
 
       - name: Deploy & PM2 reload on EC2
         uses: appleboy/ssh-action@v1.2.0
