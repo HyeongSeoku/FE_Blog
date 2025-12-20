@@ -176,78 +176,75 @@ jobs:
 
             위 링크 하단의 "Artifacts > lighthouse-report" 항목을 클릭하면 리포트를 확인할 수 있습니다.
 
-  deploy:
+    deploy:
     name: Deploy to EC2
     needs: build
-    runs-on: [self-hosted]
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Ensure pnpm
-        run: npm install -g pnpm
-
-      - name: Prepare release dir
-        run: mkdir -p "${{ github.workspace }}/release"
-
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: seoku-blog-build
-          path: ${{ github.workspace }}/release
+          path: ./release
 
-      - name: 🔥 Clean up previous build in release folder
-        working-directory: ${{ github.workspace }}/release
-        run: |
-          echo "🧹 Cleaning old build files..."
-          rm -rf \
-            .next \
-            public \
-            src/mdx \
-            .env \
-            package.json \
-            pnpm-lock.yaml \
-            next.config.mjs \
-            tsconfig.json \
-            postcss.config.* \
-            tailwind.config.* \
-            ecosystem.config.cjs
+      - name: Copy artifact to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "./release/build.tar.gz"
+          target: "/home/ubuntu/deploy"
 
-      - name: Extract build artifact
-        working-directory: ${{ github.workspace }}/release
-        run: |
-          rm -rf .next
-          tar -xzf build.tar.gz
-          ls -al public | grep -E 'sitemap|robots'
+      - name: Deploy & PM2 reload on EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -euo pipefail
 
-      - name: Install production deps
-        working-directory: ${{ github.workspace }}/release
-        run: pnpm install --prod --frozen-lockfile
+            APP_DIR="/home/ubuntu/release"
+            DEPLOY_DIR="/home/ubuntu/deploy"
+            TAR="$DEPLOY_DIR/build.tar.gz"
 
-      - name: Start or Reload (PM2)
-        working-directory: ${{ github.workspace }}/release
-        run: |
-          if pm2 describe seoku-blog >/dev/null 2>&1; then
-            pm2 reload ecosystem.config.cjs --only seoku-blog --update-env
-          else
-            pm2 start  ecosystem.config.cjs --only seoku-blog --update-env
-          fi
-          pm2 save
+            mkdir -p "$APP_DIR"
+            tar -xzf "$TAR" -C "$APP_DIR"
 
-      - name: Health check via Next (loopback, retry)
-        run: |
-          for i in {1..30}; do
-            if curl -fsS http://127.0.0.1:3000/sitemap.xml >/dev/null; then
-              echo "Health OK"; exit 0
+            cd "$APP_DIR"
+
+            # prod deps 설치 (pnpm이 없다면 설치)
+            if ! command -v pnpm >/dev/null 2>&1; then
+              npm i -g pnpm
             fi
-            echo "Waiting for app... ($i/30)"
-            sleep 2
-          done
-          echo "App did not become healthy in time"
-          pm2 status
-          pm2 logs seoku-blog --lines 200
-          exit 1
+            pnpm install --prod --frozen-lockfile
+
+            # PM2 없으면 설치
+            if ! command -v pm2 >/dev/null 2>&1; then
+              npm i -g pm2
+            fi
+
+            # 실행/리로드
+            if pm2 describe seoku-blog >/dev/null 2>&1; then
+              pm2 reload ecosystem.config.cjs --only seoku-blog --update-env
+            else
+              pm2 start ecosystem.config.cjs --only seoku-blog --update-env
+            fi
+            pm2 save
+
+            # 헬스체크
+            for i in {1..30}; do
+              if curl -fsS http://127.0.0.1:3000/sitemap.xml >/dev/null; then
+                echo "Health OK"; exit 0
+              fi
+              echo "Waiting for app... ($i/30)"
+              sleep 2
+            done
+
+            echo "App did not become healthy in time"
+            pm2 status
+            pm2 logs seoku-blog --lines 200
+            exit 1
