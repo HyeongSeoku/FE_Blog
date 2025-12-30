@@ -38,15 +38,25 @@ export interface GithubUserInfo {
   updated_at: string;
 }
 
-export const fetchGithubUserInfo = async (): Promise<GithubUserInfo> => {
-  const response = await fetch(`${GIT_API_URL}/user`, {
-    headers: {
-      Authorization: `Bearer ${TOKEN}`,
-    },
-  });
-  if (!response.ok) {
-    throw new Error("Failed to fetch user repositories");
+export const fetchGithubUserInfo = async (): Promise<GithubUserInfo | null> => {
+  if (!TOKEN) {
+    return null;
   }
 
-  return response.json();
+  try {
+    const response = await fetch(`${GIT_API_URL}/user`, {
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+    if (!response.ok) {
+      console.warn("Failed to fetch GitHub user info");
+      return null;
+    }
+
+    return response.json();
+  } catch (error) {
+    console.warn("Failed to fetch GitHub user info", error);
+    return null;
+  }
 };

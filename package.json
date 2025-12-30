@@ -9,6 +9,7 @@
     "build:analyze": "cross-env NODE_ENV=development ANALYZE=true pnpm run build",
     "build": "pnpm run optimize-images && next build",
     "dev": "next dev",
+    "serve:static": "python3 -m http.server 3000 --directory out",
     "start": "next start",
     "lint": "next lint",
     "prepare": "node -e \"const fs = require('fs'); const hasHusky = fs.existsSync('./node_modules/.bin/husky'); if (process.env.NODE_ENV !== 'production' && hasHusky) require('child_process').execSync('husky install', { stdio: 'inherit' })\"",

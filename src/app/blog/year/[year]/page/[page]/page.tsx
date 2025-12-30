@@ -2,39 +2,70 @@ import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
 import BlogDateTemplate from "@/templates/BlogDateTemplate";
 import { getAllYears, getPostsByDate } from "@/utils/post";
-
-interface BlogYearPageProps {
-  params: { year: string };
-}
+import { notFound } from "next/navigation";
 
 export const dynamicParams = false;
 
-export const generateMetadata = ({ params }: BlogYearPageProps) => {
-  const { year } = params;
+export async function generateStaticParams() {
+  const years = await getAllYears();
+  const params = await Promise.all(
+    years.map(async (year) => {
+      const { totalPostCount } = await getPostsByDate({
+        type: "year",
+        date: year,
+        page: 1,
+        pageSize: DEFAULT_PAGE_SIZE,
+      });
+      const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
+
+      if (totalPages <= 1) return [];
+
+      return Array.from({ length: totalPages - 1 }, (_, index) => ({
+        year,
+        page: String(index + 2),
+      }));
+    }),
+  );
+
+  return params.flat();
+}
+
+export const generateMetadata = ({
+  params,
+}: {
+  params: { year: string; page: string };
+}) => {
+  const { year, page } = params;
+  const pageNumber = Number(page);
+  const pageSuffix = Number.isFinite(pageNumber) ? ` (page ${page})` : "";
 
   return {
-    title: `${year}년도 게시물`,
+    title: `${year}년도 게시물${pageSuffix}`,
     description: `${year}년도 작성된 블로그 글 목록을 확인하세요.`,
     openGraph: {
-      title: `${year}년도 게시물`,
+      title: `${year}년도 게시물${pageSuffix}`,
       description: `${year}년도 작성된 블로그 글 목록을 확인하세요.`,
-      url: `/blog/year/${year}`,
+      url: `/blog/year/${year}/page/${page}`,
       type: "website",
     },
     alternates: {
-      canonical: `/blog/year/${year}`,
+      canonical: `/blog/year/${year}/page/${page}`,
     },
   };
 };
 
-export async function generateStaticParams() {
-  const years = await getAllYears();
-  return years.map((year) => ({ year }));
-}
-
-const BlogYearPage = async ({ params }: BlogYearPageProps) => {
-  const { year } = params;
+const BlogYearPage = async ({
+  params,
+}: {
+  params: { year: string; page: string };
+}) => {
+  const { year, page } = params;
   const yearText = `${year}년`;
+  const currentPage = Number(page);
+
+  if (!Number.isFinite(currentPage) || currentPage <= 1) {
+    notFound();
+  }
 
   const breadcrumbStructuredData = {
     "@context": "https://schema.org",
@@ -74,8 +105,6 @@ const BlogYearPage = async ({ params }: BlogYearPageProps) => {
     },
   };
 
-  const currentPage = 1;
-
   const { postList, totalPostCount } = await getPostsByDate({
     type: "year",
     date: year,
@@ -83,6 +112,10 @@ const BlogYearPage = async ({ params }: BlogYearPageProps) => {
     pageSize: DEFAULT_PAGE_SIZE,
   });
   const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
+
+  if (totalPages && totalPages < currentPage) {
+    notFound();
+  }
 
   return (
     <>

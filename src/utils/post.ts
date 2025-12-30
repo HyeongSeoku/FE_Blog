@@ -199,6 +199,49 @@ export const getPostsByTag = async (
   return { list: filteredPosts, count: filteredPosts.length, tagList };
 };
 
+export const getAllTags = async (): Promise<string[]> => {
+  const { postList } = await getAllPosts({});
+  const tagSet = new Set<string>();
+
+  postList.forEach((post) => {
+    post.tags.forEach((tag) => {
+      tagSet.add(tag.trim().toLowerCase());
+    });
+  });
+
+  return Array.from(tagSet).sort();
+};
+
+export const getAllYears = async (): Promise<string[]> => {
+  const { postList } = await getAllPosts({});
+  const yearSet = new Set<string>();
+
+  postList.forEach((post) => {
+    const year = new Date(post.createdAt).getFullYear();
+    if (!Number.isNaN(year)) {
+      yearSet.add(String(year));
+    }
+  });
+
+  return Array.from(yearSet).sort();
+};
+
+export const getAllMonths = async (): Promise<string[]> => {
+  const { postList } = await getAllPosts({});
+  const monthSet = new Set<string>();
+
+  postList.forEach((post) => {
+    const date = new Date(post.createdAt);
+    if (Number.isNaN(date.getTime())) return;
+
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, "0");
+    monthSet.add(`${year}.${month}`);
+  });
+
+  return Array.from(monthSet).sort();
+};
+
 export const getPostsByDate = async ({
   type,
   date,

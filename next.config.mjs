@@ -10,6 +10,12 @@ const withMDXConfig = withMDX({
   extension: /\.mdx?$/,
 });
 
+const normalizeBasePath = (basePath = "") => {
+  if (!basePath) return "";
+  if (basePath === "/") return "";
+  return basePath.startsWith("/") ? basePath : `/${basePath}`;
+};
+
 let withAnalyzer = (config) => config;
 if (process.env.NODE_ENV !== "production") {
   try {
@@ -22,6 +28,10 @@ if (process.env.NODE_ENV !== "production") {
     console.warn("⚠️ bundle-analyzer 로딩 실패, 개발 환경에서만 작동합니다.");
   }
 }
+
+const normalizedBasePath = normalizeBasePath(
+  process.env.NEXT_PUBLIC_BASE_PATH,
+);
 
 const nextConfig = withAnalyzer(
   withMDXConfig({
@@ -46,12 +56,16 @@ const nextConfig = withAnalyzer(
 
       return config;
     },
-    trailingSlash: false,
+    trailingSlash: true,
+    basePath: normalizedBasePath,
+    assetPrefix: normalizedBasePath || undefined,
     images: {
       domains: ["avatars.githubusercontent.com"],
       deviceSizes: [320, 480, 640, 768, 1024, 1280, 1440, 1920],
       imageSizes: [16, 32, 64, 96, 128, 256, 384],
+      unoptimized: true,
     },
+    output: "export",
     eslint: { ignoreDuringBuilds: true },
     swcMinify: true,
     experimental: {

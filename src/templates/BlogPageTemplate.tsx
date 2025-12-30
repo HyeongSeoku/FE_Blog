@@ -10,7 +10,7 @@ import {
 } from "@/constants/post.constants";
 import { PostDataProps } from "@/types/posts";
 import classNames from "classnames";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
 const BlogPageTemplateWrapper = ({ children }: { children: ReactNode }) => {
@@ -98,6 +98,7 @@ export interface BlogPageTemplateProps {
   categoryCounts: Record<string, number>;
   totalPages: number;
   category?: string;
+  basePath?: string;
 }
 
 const BlogPageTemplate = ({
@@ -107,20 +108,18 @@ const BlogPageTemplate = ({
   categoryCounts,
   totalPages,
   category = "",
+  basePath,
 }: BlogPageTemplateProps) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const pathname = usePathname();
+  const resolvedPath = basePath || pathname;
 
   const handlePagination = (pageNumber: number) => {
-    const currentParams = new URLSearchParams(searchParams.toString());
-    currentParams.set("page", pageNumber.toString());
-
     if (pageNumber === 1) {
-      router.replace(`${pathname}`);
+      router.replace(resolvedPath);
       return;
     }
-    router.replace(`${pathname}?${currentParams}`);
+    router.replace(`${resolvedPath}/page/${pageNumber}`);
   };
 
   if (!postList.length) {
@@ -161,7 +160,8 @@ const BlogPageTemplate = ({
           totalPages={totalPages}
           onPageChange={handlePagination}
           moveByLink
-          pageParam="page"
+          pathname={resolvedPath}
+          pageSegment="page"
         />
       </section>
     </BlogPageTemplateWrapper>

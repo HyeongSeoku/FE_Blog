@@ -7,31 +7,44 @@ import {
   getPostsBySeries,
   getSeriesMetadata,
 } from "@/utils/series";
-import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 export const dynamicParams = false;
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
   const seriesKeys = getAllSeriesKeys();
-  return seriesKeys.map((seriesName) => ({ seriesName }));
+  const { postList } = await getAllPosts({});
+
+  return seriesKeys.flatMap((seriesName) => {
+    const seriesPosts = getPostsBySeries(postList, seriesName);
+    const totalPages = Math.ceil(seriesPosts.length / DEFAULT_PAGE_SIZE);
+
+    if (totalPages <= 1) return [];
+
+    return Array.from({ length: totalPages - 1 }, (_, index) => ({
+      seriesName,
+      page: String(index + 2),
+    }));
+  });
 }
 
 export function generateMetadata({
   params,
 }: {
-  params: { seriesName: string };
-}): Metadata {
-  const { seriesName } = params;
+  params: { seriesName: string; page: string };
+}) {
+  const { seriesName, page } = params;
   const metaTitle = `${BASE_META_TITLE} | 시리즈 ${seriesName}`;
   const metaDescription = `${BASE_META_TITLE}의 시리즈 : ${seriesName} 페이지입니다`;
-  const url = `/blog/series/${encodeURIComponent(seriesName)}`;
+  const url = `/blog/series/${encodeURIComponent(seriesName)}/page/${page}`;
+  const pageNumber = Number(page);
+  const pageSuffix = Number.isFinite(pageNumber) ? ` (page ${page})` : "";
 
   return {
-    title: metaTitle,
+    title: `${metaTitle}${pageSuffix}`,
     description: metaDescription,
     openGraph: {
-      title: metaTitle,
+      title: `${metaTitle}${pageSuffix}`,
       description: metaDescription,
       url,
       type: "website",
@@ -43,16 +56,18 @@ export function generateMetadata({
   };
 }
 
-export interface SeriesDetailPageProps {
-  params: { seriesName: string };
-}
-
 export default async function SeriesDetailPage({
   params,
-}: SeriesDetailPageProps) {
-  const { seriesName } = params;
-  const page = 1;
+}: {
+  params: { seriesName: string; page: string };
+}) {
+  const { seriesName, page } = params;
   const pageSize = DEFAULT_PAGE_SIZE;
+  const currentPage = Number(page);
+
+  if (!Number.isFinite(currentPage) || currentPage <= 1) {
+    notFound();
+  }
 
   const seriesMeta = getSeriesMetadata(seriesName);
   if (!seriesMeta) {
@@ -64,18 +79,22 @@ export default async function SeriesDetailPage({
 
   const totalCount = seriesPosts.length;
   const totalPages = Math.ceil(totalCount / pageSize);
-  const currentPage = Math.max(1, Math.min(page, totalPages));
+  const boundedPage = Math.max(1, Math.min(currentPage, totalPages));
   const paginated = seriesPosts.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize,
+    (boundedPage - 1) * pageSize,
+    boundedPage * pageSize,
   );
+
+  if (totalPages && totalPages < currentPage) {
+    notFound();
+  }
 
   return (
     <BlogDateTemplate
       dateText={seriesMeta.title}
       postCount={totalCount}
       postList={paginated}
-      currentPage={currentPage}
+      currentPage={boundedPage}
       totalPages={totalPages}
       basePath={`/blog/series/${encodeURIComponent(seriesName)}`}
     />

@@ -5,37 +5,57 @@ import {
   DEFAULT_PAGE_SIZE,
 } from "@/constants/post.constants";
 import BlogPageTemplate from "@/templates/BlogPageTemplate";
-import { getPostsByCategory } from "@/utils/post";
-import { redirect } from "next/navigation";
+import { getAllPosts, getPostsByCategory } from "@/utils/post";
+import { notFound } from "next/navigation";
 
-interface BlogCategoryPageProps {
-  params: { category: string };
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const { categoryCounts } = await getAllPosts({});
+  const categories = Object.keys(CATEGORY_MAP);
+
+  return categories.flatMap((category) => {
+    const count = categoryCounts[category] ?? 0;
+    const totalPages = Math.ceil(count / DEFAULT_PAGE_SIZE);
+
+    if (totalPages <= 1) return [];
+
+    return Array.from({ length: totalPages - 1 }, (_, index) => ({
+      category: category.toLowerCase(),
+      page: String(index + 2),
+    }));
+  });
 }
 
-export const generateMetadata = ({ params }: BlogCategoryPageProps) => {
+export const generateMetadata = ({
+  params,
+}: {
+  params: { category: string; page: string };
+}) => {
   const categoryTitle = `${BASE_META_TITLE} | ${params.category}`;
   const categorySlug = params.category.toLowerCase();
+  const page = Number(params.page);
+  const pageSuffix = Number.isFinite(page) ? ` (page ${page})` : "";
 
-  const metadata = {
-    title: `${categoryTitle} 카테고리`,
+  return {
+    title: `${categoryTitle} 카테고리${pageSuffix}`,
     description: `${params.category} 관련 블로그 글 목록을 확인하세요.`,
     openGraph: {
-      title: `${categoryTitle} 카테고리`,
+      title: `${categoryTitle} 카테고리${pageSuffix}`,
       description: `${params.category} 관련 블로그 글 목록을 확인하세요.`,
-      url: `/blog/${categorySlug}`,
+      url: `/blog/${categorySlug}/page/${params.page}`,
       type: "website",
     },
     alternates: {
-      canonical: `/blog/${categorySlug}`,
+      canonical: `/blog/${categorySlug}/page/${params.page}`,
     },
   };
-
-  return metadata;
 };
 
 const getBreadcrumbStructuredData = (category: string) => {
   const categoryKey = category.toUpperCase() as keyof typeof CATEGORY_MAP;
   const categoryName = CATEGORY_MAP[categoryKey]?.title || categoryKey;
+  const categorySlug = category.toLowerCase();
 
   return {
     "@context": "https://schema.org",
@@ -57,7 +77,7 @@ const getBreadcrumbStructuredData = (category: string) => {
         "@type": "ListItem",
         position: 3,
         name: categoryName,
-        item: `${BASE_URL}/blog/${categoryKey}`,
+        item: `${BASE_URL}/blog/${categorySlug}`,
       },
     ],
   };
@@ -69,12 +89,13 @@ const getCollectionStructuredData = (category: string) => {
   const description =
     CATEGORY_DESCRIPTION_BIG[categoryKey] ??
     `${categoryName} 관련 글 모음 페이지입니다.`;
+  const categorySlug = category.toLowerCase();
 
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "@id": `${BASE_URL}/blog/${categoryKey}`,
-    url: `${BASE_URL}/blog/${categoryKey}`,
+    "@id": `${BASE_URL}/blog/${categorySlug}`,
+    url: `${BASE_URL}/blog/${categorySlug}`,
     name: `${categoryName} 카테고리`,
     description,
     isPartOf: {
@@ -85,32 +106,31 @@ const getCollectionStructuredData = (category: string) => {
   };
 };
 
-const BlogCategoryPage = async ({ params }: BlogCategoryPageProps) => {
-  const { category } = params;
+const BlogCategoryPage = async ({
+  params,
+}: {
+  params: { category: string; page: string };
+}) => {
+  const { category, page } = params;
   const breadcrumbStructuredData = getBreadcrumbStructuredData(category);
   const collectionStructuredData = getCollectionStructuredData(category);
-
   const pageSize = DEFAULT_PAGE_SIZE;
-  const isCategoryKeyAll = category.toLowerCase() === "all";
-  const isCategoryValid = Object.keys(CATEGORY_MAP).includes(
-    category.toUpperCase(),
-  );
-  if (isCategoryKeyAll || !isCategoryValid) {
-    redirect("/blog");
+
+  const currentPage = Number(page);
+  if (!Number.isFinite(currentPage) || currentPage <= 1) {
+    notFound();
   }
 
-  const currentPage = 1;
   const { postList, totalPostCount, categoryCounts, totalCategoryPostCount } =
     await getPostsByCategory({
       page: currentPage,
       pageSize: pageSize,
-      categoryKey: params.category.toUpperCase(),
+      categoryKey: category.toUpperCase(),
     });
-  const maxPage = Math.ceil(totalCategoryPostCount / pageSize);
   const totalPages = Math.ceil(totalCategoryPostCount / pageSize);
 
-  if (maxPage && maxPage < currentPage) {
-    redirect(`/blog/${params.category}`);
+  if (totalPages && totalPages < currentPage) {
+    notFound();
   }
 
   return (

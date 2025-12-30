@@ -3,39 +3,70 @@ import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
 import BlogDateTemplate from "@/templates/BlogDateTemplate";
 import { formatToKoreanMonth } from "@/utils/date";
 import { getAllMonths, getPostsByDate } from "@/utils/post";
-
-interface BlogMonthPageProps {
-  params: { month: string };
-}
+import { notFound } from "next/navigation";
 
 export const dynamicParams = false;
 
-export const generateMetadata = ({ params }: BlogMonthPageProps) => {
-  const { month } = params;
+export async function generateStaticParams() {
+  const months = await getAllMonths();
+  const params = await Promise.all(
+    months.map(async (month) => {
+      const { totalPostCount } = await getPostsByDate({
+        type: "month",
+        date: month,
+        page: 1,
+        pageSize: DEFAULT_PAGE_SIZE,
+      });
+      const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
+
+      if (totalPages <= 1) return [];
+
+      return Array.from({ length: totalPages - 1 }, (_, index) => ({
+        month,
+        page: String(index + 2),
+      }));
+    }),
+  );
+
+  return params.flat();
+}
+
+export const generateMetadata = ({
+  params,
+}: {
+  params: { month: string; page: string };
+}) => {
+  const { month, page } = params;
+  const pageNumber = Number(page);
+  const pageSuffix = Number.isFinite(pageNumber) ? ` (page ${page})` : "";
 
   return {
-    title: `${BASE_META_TITLE}|${month}월 게시물`,
+    title: `${BASE_META_TITLE}|${month}월 게시물${pageSuffix}`,
     description: `${month}월 작성된 블로그 글 목록을 확인하세요.`,
     openGraph: {
-      title: `${month} 게시물`,
+      title: `${month} 게시물${pageSuffix}`,
       description: `${month} 작성된 블로그 글 목록을 확인하세요.`,
-      url: `/blog/month/${month}`,
+      url: `/blog/month/${month}/page/${page}`,
       type: "website",
     },
     alternates: {
-      canonical: `/blog/month/${month}`,
+      canonical: `/blog/month/${month}/page/${page}`,
     },
   };
 };
 
-export async function generateStaticParams() {
-  const months = await getAllMonths();
-  return months.map((month) => ({ month }));
-}
-
-const BlogMonthPage = async ({ params }: BlogMonthPageProps) => {
-  const { month } = params;
+const BlogMonthPage = async ({
+  params,
+}: {
+  params: { month: string; page: string };
+}) => {
+  const { month, page } = params;
   const formattedMonth = formatToKoreanMonth(month);
+  const currentPage = Number(page);
+
+  if (!Number.isFinite(currentPage) || currentPage <= 1) {
+    notFound();
+  }
 
   const breadcrumbStructuredData = {
     "@context": "https://schema.org",
@@ -76,8 +107,6 @@ const BlogMonthPage = async ({ params }: BlogMonthPageProps) => {
     },
   };
 
-  const currentPage = 1;
-
   const { postList, totalPostCount } = await getPostsByDate({
     type: "month",
     date: month,
@@ -85,6 +114,10 @@ const BlogMonthPage = async ({ params }: BlogMonthPageProps) => {
     pageSize: DEFAULT_PAGE_SIZE,
   });
   const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
+
+  if (totalPages && totalPages < currentPage) {
+    notFound();
+  }
 
   return (
     <>
