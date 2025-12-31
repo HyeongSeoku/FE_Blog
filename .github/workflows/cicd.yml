@@ -84,90 +84,26 @@ jobs:
       - name: Run next-sitemap (postbuild)
         run: pnpm run postbuild
 
+      - name: Copy sitemap & robots into out
+        run: |
+          cp -f public/sitemap*.xml out/ || true
+          cp -f public/robots.txt out/ || true
+
       - name: Verify sitemap & robots exist
         run: |
-          ls -al public | grep -E 'sitemap|robots' || (echo "❌ no sitemap/robots" && exit 1)
+          ls -al out | grep -E 'sitemap|robots' || (echo "❌ no sitemap/robots" && exit 1)
 
-      # ✅ 핵심: prod deps만 남기기
-      - name: Prune to production dependencies
-        run: pnpm prune --prod
-
-      # ✅ 핵심: node_modules 포함해서 tar 생성
-      - name: Archive production runtime (no install on server)
+      - name: Archive static site
         run: |
-          tar -czf build.tar.gz \
-            .next \
-            public \
-            node_modules \
-            package.json \
-            pnpm-lock.yaml \
-            next.config.mjs \
-            ecosystem.config.cjs
+          tar -czf build.tar.gz out
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: seoku-blog-build
           path: build.tar.gz
-  lighthouse:
-    name: Lighthouse
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Create .env file
-        run: |
-          echo "NEXT_PUBLIC_GITHUB_TOKEN=${{ secrets.NEXT_PUBLIC_GITHUB_TOKEN }}" >> .env
-          echo "NEXT_PUBLIC_GISCUS_REPO_ID=${{ secrets.NEXT_PUBLIC_GISCUS_REPO_ID }}" >> .env
-          echo "NEXT_PUBLIC_GISCUS_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GISCUS_CLIENT_ID }}" >> .env
-          echo "NEXT_PUBLIC_REPO_URL=${{ secrets.NEXT_PUBLIC_REPO_URL }}" >> .env
-          echo "NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}" >> .env
-          echo "NEXT_PUBLIC_SITE_URL=${{ secrets.NEXT_PUBLIC_SITE_URL }}" >> .env
-
-      - name: Build project
-        run: pnpm run build
-
-      - name: Run Lighthouse CI
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-        run: |
-          npm i -g @lhci/cli
-          lhci autorun
-
-      - name: Upload Lighthouse Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: lighthouse-report
-          path: .lighthouseci/report.html
-
-      - name: Create PR comment
-        if: github.event_name == 'pull_request'
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            🚨 Lighthouse Report 결과입니다!
-
-            ✅ [리포트 다운로드 및 확인](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-
-            위 링크 하단의 "Artifacts > lighthouse-report" 항목을 클릭하면 리포트를 확인할 수 있습니다.
-
   deploy:
-    name: Deploy to EC2 (no install)
+    name: Deploy static site to EC2
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -195,7 +131,7 @@ jobs:
             ./release/build.tar.gz \
             ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/deploy/build.tar.gz
 
-      - name: Extract & Restart PM2
+      - name: Extract static artifact (atomic)
         shell: bash
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=yes \
@@ -203,36 +139,73 @@ jobs:
           set -euo pipefail
 
           APP_DIR="/home/ubuntu/release"
+          RELEASES_DIR="$APP_DIR/releases"
+          CURRENT_LINK="$APP_DIR/current"
           DEPLOY_DIR="/home/ubuntu/deploy"
           TAR="$DEPLOY_DIR/build.tar.gz"
+          RELEASE_ID="$(date +%Y%m%d%H%M%S)"
+          NEW_RELEASE_DIR="$RELEASES_DIR/$RELEASE_ID"
 
-          mkdir -p "$APP_DIR"
-          rm -rf "$APP_DIR/.next" "$APP_DIR/public" "$APP_DIR/node_modules"
-          tar -xzf "$TAR" -C "$APP_DIR"
-          cd "$APP_DIR"
+          mkdir -p "$RELEASES_DIR"
+          mkdir -p "$NEW_RELEASE_DIR"
+          tar -xzf "$TAR" -C "$NEW_RELEASE_DIR"
 
-          # pm2 없으면 설치 (서버에 1회)
-          if ! command -v pm2 >/dev/null 2>&1; then
-            npm i -g pm2
+          if [ -L "$CURRENT_LINK" ]; then
+            PREV_RELEASE="$(readlink "$CURRENT_LINK")"
+            ln -sfn "$PREV_RELEASE" "$APP_DIR/previous"
           fi
 
-          if pm2 describe seoku-blog >/dev/null 2>&1; then
-            pm2 restart seoku-blog --update-env
-          else
-            pm2 start ecosystem.config.cjs --only seoku-blog --update-env
-          fi
+          ln -sfn "$NEW_RELEASE_DIR/out" "$CURRENT_LINK"
+          echo "Deployed to $CURRENT_LINK (release $RELEASE_ID)"
 
-          # 헬스체크
+          # Keep latest 5 releases
+          ls -1dt "$RELEASES_DIR"/* | tail -n +6 | xargs -r rm -rf
+          EOF
+
+      - name: Health check
+        shell: bash
+        run: |
+          set -euo pipefail
           for i in {1..30}; do
-            if curl -fsS http://127.0.0.1:3000/sitemap.xml >/dev/null; then
+            if curl -fsS "${{ secrets.NEXT_PUBLIC_SITE_URL }}" >/dev/null; then
               echo "Health OK"; exit 0
             fi
-            echo "Waiting for app... ($i/30)"
+            echo "Waiting for site... ($i/30)"
             sleep 2
           done
-
-          echo "App did not become healthy in time"
-          pm2 status
-          pm2 logs seoku-blog --lines 200
+          echo "Site did not become healthy in time"
           exit 1
-          EOF
+
+  lighthouse:
+    name: Lighthouse (post-deploy)
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run Lighthouse CI against deployed site
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          LHCI_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+        run: |
+          npm i -g @lhci/cli
+          lhci autorun
+
+      - name: Upload Lighthouse Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: .lighthouseci/report.html
