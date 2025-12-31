@@ -1,3 +1,4 @@
+import DefaultLayout from "@/layout/DefaultLayout";
 import { getAllPosts } from "@/utils/post";
 import { ReactNode } from "react";
 
@@ -9,7 +10,7 @@ export async function generateStaticParams() {
 }
 
 const PostsLayout = ({ children }: { children: ReactNode }) => {
-  return children;
+  return <DefaultLayout>{children}</DefaultLayout>;
 };
 
 export default PostsLayout;
