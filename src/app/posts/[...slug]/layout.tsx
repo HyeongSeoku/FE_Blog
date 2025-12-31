@@ -10,7 +10,7 @@ export async function generateStaticParams() {
 }
 
 const PostsLayout = ({ children }: { children: ReactNode }) => {
-  return <DefaultLayout>{children}</DefaultLayout>;
+  return <DefaultLayout hasHeaderAnimation={true}>{children}</DefaultLayout>;
 };
 
 export default PostsLayout;
