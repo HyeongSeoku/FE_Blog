@@ -32,6 +32,7 @@ if (process.env.NODE_ENV !== "production") {
 const normalizedBasePath = normalizeBasePath(
   process.env.NEXT_PUBLIC_BASE_PATH,
 );
+const isProd = process.env.NODE_ENV === "production";
 
 const nextConfig = withAnalyzer(
   withMDXConfig({
@@ -65,7 +66,7 @@ const nextConfig = withAnalyzer(
       imageSizes: [16, 32, 64, 96, 128, 256, 384],
       unoptimized: true,
     },
-    output: "export",
+    ...(isProd ? { output: "export" } : {}),
     eslint: { ignoreDuringBuilds: true },
     swcMinify: true,
     experimental: {

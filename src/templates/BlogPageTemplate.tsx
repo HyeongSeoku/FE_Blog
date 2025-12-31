@@ -119,7 +119,7 @@ const BlogPageTemplate = ({
       router.replace(resolvedPath);
       return;
     }
-    router.replace(`${resolvedPath}/page/${pageNumber}`);
+    router.replace(`${resolvedPath}/p/${pageNumber}`);
   };
 
   if (!postList.length) {
@@ -161,7 +161,7 @@ const BlogPageTemplate = ({
           onPageChange={handlePagination}
           moveByLink
           pathname={resolvedPath}
-          pageSegment="page"
+          pageSegment="p"
         />
       </section>
     </BlogPageTemplateWrapper>

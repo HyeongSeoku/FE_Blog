@@ -6,6 +6,14 @@ import { notFound } from "next/navigation";
 
 export const dynamicParams = false;
 
+const parsePageParam = (page?: string[]) => {
+  if (!page || page.length === 0) return 1;
+  if (page.length !== 2 || page[0] !== "p") return null;
+  const current = Number(page[1]);
+  if (!Number.isFinite(current) || current < 2) return null;
+  return current;
+};
+
 export async function generateStaticParams() {
   const years = await getAllYears();
   const params = await Promise.all(
@@ -17,13 +25,15 @@ export async function generateStaticParams() {
         pageSize: DEFAULT_PAGE_SIZE,
       });
       const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
+      const pageParams: { year: string; page?: string[] }[] = [
+        { year, page: [] },
+      ];
 
-      if (totalPages <= 1) return [];
+      for (let page = 2; page <= totalPages; page += 1) {
+        pageParams.push({ year, page: ["p", String(page)] });
+      }
 
-      return Array.from({ length: totalPages - 1 }, (_, index) => ({
-        year,
-        page: String(index + 2),
-      }));
+      return pageParams;
     }),
   );
 
@@ -33,11 +43,16 @@ export async function generateStaticParams() {
 export const generateMetadata = ({
   params,
 }: {
-  params: { year: string; page: string };
+  params: { year: string; page?: string[] };
 }) => {
-  const { year, page } = params;
-  const pageNumber = Number(page);
-  const pageSuffix = Number.isFinite(pageNumber) ? ` (page ${page})` : "";
+  const { year } = params;
+  const currentPage = parsePageParam(params.page);
+  const pageSuffix =
+    currentPage && currentPage > 1 ? ` (page ${currentPage})` : "";
+  const url =
+    currentPage && currentPage > 1
+      ? `/blog/year/${year}/p/${currentPage}`
+      : `/blog/year/${year}`;
 
   return {
     title: `${year}년도 게시물${pageSuffix}`,
@@ -45,11 +60,11 @@ export const generateMetadata = ({
     openGraph: {
       title: `${year}년도 게시물${pageSuffix}`,
       description: `${year}년도 작성된 블로그 글 목록을 확인하세요.`,
-      url: `/blog/year/${year}/page/${page}`,
+      url,
       type: "website",
     },
     alternates: {
-      canonical: `/blog/year/${year}/page/${page}`,
+      canonical: url,
     },
   };
 };
@@ -57,13 +72,13 @@ export const generateMetadata = ({
 const BlogYearPage = async ({
   params,
 }: {
-  params: { year: string; page: string };
+  params: { year: string; page?: string[] };
 }) => {
-  const { year, page } = params;
+  const { year } = params;
   const yearText = `${year}년`;
-  const currentPage = Number(page);
+  const currentPage = parsePageParam(params.page);
 
-  if (!Number.isFinite(currentPage) || currentPage <= 1) {
+  if (!currentPage) {
     notFound();
   }
 

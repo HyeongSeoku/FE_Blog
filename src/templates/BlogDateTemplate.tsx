@@ -31,7 +31,7 @@ const BlogDateTemplate = ({
       router.replace(resolvedPath);
       return;
     }
-    router.replace(`${resolvedPath}/page/${pageNumber}`);
+    router.replace(`${resolvedPath}/p/${pageNumber}`);
   };
 
   return (
@@ -61,7 +61,7 @@ const BlogDateTemplate = ({
           onPageChange={handlePagination}
           moveByLink
           pathname={resolvedPath}
-          pageSegment="page"
+          pageSegment="p"
         />
       </section>
     </div>

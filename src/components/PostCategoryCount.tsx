@@ -19,9 +19,9 @@ const PostCategoryCount = ({
   // const isReplace = pathname.includes("blog");
   const isReplace = false;
   const categoryPath = `/blog/${categoryKey.toLowerCase()}`;
-  const isBlogPath = pathname === "/blog" || pathname.startsWith("/blog/page/");
+  const isBlogPath = pathname === "/blog" || pathname.startsWith("/blog/p/");
   const isCategorySamePath =
-    pathname === categoryPath || pathname.startsWith(`${categoryPath}/page/`);
+    pathname === categoryPath || pathname.startsWith(`${categoryPath}/p/`);
 
   if (isDefault) {
     return (

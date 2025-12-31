@@ -11,6 +11,14 @@ import { notFound } from "next/navigation";
 
 export const dynamicParams = false;
 
+const parsePageParam = (page?: string[]) => {
+  if (!page || page.length === 0) return 1;
+  if (page.length !== 2 || page[0] !== "p") return null;
+  const current = Number(page[1]);
+  if (!Number.isFinite(current) || current < 2) return null;
+  return current;
+};
+
 export async function generateStaticParams() {
   const seriesKeys = getAllSeriesKeys();
   const { postList } = await getAllPosts({});
@@ -18,27 +26,33 @@ export async function generateStaticParams() {
   return seriesKeys.flatMap((seriesName) => {
     const seriesPosts = getPostsBySeries(postList, seriesName);
     const totalPages = Math.ceil(seriesPosts.length / DEFAULT_PAGE_SIZE);
+    const params: { seriesName: string; page?: string[] }[] = [
+      { seriesName, page: [] },
+    ];
 
-    if (totalPages <= 1) return [];
+    for (let page = 2; page <= totalPages; page += 1) {
+      params.push({ seriesName, page: ["p", String(page)] });
+    }
 
-    return Array.from({ length: totalPages - 1 }, (_, index) => ({
-      seriesName,
-      page: String(index + 2),
-    }));
+    return params;
   });
 }
 
 export function generateMetadata({
   params,
 }: {
-  params: { seriesName: string; page: string };
+  params: { seriesName: string; page?: string[] };
 }) {
-  const { seriesName, page } = params;
+  const { seriesName } = params;
   const metaTitle = `${BASE_META_TITLE} | 시리즈 ${seriesName}`;
   const metaDescription = `${BASE_META_TITLE}의 시리즈 : ${seriesName} 페이지입니다`;
-  const url = `/blog/series/${encodeURIComponent(seriesName)}/page/${page}`;
-  const pageNumber = Number(page);
-  const pageSuffix = Number.isFinite(pageNumber) ? ` (page ${page})` : "";
+  const currentPage = parsePageParam(params.page);
+  const pageSuffix =
+    currentPage && currentPage > 1 ? ` (page ${currentPage})` : "";
+  const url =
+    currentPage && currentPage > 1
+      ? `/blog/series/${encodeURIComponent(seriesName)}/p/${currentPage}`
+      : `/blog/series/${encodeURIComponent(seriesName)}`;
 
   return {
     title: `${metaTitle}${pageSuffix}`,
@@ -59,13 +73,13 @@ export function generateMetadata({
 export default async function SeriesDetailPage({
   params,
 }: {
-  params: { seriesName: string; page: string };
+  params: { seriesName: string; page?: string[] };
 }) {
-  const { seriesName, page } = params;
+  const { seriesName } = params;
   const pageSize = DEFAULT_PAGE_SIZE;
-  const currentPage = Number(page);
+  const currentPage = parsePageParam(params.page);
 
-  if (!Number.isFinite(currentPage) || currentPage <= 1) {
+  if (!currentPage) {
     notFound();
   }
 
