@@ -29,9 +29,7 @@ if (process.env.NODE_ENV !== "production") {
   }
 }
 
-const normalizedBasePath = normalizeBasePath(
-  process.env.NEXT_PUBLIC_BASE_PATH,
-);
+const normalizedBasePath = normalizeBasePath(process.env.NEXT_PUBLIC_BASE_PATH);
 const isProd = process.env.NODE_ENV === "production";
 
 const nextConfig = withAnalyzer(
