@@ -105,17 +105,10 @@ jobs:
   deploy:
     name: Deploy static site to EC2
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, seoku]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    env:
-      HOME: ${{ runner.temp }}/home
 
     steps:
-      - name: Ensure HOME is writable
-        shell: bash
-        run: |
-          mkdir -p "$HOME"
-
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
@@ -132,39 +125,19 @@ jobs:
         run: |
           tar -xzf ./release/build.tar.gz -C ./release
 
-      - name: Setup SSH key
-        shell: bash
-        run: |
-          SSH_DIR="${RUNNER_TEMP}/ssh"
-          mkdir -p "$SSH_DIR"
-          chmod 700 "$SSH_DIR"
-          echo "${{ secrets.EC2_SSH_KEY }}" > "$SSH_DIR/id_rsa"
-          chmod 600 "$SSH_DIR/id_rsa"
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> "$SSH_DIR/known_hosts"
-          echo "SSH_DIR=$SSH_DIR" >> "$GITHUB_ENV"
-
       - name: Prepare release directory
         shell: bash
         run: |
-          SSH_OPTS="-i $SSH_DIR/id_rsa -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$SSH_DIR/known_hosts"
-          ssh $SSH_OPTS \
-            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
-            "mkdir -p /home/ubuntu/deploy/blog/release/releases/${RELEASE_ID}"
+          mkdir -p /home/ubuntu/deploy/blog/release/releases/${RELEASE_ID}
 
       - name: Rsync static site
         shell: bash
         run: |
-          SSH_OPTS="-i $SSH_DIR/id_rsa -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$SSH_DIR/known_hosts"
-          rsync -az --delete -e "ssh $SSH_OPTS" \
-            ./release/out/ \
-            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/deploy/blog/release/releases/${RELEASE_ID}/out/
+          rsync -az --delete ./release/out/ /home/ubuntu/deploy/blog/release/releases/${RELEASE_ID}/out/
 
       - name: Switch release (atomic)
         shell: bash
         run: |
-          SSH_OPTS="-i $SSH_DIR/id_rsa -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$SSH_DIR/known_hosts"
-          ssh $SSH_OPTS ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
-            "RELEASE_ID=${RELEASE_ID} bash -s" << 'EOF'
           set -euo pipefail
 
           APP_DIR="/home/ubuntu/deploy/blog/release"
@@ -182,7 +155,6 @@ jobs:
 
           # Keep latest 5 releases
           ls -1dt "$RELEASES_DIR"/* | tail -n +6 | xargs -r rm -rf
-          EOF
 
       - name: Health check
         shell: bash
