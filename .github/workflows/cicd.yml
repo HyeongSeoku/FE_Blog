@@ -115,6 +115,16 @@ jobs:
           name: seoku-blog-build
           path: ./release
 
+      - name: Prepare release id
+        shell: bash
+        run: |
+          echo "RELEASE_ID=$(date +%Y%m%d%H%M%S)" >> "$GITHUB_ENV"
+
+      - name: Extract build artifact (runner)
+        shell: bash
+        run: |
+          tar -xzf ./release/build.tar.gz -C ./release
+
       - name: Setup SSH key
         shell: bash
         run: |
@@ -123,32 +133,31 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Copy artifact to EC2
+      - name: Prepare release directory
         shell: bash
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "mkdir -p /home/ubuntu/deploy"
-          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=yes \
-            ./release/build.tar.gz \
-            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/deploy/build.tar.gz
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=yes \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} \
+            "mkdir -p /home/ubuntu/deploy/blog/release/releases/${RELEASE_ID}"
 
-      - name: Extract static artifact (atomic)
+      - name: Rsync static site
+        shell: bash
+        run: |
+          rsync -az --delete -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=yes" \
+            ./release/out/ \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/deploy/blog/release/releases/${RELEASE_ID}/out/
+
+      - name: Switch release (atomic)
         shell: bash
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=yes \
             ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
           set -euo pipefail
 
-          APP_DIR="/home/ubuntu/release"
+          APP_DIR="/home/ubuntu/deploy/blog/release"
           RELEASES_DIR="$APP_DIR/releases"
           CURRENT_LINK="$APP_DIR/current"
-          DEPLOY_DIR="/home/ubuntu/deploy"
-          TAR="$DEPLOY_DIR/build.tar.gz"
-          RELEASE_ID="$(date +%Y%m%d%H%M%S)"
-          NEW_RELEASE_DIR="$RELEASES_DIR/$RELEASE_ID"
-
-          mkdir -p "$RELEASES_DIR"
-          mkdir -p "$NEW_RELEASE_DIR"
-          tar -xzf "$TAR" -C "$NEW_RELEASE_DIR"
+          NEW_RELEASE_DIR="$RELEASES_DIR/${RELEASE_ID}"
 
           if [ -L "$CURRENT_LINK" ]; then
             PREV_RELEASE="$(readlink "$CURRENT_LINK")"
@@ -156,7 +165,7 @@ jobs:
           fi
 
           ln -sfn "$NEW_RELEASE_DIR/out" "$CURRENT_LINK"
-          echo "Deployed to $CURRENT_LINK (release $RELEASE_ID)"
+          echo "Deployed to $CURRENT_LINK (release ${RELEASE_ID})"
 
           # Keep latest 5 releases
           ls -1dt "$RELEASES_DIR"/* | tail -n +6 | xargs -r rm -rf
