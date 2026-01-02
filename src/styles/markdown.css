@@ -75,6 +75,9 @@
 /* 테이블 스타일 */
 .markdown-contents table {
   @apply w-full border-collapse mt-4 mb-4;
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .markdown-contents th,
