@@ -66,8 +66,11 @@ const Pagination: React.FC<PaginationProps> = ({
   const isNextBtnDisabled = currentPage === totalPages;
   const showShortCutNavigateBtn = !isSinglePage && totalPages > perPageCount;
 
+  const hookPathname = usePathname();
+  const resolvedPathname = pathname ?? hookPathname;
+
   if (moveByLink) {
-    const path = pathname || usePathname();
+    const path = resolvedPathname;
     const href = (page: number) => {
       const pageNumber = Math.max(Math.min(page, totalPages), 0);
 
