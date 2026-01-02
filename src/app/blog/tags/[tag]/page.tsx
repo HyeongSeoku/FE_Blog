@@ -2,8 +2,15 @@ import BlogPostCard from "@/components/BlogPostCard";
 import Tag from "@/components/Tag";
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { getTagPath } from "@/utils/path";
-import { getPostsByTag } from "@/utils/post";
+import { getAllTags, getPostsByTag } from "@/utils/post";
 import { Metadata } from "next";
+
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const tags = await getAllTags();
+  return tags.map((tag) => ({ tag }));
+}
 
 export function generateMetadata({
   params,

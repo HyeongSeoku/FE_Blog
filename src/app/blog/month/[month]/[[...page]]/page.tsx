@@ -2,43 +2,86 @@ import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
 import BlogDateTemplate from "@/templates/BlogDateTemplate";
 import { formatToKoreanMonth } from "@/utils/date";
-import { getPostsByDate } from "@/utils/post";
-import { redirect } from "next/navigation";
+import { getAllMonths, getPostsByDate } from "@/utils/post";
+import { notFound } from "next/navigation";
 
-interface BlogMonthPageProps {
-  params: { month: string };
-  searchParams: { [key: string]: string | undefined };
+export const dynamicParams = false;
+
+const parsePageParam = (page?: string[]) => {
+  if (!page || page.length === 0) return 1;
+  if (page.length !== 2 || page[0] !== "p") return null;
+  const current = Number(page[1]);
+  if (!Number.isFinite(current) || current < 2) return null;
+  return current;
+};
+
+export async function generateStaticParams() {
+  const months = await getAllMonths();
+  const params = await Promise.all(
+    months.map(async (month) => {
+      const { totalPostCount } = await getPostsByDate({
+        type: "month",
+        date: month,
+        page: 1,
+        pageSize: DEFAULT_PAGE_SIZE,
+      });
+      const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
+      const pageParams: { month: string; page?: string[] }[] = [
+        { month, page: [] },
+      ];
+
+      for (let page = 2; page <= totalPages; page += 1) {
+        pageParams.push({ month, page: ["p", String(page)] });
+      }
+
+      return pageParams;
+    }),
+  );
+
+  return params.flat();
 }
 
 export const generateMetadata = ({
   params,
-  searchParams,
-}: BlogMonthPageProps) => {
+}: {
+  params: { month: string; page?: string[] };
+}) => {
   const { month } = params;
-  const pageParam = searchParams.page;
-  const isFirstPage = !pageParam || pageParam === "1";
+  const currentPage = parsePageParam(params.page);
+  const pageSuffix =
+    currentPage && currentPage > 1 ? ` (page ${currentPage})` : "";
+  const url =
+    currentPage && currentPage > 1
+      ? `/blog/month/${month}/p/${currentPage}`
+      : `/blog/month/${month}`;
 
   return {
-    title: `${BASE_META_TITLE}|${month}월 게시물`,
+    title: `${BASE_META_TITLE}|${month}월 게시물${pageSuffix}`,
     description: `${month}월 작성된 블로그 글 목록을 확인하세요.`,
     openGraph: {
-      title: `${month} 게시물`,
+      title: `${month} 게시물${pageSuffix}`,
       description: `${month} 작성된 블로그 글 목록을 확인하세요.`,
-      url: isFirstPage
-        ? `/blog/month/${month}`
-        : `/blog/month/${month}?page=${pageParam}`,
+      url,
       type: "website",
     },
     alternates: {
-      canonical: isFirstPage
-        ? `/blog/month/${month}`
-        : `/blog/month/${month}?page=${pageParam}`,
+      canonical: url,
     },
   };
 };
 
-const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
+const BlogMonthPage = async ({
+  params,
+}: {
+  params: { month: string; page?: string[] };
+}) => {
   const { month } = params;
+  const currentPage = parsePageParam(params.page);
+
+  if (!currentPage) {
+    notFound();
+  }
+
   const formattedMonth = formatToKoreanMonth(month);
 
   const breadcrumbStructuredData = {
@@ -80,14 +123,6 @@ const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
     },
   };
 
-  const pageParam = searchParams.page;
-  const currentPage = pageParam ? parseInt(pageParam, 10) : 1;
-  const isInvalidPageParam = isNaN(currentPage) || currentPage <= 0;
-
-  if (isInvalidPageParam) {
-    redirect(`/blog/month/${month}`);
-  }
-
   const { postList, totalPostCount } = await getPostsByDate({
     type: "month",
     date: month,
@@ -95,6 +130,10 @@ const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
     pageSize: DEFAULT_PAGE_SIZE,
   });
   const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
+
+  if (totalPages && totalPages < currentPage) {
+    notFound();
+  }
 
   return (
     <>
@@ -104,6 +143,7 @@ const BlogMonthPage = async ({ params, searchParams }: BlogMonthPageProps) => {
         postCount={totalPostCount}
         currentPage={currentPage}
         totalPages={totalPages}
+        basePath={`/blog/month/${month}`}
       />
       <script
         type="application/ld+json"

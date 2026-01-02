@@ -9,7 +9,7 @@ import useGithubInfoStore from "@/store/githubInfo";
 
 interface HomeClientProps {
   postList: PostDataProps[];
-  githubData: GithubUserInfo;
+  githubData: GithubUserInfo | null;
   postCount: number;
 }
 
@@ -17,10 +17,11 @@ export const HomeClient = ({ githubData }: HomeClientProps) => {
   const { setGithubUser } = useGithubInfoStore();
 
   useEffect(() => {
+    if (!githubData) return;
     setGithubUser({
-      imgSrc: githubData?.avatar_url,
-      githubUrl: githubData?.html_url,
-      githubName: githubData?.login,
+      imgSrc: githubData.avatar_url,
+      githubUrl: githubData.html_url,
+      githubName: githubData.login,
     });
   }, [githubData]);
 

@@ -18,13 +18,15 @@ const PostCategoryCount = ({
   const pathname = usePathname();
   // const isReplace = pathname.includes("blog");
   const isReplace = false;
-  const isBlogPath = pathname === "/blog";
-  const isCategorySamePath = pathname === `/blog/${categoryKey.toLowerCase()}`;
+  const categoryPath = `/blog/${categoryKey.toLowerCase()}`;
+  const isBlogPath = pathname === "/blog" || pathname.startsWith("/blog/p/");
+  const isCategorySamePath =
+    pathname === categoryPath || pathname.startsWith(`${categoryPath}/p/`);
 
   if (isDefault) {
     return (
       <li>
-        <Link href={`/blog`} replace={isReplace} className="flex gap-1 group">
+        <Link href="/blog" replace={isReplace} className="flex gap-1 group">
           <div
             className={classNames(
               "text-3xl relative group",
@@ -46,7 +48,7 @@ const PostCategoryCount = ({
   return (
     <li>
       <Link
-        href={`/blog/${categoryKey.toLowerCase()}`}
+        href={categoryPath}
         replace={isReplace}
         className="flex gap-1 group"
       >

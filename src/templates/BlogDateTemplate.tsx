@@ -3,7 +3,7 @@
 import BlogPostCard from "@/components/BlogPostCard";
 import Pagination from "@/components/Pagination";
 import { PostDataProps } from "@/types/posts";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export interface BlogDateTemplateProps {
   dateText: string;
@@ -11,6 +11,7 @@ export interface BlogDateTemplateProps {
   postList: PostDataProps[];
   currentPage: number;
   totalPages: number;
+  basePath?: string;
 }
 
 const BlogDateTemplate = ({
@@ -19,20 +20,18 @@ const BlogDateTemplate = ({
   postList,
   currentPage,
   totalPages,
+  basePath,
 }: BlogDateTemplateProps) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const pathname = usePathname();
+  const resolvedPath = basePath || pathname;
 
   const handlePagination = (pageNumber: number) => {
-    const currentParams = new URLSearchParams(searchParams.toString());
-    currentParams.set("page", pageNumber.toString());
-
     if (pageNumber === 1) {
-      router.replace(`${pathname}`);
+      router.replace(resolvedPath);
       return;
     }
-    router.replace(`${pathname}?${currentParams}`);
+    router.replace(`${resolvedPath}/p/${pageNumber}`);
   };
 
   return (
@@ -61,7 +60,8 @@ const BlogDateTemplate = ({
           totalPages={totalPages}
           onPageChange={handlePagination}
           moveByLink
-          pageParam="page"
+          pathname={resolvedPath}
+          pageSegment="p"
         />
       </section>
     </div>

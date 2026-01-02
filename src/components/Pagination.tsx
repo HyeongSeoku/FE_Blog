@@ -13,6 +13,7 @@ interface PaginationProps {
   moveByLink?: boolean;
   pathname?: string;
   pageParam?: string;
+  pageSegment?: string;
   perPageCount?: number;
   isReplace?: boolean;
   preserveScroll?: boolean;
@@ -25,6 +26,7 @@ const Pagination: React.FC<PaginationProps> = ({
   moveByLink = false,
   pathname = "",
   pageParam = "",
+  pageSegment = "",
   perPageCount = 5,
   isReplace = false,
   preserveScroll = true,
@@ -72,6 +74,9 @@ const Pagination: React.FC<PaginationProps> = ({
       if (pageNumber === 0 || pageNumber === 1) return path;
       if (pageParam) {
         return `${path}?${pageParam}=${pageNumber}`;
+      }
+      if (pageSegment) {
+        return `${path}/${pageSegment}/${pageNumber}`;
       }
       return `${path}/${pageNumber}`;
     };

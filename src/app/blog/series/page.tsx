@@ -13,11 +13,11 @@ export function generateMetadata(): Metadata {
     openGraph: {
       title: metaTitle,
       description: metaDescription,
-      url: "/series",
+      url: "/blog/series",
       type: "website",
       images: [],
     },
-    alternates: { canonical: "/series" },
+    alternates: { canonical: "/blog/series" },
   };
 }
 

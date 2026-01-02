@@ -1,44 +1,86 @@
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
 import BlogDateTemplate from "@/templates/BlogDateTemplate";
-import { getPostsByDate } from "@/utils/post";
-import { redirect } from "next/navigation";
+import { getAllYears, getPostsByDate } from "@/utils/post";
+import { notFound } from "next/navigation";
 
-interface BlogYearPageProps {
-  params: { year: string };
-  searchParams: { [key: string]: string | undefined };
+export const dynamicParams = false;
+
+const parsePageParam = (page?: string[]) => {
+  if (!page || page.length === 0) return 1;
+  if (page.length !== 2 || page[0] !== "p") return null;
+  const current = Number(page[1]);
+  if (!Number.isFinite(current) || current < 2) return null;
+  return current;
+};
+
+export async function generateStaticParams() {
+  const years = await getAllYears();
+  const params = await Promise.all(
+    years.map(async (year) => {
+      const { totalPostCount } = await getPostsByDate({
+        type: "year",
+        date: year,
+        page: 1,
+        pageSize: DEFAULT_PAGE_SIZE,
+      });
+      const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
+      const pageParams: { year: string; page?: string[] }[] = [
+        { year, page: [] },
+      ];
+
+      for (let page = 2; page <= totalPages; page += 1) {
+        pageParams.push({ year, page: ["p", String(page)] });
+      }
+
+      return pageParams;
+    }),
+  );
+
+  return params.flat();
 }
 
 export const generateMetadata = ({
   params,
-  searchParams,
-}: BlogYearPageProps) => {
+}: {
+  params: { year: string; page?: string[] };
+}) => {
   const { year } = params;
-  const pageParam = searchParams.page;
-  const isFirstPage = !pageParam || pageParam === "1";
+  const currentPage = parsePageParam(params.page);
+  const pageSuffix =
+    currentPage && currentPage > 1 ? ` (page ${currentPage})` : "";
+  const url =
+    currentPage && currentPage > 1
+      ? `/blog/year/${year}/p/${currentPage}`
+      : `/blog/year/${year}`;
 
   return {
-    title: `${year}년도 게시물`,
+    title: `${year}년도 게시물${pageSuffix}`,
     description: `${year}년도 작성된 블로그 글 목록을 확인하세요.`,
     openGraph: {
-      title: `${year}년도 게시물`,
+      title: `${year}년도 게시물${pageSuffix}`,
       description: `${year}년도 작성된 블로그 글 목록을 확인하세요.`,
-      url: isFirstPage
-        ? `/blog/year/${year}`
-        : `/blog/year/${year}?page=${pageParam}`,
+      url,
       type: "website",
     },
     alternates: {
-      canonical: isFirstPage
-        ? `/blog/year/${year}`
-        : `/blog/year/${year}?page=${pageParam}`,
+      canonical: url,
     },
   };
 };
 
-const BlogYearPage = async ({ params, searchParams }: BlogYearPageProps) => {
+const BlogYearPage = async ({
+  params,
+}: {
+  params: { year: string; page?: string[] };
+}) => {
   const { year } = params;
   const yearText = `${year}년`;
+  const currentPage = parsePageParam(params.page);
+
+  if (!currentPage) {
+    notFound();
+  }
 
   const breadcrumbStructuredData = {
     "@context": "https://schema.org",
@@ -78,14 +120,6 @@ const BlogYearPage = async ({ params, searchParams }: BlogYearPageProps) => {
     },
   };
 
-  const pageParam = searchParams.page;
-  const currentPage = pageParam ? parseInt(pageParam, 10) : 1;
-  const isInvalidPageParam = isNaN(currentPage) || currentPage <= 0;
-
-  if (isInvalidPageParam) {
-    redirect(`/blog/year/${year}`);
-  }
-
   const { postList, totalPostCount } = await getPostsByDate({
     type: "year",
     date: year,
@@ -93,6 +127,10 @@ const BlogYearPage = async ({ params, searchParams }: BlogYearPageProps) => {
     pageSize: DEFAULT_PAGE_SIZE,
   });
   const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
+
+  if (totalPages && totalPages < currentPage) {
+    notFound();
+  }
 
   return (
     <>
@@ -102,6 +140,7 @@ const BlogYearPage = async ({ params, searchParams }: BlogYearPageProps) => {
         postCount={totalPostCount}
         currentPage={currentPage}
         totalPages={totalPages}
+        basePath={`/blog/year/${year}`}
       />
       <script
         type="application/ld+json"

@@ -1,8 +1,7 @@
 module.exports = {
   ci: {
     collect: {
-      startServerCommand: "pnpm run start",
-      url: ["http://localhost:3000"],
+      url: [process.env.LHCI_URL || "http://localhost:3000"],
       numberOfRuns: 1,
     },
     upload: {

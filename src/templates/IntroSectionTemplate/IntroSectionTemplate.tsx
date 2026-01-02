@@ -13,7 +13,7 @@ import {
 } from "@/constants/basic.constants";
 
 interface IntroSectionTemplateProps {
-  githubData?: GithubUserInfo;
+  githubData?: GithubUserInfo | null;
 }
 
 const IntroSectionTemplate = ({ githubData }: IntroSectionTemplateProps) => {
