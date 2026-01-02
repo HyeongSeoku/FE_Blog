@@ -23,7 +23,7 @@ export async function generateStaticParams() {
   const categories = Object.keys(CATEGORY_MAP);
 
   return categories.flatMap((category) => {
-    const count = categoryCounts[category as keyof typeof categoryCounts] ?? 0;
+    const count = categoryCounts[category] ?? 0;
     const totalPages = Math.ceil(count / DEFAULT_PAGE_SIZE);
     const params: { category: string; page?: string[] }[] = [
       { category: category.toLowerCase(), page: [] },
