@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@9.12.1",
   "scripts": {
     "optimize-images": "node ./script/optimize-images.js",
     "postbuild": "next-sitemap",
