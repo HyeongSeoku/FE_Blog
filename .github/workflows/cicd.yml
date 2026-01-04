@@ -23,8 +23,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: Enable corepack (pnpm)
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.12.1 --activate
 
       - name: Cache pnpm store
         uses: actions/cache@v3
@@ -63,8 +65,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: Enable corepack (pnpm)
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.12.1 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -184,8 +188,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: Enable corepack (pnpm)
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.12.1 --activate
 
       - name: Install dependencies
         run: pnpm install
