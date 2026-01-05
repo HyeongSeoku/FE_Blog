@@ -18,7 +18,7 @@ module.exports = {
     "next/core-web-vitals",
   ],
   rules: {
-    "prettier/prettier": ["off"],
+    "prettier/prettier": ["error"],
 
     // 🔒 타입 안전성
     "@typescript-eslint/no-explicit-any": "warn",

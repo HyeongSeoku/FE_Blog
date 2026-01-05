@@ -45,14 +45,6 @@ jobs:
       - name: Run ESLint
         run: pnpm run lint
 
-      - name: Debug Prettier (MainPostCard)
-        run: |
-          node -v
-          pnpm -v
-          pnpm exec prettier -v
-          sed -n '1,15p' src/components/MainPostCard.tsx
-          pnpm exec prettier --config .prettierrc --debug-check src/components/MainPostCard.tsx || true
-
       - name: Run Prettier (check only)
         run: pnpm run format:check
 

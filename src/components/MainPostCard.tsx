@@ -4,8 +4,10 @@ import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 
-export interface MainPostCardProps
-  extends Omit<PostDataProps, "slug" | "content"> {
+export interface MainPostCardProps extends Omit<
+  PostDataProps,
+  "slug" | "content"
+> {
   link: string;
   imgAlt?: string;
   categoryType?: "SUB" | "MAIN";
