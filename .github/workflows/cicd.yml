@@ -107,10 +107,14 @@ jobs:
           name: seoku-blog-build
           path: build.tar.gz
   deploy:
-    name: Deploy static site to EC2
+    name: Deploy static site to S3 + CloudFront
     needs: build
-    runs-on: [self-hosted, Linux, X64, seoku]
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - name: Download build artifact
@@ -119,60 +123,44 @@ jobs:
           name: seoku-blog-build
           path: ./release
 
-      - name: Prepare release id
-        shell: bash
-        run: |
-          echo "RELEASE_ID=$(date +%Y%m%d%H%M%S)" >> "$GITHUB_ENV"
-
-      - name: Extract build artifact (runner)
+      - name: Extract build artifact
         shell: bash
         run: |
           tar -xzf ./release/build.tar.gz -C ./release
 
-      - name: Prepare release directory
+      # ✅ (권장) OIDC로 AWS 인증
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Sync to S3
         shell: bash
         run: |
-          mkdir -p /home/ubuntu/deploy/blog/release/releases/${RELEASE_ID}
+          aws s3 sync ./release/out "s3://${{ secrets.S3_BUCKET }}/" \
+            --delete \
+            --only-show-errors
 
-      - name: Rsync static site
+      - name: Set cache-control for HTML (no-cache)
         shell: bash
         run: |
-          rsync -az --delete ./release/out/ /home/ubuntu/deploy/blog/release/releases/${RELEASE_ID}/out/
+          aws s3 cp "s3://${{ secrets.S3_BUCKET }}/" "s3://${{ secrets.S3_BUCKET }}/" \
+            --recursive \
+            --exclude "*" \
+            --include "*.html" \
+            --metadata-directive REPLACE \
+            --cache-control "no-cache" \
+            --content-type "text/html" \
+            --only-show-errors
 
-      - name: Switch release (atomic)
+      - name: CloudFront invalidation
         shell: bash
         run: |
-          set -euo pipefail
-
-          APP_DIR="/home/ubuntu/deploy/blog/release"
-          RELEASES_DIR="$APP_DIR/releases"
-          CURRENT_LINK="$APP_DIR/current"
-          NEW_RELEASE_DIR="$RELEASES_DIR/${RELEASE_ID}"
-
-          if [ -L "$CURRENT_LINK" ]; then
-            PREV_RELEASE="$(readlink "$CURRENT_LINK")"
-            ln -sfn "$PREV_RELEASE" "$APP_DIR/previous"
-          fi
-
-          ln -sfn "$NEW_RELEASE_DIR/out" "$CURRENT_LINK"
-          echo "Deployed to $CURRENT_LINK (release ${RELEASE_ID})"
-
-          # Keep latest 5 releases
-          ls -1dt "$RELEASES_DIR"/* | tail -n +6 | xargs -r rm -rf
-
-      - name: Health check
-        shell: bash
-        run: |
-          set -euo pipefail
-          for i in {1..30}; do
-            if curl -fsS "${{ secrets.NEXT_PUBLIC_SITE_URL }}" >/dev/null; then
-              echo "Health OK"; exit 0
-            fi
-            echo "Waiting for site... ($i/30)"
-            sleep 2
-          done
-          echo "Site did not become healthy in time"
-          exit 1
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths "/*" > /dev/null
+          echo "✅ Invalidation requested"
 
   lighthouse:
     name: Lighthouse (post-deploy)
