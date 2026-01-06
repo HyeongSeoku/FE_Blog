@@ -47,13 +47,14 @@ export const generateMetadata = ({
   params: { month: string; page?: string[] };
 }) => {
   const { month } = params;
+  const normalizedMonth = month.replace(/\./g, "-");
   const currentPage = parsePageParam(params.page);
   const pageSuffix =
     currentPage && currentPage > 1 ? ` (page ${currentPage})` : "";
   const url =
     currentPage && currentPage > 1
-      ? `/blog/month/${month}/p/${currentPage}`
-      : `/blog/month/${month}`;
+      ? `/blog/month/${normalizedMonth}/p/${currentPage}`
+      : `/blog/month/${normalizedMonth}`;
 
   return {
     title: `${BASE_META_TITLE}|${month}월 게시물${pageSuffix}`,
@@ -76,13 +77,14 @@ const BlogMonthPage = async ({
   params: { month: string; page?: string[] };
 }) => {
   const { month } = params;
+  const normalizedMonth = month.replace(/\./g, "-");
   const currentPage = parsePageParam(params.page);
 
   if (!currentPage) {
     notFound();
   }
 
-  const formattedMonth = formatToKoreanMonth(month);
+  const formattedMonth = formatToKoreanMonth(normalizedMonth);
 
   const breadcrumbStructuredData = {
     "@context": "https://schema.org",
@@ -103,8 +105,8 @@ const BlogMonthPage = async ({
       {
         "@type": "ListItem",
         position: 3,
-        name: `${month}월`,
-        item: `${BASE_URL}/blog/month/${month}`,
+        name: `${normalizedMonth}월`,
+        item: `${BASE_URL}/blog/month/${normalizedMonth}`,
       },
     ],
   };
@@ -112,8 +114,8 @@ const BlogMonthPage = async ({
   const collectionStructuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "@id": `${BASE_URL}/blog/month/${month}`,
-    url: `${BASE_URL}/blog/month/${month}`,
+    "@id": `${BASE_URL}/blog/month/${normalizedMonth}`,
+    url: `${BASE_URL}/blog/month/${normalizedMonth}`,
     name: `${formattedMonth} 게시물`,
     description: `${formattedMonth}에 작성된 블로그 글 모음 페이지입니다.`,
     isPartOf: {
@@ -125,7 +127,7 @@ const BlogMonthPage = async ({
 
   const { postList, totalPostCount } = await getPostsByDate({
     type: "month",
-    date: month,
+    date: normalizedMonth,
     page: currentPage,
     pageSize: DEFAULT_PAGE_SIZE,
   });
@@ -143,7 +145,7 @@ const BlogMonthPage = async ({
         postCount={totalPostCount}
         currentPage={currentPage}
         totalPages={totalPages}
-        basePath={`/blog/month/${month}`}
+        basePath={`/blog/month/${normalizedMonth}`}
       />
       <script
         type="application/ld+json"
