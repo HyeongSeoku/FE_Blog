@@ -236,7 +236,7 @@ export const getAllMonths = async (): Promise<string[]> => {
 
     const year = date.getFullYear();
     const month = `${date.getMonth() + 1}`.padStart(2, "0");
-    monthSet.add(`${year}.${month}`);
+    monthSet.add(`${year}-${month}`);
   });
 
   return Array.from(monthSet).sort();
@@ -271,7 +271,10 @@ export const getPostsByDate = async ({
     }
 
     if (type === "month") {
-      const [year, month] = date.split(".").map((str) => parseInt(str, 10));
+      const normalized = date.replace(/\./g, "-");
+      const [year, month] = normalized
+        .split("-")
+        .map((str) => parseInt(str, 10));
       return (
         createdAt.getFullYear() === year && createdAt.getMonth() + 1 === month
       );

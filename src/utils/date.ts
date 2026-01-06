@@ -24,11 +24,19 @@ export const getDate = (
 export const formatToKoreanMonth = (date: string): string => {
   if (!date) return "Invalid Date";
 
-  const isFullDate = /^\d{4}\.\d{2}\.\d{2}$/.test(date);
+  const dotDate = /^\d{4}\.\d{2}(\.\d{2})?$/;
+  const dashDate = /^\d{4}-\d{2}(-\d{2})?$/;
   let normalizedDate = date;
 
-  if (!isFullDate && /^\d{4}\.\d{2}$/.test(date)) {
-    normalizedDate += ".01";
+  if (dotDate.test(date)) {
+    if (/^\d{4}\.\d{2}$/.test(date)) {
+      normalizedDate += ".01";
+    }
+  } else if (dashDate.test(date)) {
+    if (/^\d{4}-\d{2}$/.test(date)) {
+      normalizedDate += "-01";
+    }
+    normalizedDate = normalizedDate.replace(/-/g, ".");
   }
 
   const parsedDate = dayjs(normalizedDate, "YYYY.MM.DD");

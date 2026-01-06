@@ -57,7 +57,7 @@ const BlogPostCard = ({
         <div className="text-sm flex items-center gap-1">
           <Link
             replace={isReplace}
-            href={`/blog/month/${getDate("YYYY.MM", createdAt)}`}
+            href={`/blog/month/${getDate("YYYY-MM", createdAt)}`}
             className="flex flex-col transition-colors duration-300 hover:text-gray-400 mb-2"
           >
             {formattedMonth}
