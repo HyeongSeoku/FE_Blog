@@ -28,40 +28,39 @@ export function MoSeriesSection({
     <section className="overflow-hidden py-4 min-md:hidden">
       <SwiperComponent
         modules={[Navigation]}
-        spaceBetween={4}
-        slidesPerView={1.2}
+        spaceBetween={12}
+        slidesPerView={1.15}
         centeredSlides={true}
         initialSlide={validSeriesList.length > 1 ? 1 : 0}
         onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
       >
         {seriesList.map(([key, value], idx) => (
-          <SwiperSlide key={key} style={{ width: 280 }}>
+          <SwiperSlide key={key}>
             <SeriesCard
               seriesKey={key}
               title={value.title}
               description={value.description}
               thumbnail={value.thumbnail}
               seriesCount={value.count}
+              seriesIndex={idx}
               className={classNames(
-                "transition-transform will-change-transform",
-                idx === activeIndex ? "scale-100" : "scale-90",
+                "transition-all will-change-transform duration-300",
+                idx === activeIndex
+                  ? "scale-100 opacity-100"
+                  : "scale-95 opacity-70",
               )}
               isSelected={idx === activeIndex}
             />
           </SwiperSlide>
         ))}
         {showMoreBtn && (
-          <SwiperSlide style={{ width: 280, height: "100%" }}>
-            <div className="flex items-center mt-4 ">
+          <SwiperSlide>
+            <div className="flex items-center justify-center h-full min-h-[280px]">
               <Link
-                className={classNames(
-                  "px-4 py-2 rounded-md mx-auto transition-colors duration-300",
-                  "bg-gray-400 hover:bg-gray-300",
-                  "dark:bg-gray-600 dark:hover:bg-gray-500",
-                )}
-                href={"/blog/series"}
+                className="px-6 py-3 rounded-full text-sm font-medium transition-colors duration-300 bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-gray-700 dark:text-gray-300"
+                href="/blog/series"
               >
-                전체 시리즈 보기
+                전체 시리즈 보기 →
               </Link>
             </div>
           </SwiperSlide>
@@ -80,13 +79,12 @@ export function PcSeriesSection({
   seriesList,
   maxLength,
 }: PcSeriesSectionProps) {
-  const showMoreBtn = !!maxLength && seriesList.length > maxLength;
   const seriesFilterLength = maxLength || seriesList.length;
 
   return (
-    <div className="md:hidden group">
-      <section className="grid grid-cols-4 gap-3 md-lg:grid-cols-2">
-        {seriesList.slice(0, seriesFilterLength).map(([key, value]) => (
+    <div className="md:hidden">
+      <section className="grid grid-cols-3 gap-5 md-lg:grid-cols-2">
+        {seriesList.slice(0, seriesFilterLength).map(([key, value], idx) => (
           <SeriesCard
             key={key}
             seriesKey={key}
@@ -94,23 +92,10 @@ export function PcSeriesSection({
             description={value.description}
             thumbnail={value.thumbnail}
             seriesCount={value.count}
+            seriesIndex={idx}
           />
         ))}
       </section>
-      {showMoreBtn && (
-        <div className="flex items-center mt-4">
-          <Link
-            className={classNames(
-              "px-4 py-2 rounded-md mx-auto transition-colors duration-300",
-              "bg-gray-400 hover:bg-gray-300",
-              "dark:bg-gray-600 dark:hover:bg-gray-500",
-            )}
-            href={"/blog/series"}
-          >
-            전체 시리즈 보기
-          </Link>
-        </div>
-      )}
     </div>
   );
 }

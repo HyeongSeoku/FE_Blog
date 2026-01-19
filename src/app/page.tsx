@@ -60,12 +60,29 @@ export default async function Home() {
       </MainSection>
 
       {!!seriesList.length && (
-        <MainSection title="시리즈">
+        <section className="my-16">
+          {/* 시리즈 섹션 헤더 */}
+          <div className="flex justify-between items-start mb-8">
+            <div>
+              <span className="text-xs font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-2 block">
+                In-Depth Series
+              </span>
+              <h2 className="text-3xl font-semibold text-gray-900 dark:text-white">
+                Structured Learning Paths
+              </h2>
+            </div>
+            <Link
+              href="/blog/series"
+              className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors flex items-center gap-1"
+            >
+              All Series <span>→</span>
+            </Link>
+          </div>
           <SeriesSection
             seriesList={seriesList}
             maxLength={SERIES_MAX_LENGTH}
           />
-        </MainSection>
+        </section>
       )}
     </DefaultLayout>
   );
