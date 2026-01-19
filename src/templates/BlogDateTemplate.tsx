@@ -38,7 +38,7 @@ const BlogDateTemplate = ({
     <div className="w-full h-full flex flex-col flex-grow">
       <h3 className="text-4xl font-bold">{dateText}</h3>
       <p>{postCount}개의 포스트</p>
-      <ul>
+      <ul className="mt-6 grid grid-cols-1 gap-6 min-md:grid-cols-2 min-lg:grid-cols-3">
         {postList.map(
           ({ title, createdAt, description, slug, tags, thumbnail }) => (
             <BlogPostCard
@@ -49,6 +49,7 @@ const BlogDateTemplate = ({
               slug={slug}
               tagList={tags}
               thumbnail={thumbnail}
+              variant="standard"
             />
           ),
         )}

@@ -11,7 +11,7 @@ import Link from "next/link";
 import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
 import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionTemplate";
 import { getStructuredData } from "@/utils/structure";
-import RecentPostCard from "@/components/RecentContentCard";
+
 import { getAllSeriesMetadata } from "@/utils/series";
 import { SeriesSection } from "@/components/SeriesSection";
 import { Metadata } from "next";
@@ -32,7 +32,6 @@ export default async function Home() {
   const githubData = await fetchGithubUserInfo();
 
   const structuredData = getStructuredData();
-  const recentPost = postList[0] || null;
 
   return (
     <DefaultLayout structuredData={structuredData}>
@@ -43,19 +42,6 @@ export default async function Home() {
         postCount={totalPostCount}
         githubData={githubData}
       />
-      <section className="mt-10 flex flex-col md:justify-center">
-        {recentPost && (
-          <RecentPostCard
-            key={recentPost.slug}
-            title={recentPost.title}
-            subTitle={recentPost.description}
-            date={recentPost.createdAt}
-            thumbnail={recentPost.thumbnail}
-            link={`/posts/${recentPost.slug}`}
-            thumbnailAlt={recentPost.title}
-          />
-        )}
-      </section>
 
       <MainSection
         title="게시물"

@@ -75,7 +75,7 @@ const TagPage = async ({ params }: { params: { tag: string } }) => {
         ))}
       </ul>
 
-      <ul className="flex flex-col gap-3 mt-3">
+      <ul className="mt-6 grid grid-cols-1 gap-6 min-md:grid-cols-2 min-lg:grid-cols-3">
         {postList.map(
           ({ title, description, slug, tags, createdAt, thumbnail }) => (
             <BlogPostCard
@@ -86,6 +86,7 @@ const TagPage = async ({ params }: { params: { tag: string } }) => {
               tagList={tags}
               createdAt={createdAt}
               thumbnail={thumbnail}
+              variant="standard"
             />
           ),
         )}

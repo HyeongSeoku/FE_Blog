@@ -1,6 +1,6 @@
 "use client";
 
-import BlogPostCard from "@/components/BlogPostCard";
+import BlogPostCard, { BlogPostCardVariant } from "@/components/BlogPostCard";
 import Pagination from "@/components/Pagination";
 import PostCategoryCount from "@/components/PostCategoryCount";
 import {
@@ -71,11 +71,17 @@ const CategoryList = ({
   );
 };
 
+const getCardVariant = (index: number): BlogPostCardVariant => {
+  if (index === 0) return "featured";
+  if (index === 5) return "wide";
+  return "standard";
+};
+
 const CategoryPostList = ({ postList }: { postList: PostDataProps[] }) => {
   return (
-    <ul>
+    <ul className="mt-6 grid grid-cols-1 gap-6 min-md:grid-cols-2 min-lg:grid-cols-3">
       {postList.map(
-        ({ title, createdAt, description, slug, tags, thumbnail }) => (
+        ({ title, createdAt, description, slug, tags, thumbnail }, index) => (
           <BlogPostCard
             key={slug}
             title={title}
@@ -84,6 +90,7 @@ const CategoryPostList = ({ postList }: { postList: PostDataProps[] }) => {
             slug={slug}
             tagList={tags}
             thumbnail={thumbnail}
+            variant={getCardVariant(index)}
           />
         ),
       )}
