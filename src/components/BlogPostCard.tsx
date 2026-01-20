@@ -4,7 +4,7 @@ import { getDate } from "@/utils/date";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { getTagPath } from "@/utils/path";
+import { formatTagDisplay, getTagPath } from "@/utils/tag";
 import classNames from "classnames";
 
 export type BlogPostCardVariant = "featured" | "standard" | "wide";
@@ -47,7 +47,7 @@ const BlogPostCard = ({
           className="rounded-full bg-[var(--bg-gray-color)] px-2 py-1 transition-colors duration-300 hover:bg-[var(--bg-gray-hover-color)]"
         >
           <Link replace={isReplace} href={getTagPath(item)}>
-            {item}
+            {formatTagDisplay(item)}
           </Link>
         </li>
       ))}

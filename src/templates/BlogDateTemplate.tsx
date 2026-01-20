@@ -1,6 +1,6 @@
 "use client";
 
-import BlogPostCard from "@/components/BlogPostCard";
+import BlogPostListItem from "@/components/BlogPostListItem";
 import Pagination from "@/components/Pagination";
 import { PostDataProps } from "@/types/posts";
 import { usePathname, useRouter } from "next/navigation";
@@ -35,36 +35,46 @@ const BlogDateTemplate = ({
   };
 
   return (
-    <div className="w-full h-full flex flex-col flex-grow">
-      <h3 className="text-4xl font-bold">{dateText}</h3>
-      <p>{postCount}개의 포스트</p>
-      <ul className="mt-6 grid grid-cols-1 gap-6 min-md:grid-cols-2 min-lg:grid-cols-3">
-        {postList.map(
-          ({ title, createdAt, description, slug, tags, thumbnail }) => (
-            <BlogPostCard
-              key={slug}
-              title={title}
-              createdAt={createdAt}
-              description={description}
-              slug={slug}
-              tagList={tags}
-              thumbnail={thumbnail}
-              variant="standard"
-            />
-          ),
-        )}
-      </ul>
+    <div className="w-full h-full flex flex-col flex-grow max-w-4xl mx-auto">
+      {/* 헤더 */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          {dateText}
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400">
+          {postCount}개의 포스트
+        </p>
+      </div>
 
-      <section className="mt-auto">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePagination}
-          moveByLink
-          pathname={resolvedPath}
-          pageSegment="p"
-        />
-      </section>
+      {/* 게시물 리스트 */}
+      <div className="divide-y divide-gray-100 dark:divide-gray-800">
+        {postList.map((post) => (
+          <BlogPostListItem
+            key={post.slug}
+            title={post.title}
+            description={post.description}
+            createdAt={post.createdAt}
+            slug={post.slug}
+            thumbnail={post.thumbnail}
+            category={post.category}
+            subCategory={post.subCategory}
+          />
+        ))}
+      </div>
+
+      {/* 페이지네이션 */}
+      {totalPages > 1 && (
+        <section className="mt-12 flex justify-center">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePagination}
+            moveByLink
+            pathname={resolvedPath}
+            pageSegment="p"
+          />
+        </section>
+      )}
     </div>
   );
 };
