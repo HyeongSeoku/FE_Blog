@@ -9,7 +9,7 @@ import DoubleArrow from "@/icon/arrow_right_double.svg";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import Image from "next/image";
 import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
-import { getTagPath } from "@/utils/path";
+import { formatTagDisplay, getTagPath } from "@/utils/tag";
 import dayjs from "dayjs";
 import MdxAnimation from "./MdxAnimation";
 import { ParsePostContent } from "./ParsePostContent";
@@ -125,7 +125,7 @@ const MdxDetailTemplate = ({
                 key={`${tagItem}_${idx}`}
                 className="text-primary hover:text-primary-hover transition-colors duration-300"
               >
-                #{tagItem}
+                #{formatTagDisplay(tagItem)}
               </Link>
             ))}
           </section>

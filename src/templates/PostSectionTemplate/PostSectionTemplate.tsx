@@ -12,7 +12,6 @@ const getCardVariant = (index: number): MainPostCardVariant => {
   // 1: side (4컬럼, 2행)
   // 2-4: standard (4컬럼)
   // 5: wide (12컬럼, 전체 너비)
-  // 나머지: standard
   const variantMap: MainPostCardVariant[] = [
     "large",
     "side",

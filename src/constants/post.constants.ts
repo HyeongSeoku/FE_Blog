@@ -62,7 +62,7 @@ export const SUB_CATEGORY_MAP: Record<Category, SubCategory[]> = {
 
 export const DEFAULT_CATEGORY_ALL = "All";
 export const DEFAULT_PAGE_SIZE = 10;
-export const DEFAULT_MAIN_POST_COUNT = 9;
+export const DEFAULT_MAIN_POST_COUNT = 6; // 벤토 UI 최대 개수
 export const SERIES_MAX_LENGTH = 4;
 
 export const CATEGORY_DESCRIPTION_BIG: Record<string, string> = {
