@@ -112,16 +112,7 @@ export const getAllPosts = async ({
 
   const validPosts = posts.filter(Boolean) as PostDataProps[];
 
-  // TODO: UI 테스트용 - 나중에 제거
-  const duplicatedPosts = [
-    ...validPosts,
-    ...validPosts.map((post, idx) => ({
-      ...post,
-      slug: `${post.slug}-copy-${idx}`,
-    })),
-  ];
-
-  let resultPosts = duplicatedPosts;
+  let resultPosts = validPosts;
 
   if (targetYear) {
     resultPosts = filterPosts(resultPosts, {
@@ -138,7 +129,7 @@ export const getAllPosts = async ({
 
   return {
     postList: resultPosts,
-    totalPostCount: duplicatedPosts.length, // TODO: UI 테스트용 - validPosts.length로 복원
+    totalPostCount: validPosts.length,
     categoryCounts,
     seriesCounts,
   };
