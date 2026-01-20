@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import useThemeStore from "@/store/theme";
 import SunIcon from "@/icon/sun.svg";
 import MoonIcon from "@/icon/moon.svg";
@@ -12,24 +11,13 @@ const cx = (...args: string[]) =>
 
 const ThemeButton = () => {
   const toggleTheme = useThemeStore((state) => state.toggleTheme);
-  const isDarkMode = useThemeStore((state) => state.isDarkMode);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const ariaLabel = mounted
-    ? `change ${isDarkMode ? "Light" : "Dark"} mode`
-    : "테마 변경";
 
   return (
     <button
       className="flex flex-col flex-shrink-0 w-10 h-10 overflow-hidden hover:bg-gray-400/20 rounded-sm"
-      aria-label={ariaLabel}
-      title={ariaLabel}
+      aria-label="테마 변경"
+      title="테마 변경"
       onClick={toggleTheme}
-      suppressHydrationWarning
     >
       <div
         className={`${cx("themeContainer")} flex flex-col flex-shrink-0 w-10 h-20 transition-transform duration-200 ease-in-out`}
