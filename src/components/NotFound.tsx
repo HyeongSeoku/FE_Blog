@@ -5,7 +5,7 @@ import GitHubIssueButton from "./GithubIssueButton";
 
 const NotFound = () => {
   return (
-    <section className="w-full h-full px-8 md:px-4 flex flex-col">
+    <section className="w-full h-full px-8 mobile:px-4 flex flex-col">
       <div className="flex flex-col items-center gap-2 my-auto">
         <h1 className="text-3xl font-bold">404 Not found</h1>
         <div className="text-lg flex flex-col text-center">

@@ -24,7 +24,7 @@ const ScrollProgressBar = ({ className = "" }: ScrollProgressBarProps) => {
     >
       <div
         className={classNames(
-          "absolute left-0 right-0 bottom-0 w-full h-1 bg-gray-300 z-10 md:hidden",
+          "absolute left-0 right-0 bottom-0 w-full h-1 bg-gray-300 z-10 mobile:hidden",
           className,
         )}
       >

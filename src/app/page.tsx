@@ -1,4 +1,4 @@
-import { getAllPosts } from "@/utils/post";
+import { getAllPosts, getYearlyPostCounts } from "@/utils/post";
 import { HomeClient } from "./pageClient";
 import { fetchGithubUserInfo } from "@/api/github";
 import DefaultLayout from "@/layout/DefaultLayout";
@@ -6,14 +6,14 @@ import {
   DEFAULT_MAIN_POST_COUNT,
   SERIES_MAX_LENGTH,
 } from "@/constants/post.constants";
-import MainSection from "@/components/MainSection";
 import Link from "next/link";
 import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
 import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionTemplate";
 import { getStructuredData } from "@/utils/structure";
-import RecentPostCard from "@/components/RecentContentCard";
+
 import { getAllSeriesMetadata } from "@/utils/series";
 import { SeriesSection } from "@/components/SeriesSection";
+import ArchiveSection from "@/components/ArchiveSection";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -28,11 +28,11 @@ export default async function Home() {
   });
   const seriesData = await getAllSeriesMetadata({ sortByLatestPost: true });
   const seriesList = Object.entries(seriesData);
+  const yearlyData = await getYearlyPostCounts();
 
   const githubData = await fetchGithubUserInfo();
 
   const structuredData = getStructuredData();
-  const recentPost = postList[0] || null;
 
   return (
     <DefaultLayout structuredData={structuredData}>
@@ -43,44 +43,57 @@ export default async function Home() {
         postCount={totalPostCount}
         githubData={githubData}
       />
-      <section className="mt-10 flex flex-col md:justify-center">
-        {recentPost && (
-          <RecentPostCard
-            key={recentPost.slug}
-            title={recentPost.title}
-            subTitle={recentPost.description}
-            date={recentPost.createdAt}
-            thumbnail={recentPost.thumbnail}
-            link={`/posts/${recentPost.slug}`}
-            thumbnailAlt={recentPost.title}
-          />
-        )}
-      </section>
 
-      <MainSection
-        title="게시물"
-        titleChildren={
-          totalPostCount > DEFAULT_MAIN_POST_COUNT ? (
+      <section className="my-16">
+        {/* 게시물 섹션 헤더 */}
+        <div className="flex justify-between items-start mb-8">
+          <div>
+            <span className="text-xs font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-2 block">
+              Latest
+            </span>
+            <h2 className="text-3xl font-semibold text-gray-900 dark:text-white">
+              최신 게시물
+            </h2>
+          </div>
+          {totalPostCount > DEFAULT_MAIN_POST_COUNT && (
             <Link
               href="/blog"
-              className="text-sm text-gray-500 hover:text-theme transition-colors"
+              className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors flex items-center gap-1"
             >
-              더보기
+              View All <span>→</span>
             </Link>
-          ) : null
-        }
-      >
+          )}
+        </div>
         <PostSectionTemplate postList={postList} />
-      </MainSection>
+      </section>
 
       {!!seriesList.length && (
-        <MainSection title="시리즈">
+        <section className="my-16">
+          {/* 시리즈 섹션 헤더 */}
+          <div className="flex justify-between items-start mb-8">
+            <div>
+              <span className="text-xs font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-2 block">
+                Deep Dive
+              </span>
+              <h2 className="text-3xl font-semibold text-gray-900 dark:text-white">
+                연재 시리즈
+              </h2>
+            </div>
+            <Link
+              href="/blog/series"
+              className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors flex items-center gap-1"
+            >
+              All Series <span>→</span>
+            </Link>
+          </div>
           <SeriesSection
             seriesList={seriesList}
             maxLength={SERIES_MAX_LENGTH}
           />
-        </MainSection>
+        </section>
       )}
+
+      <ArchiveSection yearlyData={yearlyData} />
     </DefaultLayout>
   );
 }

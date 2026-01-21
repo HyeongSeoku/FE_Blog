@@ -12,6 +12,7 @@ import {
   getPostsByCategoryResponse,
 } from "@/types/posts";
 import { getMdxContents, getRepresentativeImage } from "./mdx";
+import { getDate } from "./date";
 
 import {
   CATEGORY_MAP,
@@ -118,7 +119,7 @@ export const getAllPosts = async ({
     resultPosts = filterPosts(resultPosts, {
       tags: undefined,
       category: undefined,
-    }).filter((post) => new Date(post.createdAt).getFullYear() === targetYear);
+    }).filter((post) => Number(getDate("YYYY", post.createdAt)) === targetYear);
   }
 
   resultPosts = sortAndPaginatePosts(resultPosts, { isSorted, page, pageSize });
@@ -144,6 +145,13 @@ export const getPostsDetail = async (
   return mdxContentData;
 };
 
+/**
+ * 태그를 URL-safe한 형태로 정규화
+ */
+const normalizeTag = (tag: string): string => {
+  return tag.trim().toLowerCase().replace(/\s+/g, "-").replace(/-+/g, "-");
+};
+
 export const getPostsByTag = async (
   tag: string,
 ): Promise<{
@@ -152,6 +160,7 @@ export const getPostsByTag = async (
   tagList: { key: string; value: number }[];
 }> => {
   const filePaths = await getMdxFilesRecursively(POST_PATH);
+  const normalizedSearchTag = normalizeTag(tag);
 
   const tagCounts: Record<string, number> = {};
 
@@ -169,9 +178,13 @@ export const getPostsByTag = async (
       const tags: string[] = Array.isArray(data.tags)
         ? data.tags
         : data.tags.split(",");
-      tags.forEach((tag) => {
-        const lowerCaseTag = tag.trim().toLowerCase();
-        tagCounts[lowerCaseTag] = (tagCounts[lowerCaseTag] || 0) + 1;
+
+      // 정규화된 태그로 카운트
+      tags.forEach((t) => {
+        const normalizedTag = normalizeTag(t);
+        if (normalizedTag) {
+          tagCounts[normalizedTag] = (tagCounts[normalizedTag] || 0) + 1;
+        }
       });
 
       return {
@@ -188,13 +201,14 @@ export const getPostsByTag = async (
     }),
   );
 
+  // 정규화된 태그로 비교
   const filteredPosts = (posts.filter(Boolean) as PostDataProps[]).filter(
-    (post) => post.tags.some((t) => t.toLowerCase() === tag.toLowerCase()),
+    (post) => post.tags.some((t) => normalizeTag(t) === normalizedSearchTag),
   );
 
-  const tagList = Object.keys(tagCounts).map((key) => {
-    return { key, value: tagCounts[key] };
-  });
+  const tagList = Object.keys(tagCounts)
+    .map((key) => ({ key, value: tagCounts[key] }))
+    .sort((a, b) => a.key.localeCompare(b.key)); // 알파벳 순 정렬
 
   return { list: filteredPosts, count: filteredPosts.length, tagList };
 };
@@ -205,7 +219,15 @@ export const getAllTags = async (): Promise<string[]> => {
 
   postList.forEach((post) => {
     post.tags.forEach((tag) => {
-      tagSet.add(tag.trim().toLowerCase());
+      // 공백을 하이픈으로 변환하여 URL-safe하게
+      const normalizedTag = tag
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-");
+      if (normalizedTag) {
+        tagSet.add(normalizedTag);
+      }
     });
   });
 
@@ -217,13 +239,31 @@ export const getAllYears = async (): Promise<string[]> => {
   const yearSet = new Set<string>();
 
   postList.forEach((post) => {
-    const year = new Date(post.createdAt).getFullYear();
-    if (!Number.isNaN(year)) {
-      yearSet.add(String(year));
+    const year = getDate("YYYY", post.createdAt);
+    if (year !== "Invalid Date") {
+      yearSet.add(year);
     }
   });
 
   return Array.from(yearSet).sort();
+};
+
+export const getYearlyPostCounts = async (): Promise<
+  { year: string; count: number }[]
+> => {
+  const { postList } = await getAllPosts({});
+  const yearCounts: Record<string, number> = {};
+
+  postList.forEach((post) => {
+    const year = getDate("YYYY", post.createdAt);
+    if (year !== "Invalid Date") {
+      yearCounts[year] = (yearCounts[year] || 0) + 1;
+    }
+  });
+
+  return Object.entries(yearCounts)
+    .map(([year, count]) => ({ year, count }))
+    .sort((a, b) => Number(b.year) - Number(a.year)); // 최신순 정렬
 };
 
 export const getAllMonths = async (): Promise<string[]> => {
@@ -231,12 +271,12 @@ export const getAllMonths = async (): Promise<string[]> => {
   const monthSet = new Set<string>();
 
   postList.forEach((post) => {
-    const date = new Date(post.createdAt);
-    if (Number.isNaN(date.getTime())) return;
+    const year = getDate("YYYY", post.createdAt);
+    const month = getDate("MM", post.createdAt);
 
-    const year = date.getFullYear();
-    const month = `${date.getMonth() + 1}`.padStart(2, "0");
-    monthSet.add(`${year}-${month}`);
+    if (year !== "Invalid Date" && month !== "Invalid Date") {
+      monthSet.add(`${year}-${month}`);
+    }
   });
 
   return Array.from(monthSet).sort();
@@ -264,20 +304,19 @@ export const getPostsByDate = async ({
 
   // 날짜 필터링
   const filteredPosts = allPosts.filter((post) => {
-    const createdAt = new Date(post.createdAt);
+    const postYear = getDate("YYYY", post.createdAt);
+    const postMonth = getDate("MM", post.createdAt);
+
+    if (postYear === "Invalid Date") return false;
 
     if (type === "year") {
-      return createdAt.getFullYear().toString() === date;
+      return postYear === date;
     }
 
     if (type === "month") {
       const normalized = date.replace(/\./g, "-");
-      const [year, month] = normalized
-        .split("-")
-        .map((str) => parseInt(str, 10));
-      return (
-        createdAt.getFullYear() === year && createdAt.getMonth() + 1 === month
-      );
+      const [year, month] = normalized.split("-");
+      return postYear === year && postMonth === month.padStart(2, "0");
     }
 
     return false;

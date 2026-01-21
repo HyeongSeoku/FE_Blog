@@ -13,18 +13,14 @@ const ThemeButton = () => {
   const toggleTheme = useThemeStore((state) => state.toggleTheme);
   const isDarkMode = useThemeStore((state) => state.isDarkMode);
 
-  // const ariaLabel = isClient
-  //   ? `change ${isDarkMode ? "Light" : "Dark"} mode`
-  //   : "change theme";
-
-  const ariaLabel = `change ${isDarkMode ? "Light" : "Dark"} mode`;
-
   return (
     <button
       className="flex flex-col flex-shrink-0 w-10 h-10 overflow-hidden hover:bg-gray-400/20 rounded-sm"
-      aria-label={ariaLabel}
-      title={ariaLabel}
+      aria-label="테마 변경"
+      aria-pressed={isDarkMode}
+      title="테마 변경"
       onClick={toggleTheme}
+      suppressHydrationWarning
     >
       <div
         className={`${cx("themeContainer")} flex flex-col flex-shrink-0 w-10 h-20 transition-transform duration-200 ease-in-out`}

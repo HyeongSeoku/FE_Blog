@@ -1,46 +1,90 @@
 import { PostDataProps } from "@/types/posts";
-import MainPostCard from "@/components/MainPostCard";
+import MainPostCard, { MainPostCardVariant } from "@/components/MainPostCard";
+import classNames from "classnames";
 
 export interface PostSectionProps {
   postList: PostDataProps[];
 }
 
+// 벤토 UI 레이아웃에 맞춰 variant 할당 (순수 레이아웃 크기만)
+const getCardVariant = (index: number): MainPostCardVariant => {
+  // 0: large (8컬럼, 2행)
+  // 1: side (4컬럼, 2행)
+  // 2-4: standard (4컬럼)
+  // 5: wide (12컬럼, 전체 너비)
+  const variantMap: MainPostCardVariant[] = [
+    "large",
+    "side",
+    "standard",
+    "standard",
+    "standard",
+    "wide",
+  ];
+  return variantMap[index] || "standard";
+};
+
+// variant에 따른 그리드 클래스 반환
+const getGridClass = (variant: MainPostCardVariant): string => {
+  switch (variant) {
+    case "large":
+      return "tablet:col-span-8 tablet:row-span-2";
+    case "side":
+      return "tablet:col-span-4 tablet:row-span-2";
+    case "wide":
+      return "tablet:col-span-12";
+    case "standard":
+    default:
+      return "tablet:col-span-4";
+  }
+};
+
 const PostSectionTemplate = ({ postList }: PostSectionProps) => {
   if (!postList.length) {
     return (
-      <div className="flex items-center w-full justify-center text-gray-500 p-3 min-h-60 md:min-h-30">
+      <div className="flex items-center w-full justify-center text-gray-500 p-3 min-h-60 mobile:min-h-30">
         게시물이 없습니다
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <ul className="grid grid-cols-1 tablet:grid-cols-12 gap-4 tablet:gap-6 auto-rows-auto">
       {postList.map(
-        ({
-          title,
-          description,
-          createdAt,
-          slug,
-          tags,
-          category,
-          subCategory,
-          thumbnail,
-        }) => (
-          <MainPostCard
-            key={slug}
-            link={`/posts/${slug}`}
-            title={title}
-            description={description}
-            createdAt={createdAt}
-            tags={tags}
-            category={category}
-            subCategory={subCategory}
-            thumbnail={thumbnail}
-          />
-        ),
+        (
+          {
+            title,
+            description,
+            createdAt,
+            slug,
+            tags,
+            category,
+            subCategory,
+            thumbnail,
+          },
+          index,
+        ) => {
+          const variant = getCardVariant(index);
+          return (
+            <li
+              key={slug}
+              className={classNames("h-full", getGridClass(variant))}
+            >
+              <MainPostCard
+                link={`/posts/${slug}`}
+                title={title}
+                description={description}
+                createdAt={createdAt}
+                tags={tags}
+                category={category}
+                subCategory={subCategory}
+                thumbnail={thumbnail}
+                variant={variant}
+              />
+            </li>
+          );
+        },
       )}
-    </div>
+    </ul>
   );
 };
 

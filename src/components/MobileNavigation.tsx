@@ -49,7 +49,7 @@ const MobileNavigation = ({
           "opacity-100 translate-y-0 h-dvh w-dvw": isOpen,
           "opacity-0 -translate-y-full h-0": !isOpen,
         },
-        "min-md:hidden",
+        "tablet:hidden",
         className,
       )}
     >

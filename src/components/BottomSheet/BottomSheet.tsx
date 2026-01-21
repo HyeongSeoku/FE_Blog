@@ -64,10 +64,10 @@ const BottomSheet = ({
       <div
         className={classNames(
           "absolute max-w-3xl shadow-2xl left-0 right-0 rounded-t-lg py-7 bg-white text-black transition-[bottom] duration-300",
-          "min-md:rounded-b-lg min-md:left-1/2 min-md:-translate-x-1/2",
+          "tablet:rounded-b-lg tablet:left-1/2 tablet:-translate-x-1/2",
           { "-bottom-full": !isAnimating },
           {
-            "bottom-0 min-md:bottom-5": isAnimating,
+            "bottom-0 tablet:bottom-5": isAnimating,
           },
           modalClassName,
         )}

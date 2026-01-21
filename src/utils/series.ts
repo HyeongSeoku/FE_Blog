@@ -2,6 +2,7 @@ import rawSeriesData from "@/data/series.json";
 import { SeriesListData, SeriesMetadata } from "@/types/series";
 import { getAllPosts } from "./post";
 import { PostDataProps } from "@/types/posts";
+import dayjs from "dayjs";
 
 interface GetAllSeriesMetadataProps {
   sortByLatestPost?: boolean; // undefined면 정렬 안함
@@ -33,10 +34,12 @@ export const getAllSeriesMetadata = async (
         const postsInSeries = postList.filter((post) => post.series === key);
         const latest = postsInSeries.reduce(
           (latest, post) => {
-            const date = new Date(post.createdAt);
-            return !latest || date > latest ? date : latest;
+            const normalizedDate = post.createdAt.replace(/\./g, "-");
+            const date = dayjs(normalizedDate);
+            if (!date.isValid()) return latest;
+            return !latest || date.isAfter(latest) ? date : latest;
           },
-          undefined as Date | undefined,
+          undefined as dayjs.Dayjs | undefined,
         );
 
         acc[key].latestDate = latest?.toISOString() ?? undefined;

@@ -5,17 +5,22 @@ export default {
   darkMode: ["class", '[data-theme="dark"]'],
   theme: {
     screens: {
-      xs: { max: "375px" },
-      sm: { max: "640px" },
-      md: { max: "768px" },
-      lg: { max: "1024px" },
-      xl: { max: "1280px" },
-      "2xl": { max: "1536px" },
+      // 디바이스 기반 브레이크포인트
+      mobile: { max: "767px" }, // 모바일 (0 ~ 767px)
+      tablet: { min: "768px" }, // 태블릿 이상 (768px ~)
+      desktop: { min: "1024px" }, // 데스크톱 (1024px ~)
+      // 범위 (특정 디바이스만)
+      "tablet-only": { min: "768px", max: "1023px" }, // 태블릿만 (768px ~ 1023px)
+      "desktop-only": { min: "1024px", max: "1279px" }, // 작은 데스크톱만
+      // 레거시 호환 (필요시 사용)
+      xs: { max: "374px" },
+      sm: { max: "639px" },
+      md: { max: "767px" },
+      lg: { max: "1023px" },
+      xl: { max: "1279px" },
       "min-md": { min: "768px" },
       "min-lg": { min: "1024px" },
-      "min-xl": { min: "1280px" },
-      "lg-xl": { min: "1024px", max: "1280px" },
-      "md-lg": { min: "769px", max: "1023px" },
+      "md-lg": { min: "768px", max: "1023px" },
     },
     extend: {
       textColor: {
