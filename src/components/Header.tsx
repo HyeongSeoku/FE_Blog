@@ -46,7 +46,7 @@ const Header = ({
   return (
     <header
       className={classNames(
-        "sticky left-0 right-0 z-20 h-14 py-2 flex items-center px-8 w-full box-border backdrop-blur-sm transition-[top,opacity] duration-300 md:px-4",
+        "sticky left-0 right-0 z-20 h-14 py-2 flex items-center px-8 w-full box-border backdrop-blur-sm transition-[top,opacity] duration-300 mobile:px-4",
         {
           "top-0 opacity-1": !hasAnimation || scrollDirection === "up",
           "-top-14 opacity-0": hasAnimation && scrollDirection === "down",
@@ -62,7 +62,7 @@ const Header = ({
           <Logo
             width={90}
             height={30}
-            className="text-3xl font-bold transition-[color] text-primary hover:text-primary-hover md:text-2xl"
+            className="text-3xl font-bold transition-[color] text-primary hover:text-primary-hover mobile:text-2xl"
           />
         </button>
       )}
@@ -70,14 +70,14 @@ const Header = ({
       {children && <>{children}</>}
       {!hideNavigation && (
         <>
-          <Navigation className="ml-4 md:hidden" />
+          <Navigation className="ml-4 mobile:hidden" />
           <div className="flex items-center ml-auto gap-2">
             <ThemeButton />
 
             <button
               className={classNames(
                 "ml-1 h-10 w-10 flex items-center justify-center relative z-30 hover:bg-gray-400/20 rounded-sm",
-                "min-md:hidden",
+                "tablet:hidden",
               )}
               onClick={toggleMoMenu}
             >

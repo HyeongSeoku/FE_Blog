@@ -49,13 +49,13 @@ const BlogPostListItem = ({
 
   return (
     <article className="group py-8 border-b border-gray-100 dark:border-gray-800 last:border-b-0">
-      <div className="flex gap-6 min-md:gap-8">
+      <div className="flex gap-6 tablet:gap-8">
         <div className="flex flex-col gap-2 flex-shrink-0">
           <Link
             href={`/posts/${slug}`}
             className={classNames(
               "rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800",
-              "w-24 h-24 min-md:w-48 min-md:h-32",
+              "w-24 h-24 tablet:w-48 tablet:h-32",
             )}
           >
             {!isDefaultThumbnail ? (
@@ -69,7 +69,7 @@ const BlogPostListItem = ({
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700">
                 <svg
-                  className="w-6 h-6 min-md:w-8 min-md:h-8 text-gray-400"
+                  className="w-6 h-6 tablet:w-8 tablet:h-8 text-gray-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -84,7 +84,7 @@ const BlogPostListItem = ({
               </div>
             )}
           </Link>
-          <time className="text-xs min-md:text-sm text-gray-400 dark:text-gray-500">
+          <time className="text-xs tablet:text-sm text-gray-400 dark:text-gray-500">
             {formattedDate}
           </time>
         </div>
@@ -100,7 +100,7 @@ const BlogPostListItem = ({
           </span>
 
           <Link href={`/posts/${slug}`}>
-            <h2 className="text-lg min-md:text-xl font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors line-clamp-2">
+            <h2 className="text-lg tablet:text-xl font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors line-clamp-2">
               {title}
             </h2>
           </Link>

@@ -86,7 +86,7 @@ const MainPostCard = ({
 
   // 모바일용 공통 카드 (md 이하에서 표시)
   const mobileCard = (
-    <div className="min-md:hidden">
+    <div className="tablet:hidden">
       <article className={classNames(cardBaseClass, "h-full")}>
         <Link href={link} className="flex h-full flex-col">
           <div className="relative aspect-[16/10] overflow-hidden">
@@ -139,7 +139,7 @@ const MainPostCard = ({
       <>
         {mobileCard}
         <article
-          className={classNames(cardBaseClass, "hidden min-md:block h-full")}
+          className={classNames(cardBaseClass, "hidden tablet:block h-full")}
         >
           <div className="absolute inset-0 w-full h-full">
             {!isDefaultThumbnail ? (
@@ -198,7 +198,7 @@ const MainPostCard = ({
         <article
           className={classNames(
             cardBaseClass,
-            "hidden min-md:flex h-full flex-col justify-between bg-white dark:bg-neutral-900/80",
+            "hidden tablet:flex h-full flex-col justify-between bg-white dark:bg-neutral-900/80",
           )}
         >
           <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-full blur-3xl -mr-16 -mt-16 transition-all duration-500 group-hover:bg-blue-500/10" />
@@ -259,7 +259,7 @@ const MainPostCard = ({
         <article
           className={classNames(
             cardBaseClass,
-            "hidden min-md:flex flex-row h-[320px] bg-white dark:bg-neutral-900/80",
+            "hidden tablet:flex flex-row h-[320px] bg-white dark:bg-neutral-900/80",
           )}
         >
           <Link href={link} className="w-1/2 h-full relative overflow-hidden">

@@ -25,7 +25,7 @@ export function MoSeriesSection({
   const validSeriesList = seriesList.filter(([, value]) => !!value?.title);
 
   return (
-    <section className="overflow-hidden py-4 min-md:hidden">
+    <section className="overflow-hidden py-4 tablet:hidden">
       <SwiperComponent
         modules={[Navigation]}
         spaceBetween={12}
@@ -82,8 +82,8 @@ export function PcSeriesSection({
   const seriesFilterLength = maxLength || seriesList.length;
 
   return (
-    <div className="md:hidden">
-      <section className="grid grid-cols-3 gap-5 md-lg:grid-cols-2">
+    <div className="mobile:hidden">
+      <section className="grid grid-cols-3 gap-5 tablet-only:grid-cols-2">
         {seriesList.slice(0, seriesFilterLength).map(([key, value], idx) => (
           <SeriesCard
             key={key}

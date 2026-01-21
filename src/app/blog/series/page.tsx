@@ -38,7 +38,7 @@ async function SeriesPage() {
       </div>
 
       {/* 시리즈 그리드 */}
-      <section className="grid grid-cols-1 gap-6 min-md:grid-cols-2 min-lg:grid-cols-3">
+      <section className="grid grid-cols-1 gap-6 mobile:gap-8 tablet:grid-cols-2 desktop:grid-cols-3">
         {seriesList.map(([key, value]) => (
           <SeriesCard
             key={key}

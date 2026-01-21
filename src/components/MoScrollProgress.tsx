@@ -19,7 +19,7 @@ const MoScrollProgress = () => {
   return (
     <button
       className={classNames(
-        "group min-md:hidden flex justify-center items-center w-7 h-7 relative transition-opacity duration-300 opacity-0 ",
+        "group tablet:hidden flex justify-center items-center w-7 h-7 relative transition-opacity duration-300 opacity-0 ",
         {
           hidden: isScrollTop,
           "opacity-100 ": !isScrollTop,

@@ -56,7 +56,7 @@ const BlogPostCard = ({
 
   if (isFeatured) {
     return (
-      <li className="h-full min-lg:col-span-2 min-lg:row-span-2">
+      <li className="h-full desktop:col-span-2 desktop:row-span-2">
         <article className="group relative h-full overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm transition-transform duration-300 hover:-translate-y-1 dark:border-white/10 dark:bg-neutral-900/80">
           <Link
             replace={isReplace}
@@ -85,7 +85,7 @@ const BlogPostCard = ({
                   {tagLabel}
                 </span>
               )}
-              <h2 className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
+              <h2 className="mt-3 text-3xl font-semibold leading-tight mobile:text-4xl">
                 {title}
               </h2>
               <p className="mt-2 max-w-[480px] text-sm text-white/80 line-clamp-2">
@@ -103,11 +103,11 @@ const BlogPostCard = ({
   }
 
   return (
-    <li className={classNames("h-full", isWide && "min-lg:col-span-2")}>
+    <li className={classNames("h-full", isWide && "desktop:col-span-2")}>
       <article
         className={classNames(
           "group flex h-full flex-col overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm transition-transform duration-300 hover:-translate-y-1 dark:border-white/10 dark:bg-neutral-900/80",
-          isWide && "min-md:flex-row",
+          isWide && "tablet:flex-row",
         )}
       >
         <Link
@@ -115,7 +115,7 @@ const BlogPostCard = ({
           href={`/posts/${slug}`}
           className={classNames(
             "relative w-full overflow-hidden",
-            isWide ? "min-md:w-1/2 min-md:min-h-[220px]" : "aspect-[4/3]",
+            isWide ? "tablet:w-1/2 tablet:min-h-[220px]" : "aspect-[4/3]",
           )}
         >
           <Image

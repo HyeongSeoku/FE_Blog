@@ -27,28 +27,28 @@ const getCardVariant = (index: number): MainPostCardVariant => {
 const getGridClass = (variant: MainPostCardVariant): string => {
   switch (variant) {
     case "large":
-      return "min-md:col-span-8 min-md:row-span-2";
+      return "tablet:col-span-8 tablet:row-span-2";
     case "side":
-      return "min-md:col-span-4 min-md:row-span-2";
+      return "tablet:col-span-4 tablet:row-span-2";
     case "wide":
-      return "min-md:col-span-12";
+      return "tablet:col-span-12";
     case "standard":
     default:
-      return "min-md:col-span-4";
+      return "tablet:col-span-4";
   }
 };
 
 const PostSectionTemplate = ({ postList }: PostSectionProps) => {
   if (!postList.length) {
     return (
-      <div className="flex items-center w-full justify-center text-gray-500 p-3 min-h-60 md:min-h-30">
+      <div className="flex items-center w-full justify-center text-gray-500 p-3 min-h-60 mobile:min-h-30">
         게시물이 없습니다
       </div>
     );
   }
 
   return (
-    <ul className="grid grid-cols-1 min-md:grid-cols-12 gap-4 min-md:gap-6 auto-rows-auto">
+    <ul className="grid grid-cols-1 tablet:grid-cols-12 gap-4 tablet:gap-6 auto-rows-auto">
       {postList.map(
         (
           {

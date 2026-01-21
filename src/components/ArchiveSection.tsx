@@ -52,7 +52,7 @@ export default function ArchiveSection({ yearlyData }: ArchiveSectionProps) {
       </div>
 
       {/* 년도별 카드 그리드 */}
-      <div className="grid grid-cols-2 min-md:grid-cols-3 min-lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 tablet:grid-cols-3 desktop:grid-cols-4 gap-4">
         {yearlyData.map((item, index) => {
           const percentage = (item.count / maxCount) * 100;
 
