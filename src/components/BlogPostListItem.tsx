@@ -53,6 +53,8 @@ const BlogPostListItem = ({
         <div className="flex flex-col gap-2 flex-shrink-0">
           <Link
             href={`/posts/${slug}`}
+            aria-label={title}
+            title={title}
             className={classNames(
               "rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800",
               "w-24 h-24 tablet:w-48 tablet:h-32",

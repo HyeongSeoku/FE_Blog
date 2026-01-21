@@ -105,18 +105,13 @@ const MainPostCard = ({
           </div>
           <div className="flex flex-1 flex-col p-5 bg-white dark:bg-transparent">
             <div className="flex items-center gap-2 mb-2">
-              <span
-                role="button"
-                tabIndex={0}
+              <button
+                type="button"
                 className={categoryTagClass}
                 onClick={handleCategoryClick}
-                onKeyDown={(e) =>
-                  e.key === "Enter" &&
-                  handleCategoryClick(e as unknown as React.MouseEvent)
-                }
               >
                 {categoryLabel}
-              </span>
+              </button>
               <time className={dateClass}>{formattedDate}</time>
             </div>
             <h2 className="text-xl font-semibold leading-snug text-gray-900 transition-colors duration-300 line-clamp-2 group-hover:text-gray-600 dark:text-white dark:group-hover:text-gray-300">
@@ -162,18 +157,13 @@ const MainPostCard = ({
             className="relative h-full flex flex-col justify-end p-10"
           >
             <div className="flex items-center gap-3 mb-3">
-              <span
-                role="button"
-                tabIndex={0}
+              <button
+                type="button"
                 className={categoryTagLightClass}
                 onClick={handleCategoryClick}
-                onKeyDown={(e) =>
-                  e.key === "Enter" &&
-                  handleCategoryClick(e as unknown as React.MouseEvent)
-                }
               >
                 {categoryLabel}
-              </span>
+              </button>
               <time className={dateLightClass}>{formattedDate}</time>
             </div>
             <h3 className="text-4xl font-semibold text-white mb-2 group-hover:text-gray-200 transition-colors">
@@ -208,18 +198,13 @@ const MainPostCard = ({
           >
             <div className="p-5">
               <div className="flex items-center gap-2 mb-3">
-                <span
-                  role="button"
-                  tabIndex={0}
+                <button
+                  type="button"
                   className={categoryTagClass}
                   onClick={handleCategoryClick}
-                  onKeyDown={(e) =>
-                    e.key === "Enter" &&
-                    handleCategoryClick(e as unknown as React.MouseEvent)
-                  }
                 >
                   {categoryLabel}
-                </span>
+                </button>
                 <time className={dateClass}>{formattedDate}</time>
               </div>
               <h3 className="text-2xl font-medium text-gray-900 dark:text-white mb-3 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
@@ -279,18 +264,13 @@ const MainPostCard = ({
           </Link>
           <div className="w-1/2 p-12 flex flex-col justify-center">
             <div className="flex items-center gap-3 mb-4">
-              <span
-                role="button"
-                tabIndex={0}
+              <button
+                type="button"
                 className={categoryTagClass}
                 onClick={handleCategoryClick}
-                onKeyDown={(e) =>
-                  e.key === "Enter" &&
-                  handleCategoryClick(e as unknown as React.MouseEvent)
-                }
               >
                 {categoryLabel}
-              </span>
+              </button>
               <time className={dateClass}>{formattedDate}</time>
             </div>
             <Link
@@ -341,18 +321,13 @@ const MainPostCard = ({
         </div>
         <div className="flex flex-1 flex-col p-5">
           <div className="flex items-center gap-2 mb-2">
-            <span
-              role="button"
-              tabIndex={0}
+            <button
+              type="button"
               className={categoryTagClass}
               onClick={handleCategoryClick}
-              onKeyDown={(e) =>
-                e.key === "Enter" &&
-                handleCategoryClick(e as unknown as React.MouseEvent)
-              }
             >
               {categoryLabel}
-            </span>
+            </button>
             <time className={dateClass}>{formattedDate}</time>
           </div>
           <h2 className="text-xl font-semibold leading-snug text-gray-900 transition-colors duration-300 line-clamp-2 group-hover:text-gray-600 dark:text-white dark:group-hover:text-gray-300">
