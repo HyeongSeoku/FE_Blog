@@ -86,7 +86,10 @@ const BlogPostListItem = ({
               </div>
             )}
           </Link>
-          <time className="text-xs tablet:text-sm text-gray-400 dark:text-gray-500">
+          <time
+            dateTime={createdAt}
+            className="text-xs tablet:text-sm text-gray-400 dark:text-gray-500"
+          >
             {formattedDate}
           </time>
         </div>

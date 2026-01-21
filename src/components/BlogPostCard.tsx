@@ -91,7 +91,7 @@ const BlogPostCard = ({
               <p className="mt-2 max-w-[480px] text-sm text-white/80 line-clamp-2">
                 {description}
               </p>
-              <time className="mt-4 text-xs text-white/70">
+              <time dateTime={createdAt} className="mt-4 text-xs text-white/70">
                 {formattedDate}
               </time>
             </span>
@@ -150,7 +150,9 @@ const BlogPostCard = ({
             {description}
           </p>
           <div className="mt-auto">
-            <time className="text-xs text-gray-400">{formattedDate}</time>
+            <time dateTime={createdAt} className="text-xs text-gray-400">
+              {formattedDate}
+            </time>
             {tagListView && <div className="mt-3">{tagListView}</div>}
           </div>
         </div>

@@ -119,7 +119,10 @@ async function ArchivePage() {
                       className="flex items-baseline gap-4 py-2 -ml-8 pl-8 mobile:-ml-4 mobile:pl-4 hover:bg-gray-50 dark:hover:bg-white/5 rounded-r-lg transition-colors"
                     >
                       {/* 날짜 */}
-                      <time className="flex-shrink-0 w-16 text-sm text-gray-400 dark:text-gray-500 font-mono">
+                      <time
+                        dateTime={post.createdAt}
+                        className="flex-shrink-0 w-16 text-sm text-gray-400 dark:text-gray-500 font-mono"
+                      >
                         {post.month} {post.day}
                       </time>
                       {/* 제목 */}

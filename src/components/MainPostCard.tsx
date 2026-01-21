@@ -112,7 +112,9 @@ const MainPostCard = ({
               >
                 {categoryLabel}
               </button>
-              <time className={dateClass}>{formattedDate}</time>
+              <time dateTime={createdAt} className={dateClass}>
+                {formattedDate}
+              </time>
             </div>
             <h2 className="text-xl font-semibold leading-snug text-gray-900 transition-colors duration-300 line-clamp-2 group-hover:text-gray-600 dark:text-white dark:group-hover:text-gray-300">
               {title}
@@ -164,7 +166,9 @@ const MainPostCard = ({
               >
                 {categoryLabel}
               </button>
-              <time className={dateLightClass}>{formattedDate}</time>
+              <time dateTime={createdAt} className={dateLightClass}>
+                {formattedDate}
+              </time>
             </div>
             <h3 className="text-4xl font-semibold text-white mb-2 group-hover:text-gray-200 transition-colors">
               {title}
@@ -205,7 +209,9 @@ const MainPostCard = ({
                 >
                   {categoryLabel}
                 </button>
-                <time className={dateClass}>{formattedDate}</time>
+                <time dateTime={createdAt} className={dateClass}>
+                  {formattedDate}
+                </time>
               </div>
               <h3 className="text-2xl font-medium text-gray-900 dark:text-white mb-3 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
                 {title}
@@ -271,7 +277,9 @@ const MainPostCard = ({
               >
                 {categoryLabel}
               </button>
-              <time className={dateClass}>{formattedDate}</time>
+              <time dateTime={createdAt} className={dateClass}>
+                {formattedDate}
+              </time>
             </div>
             <Link
               href={link}
@@ -328,7 +336,9 @@ const MainPostCard = ({
             >
               {categoryLabel}
             </button>
-            <time className={dateClass}>{formattedDate}</time>
+            <time dateTime={createdAt} className={dateClass}>
+              {formattedDate}
+            </time>
           </div>
           <h2 className="text-xl font-semibold leading-snug text-gray-900 transition-colors duration-300 line-clamp-2 group-hover:text-gray-600 dark:text-white dark:group-hover:text-gray-300">
             {title}
