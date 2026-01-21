@@ -27,7 +27,7 @@ export default function ArchiveSection({ yearlyData }: ArchiveSectionProps) {
   if (!yearlyData.length) return null;
 
   const totalPosts = yearlyData.reduce((sum, item) => sum + item.count, 0);
-  const maxCount = Math.max(...yearlyData.map((item) => item.count));
+  const maxCount = Math.max(...yearlyData.map((item) => item.count)) || 1;
 
   return (
     <section className="my-16">
@@ -116,9 +116,9 @@ export default function ArchiveSection({ yearlyData }: ArchiveSectionProps) {
       {/* 하단 전체 아카이브 링크 */}
       <div className="mt-8 flex justify-center">
         <Link
-          href="/blog"
+          href="/blog/year"
           className={classNames(
-            "inline-flex items-center gap-2 px-6 py-3 rounded-full",
+            "inline-flex items-center gap-2 px-6 py-3 rounded-full group",
             "bg-gray-100 dark:bg-white/5",
             "text-sm font-medium text-gray-700 dark:text-gray-300",
             "hover:bg-gray-200 dark:hover:bg-white/10",
