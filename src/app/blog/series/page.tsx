@@ -39,10 +39,11 @@ async function SeriesPage() {
 
       {/* 시리즈 그리드 */}
       <section className="grid grid-cols-1 gap-6 mobile:gap-8 tablet:grid-cols-2 desktop:grid-cols-3">
-        {seriesList.map(([key, value]) => (
+        {seriesList.map(([key, value], index) => (
           <SeriesCard
             key={key}
             seriesKey={key}
+            seriesIndex={index}
             title={value.title}
             description={value.description}
             thumbnail={value.thumbnail}
