@@ -41,10 +41,11 @@ async function ArchivePage() {
   const yearMap = new Map<number, YearGroup>();
 
   postList.forEach((post) => {
-    const date = new Date(post.createdAt);
-    const year = date.getFullYear();
+    const year = Number(getDate("YYYY", post.createdAt));
     const month = getDate("MMM", post.createdAt);
     const day = getDate("DD", post.createdAt);
+
+    if (Number.isNaN(year)) return;
 
     let group = yearMap.get(year);
     if (!group) {

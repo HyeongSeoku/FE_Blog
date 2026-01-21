@@ -12,6 +12,7 @@ import {
   getPostsByCategoryResponse,
 } from "@/types/posts";
 import { getMdxContents, getRepresentativeImage } from "./mdx";
+import { getDate } from "./date";
 
 import {
   CATEGORY_MAP,
@@ -118,7 +119,7 @@ export const getAllPosts = async ({
     resultPosts = filterPosts(resultPosts, {
       tags: undefined,
       category: undefined,
-    }).filter((post) => new Date(post.createdAt).getFullYear() === targetYear);
+    }).filter((post) => Number(getDate("YYYY", post.createdAt)) === targetYear);
   }
 
   resultPosts = sortAndPaginatePosts(resultPosts, { isSorted, page, pageSize });
@@ -238,9 +239,9 @@ export const getAllYears = async (): Promise<string[]> => {
   const yearSet = new Set<string>();
 
   postList.forEach((post) => {
-    const year = new Date(post.createdAt).getFullYear();
-    if (!Number.isNaN(year)) {
-      yearSet.add(String(year));
+    const year = getDate("YYYY", post.createdAt);
+    if (year !== "Invalid Date") {
+      yearSet.add(year);
     }
   });
 
@@ -254,10 +255,9 @@ export const getYearlyPostCounts = async (): Promise<
   const yearCounts: Record<string, number> = {};
 
   postList.forEach((post) => {
-    const year = new Date(post.createdAt).getFullYear();
-    if (!Number.isNaN(year)) {
-      const yearStr = String(year);
-      yearCounts[yearStr] = (yearCounts[yearStr] || 0) + 1;
+    const year = getDate("YYYY", post.createdAt);
+    if (year !== "Invalid Date") {
+      yearCounts[year] = (yearCounts[year] || 0) + 1;
     }
   });
 
@@ -271,12 +271,12 @@ export const getAllMonths = async (): Promise<string[]> => {
   const monthSet = new Set<string>();
 
   postList.forEach((post) => {
-    const date = new Date(post.createdAt);
-    if (Number.isNaN(date.getTime())) return;
+    const year = getDate("YYYY", post.createdAt);
+    const month = getDate("MM", post.createdAt);
 
-    const year = date.getFullYear();
-    const month = `${date.getMonth() + 1}`.padStart(2, "0");
-    monthSet.add(`${year}-${month}`);
+    if (year !== "Invalid Date" && month !== "Invalid Date") {
+      monthSet.add(`${year}-${month}`);
+    }
   });
 
   return Array.from(monthSet).sort();
@@ -304,20 +304,19 @@ export const getPostsByDate = async ({
 
   // 날짜 필터링
   const filteredPosts = allPosts.filter((post) => {
-    const createdAt = new Date(post.createdAt);
+    const postYear = getDate("YYYY", post.createdAt);
+    const postMonth = getDate("MM", post.createdAt);
+
+    if (postYear === "Invalid Date") return false;
 
     if (type === "year") {
-      return createdAt.getFullYear().toString() === date;
+      return postYear === date;
     }
 
     if (type === "month") {
       const normalized = date.replace(/\./g, "-");
-      const [year, month] = normalized
-        .split("-")
-        .map((str) => parseInt(str, 10));
-      return (
-        createdAt.getFullYear() === year && createdAt.getMonth() + 1 === month
-      );
+      const [year, month] = normalized.split("-");
+      return postYear === year && postMonth === month.padStart(2, "0");
     }
 
     return false;
