@@ -44,6 +44,7 @@ const BlogPostListItem = ({
   subCategory,
 }: BlogPostListItemProps) => {
   const formattedDate = getDate("MMM DD, YYYY", createdAt);
+  const isoDate = getDate("YYYY-MM-DD", createdAt);
   const displayCategory = subCategory || category;
   const isDefaultThumbnail = thumbnail === "/image/default_img.webp";
 
@@ -87,7 +88,7 @@ const BlogPostListItem = ({
             )}
           </Link>
           <time
-            dateTime={createdAt}
+            dateTime={isoDate}
             className="text-xs tablet:text-sm text-gray-400 dark:text-gray-500"
           >
             {formattedDate}

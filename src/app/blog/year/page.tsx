@@ -121,7 +121,7 @@ async function ArchivePage() {
                     >
                       {/* 날짜 */}
                       <time
-                        dateTime={post.createdAt}
+                        dateTime={getDate("YYYY-MM-DD", post.createdAt)}
                         className="flex-shrink-0 w-16 text-sm text-gray-400 dark:text-gray-500 font-mono"
                       >
                         {post.month} {post.day}
