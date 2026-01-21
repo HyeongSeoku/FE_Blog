@@ -29,7 +29,7 @@ export function MoSeriesSection({
       <SwiperComponent
         modules={[Navigation]}
         spaceBetween={12}
-        slidesPerView={1.15}
+        slidesPerView={1.2}
         centeredSlides={true}
         initialSlide={validSeriesList.length > 1 ? 1 : 0}
         onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
