@@ -158,34 +158,34 @@ const MdxDetailTemplate = ({
           <div className="flex justify-between text-sm text-gray-400">
             <div className="w-1/2">
               {previousPost && (
-                <button className="group flex flex-col items-start">
+                <Link
+                  href={`/posts/${previousPost.slug}`}
+                  className="group flex flex-col items-start"
+                >
                   <div className="flex items-center group-hover:text-theme">
                     <LeftArrow style={{ width: 16, height: 16 }} />
                     <span>Previous</span>
                   </div>
-                  <Link
-                    className="group-hover:text-theme group-hover:bg-gray-100/5 rounded-sm p-0.5"
-                    href={`/posts/${previousPost.slug}`}
-                  >
+                  <span className="group-hover:text-theme group-hover:bg-gray-100/5 rounded-sm p-0.5">
                     {previousPost.title}
-                  </Link>
-                </button>
+                  </span>
+                </Link>
               )}
             </div>
             <div className="w-1/2">
               {nextPost && (
-                <button className="group flex flex-col items-end ml-auto">
+                <Link
+                  href={`/posts/${nextPost.slug}`}
+                  className="group flex flex-col items-end ml-auto"
+                >
                   <div className="flex items-center group-hover:text-theme">
                     <span>Next</span>
                     <RightArrow style={{ width: 16, height: 16 }} />
                   </div>
-                  <Link
-                    className="group-hover:text-theme group-hover:bg-gray-100/5 rounded-sm p-0.5"
-                    href={`/posts/${nextPost.slug}`}
-                  >
+                  <span className="group-hover:text-theme group-hover:bg-gray-100/5 rounded-sm p-0.5">
                     {nextPost.title}
-                  </Link>
-                </button>
+                  </span>
+                </Link>
               )}
             </div>
           </div>
@@ -199,17 +199,14 @@ const MdxDetailTemplate = ({
                 </div>
                 <ul className="text-sm">
                   {relatedPosts.map(({ slug, title }) => (
-                    <button
-                      key={slug}
-                      className="group flex flex-col items-end"
-                    >
+                    <li key={slug}>
                       <Link
-                        className="group-hover:text-theme group-hover:bg-gray-100/5 rounded-sm p-0.5 underline underline-offset-4"
+                        className="group hover:text-theme hover:bg-gray-100/5 rounded-sm p-0.5 underline underline-offset-4"
                         href={`/posts/${slug}`}
                       >
                         {title}
                       </Link>
-                    </button>
+                    </li>
                   ))}
                 </ul>
               </div>

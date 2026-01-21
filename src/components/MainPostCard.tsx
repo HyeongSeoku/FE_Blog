@@ -78,10 +78,16 @@ const MainPostCard = ({
   const categoryLabel = getCategoryLabel(category, subCategory);
   const formattedDate = getDate("YYYY.MM.DD", createdAt);
 
-  const handleCategoryClick = (e: React.MouseEvent) => {
+  const handleCategoryClick = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
     e.stopPropagation();
     router.push(`/blog/${category.toLowerCase()}`);
+  };
+
+  const handleCategoryKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      handleCategoryClick(e);
+    }
   };
 
   // 모바일용 공통 카드 (md 이하에서 표시)
@@ -105,13 +111,15 @@ const MainPostCard = ({
           </div>
           <div className="flex flex-1 flex-col p-5 bg-white dark:bg-transparent">
             <div className="flex items-center gap-2 mb-2">
-              <button
-                type="button"
+              <span
+                role="link"
+                tabIndex={0}
                 className={categoryTagClass}
                 onClick={handleCategoryClick}
+                onKeyDown={handleCategoryKeyDown}
               >
                 {categoryLabel}
-              </button>
+              </span>
               <time dateTime={createdAt} className={dateClass}>
                 {formattedDate}
               </time>
@@ -159,13 +167,15 @@ const MainPostCard = ({
             className="relative h-full flex flex-col justify-end p-10"
           >
             <div className="flex items-center gap-3 mb-3">
-              <button
-                type="button"
+              <span
+                role="link"
+                tabIndex={0}
                 className={categoryTagLightClass}
                 onClick={handleCategoryClick}
+                onKeyDown={handleCategoryKeyDown}
               >
                 {categoryLabel}
-              </button>
+              </span>
               <time dateTime={createdAt} className={dateLightClass}>
                 {formattedDate}
               </time>
@@ -202,13 +212,15 @@ const MainPostCard = ({
           >
             <div className="p-5">
               <div className="flex items-center gap-2 mb-3">
-                <button
-                  type="button"
+                <span
+                  role="link"
+                  tabIndex={0}
                   className={categoryTagClass}
                   onClick={handleCategoryClick}
+                  onKeyDown={handleCategoryKeyDown}
                 >
                   {categoryLabel}
-                </button>
+                </span>
                 <time dateTime={createdAt} className={dateClass}>
                   {formattedDate}
                 </time>
@@ -270,13 +282,15 @@ const MainPostCard = ({
           </Link>
           <div className="w-1/2 p-12 flex flex-col justify-center">
             <div className="flex items-center gap-3 mb-4">
-              <button
-                type="button"
+              <span
+                role="link"
+                tabIndex={0}
                 className={categoryTagClass}
                 onClick={handleCategoryClick}
+                onKeyDown={handleCategoryKeyDown}
               >
                 {categoryLabel}
-              </button>
+              </span>
               <time dateTime={createdAt} className={dateClass}>
                 {formattedDate}
               </time>
@@ -329,13 +343,15 @@ const MainPostCard = ({
         </div>
         <div className="flex flex-1 flex-col p-5">
           <div className="flex items-center gap-2 mb-2">
-            <button
-              type="button"
+            <span
+              role="link"
+              tabIndex={0}
               className={categoryTagClass}
               onClick={handleCategoryClick}
+              onKeyDown={handleCategoryKeyDown}
             >
               {categoryLabel}
-            </button>
+            </span>
             <time dateTime={createdAt} className={dateClass}>
               {formattedDate}
             </time>
