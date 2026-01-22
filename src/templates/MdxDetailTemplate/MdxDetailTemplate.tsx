@@ -1,4 +1,3 @@
-import TimeIcon from "@/icon/time.svg";
 import { FrontMatterProps, HeadingsProps } from "@/types/mdx";
 import MdxSideBar from "@/components/MdxSideBar";
 import Link from "next/link";
@@ -35,7 +34,7 @@ interface MdxDetailTemplateProps {
 
 const MdxDetailTemplate = ({
   source,
-  frontMatter: { title, createdAt, description, tags, thumbnail },
+  frontMatter: { title, createdAt, tags, thumbnail, category, subCategory },
   readingTime,
   heading = [],
   previousPost,
@@ -46,110 +45,110 @@ const MdxDetailTemplate = ({
     ? dayjs(createdAt, "YYYY.MM.DD").format("YYYY-MM-DD")
     : new Date().toISOString().split("T")[0];
 
-  // const MdxContent = useMemo(() => {
-  //   return (
-  //     <MDXRemote
-  //       source={source}
-  //       components={{
-  //         code: ({ className, children }) => (
-  //           <CodeBlock
-  //             hasCopyBtn={className?.includes("block-code")}
-  //             className={className}
-  //           >
-  //             {children}
-  //           </CodeBlock>
-  //         ),
-  //         a: ({ children, href, target = "_blank" }) => (
-  //           <MdxLink href={href} target={target}>
-  //             {children}
-  //           </MdxLink>
-  //         ),
-  //         p: ({ children, ...rest }) => (
-  //           <AnimationContainer htmlTag="p" {...rest}>
-  //             {children}
-  //           </AnimationContainer>
-  //         ),
-  //         h1: ({ children, ...rest }) => (
-  //           <AnimationContainer htmlTag="h1" {...rest}>
-  //             {children}
-  //           </AnimationContainer>
-  //         ),
-  //         h2: ({ children, ...rest }) => (
-  //           <AnimationContainer htmlTag="h2" {...rest}>
-  //             {children}
-  //           </AnimationContainer>
-  //         ),
-  //         h3: ({ children, ...rest }) => (
-  //           <AnimationContainer htmlTag="h3" {...rest}>
-  //             {children}
-  //           </AnimationContainer>
-  //         ),
-  //         ul: ({ children, ...rest }) => (
-  //           <AnimationContainer htmlTag="ul" {...rest}>
-  //             {children}
-  //           </AnimationContainer>
-  //         ),
-  //         li: ({ children, ...rest }) => (
-  //           <AnimationContainer htmlTag="li" {...rest}>
-  //             {children}
-  //           </AnimationContainer>
-  //         ),
-  //         ...(mdxComponents || {}),
-  //       }}
-  //     />
-  //   );
-  // }, [source]);
+  const categoryLabel = subCategory || category;
+
   const postThumbnail = thumbnail ?? DEFAULT_POST_THUMBNAIL;
 
   return (
     <>
       <MdxAnimation />
       <ScrollProgressBar />
-      <header className="border-b border-b-[var(--border-color)] mb-4 pb-4">
-        <h1 className="text-4xl font-bold mb-1">{title}</h1>
-        <p className="text-gray-400 text-xl mb-3">{description}</p>
 
-        <section className="flex items-center gap-3 mb-3 text-gray-400">
-          <time dateTime={isoDate}>{createdAt}</time>
-          <div className="flex items-center gap-[2px]">
-            <TimeIcon style={{ width: 14, height: 14 }} stroke="black" />
-            <p>{readingTime}</p>
-            <span>분</span>
+      {/* 헤더 섹션 */}
+      <header className="mb-10">
+        {/* 카테고리 · 날짜 */}
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-sm font-semibold uppercase tracking-wide text-gray-900 dark:text-white">
+            {categoryLabel}
+          </span>
+          <span className="text-gray-300 dark:text-gray-600">·</span>
+          <time
+            dateTime={isoDate}
+            className="text-sm text-gray-400 dark:text-gray-500 uppercase tracking-wide"
+          >
+            {dayjs(createdAt, "YYYY.MM.DD").format("MMM D, YYYY")}
+          </time>
+        </div>
+
+        {/* 제목 */}
+        <h1 className="text-3xl tablet:text-5xl font-bold mb-6 text-gray-900 dark:text-white leading-tight">
+          {title}
+        </h1>
+
+        {/* 작성자 정보 */}
+        <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center gap-3">
+            {/* 아바타 */}
+            <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden flex-shrink-0">
+              <Image
+                src="https://github.com/HyeongSeoku.png"
+                alt="김형석"
+                width={40}
+                height={40}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                김형석
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Frontend Developer
+              </p>
+            </div>
           </div>
-        </section>
-        {!!tags?.length && (
-          <section className="flex items-center gap-2">
-            {tags.map((tagItem, idx) => (
-              <Link
-                href={getTagPath(tagItem)}
-                key={`${tagItem}_${idx}`}
-                className="text-primary hover:text-primary-hover transition-colors duration-300"
-              >
-                #{formatTagDisplay(tagItem)}
-              </Link>
-            ))}
-          </section>
+        </div>
+
+        {/* 메타 정보 (읽기 시간, 태그) */}
+        <div className="flex flex-col gap-3 mb-8">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400 dark:text-gray-500">
+            <div className="flex items-center gap-1">
+              <span>📅</span>
+              <span>{createdAt}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span>⏱️</span>
+              <span>{readingTime} min read</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="font-medium text-gray-600 dark:text-gray-300">
+                BY 김형석
+              </span>
+            </div>
+          </div>
+
+          {/* 태그 */}
+          {!!tags?.length && (
+            <div className="flex flex-wrap items-center gap-2">
+              {tags.map((tagItem, idx) => (
+                <Link
+                  href={getTagPath(tagItem)}
+                  key={`${tagItem}_${idx}`}
+                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                >
+                  #{formatTagDisplay(tagItem)}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 히어로 이미지 */}
+        {postThumbnail && (
+          <div className="w-full aspect-[4/3] tablet:aspect-[16/9] relative overflow-hidden rounded-xl">
+            <Image
+              src={postThumbnail}
+              alt={title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
         )}
       </header>
-      <div className="flex items-center justify-center">
-        {postThumbnail && (
-          <Image
-            src={postThumbnail}
-            alt={title}
-            width={500}
-            height={500}
-            className="rounded-md"
-            loading="lazy"
-          />
-        )}
-      </div>
 
       <MdxSideBar headings={heading} />
-      <section className="relative border-b py-5">
-        {/* <article
-          className="markdown-contents"
-          dangerouslySetInnerHTML={{ __html: source }}
-        ></article> */}
+      <section className="relative py-5 border-b border-gray-200 dark:border-gray-700">
         <ParsePostContent html={source} />
       </section>
 

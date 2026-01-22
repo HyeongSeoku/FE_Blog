@@ -59,7 +59,7 @@ const nextConfig = withAnalyzer(
     basePath: normalizedBasePath,
     assetPrefix: normalizedBasePath || undefined,
     images: {
-      domains: ["avatars.githubusercontent.com"],
+      domains: ["avatars.githubusercontent.com", "github.com"],
       deviceSizes: [320, 480, 640, 768, 1024, 1280, 1440, 1920],
       imageSizes: [16, 32, 64, 96, 128, 256, 384],
       unoptimized: true,

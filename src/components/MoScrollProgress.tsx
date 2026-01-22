@@ -17,51 +17,35 @@ const MoScrollProgress = () => {
   };
 
   return (
-    <button
+    <div
       className={classNames(
-        "group tablet:hidden flex justify-center items-center w-7 h-7 relative transition-opacity duration-300 opacity-0 ",
+        "tablet:hidden flex flex-col items-end gap-2 transition-opacity duration-300 opacity-0",
         {
           hidden: isScrollTop,
-          "opacity-100 ": !isScrollTop,
+          "opacity-100": !isScrollTop,
         },
       )}
-      onClick={scrollToTop}
     >
-      <svg
-        className="w-full h-full"
-        viewBox="0 0 100 100"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle
-          strokeWidth="8"
-          stroke="currentColor"
-          fill="transparent"
-          cx="50"
-          cy="50"
-          r="45"
-        />
-        <circle
-          className="text-primary"
-          strokeWidth="8"
-          strokeLinecap="round"
-          stroke="currentColor"
-          fill="transparent"
-          cx="50"
-          cy="50"
-          r="45"
-          style={{
-            strokeDasharray: 2 * Math.PI * 45,
-            strokeDashoffset:
-              2 * Math.PI * 45 - (progressWidth / 100) * 2 * Math.PI * 45,
-            transform: "rotate(-90deg)",
-            transformOrigin: "50% 50%",
-          }}
-        />
-      </svg>
-      <div className="absolute group-hover:animate-bounceSlight">
-        <ArrowTop style={{ width: 18, height: 18 }} />
+      {/* 퍼센트 표시 */}
+      <div className="flex items-center gap-1.5 mr-1">
+        <span className="w-2 h-2 rounded-full bg-emerald-500" />
+        <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+          {Math.round(progressWidth)}%
+        </span>
       </div>
-    </button>
+
+      {/* 원형 버튼 */}
+      <button
+        onClick={scrollToTop}
+        aria-label={`맨 위로 이동 (${Math.round(progressWidth)}% 읽음)`}
+        className="group w-14 h-14 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-200"
+      >
+        <ArrowTop
+          style={{ width: 20, height: 20 }}
+          className="text-white dark:text-gray-900 group-hover:animate-bounceSlight"
+        />
+      </button>
+    </div>
   );
 };
 

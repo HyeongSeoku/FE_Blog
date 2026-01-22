@@ -2,24 +2,20 @@
 
 import { HeadingsProps } from "@/types/mdx";
 import Link from "next/link";
-import { RefObject, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import classNames from "classnames";
-import MoScrollProgress from "./MoScrollProgress";
-
-import CommentIcon from "@/icon/comment.svg";
+import useScrollProgress from "@/hooks/useScrollProgress";
+import useScrollPosition from "@/hooks/useScrollPosition";
+import ArrowTop from "@/icon/arrow_top.svg";
 
 export interface MdxSideBarProps {
   headings: HeadingsProps[];
-  commentRef?: RefObject<HTMLElement>;
-  commentTargetId?: string;
 }
 
-const MdxSideBar = ({
-  headings,
-  commentRef,
-  commentTargetId = "giscusSection",
-}: MdxSideBarProps) => {
+const MdxSideBar = ({ headings }: MdxSideBarProps) => {
   const [activeId, setActiveId] = useState<string | null>(null);
+  const progress = useScrollProgress();
+  const { isScrollTop } = useScrollPosition();
 
   const HEADER_HEIGHT = 56;
 
@@ -54,9 +50,8 @@ const MdxSideBar = ({
       };
     };
 
-    observeHeadings(); // 최초 실행
+    observeHeadings();
 
-    // DOM 변경을 감지하여 observer 재설정
     const mutationObserver = new MutationObserver(() => {
       observeHeadings();
     });
@@ -84,74 +79,69 @@ const MdxSideBar = ({
     }
   };
 
-  const handleScrollToCommentSection = () => {
-    const el = commentRef?.current ?? document.getElementById(commentTargetId); // ref 없으면 id로 찾기
-
-    if (el) {
-      const yOffset = -50;
-      const yPosition =
-        el.getBoundingClientRect().top + window.scrollY + yOffset;
-
-      window.scrollTo({
-        top: yPosition,
-        behavior: "smooth",
-      });
-    }
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <>
-      <aside className="fixed top-[100px] right-[20px] p-4 w-fit h-fit max-w-[150px] max-h-[700px] border-gray-200 flex flex-col transform duration-300 lg:opacity-0 mobile:hidden z-50">
-        <ul className="space-y-2 h-fit max-h-[500px] overflow-y-scroll scroll-bar-thin">
+    <aside className="fixed top-24 right-6 w-44 hidden desktop:flex flex-col z-50">
+      {/* 목차 */}
+      <nav className="mb-6">
+        <ul className="space-y-2 max-h-[400px] overflow-y-auto scroll-bar-thin pr-2">
           {headings.map((heading, idx) => (
             <li
               key={`${heading.id}_${idx}`}
-              className={classNames(
-                "text-sm hover:text-theme transition-colors duration-100",
-                {
-                  "ml-4": heading.level === 3,
-                  "text-blue-600 font-bold": activeId === heading.id,
-                },
-              )}
-              style={{ animationDelay: `${idx * 20}ms` }}
+              className={classNames("relative", {
+                "pl-4": heading.level === 3,
+              })}
             >
               <Link
                 href={`#${heading.id}`}
                 scroll={false}
                 onClick={(e) => {
                   e.preventDefault();
-
                   window.history.replaceState(null, "", `#${heading.id}`);
                   handleClick(heading.id);
                 }}
                 className={classNames(
-                  "block truncate transition-colors duration-300",
+                  "block text-sm py-1 transition-all duration-200 truncate",
+                  activeId === heading.id
+                    ? "text-gray-900 dark:text-white font-medium"
+                    : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300",
                 )}
               >
                 {heading.text}
               </Link>
+              {activeId === heading.id && (
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 bg-gray-900 dark:bg-white rounded-full" />
+              )}
             </li>
           ))}
         </ul>
-        <button
-          className="w-8 p-1 mt-5 rounded-sm hover:bg-gray-400/20"
-          onClick={handleScrollToCommentSection}
-        >
-          <CommentIcon style={{ width: 24, height: 24 }} />
-        </button>
-      </aside>
+      </nav>
 
-      {/* NOTE: MO용 side */}
-      <aside className="fixed bottom-10 right-2 p-1 z-50 flex flex-col items-center gap-2 min-mobile:hidden bg-gray-400/20 rounded-lg">
+      {/* 위로가기 버튼 */}
+      <div
+        className={classNames(
+          "flex flex-col items-end gap-2 transition-opacity duration-300",
+          isScrollTop ? "opacity-0 pointer-events-none" : "opacity-100",
+        )}
+      >
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+            {Math.round(progress)}%
+          </span>
+        </div>
         <button
-          className="w-8 h-8 rounded-sm hover:bg-gray-400/20 flex items-center justify-center"
-          onClick={handleScrollToCommentSection}
+          onClick={scrollToTop}
+          aria-label="맨 위로 이동"
+          className="w-12 h-12 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-200"
         >
-          <CommentIcon style={{ width: 24, height: 24 }} />
+          <ArrowTop className="w-5 h-5 text-white dark:text-gray-900" />
         </button>
-        <MoScrollProgress />
-      </aside>
-    </>
+      </div>
+    </aside>
   );
 };
 
