@@ -140,7 +140,7 @@ export const getAllPosts = async ({
 export const getPostsDetail = async (
   slug: string[],
 ): Promise<GetMdxContentsBase<string> | null> => {
-  const mdxContentData = await getMdxContents(slug, POST_PATH, false, {
+  const mdxContentData = await getMdxContents(slug, POST_PATH, true, {
     serialize: false as const,
   });
   return mdxContentData;

@@ -130,7 +130,7 @@ const MdxDetailTemplate = ({
 
         {/* 히어로 이미지 */}
         {postThumbnail && (
-          <div className="w-full aspect-[4/3] tablet:aspect-[16/9] relative overflow-hidden rounded-xl">
+          <div className="w-[80%] mx-auto aspect-[4/3] tablet:aspect-[16/9] relative overflow-hidden rounded-xl mobile:w-full">
             <Image
               src={postThumbnail}
               alt={title}
