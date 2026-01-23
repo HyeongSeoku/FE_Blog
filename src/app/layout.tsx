@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     siteName: "김형석 블로그",
     images: [
       {
-        url: "/image/og_image.svg",
+        url: "/image/og_image.png",
         width: 1200,
         height: 630,
         alt: "김형석 블로그 OG 이미지",
@@ -30,6 +30,19 @@ export const metadata: Metadata = {
     ],
     locale: "ko_KR",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: BASE_META_TITLE,
+    description: "프론트엔드 개발자 김형석의 개발 블로그 입니다.",
+    images: ["/image/og_image.png"],
+    creator: "@HyeongSeoku",
+  },
+  alternates: {
+    canonical: BASE_URL,
+    types: {
+      "application/rss+xml": [{ url: "feed.xml", title: "RSS Feed" }],
+    },
   },
 };
 

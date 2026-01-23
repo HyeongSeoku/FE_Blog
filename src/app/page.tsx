@@ -6,6 +6,7 @@ import {
   DEFAULT_MAIN_POST_COUNT,
   SERIES_MAX_LENGTH,
 } from "@/constants/post.constants";
+import { BASE_URL } from "@/constants/basic.constants";
 import Link from "next/link";
 import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
 import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionTemplate";
@@ -34,8 +35,24 @@ export default async function Home() {
 
   const structuredData = getStructuredData();
 
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "김형석 블로그",
+    url: BASE_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${BASE_URL}/blog/tags?tags={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <DefaultLayout structuredData={structuredData}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
       <IntroSectionTemplate githubData={githubData} />
 
       <HomeClient

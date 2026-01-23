@@ -1,4 +1,4 @@
-import { BASE_META_TITLE } from "@/constants/basic.constants";
+import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
 import BlogDateTemplate from "@/templates/BlogDateTemplate";
 import { getAllPosts } from "@/utils/post";
@@ -103,14 +103,36 @@ export default async function SeriesDetailPage({
     notFound();
   }
 
+  const collectionStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${BASE_URL}/blog/series/${encodeURIComponent(seriesName)}`,
+    url: `${BASE_URL}/blog/series/${encodeURIComponent(seriesName)}`,
+    name: seriesMeta.title,
+    description: seriesMeta.description,
+    isPartOf: {
+      "@type": "Blog",
+      name: BASE_META_TITLE,
+      url: BASE_URL,
+    },
+  };
+
   return (
-    <BlogDateTemplate
-      dateText={seriesMeta.title}
-      postCount={totalCount}
-      postList={paginated}
-      currentPage={boundedPage}
-      totalPages={totalPages}
-      basePath={`/blog/series/${encodeURIComponent(seriesName)}`}
-    />
+    <>
+      <BlogDateTemplate
+        dateText={seriesMeta.title}
+        postCount={totalCount}
+        postList={paginated}
+        currentPage={boundedPage}
+        totalPages={totalPages}
+        basePath={`/blog/series/${encodeURIComponent(seriesName)}`}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(collectionStructuredData),
+        }}
+      />
+    </>
   );
 }

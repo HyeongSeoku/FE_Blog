@@ -61,6 +61,20 @@ const TagsPage = async () => {
     ],
   };
 
+  const collectionStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${BASE_URL}/blog/tags`,
+    url: `${BASE_URL}/blog/tags`,
+    name: "태그",
+    description: "블로그 태그 목록입니다.",
+    isPartOf: {
+      "@type": "Blog",
+      name: BASE_META_TITLE,
+      url: BASE_URL,
+    },
+  };
+
   return (
     <>
       <TagsPageClient postList={postList} tagList={tagList} />
@@ -68,6 +82,12 @@ const TagsPage = async () => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(breadcrumbStructuredData),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(collectionStructuredData),
         }}
       />
     </>

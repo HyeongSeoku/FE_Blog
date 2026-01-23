@@ -85,6 +85,20 @@ async function ArchivePage() {
     ],
   };
 
+  const collectionStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${BASE_URL}/blog/archive`,
+    url: `${BASE_URL}/blog/archive`,
+    name: "Archive",
+    description: "생각, 튜토리얼, 그리고 개발 로그들의 시간순 모음입니다.",
+    isPartOf: {
+      "@type": "Blog",
+      name: BASE_META_TITLE,
+      url: BASE_URL,
+    },
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* 헤더 */}
@@ -145,6 +159,12 @@ async function ArchivePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(breadcrumbStructuredData),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(collectionStructuredData),
         }}
       />
     </div>
