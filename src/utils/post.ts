@@ -288,6 +288,29 @@ export const getAllMonths = async (): Promise<string[]> => {
   return Array.from(monthSet).sort();
 };
 
+export const getMonthlyPostCounts = async (
+  targetYear?: string,
+): Promise<{ month: string; count: number }[]> => {
+  const { postList } = await getAllPosts({});
+  const monthCounts: Record<string, number> = {};
+
+  postList.forEach((post) => {
+    const year = getDate("YYYY", post.createdAt);
+    const month = getDate("MM", post.createdAt);
+
+    if (year !== "Invalid Date" && month !== "Invalid Date") {
+      if (targetYear && year !== targetYear) return;
+
+      const key = targetYear ? month : `${year}-${month}`;
+      monthCounts[key] = (monthCounts[key] || 0) + 1;
+    }
+  });
+
+  return Object.entries(monthCounts)
+    .map(([month, count]) => ({ month, count }))
+    .sort((a, b) => a.month.localeCompare(b.month)); // 월별 오름차순
+};
+
 export const getPostsByDate = async ({
   type,
   date,

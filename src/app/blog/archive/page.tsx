@@ -7,7 +7,7 @@ import { Metadata } from "next";
 export function generateMetadata(): Metadata {
   const metaTitle = `${BASE_META_TITLE} | Archive`;
   const metaDescription =
-    "A chronological collection of thoughts, tutorials, and development logs.";
+    "생각, 튜토리얼, 그리고 개발 로그들의 시간순 모음입니다.";
 
   return {
     title: metaTitle,
@@ -15,10 +15,10 @@ export function generateMetadata(): Metadata {
     openGraph: {
       title: metaTitle,
       description: metaDescription,
-      url: "/blog/year",
+      url: "/blog/archive",
       type: "website",
     },
-    alternates: { canonical: "/blog/year" },
+    alternates: { canonical: "/blog/archive" },
   };
 }
 
@@ -80,7 +80,7 @@ async function ArchivePage() {
         "@type": "ListItem",
         position: 2,
         name: "Archive",
-        item: `${BASE_URL}/blog/year`,
+        item: `${BASE_URL}/blog/archive`,
       },
     ],
   };
@@ -96,8 +96,7 @@ async function ArchivePage() {
           </span>
         </h1>
         <p className="text-gray-500 dark:text-gray-400 mt-4">
-          A chronological collection of thoughts, tutorials, and development
-          logs.
+          생각, 튜토리얼, 그리고 개발 로그들의 시간순 모음입니다.
         </p>
       </div>
 
@@ -106,9 +105,12 @@ async function ArchivePage() {
         {yearGroups.map(({ year, posts }) => (
           <section key={year} className="relative">
             {/* 년도 */}
-            <h2 className="text-6xl font-bold text-gray-100 dark:text-gray-800/50 absolute -left-4 top-0 select-none pointer-events-none mobile:relative mobile:left-0 mobile:text-4xl mobile:text-gray-200 mobile:dark:text-gray-700 mobile:mb-4">
+            <Link
+              href={`/blog/archive/${year}`}
+              className="text-6xl font-bold text-gray-100 dark:text-gray-800/50 absolute -left-4 top-0 select-none hover:text-gray-300 dark:hover:text-gray-700 transition-colors cursor-pointer mobile:relative mobile:left-0 mobile:text-4xl mobile:text-gray-200 mobile:dark:text-gray-700 mobile:mb-4 block w-fit"
+            >
               {year}
-            </h2>
+            </Link>
 
             {/* 글 목록 */}
             <div className="ml-24 mobile:ml-0 border-l border-gray-200 dark:border-gray-700 pl-8 mobile:pl-4">
