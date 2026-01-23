@@ -42,15 +42,9 @@ export const getAllPosts = async ({
       const { data, content } = matter(fileContents);
       const thumbnail = getRepresentativeImage(data, content);
 
-      if (
-        !data?.title ||
-        !data?.description ||
-        !data?.category ||
-        !data?.tags ||
-        !data?.createdAt
-      ) {
+      if (!data?.title || !data?.category || !data?.createdAt) {
         console.warn(
-          `🛠️  게시물 파일 ${filePath} 에 필수 메타데이터가 없습니다. 건너뜁니다.`,
+          `🛠️  게시물 파일 ${filePath} 에 필수 메타데이터(title, category, createdAt)가 없습니다. 건너뜁니다.`,
         );
         return null;
       }
@@ -93,12 +87,19 @@ export const getAllPosts = async ({
         seriesCounts[series] += 1;
       }
 
+      // tags 기본값 빈 배열
+      const tags = data.tags
+        ? Array.isArray(data.tags)
+          ? data.tags
+          : String(data.tags).split(",")
+        : [];
+
       return {
         slug: path.relative(POST_PATH, filePath).replace(/\.mdx$/, ""),
         title: data.title,
-        description: data.description,
+        description: data.description || "",
         createdAt: data.createdAt,
-        tags: Array.isArray(data.tags) ? data.tags : data.tags.split(","),
+        tags,
         content: content || "",
         category: data.category,
         subCategory,
@@ -170,14 +171,19 @@ export const getPostsByTag = async (
       const { data, content } = matter(fileContents);
       const thumbnail = getRepresentativeImage(data, content);
 
-      if (!data?.title || !data?.tags || !data?.category || !data?.createdAt) {
-        console.warn(`🛠️  ${filePath} 파일에서 필수 메타데이터가 없습니다.`);
+      if (!data?.title || !data?.category || !data?.createdAt) {
+        console.warn(
+          `🛠️  ${filePath} 파일에서 필수 메타데이터(title, category, createdAt)가 없습니다.`,
+        );
         return null;
       }
 
-      const tags: string[] = Array.isArray(data.tags)
-        ? data.tags
-        : data.tags.split(",");
+      // tags 기본값 빈 배열
+      const tags: string[] = data.tags
+        ? Array.isArray(data.tags)
+          ? (data.tags as string[])
+          : String(data.tags).split(",")
+        : [];
 
       // 정규화된 태그로 카운트
       tags.forEach((t) => {

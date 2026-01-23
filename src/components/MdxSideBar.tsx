@@ -84,46 +84,69 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
   };
 
   return (
-    <aside className="fixed top-24 right-6 w-44 hidden desktop:flex flex-col z-50">
-      {/* 목차 */}
-      <nav className="mb-6">
-        <ul className="space-y-2 max-h-[400px] overflow-y-auto scroll-bar-thin pr-2">
-          {headings.map((heading, idx) => (
-            <li
-              key={`${heading.id}_${idx}`}
-              className={classNames("relative", {
-                "pl-4": heading.level === 3,
-              })}
-            >
-              <Link
-                href={`#${heading.id}`}
-                scroll={false}
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.history.replaceState(null, "", `#${heading.id}`);
-                  handleClick(heading.id);
-                }}
-                className={classNames(
-                  "block text-sm py-1 transition-all duration-200 truncate",
-                  activeId === heading.id
-                    ? "text-gray-900 dark:text-white font-medium"
-                    : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300",
-                )}
-              >
-                {heading.text}
-              </Link>
-              {activeId === heading.id && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 bg-gray-900 dark:bg-white rounded-full" />
-              )}
-            </li>
-          ))}
-        </ul>
-      </nav>
+    <>
+      {/* 목차 - 접힌 상태에서는 막대만, hover시 펼침 */}
+      <aside className="fixed top-24 right-6 hidden desktop:block z-50">
+        <nav className="group">
+          <ul className="relative max-h-[400px] overflow-y-auto scroll-bar-thin">
+            {headings.map((heading, idx) => {
+              const isActive = activeId === heading.id;
+              const isSubHeading = heading.level === 3;
 
-      {/* 위로가기 버튼 */}
+              return (
+                <li
+                  key={`${heading.id}_${idx}`}
+                  className="relative flex items-center"
+                >
+                  {/* 접힌 상태: 막대 인디케이터 (레벨에 따라 크기 다름) */}
+                  <span
+                    className={classNames(
+                      "rounded-full transition-all duration-200 flex-shrink-0",
+                      isSubHeading ? "w-[1px] h-2 my-1.5" : "w-0.5 h-4 my-1",
+                      isActive
+                        ? "bg-gray-900 dark:bg-white"
+                        : "bg-gray-300 dark:bg-gray-600",
+                      isActive && !isSubHeading && "h-5",
+                      isActive && isSubHeading && "h-3",
+                    )}
+                  />
+
+                  {/* 펼친 상태: 텍스트 (hover시 나타남, 레벨에 따라 들여쓰기) */}
+                  <Link
+                    href={`#${heading.id}`}
+                    scroll={false}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.history.replaceState(null, "", `#${heading.id}`);
+                      handleClick(heading.id);
+                    }}
+                    className={classNames(
+                      "block py-1 whitespace-nowrap",
+                      "w-0 opacity-0 overflow-hidden",
+                      "group-hover:w-40 group-hover:opacity-100",
+                      "transition-all duration-300 ease-out group-hover:ml-1",
+                      isSubHeading
+                        ? "text-xs group-hover:pl-3"
+                        : "text-sm group-hover:pl-0",
+                      isActive
+                        ? "text-gray-900 dark:text-white font-medium"
+                        : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300",
+                    )}
+                  >
+                    {heading.text}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </aside>
+
+      {/* 위로가기 버튼 - 별도 fixed로 분리 */}
       <div
         className={classNames(
-          "flex flex-col items-end gap-2 transition-opacity duration-300",
+          "fixed bottom-6 right-6 hidden desktop:flex flex-col items-start gap-2 z-50",
+          "transition-opacity duration-300",
           isScrollTop ? "opacity-0 pointer-events-none" : "opacity-100",
         )}
       >
@@ -141,7 +164,7 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
           <ArrowTop className="w-5 h-5 text-white dark:text-gray-900" />
         </button>
       </div>
-    </aside>
+    </>
   );
 };
 

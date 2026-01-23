@@ -8,7 +8,7 @@
     "optimize-images": "node ./script/optimize-images.js",
     "postbuild": "next-sitemap",
     "build:analyze": "cross-env NODE_ENV=development ANALYZE=true pnpm run build",
-    "build": "pnpm run optimize-images && next build",
+    "build": "pnpm run validate-posts && pnpm run optimize-images && next build",
     "dev": "next dev",
     "serve:static": "python3 -m http.server 3000 --directory out",
     "start": "next start",
@@ -19,7 +19,9 @@
     "spell-check": "cspell \"src/**/*.{ts,tsx,js,jsx}\"",
     "type-check": "npx tsc --noEmit",
     "lhci": "lhci autorun",
-    "sonar": "pnpm exec dotenv -e .env.development -- pnpm exec sonar-scanner"
+    "sonar": "pnpm exec dotenv -e .env.development -- pnpm exec sonar-scanner",
+    "new-post": "node ./script/create-post.js",
+    "validate-posts": "node ./script/validate-posts.js"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.0.1",

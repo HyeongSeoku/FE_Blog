@@ -5,6 +5,7 @@ import RightArrow from "@/icon/arrow_right.svg";
 import LeftArrow from "@/icon/arrow_left.svg";
 import dynamic from "next/dynamic";
 import DoubleArrow from "@/icon/arrow_right_double.svg";
+import TimeIcon from "@/icon/time.svg";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import Image from "next/image";
 import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
@@ -103,17 +104,11 @@ const MdxDetailTemplate = ({
         <div className="flex flex-col gap-3 mb-8">
           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400 dark:text-gray-500">
             <div className="flex items-center gap-1">
-              <span>📅</span>
               <span>{createdAt}</span>
             </div>
             <div className="flex items-center gap-1">
-              <span>⏱️</span>
+              <TimeIcon className="w-4 h-4" />
               <span>{readingTime} min read</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="font-medium text-gray-600 dark:text-gray-300">
-                BY 김형석
-              </span>
             </div>
           </div>
 
