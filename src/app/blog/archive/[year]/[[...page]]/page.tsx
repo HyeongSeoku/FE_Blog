@@ -132,7 +132,7 @@ const BlogArchiveYearPage = async ({
     pageSize: DEFAULT_PAGE_SIZE,
   });
   const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
-  
+
   // 월별 데이터 가져오기
   const monthlyData = await getMonthlyPostCounts(year);
 
@@ -152,22 +152,22 @@ const BlogArchiveYearPage = async ({
       {/* BlogDateTemplate은 헤더를 포함하므로, 여기서는 그냥 내부 구성요소를 재사용하거나, 
           Template을 그대로 쓰되 헤더가 중복되지 않도록 주의해야 합니다. 
           MonthlySection이 이미 'Archive' 헤더 역할을 하므로, BlogDateTemplate의 심플 헤더는 '게시물 목록' 정도로 보이게 됩니다. */}
-      
+
       <div className="mb-8">
-         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-            전체 게시물 목록
-         </h3>
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+          전체 게시물 목록
+        </h3>
       </div>
 
       <BlogDateTemplate
-        dateText={yearText} 
+        dateText={yearText}
         postList={postList}
         postCount={totalPostCount}
         currentPage={currentPage}
         totalPages={totalPages}
         basePath={`/blog/archive/${year}`}
       />
-      
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
