@@ -1,6 +1,8 @@
 import { getAllPosts, getAllTags } from "@/utils/post";
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { Metadata } from "next";
+import { Suspense } from "react";
+import DefaultLoading from "@/layout/Loading";
 import TagsPageClient from "./TagsPageClient";
 
 export const metadata: Metadata = {
@@ -77,7 +79,9 @@ const TagsPage = async () => {
 
   return (
     <>
-      <TagsPageClient postList={postList} tagList={tagList} />
+      <Suspense fallback={<DefaultLoading />}>
+        <TagsPageClient postList={postList} tagList={tagList} />
+      </Suspense>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
