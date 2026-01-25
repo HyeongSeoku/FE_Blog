@@ -14,7 +14,7 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "node -e \"const fs = require('fs'); const hasHusky = fs.existsSync('./node_modules/.bin/husky'); if (process.env.NODE_ENV !== 'production' && hasHusky) require('child_process').execSync('husky install', { stdio: 'inherit' })\"",
-    "format": "prettier",
+    "format:fix": "prettier -w",
     "format:check": "prettier --check .",
     "spell-check": "cspell \"src/**/*.{ts,tsx,js,jsx}\"",
     "type-check": "npx tsc --noEmit",
