@@ -9,6 +9,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
+import TagIcon from "@/icon/tag.svg";
+import CalendarIcon from "@/icon/calendar.svg";
+
 const BlogPageTemplateWrapper = ({ children }: { children: ReactNode }) => {
   return (
     <div className="w-full h-full flex flex-col flex-grow max-w-4xl mx-auto">
@@ -32,7 +35,8 @@ const CategoryTabs = ({
     !currentCategory || currentCategory === DEFAULT_CATEGORY_ALL;
 
   return (
-    <nav className="flex items-center gap-6 mb-6">
+    <nav className="flex items-center gap-6 mb-6 flex-wrap">
+      {/* 카테고리 탭 */}
       {categoryKeys.map((key) => {
         const isKeyDefault =
           key.toUpperCase() === DEFAULT_CATEGORY_ALL.toUpperCase();
@@ -63,6 +67,26 @@ const CategoryTabs = ({
           </Link>
         );
       })}
+
+      {/* 구분선 */}
+      <span className="hidden sm:block w-px h-6 bg-gray-300 dark:bg-gray-600" />
+
+      {/* 서브 링크 */}
+      <div className="flex items-center gap-4">
+        <Link
+          href="/blog/tags"
+          className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors flex items-center gap-1"
+        >
+          <TagIcon className="w-4 h-4" />
+          Tags
+        </Link>
+        <Link
+          href="/blog/archive"
+          className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors flex items-center gap-1"
+        >
+          <CalendarIcon className="w-4 h-4" /> Archive
+        </Link>
+      </div>
     </nav>
   );
 };

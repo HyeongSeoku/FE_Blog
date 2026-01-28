@@ -2,24 +2,20 @@
 
 import { HeadingsProps } from "@/types/mdx";
 import Link from "next/link";
-import { RefObject, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import classNames from "classnames";
-import MoScrollProgress from "./MoScrollProgress";
-
-import CommentIcon from "@/icon/comment.svg";
+import useScrollProgress from "@/hooks/useScrollProgress";
+import useScrollPosition from "@/hooks/useScrollPosition";
+import ArrowTop from "@/icon/arrow_top.svg";
 
 export interface MdxSideBarProps {
   headings: HeadingsProps[];
-  commentRef?: RefObject<HTMLElement>;
-  commentTargetId?: string;
 }
 
-const MdxSideBar = ({
-  headings,
-  commentRef,
-  commentTargetId = "giscusSection",
-}: MdxSideBarProps) => {
+const MdxSideBar = ({ headings }: MdxSideBarProps) => {
   const [activeId, setActiveId] = useState<string | null>(null);
+  const progress = useScrollProgress();
+  const { isScrollTop } = useScrollPosition();
 
   const HEADER_HEIGHT = 56;
 
@@ -54,9 +50,8 @@ const MdxSideBar = ({
       };
     };
 
-    observeHeadings(); // 최초 실행
+    observeHeadings();
 
-    // DOM 변경을 감지하여 observer 재설정
     const mutationObserver = new MutationObserver(() => {
       observeHeadings();
     });
@@ -84,73 +79,91 @@ const MdxSideBar = ({
     }
   };
 
-  const handleScrollToCommentSection = () => {
-    const el = commentRef?.current ?? document.getElementById(commentTargetId); // ref 없으면 id로 찾기
-
-    if (el) {
-      const yOffset = -50;
-      const yPosition =
-        el.getBoundingClientRect().top + window.scrollY + yOffset;
-
-      window.scrollTo({
-        top: yPosition,
-        behavior: "smooth",
-      });
-    }
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <>
-      <aside className="fixed top-[100px] right-[20px] p-4 w-fit h-fit max-w-[150px] max-h-[700px] border-gray-200 flex flex-col transform duration-300 lg:opacity-0 mobile:hidden z-50">
-        <ul className="space-y-2 h-fit max-h-[500px] overflow-y-scroll scroll-bar-thin">
-          {headings.map((heading, idx) => (
-            <li
-              key={`${heading.id}_${idx}`}
-              className={classNames(
-                "text-sm hover:text-theme transition-colors duration-100",
-                {
-                  "ml-4": heading.level === 3,
-                  "text-blue-600 font-bold": activeId === heading.id,
-                },
-              )}
-              style={{ animationDelay: `${idx * 20}ms` }}
-            >
-              <Link
-                href={`#${heading.id}`}
-                scroll={false}
-                onClick={(e) => {
-                  e.preventDefault();
+      {/* 목차 - 접힌 상태에서는 막대만, hover시 펼침 */}
+      <aside className="fixed top-24 right-6 hidden desktop:block z-50">
+        <nav className="group">
+          <ul className="relative max-h-[400px] overflow-y-auto scroll-bar-thin">
+            {headings.map((heading, idx) => {
+              const isActive = activeId === heading.id;
+              const isSubHeading = heading.level === 3;
 
-                  window.history.replaceState(null, "", `#${heading.id}`);
-                  handleClick(heading.id);
-                }}
-                className={classNames(
-                  "block truncate transition-colors duration-300",
-                )}
-              >
-                {heading.text}
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <button
-          className="w-8 p-1 mt-5 rounded-sm hover:bg-gray-400/20"
-          onClick={handleScrollToCommentSection}
-        >
-          <CommentIcon style={{ width: 24, height: 24 }} />
-        </button>
+              return (
+                <li
+                  key={`${heading.id}_${idx}`}
+                  className="relative flex items-center"
+                >
+                  {/* 접힌 상태: 막대 인디케이터 (레벨에 따라 크기 다름) */}
+                  <span
+                    className={classNames(
+                      "rounded-full transition-all duration-200 flex-shrink-0",
+                      isSubHeading ? "w-[1px] h-2 my-1.5" : "w-0.5 h-4 my-1",
+                      isActive
+                        ? "bg-gray-900 dark:bg-white"
+                        : "bg-gray-300 dark:bg-gray-600",
+                      isActive && !isSubHeading && "h-5",
+                      isActive && isSubHeading && "h-3",
+                    )}
+                  />
+
+                  {/* 펼친 상태: 텍스트 (hover시 나타남, 레벨에 따라 들여쓰기) */}
+                  <Link
+                    href={`#${heading.id}`}
+                    scroll={false}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.history.replaceState(null, "", `#${heading.id}`);
+                      handleClick(heading.id);
+                    }}
+                    className={classNames(
+                      "block py-1 whitespace-nowrap",
+                      "w-0 opacity-0 overflow-hidden",
+                      "group-hover:w-40 group-hover:opacity-100",
+                      "transition-all duration-300 ease-out group-hover:ml-1",
+                      isSubHeading
+                        ? "text-xs group-hover:pl-3"
+                        : "text-sm group-hover:pl-0",
+                      isActive
+                        ? "text-gray-900 dark:text-white font-medium"
+                        : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300",
+                    )}
+                  >
+                    {heading.text}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
       </aside>
 
-      {/* NOTE: MO용 side */}
-      <aside className="fixed bottom-10 right-2 p-1 z-50 flex flex-col items-center gap-2 min-mobile:hidden bg-gray-400/20 rounded-lg">
+      {/* 위로가기 버튼 - 별도 fixed로 분리 */}
+      <div
+        className={classNames(
+          "fixed bottom-6 right-6 hidden desktop:flex flex-col items-start gap-2 z-50",
+          "transition-opacity duration-300",
+          isScrollTop ? "opacity-0 pointer-events-none" : "opacity-100",
+        )}
+      >
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+            {Math.round(progress)}%
+          </span>
+        </div>
         <button
-          className="w-8 h-8 rounded-sm hover:bg-gray-400/20 flex items-center justify-center"
-          onClick={handleScrollToCommentSection}
+          onClick={scrollToTop}
+          aria-label="맨 위로 이동"
+          className="w-12 h-12 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-200"
         >
-          <CommentIcon style={{ width: 24, height: 24 }} />
+          <ArrowTop className="w-5 h-5 text-white dark:text-gray-900" />
         </button>
-        <MoScrollProgress />
-      </aside>
+      </div>
     </>
   );
 };

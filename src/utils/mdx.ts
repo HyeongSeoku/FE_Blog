@@ -229,7 +229,24 @@ export function getRepresentativeImage(
   if (isValid) return candidate;
 
   // 유효하지 않고 fallback 허용 시 기본 이미지 반환
-  return returnDefaultImg ? DEFAULT_POST_THUMBNAIL : "";
+  if (returnDefaultImg) {
+    const category = frontMatter?.category?.toUpperCase();
+    const subCategory = frontMatter?.subCategory?.toUpperCase();
+    const basePath = "/image/default_thumbnail";
+
+    if (category === "LIFE") return `${basePath}/life_thumbnail.webp`;
+    if (category === "ETC") return `${basePath}/etc_thumbnail.webp`;
+    if (category === "DEV") {
+      if (subCategory === "FE" || subCategory === "FRONTEND")
+        return `${basePath}/fe_thumbnail.webp`;
+      if (subCategory === "BE" || subCategory === "BACKEND")
+        return `${basePath}/be_thumbnail.webp`;
+      return `${basePath}/dev_thumbnail.webp`;
+    }
+
+    return DEFAULT_POST_THUMBNAIL;
+  }
+  return "";
 }
 
 export const extractHeadings = (content: string): HeadingsProps[] => {

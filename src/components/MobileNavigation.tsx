@@ -43,7 +43,7 @@ const MobileNavigation = ({
   return (
     <nav
       className={classNames(
-        "fixed inset-0 pt-16 flex flex-col bg-[var(--bg-color)] shadow-lg transform z-20",
+        "fixed inset-0 pt-16 flex flex-col bg-[var(--bg-color)] shadow-lg transform z-40",
         "transition-[opacity,transform,height] duration-300",
         {
           "opacity-100 translate-y-0 h-dvh w-dvw": isOpen,

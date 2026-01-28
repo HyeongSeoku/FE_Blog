@@ -42,15 +42,9 @@ export const getAllPosts = async ({
       const { data, content } = matter(fileContents);
       const thumbnail = getRepresentativeImage(data, content);
 
-      if (
-        !data?.title ||
-        !data?.description ||
-        !data?.category ||
-        !data?.tags ||
-        !data?.createdAt
-      ) {
+      if (!data?.title || !data?.category || !data?.createdAt) {
         console.warn(
-          `🛠️  게시물 파일 ${filePath} 에 필수 메타데이터가 없습니다. 건너뜁니다.`,
+          `🛠️  게시물 파일 ${filePath} 에 필수 메타데이터(title, category, createdAt)가 없습니다. 건너뜁니다.`,
         );
         return null;
       }
@@ -93,12 +87,19 @@ export const getAllPosts = async ({
         seriesCounts[series] += 1;
       }
 
+      // tags 기본값 빈 배열
+      const tags = data.tags
+        ? Array.isArray(data.tags)
+          ? data.tags
+          : String(data.tags).split(",")
+        : [];
+
       return {
         slug: path.relative(POST_PATH, filePath).replace(/\.mdx$/, ""),
         title: data.title,
-        description: data.description,
+        description: data.description || "",
         createdAt: data.createdAt,
-        tags: Array.isArray(data.tags) ? data.tags : data.tags.split(","),
+        tags,
         content: content || "",
         category: data.category,
         subCategory,
@@ -139,7 +140,7 @@ export const getAllPosts = async ({
 export const getPostsDetail = async (
   slug: string[],
 ): Promise<GetMdxContentsBase<string> | null> => {
-  const mdxContentData = await getMdxContents(slug, POST_PATH, false, {
+  const mdxContentData = await getMdxContents(slug, POST_PATH, true, {
     serialize: false as const,
   });
   return mdxContentData;
@@ -170,14 +171,19 @@ export const getPostsByTag = async (
       const { data, content } = matter(fileContents);
       const thumbnail = getRepresentativeImage(data, content);
 
-      if (!data?.title || !data?.tags || !data?.category || !data?.createdAt) {
-        console.warn(`🛠️  ${filePath} 파일에서 필수 메타데이터가 없습니다.`);
+      if (!data?.title || !data?.category || !data?.createdAt) {
+        console.warn(
+          `🛠️  ${filePath} 파일에서 필수 메타데이터(title, category, createdAt)가 없습니다.`,
+        );
         return null;
       }
 
-      const tags: string[] = Array.isArray(data.tags)
-        ? data.tags
-        : data.tags.split(",");
+      // tags 기본값 빈 배열
+      const tags: string[] = data.tags
+        ? Array.isArray(data.tags)
+          ? (data.tags as string[])
+          : String(data.tags).split(",")
+        : [];
 
       // 정규화된 태그로 카운트
       tags.forEach((t) => {
@@ -280,6 +286,29 @@ export const getAllMonths = async (): Promise<string[]> => {
   });
 
   return Array.from(monthSet).sort();
+};
+
+export const getMonthlyPostCounts = async (
+  targetYear?: string,
+): Promise<{ month: string; count: number }[]> => {
+  const { postList } = await getAllPosts({});
+  const monthCounts: Record<string, number> = {};
+
+  postList.forEach((post) => {
+    const year = getDate("YYYY", post.createdAt);
+    const month = getDate("MM", post.createdAt);
+
+    if (year !== "Invalid Date" && month !== "Invalid Date") {
+      if (targetYear && year !== targetYear) return;
+
+      const key = targetYear ? month : `${year}-${month}`;
+      monthCounts[key] = (monthCounts[key] || 0) + 1;
+    }
+  });
+
+  return Object.entries(monthCounts)
+    .map(([month, count]) => ({ month, count }))
+    .sort((a, b) => a.month.localeCompare(b.month)); // 월별 오름차순
 };
 
 export const getPostsByDate = async ({

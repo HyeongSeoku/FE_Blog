@@ -77,6 +77,7 @@ const MainPostCard = ({
   const isDefaultThumbnail = thumbnail === "/image/default_img.webp";
   const categoryLabel = getCategoryLabel(category, subCategory);
   const formattedDate = getDate("YYYY.MM.DD", createdAt);
+  const isoDate = getDate("YYYY-MM-DD", createdAt);
 
   const handleCategoryClick = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
@@ -120,7 +121,7 @@ const MainPostCard = ({
               >
                 {categoryLabel}
               </span>
-              <time dateTime={createdAt} className={dateClass}>
+              <time dateTime={isoDate} className={dateClass}>
                 {formattedDate}
               </time>
             </div>
@@ -176,7 +177,7 @@ const MainPostCard = ({
               >
                 {categoryLabel}
               </span>
-              <time dateTime={createdAt} className={dateLightClass}>
+              <time dateTime={isoDate} className={dateLightClass}>
                 {formattedDate}
               </time>
             </div>
@@ -221,7 +222,7 @@ const MainPostCard = ({
                 >
                   {categoryLabel}
                 </span>
-                <time dateTime={createdAt} className={dateClass}>
+                <time dateTime={isoDate} className={dateClass}>
                   {formattedDate}
                 </time>
               </div>
@@ -291,7 +292,7 @@ const MainPostCard = ({
               >
                 {categoryLabel}
               </span>
-              <time dateTime={createdAt} className={dateClass}>
+              <time dateTime={isoDate} className={dateClass}>
                 {formattedDate}
               </time>
             </div>
@@ -352,7 +353,7 @@ const MainPostCard = ({
             >
               {categoryLabel}
             </span>
-            <time dateTime={createdAt} className={dateClass}>
+            <time dateTime={isoDate} className={dateClass}>
               {formattedDate}
             </time>
           </div>

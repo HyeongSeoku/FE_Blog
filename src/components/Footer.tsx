@@ -1,4 +1,5 @@
 import GitHubIssueButton from "./GithubIssueButton";
+import RssIcon from "../icon/rss.svg";
 
 const Footer = () => {
   return (
@@ -8,6 +9,15 @@ const Footer = () => {
           © 2025 Seok All rights reserved.
         </span>
         <GitHubIssueButton className="!bg-transparent hover:!bg-gray-400/20" />
+        <a
+          href="/feed.xml"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-2 rounded-lg transition-colors hover:bg-gray-400/20 text-gray-500 overflow-hidden"
+          aria-label="RSS Feed"
+        >
+          <RssIcon className="w-5 h-5" />
+        </a>
       </section>
     </footer>
   );

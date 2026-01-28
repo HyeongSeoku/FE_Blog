@@ -16,22 +16,23 @@ const parsePageParam = (page?: string[]) => {
 };
 
 export async function generateStaticParams() {
-  const months = await getAllMonths();
+  const months = await getAllMonths(); // returns "YYYY-MM"
   const params = await Promise.all(
-    months.map(async (month) => {
+    months.map(async (monthStr) => {
+      const [year, month] = monthStr.split("-");
       const { totalPostCount } = await getPostsByDate({
         type: "month",
-        date: month,
+        date: monthStr,
         page: 1,
         pageSize: DEFAULT_PAGE_SIZE,
       });
       const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
-      const pageParams: { month: string; page?: string[] }[] = [
-        { month, page: [] },
+      const pageParams: { year: string; month: string; page?: string[] }[] = [
+        { year, month, page: [] },
       ];
 
       for (let page = 2; page <= totalPages; page += 1) {
-        pageParams.push({ month, page: ["p", String(page)] });
+        pageParams.push({ year, month, page: ["p", String(page)] });
       }
 
       return pageParams;
@@ -44,24 +45,23 @@ export async function generateStaticParams() {
 export const generateMetadata = ({
   params,
 }: {
-  params: { month: string; page?: string[] };
+  params: { year: string; month: string; page?: string[] };
 }) => {
-  const { month } = params;
-  const normalizedMonth = month.replace(/\./g, "-");
+  const { year, month } = params;
   const currentPage = parsePageParam(params.page);
   const pageSuffix =
     currentPage && currentPage > 1 ? ` (page ${currentPage})` : "";
   const url =
     currentPage && currentPage > 1
-      ? `/blog/month/${normalizedMonth}/p/${currentPage}`
-      : `/blog/month/${normalizedMonth}`;
+      ? `/blog/archive/${year}/${month}/p/${currentPage}`
+      : `/blog/archive/${year}/${month}`;
 
   return {
-    title: `${BASE_META_TITLE}|${month}월 게시물${pageSuffix}`,
-    description: `${month}월 작성된 블로그 글 목록을 확인하세요.`,
+    title: `${year}년 ${month}월 게시물${pageSuffix}`,
+    description: `${year}년 ${month}월 작성된 블로그 글 목록을 확인하세요.`,
     openGraph: {
-      title: `${month} 게시물${pageSuffix}`,
-      description: `${month} 작성된 블로그 글 목록을 확인하세요.`,
+      title: `${year}년 ${month}월 게시물${pageSuffix}`,
+      description: `${year}년 ${month}월 작성된 블로그 글 목록을 확인하세요.`,
       url,
       type: "website",
     },
@@ -71,13 +71,13 @@ export const generateMetadata = ({
   };
 };
 
-const BlogMonthPage = async ({
+const BlogArchiveMonthPage = async ({
   params,
 }: {
-  params: { month: string; page?: string[] };
+  params: { year: string; month: string; page?: string[] };
 }) => {
-  const { month } = params;
-  const normalizedMonth = month.replace(/\./g, "-");
+  const { year, month } = params;
+  const normalizedMonth = `${year}-${month}`;
   const currentPage = parsePageParam(params.page);
 
   if (!currentPage) {
@@ -105,8 +105,14 @@ const BlogMonthPage = async ({
       {
         "@type": "ListItem",
         position: 3,
-        name: `${normalizedMonth}월`,
-        item: `${BASE_URL}/blog/month/${normalizedMonth}`,
+        name: `${year}년`,
+        item: `${BASE_URL}/blog/archive/${year}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: `${month}월`,
+        item: `${BASE_URL}/blog/archive/${year}/${month}`,
       },
     ],
   };
@@ -114,8 +120,8 @@ const BlogMonthPage = async ({
   const collectionStructuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "@id": `${BASE_URL}/blog/month/${normalizedMonth}`,
-    url: `${BASE_URL}/blog/month/${normalizedMonth}`,
+    "@id": `${BASE_URL}/blog/archive/${year}/${month}`,
+    url: `${BASE_URL}/blog/archive/${year}/${month}`,
     name: `${formattedMonth} 게시물`,
     description: `${formattedMonth}에 작성된 블로그 글 모음 페이지입니다.`,
     isPartOf: {
@@ -145,7 +151,7 @@ const BlogMonthPage = async ({
         postCount={totalPostCount}
         currentPage={currentPage}
         totalPages={totalPages}
-        basePath={`/blog/month/${normalizedMonth}`}
+        basePath={`/blog/archive/${year}/${month}`}
       />
       <script
         type="application/ld+json"
@@ -163,4 +169,4 @@ const BlogMonthPage = async ({
   );
 };
 
-export default BlogMonthPage;
+export default BlogArchiveMonthPage;

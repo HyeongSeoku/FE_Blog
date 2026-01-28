@@ -1,44 +1,47 @@
 import Link from "next/link";
 import classNames from "classnames";
 
-interface YearData {
-  year: string;
+interface MonthData {
+  month: string; // "01", "02", etc.
   count: number;
 }
 
-interface ArchiveSectionProps {
-  yearlyData: YearData[];
+interface MonthlySectionProps {
+  year: string;
+  monthlyData: MonthData[];
 }
 
-// 년도별 색상 그라데이션 (최신일수록 진한 색)
-const getYearGradient = (index: number): string => {
-  const gradients = [
-    "from-violet-500 to-purple-600",
-    "from-blue-500 to-cyan-500",
-    "from-emerald-500 to-teal-500",
-    "from-amber-500 to-orange-500",
-    "from-rose-500 to-pink-500",
-    "from-indigo-500 to-blue-500",
-  ];
-  return gradients[index % gradients.length];
+// 월별 색상 그라데이션 (계절감 반영)
+const getMonthGradient = (month: string): string => {
+  const m = parseInt(month, 10);
+  if (m >= 3 && m <= 5) return "from-pink-400 to-rose-400"; // 봄
+  if (m >= 6 && m <= 8) return "from-cyan-400 to-blue-500"; // 여름
+  if (m >= 9 && m <= 11) return "from-amber-400 to-orange-500"; // 가을
+  return "from-sky-500 to-indigo-500"; // 겨울
 };
 
-export default function ArchiveSection({ yearlyData }: ArchiveSectionProps) {
-  if (!yearlyData.length) return null;
+export default function MonthlySection({
+  year,
+  monthlyData,
+}: MonthlySectionProps) {
+  if (!monthlyData.length) return null;
 
-  const totalPosts = yearlyData.reduce((sum, item) => sum + item.count, 0);
-  const maxCount = Math.max(...yearlyData.map((item) => item.count)) || 1;
+  const totalPosts = monthlyData.reduce((sum, item) => sum + item.count, 0);
+  const maxCount = Math.max(...monthlyData.map((item) => item.count)) || 1;
 
   return (
     <section className="my-16">
       {/* 섹션 헤더 */}
       <div className="flex justify-between items-start mb-8">
         <div>
-          <span className="text-xs font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-2 block">
-            Archive
-          </span>
-          <h2 className="text-3xl font-semibold text-gray-900 dark:text-white">
-            글 타임라인
+          <Link
+            href="/blog/archive"
+            className="text-xs font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-2 hover:text-gray-600 dark:hover:text-gray-300 transition-colors inline-block"
+          >
+            ← Back to Archive
+          </Link>
+          <h2 className="text-3xl font-semibold text-gray-900 dark:text-white mt-1">
+            {year}년 Archive
           </h2>
         </div>
         <div className="text-right">
@@ -51,15 +54,15 @@ export default function ArchiveSection({ yearlyData }: ArchiveSectionProps) {
         </div>
       </div>
 
-      {/* 년도별 카드 그리드 */}
+      {/* 월별 카드 그리드 */}
       <div className="grid grid-cols-2 tablet:grid-cols-3 desktop:grid-cols-4 gap-4">
-        {yearlyData.map((item, index) => {
+        {monthlyData.map((item) => {
           const percentage = (item.count / maxCount) * 100;
 
           return (
             <Link
-              key={item.year}
-              href={`/blog/archive/${item.year}`}
+              key={item.month}
+              href={`/blog/archive/${year}/${item.month}`}
               className={classNames(
                 "group relative overflow-hidden rounded-2xl p-6",
                 "bg-white dark:bg-neutral-900/80",
@@ -74,7 +77,7 @@ export default function ArchiveSection({ yearlyData }: ArchiveSectionProps) {
               <div
                 className={classNames(
                   "absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r opacity-60 group-hover:opacity-100 transition-opacity",
-                  getYearGradient(index),
+                  getMonthGradient(item.month),
                 )}
                 style={{ width: `${percentage}%` }}
               />
@@ -83,14 +86,14 @@ export default function ArchiveSection({ yearlyData }: ArchiveSectionProps) {
               <div
                 className={classNames(
                   "absolute -top-10 -right-10 w-24 h-24 rounded-full blur-2xl opacity-10 group-hover:opacity-20 transition-opacity",
-                  `bg-gradient-to-br ${getYearGradient(index)}`,
+                  `bg-gradient-to-br ${getMonthGradient(item.month)}`,
                 )}
               />
 
-              {/* 년도 */}
+              {/* 월 */}
               <div className="relative z-10">
                 <span className="text-3xl font-bold text-gray-900 dark:text-white group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
-                  {item.year}
+                  {parseInt(item.month, 10)}월
                 </span>
               </div>
 
@@ -111,25 +114,6 @@ export default function ArchiveSection({ yearlyData }: ArchiveSectionProps) {
             </Link>
           );
         })}
-      </div>
-
-      {/* 하단 전체 아카이브 링크 */}
-      <div className="mt-8 flex justify-center">
-        <Link
-          href="/blog/archive"
-          className={classNames(
-            "inline-flex items-center gap-2 px-6 py-3 rounded-full group",
-            "bg-gray-100 dark:bg-white/5",
-            "text-sm font-medium text-gray-700 dark:text-gray-300",
-            "hover:bg-gray-200 dark:hover:bg-white/10",
-            "transition-colors duration-300",
-          )}
-        >
-          전체 아카이브 보기
-          <span className="transition-transform duration-300 group-hover:translate-x-1">
-            →
-          </span>
-        </Link>
       </div>
     </section>
   );
