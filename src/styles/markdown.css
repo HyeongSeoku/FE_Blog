@@ -1,9 +1,23 @@
-.markdown-contents ol,
+/* 리스트 스타일 */
 .markdown-contents ul {
-  list-style: none !important;
+  @apply ml-5 mt-2 mb-2 list-disc list-inside;
+  text-wrap: pretty;
 }
 
-/* 제목 스타일 */
+.markdown-contents ol {
+  @apply ml-5 mt-2 mb-2 list-decimal list-inside;
+  text-wrap: pretty;
+}
+.markdown-contents h1,
+.markdown-contents h2,
+.markdown-contents h3,
+.markdown-contents h4,
+.markdown-contents h5,
+.markdown-contents h6 {
+  text-wrap: balance;
+  word-break: break-word;
+}
+
 .markdown-contents h1 {
   @apply text-3xl font-bold mt-6 mb-4;
 }
@@ -24,10 +38,17 @@
   @apply text-base font-semibold mt-3 mb-1;
 }
 
-/* 리스트 스타일 */
-.markdown-contents ul,
-.markdown-contents ol {
-  @apply ml-5 mt-2 mb-2 list-disc list-inside;
+.markdown-contents p {
+  @apply mt-2 mb-2;
+}
+
+.markdown-contents li {
+  margin-bottom: 0.25rem; /* Add slight spacing between list items */
+}
+
+.markdown-contents li > p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 /* 코드 블록 스타일 */
@@ -83,10 +104,15 @@
 .markdown-contents th,
 .markdown-contents td {
   @apply border border-gray-300 px-4 py-2;
+  font-variant-numeric: tabular-nums;
 }
 
 .markdown-contents th {
   @apply bg-gray-300 font-semibold;
+}
+
+.markdown-contents td {
+  vertical-align: top; /* Align content to top for better readability */
 }
 
 [data-theme="dark"] .markdown-contents th {
@@ -99,8 +125,4 @@
 
 .markdown-contents hr {
   @apply my-4;
-}
-
-.markdown-contents li {
-  list-style: disc;
 }
