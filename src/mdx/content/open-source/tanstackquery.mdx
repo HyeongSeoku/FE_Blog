@@ -1,0 +1,85 @@
+---
+title: 오픈 소스 기여 tanStackQuery
+description: TanStack Query의 프리패치 에러 핸들링 개선하기
+category: DEV
+createdAt: 2026.01.28
+subCategory: FE
+tags:
+  - opensource
+  - tanstackQuery
+  - ts
+thumbnail: "/content-image/open-source/tanstackquery/tanstackQuery_thumbnail.webp"
+---
+
+### 이슈 내용
+[TanStack Query Issue #9938](https://github.com/TanStack/query/issues/9938)
+
+
+<br/>
+
+### 기여하게 된 계기
+
+개발자로서 "내가 매일 사용하는 도구를 얼마나 깊이 이해하고 있는가?"라는 질문을 스스로에게 자주 던지곤 합니다. 
+
+그 답을 찾기 위해 TanStack Query 저장소의 열려있는 이슈(Open Issues) 목록을 훑어보던 중, 흥미로운 이슈[#9938](https://github.com/TanStack/query/issues/9938)하나를 발견하게 되었습니다.
+
+### 발견한 문제
+
+
+TanStack Query v5의 신기능인 `experimental_prefetchInRender`와 `useInfiniteQuery`를 함께 사용할 때 발생하는 문제였습니다.
+
+기존 React Query의 `Suspense` 모드는 "데이터가 아예 없을 때만 Error Boundary를 트리거한다"는 대원칙이 있습니다. 
+
+이미 데이터가 있는 상태(예: 무한 스크롤로 다음 페이지 로딩 중)에서 에러가 나면, 화면을 깨뜨리지 않고 에러 상태만 UI로 보여주는 것이 정상입니다.
+
+  > - 현상: 첫 번째 페이지 데이터가 이미 화면에 잘 나오고 있는데, 다음 페이지(Page 2)를 가져오다 에러가 나면 갑자기 화면 전체가 Error Boundary로 튕겨버림.
+  > - 원인: 프리패치 과정에서 발생하는 Promise가 기존 데이터의 존재 여부와 상관없이 무조건 reject를 던지고 있었음.
+
+분명 사용자는 이미 데이터를 보고 있는데, 다음 데이터를 불러오는 데 실패했다고 해서 화면 전체가 멎어버리는 것은 사용자 경험(UX) 측면에서 명백한 버그였습니다.
+
+
+<br/>
+
+### 해결 방법: Implementation
+
+문제 해결을 위해 라이브러리의 심장부인 `packages/query-core` 내의 `queryObserver.ts` 파일을 분석했습니다.
+
+**핵심 수정 사항**
+1. 데이터 존재 여부 확인: 에러가 발생했을 때, 현재 Observer에 this.currentResult.data가 이미 존재하는지 체크하는 로직을 추가했습니다.
+2. Promise 제어 로직 수정: 
+  - 데이터가 없을 때만 Promise를 reject하여 Error Boundary를 트리거하도록 했습니다.
+  - 데이터가 있을 때는 Promise를 resolve하여 컴포넌트가 기존 데이터를 유지하면서 에러 상태(isFetchNextPageError)만 처리할 수 있게 변경했습니다.
+3. 회귀 테스트(Regression Test) 작성:
+  - useQuery.promise.test.tsx 파일에 테스트 케이스를 추가했습니다. 무한 쿼리 도중 다음 페이지에서 에러가 발생해도 기존 데이터가 유지되는지 검증하여, 이후에 다른 수정으로 인해 이 동작이 다시 깨지지 않도록 안전망을 만들었습니다.
+
+**서비스 흐름도 (동작 방식)**
+
+수정 전후의 흐름은 다음과 같이 명확하게 바뀌었습니다.
+- Before: 다음 페이지 fetch 에러 -> Promise Reject -> Error Boundary (화면 먹통)
+  <img src="/content-image/open-source/tanstackquery/useInfiniteQuery_before.gif" alt="설명" class="block w-full desktop:w-[50%] mx-auto" />
+- After: 다음 페이지 fetch 에러 -> 데이터 유무 확인 -> 데이터 있음 확인 -> Promise Resolve -> 기존 UI 유지 + 에러 상태값 전달
+  <img src="/content-image/open-source/tanstackquery/useInfiniteQuery_after.gif" alt="설명" class="block w-full desktop:w-[50%] mx-auto" />
+
+덕분에 사용자는 무한 스크롤 중 네트워크 장애가 발생해도 보던 콘텐츠를 계속 볼 수 있고, 개발자는 에러 상태값을 이용해 "다시 시도" 버튼 같은 부드러운 UI를 제공할 수 있게 되었습니다.
+
+
+### 결과 및 성과
+작성한 PR[#10025](https://github.com/TanStack/query/pull/10025)은 메인 관리자인 TkDodo의 승인을 받아 메인 브랜치에 병합되었습니다.
+- 릴리즈 버전: @tanstack/query-core@5.90.18
+- 영향: 전 세계 수많은 프로젝트에서 사용하는 라이브러리의 안정성에 기여.
+
+
+제가 제출한 코드가 수만 명의 개발자가 사용하는 라이브러리에 포함되어 배포되었다는 사실은 정말 짜릿한 경험이었습니다.
+
+<br/>
+
+### 프로젝트 기간
+
+이슈 분석부터 PR 승인 및 머지까지 약 1~2주 정도 소요되었습니다. 단순히 코드를 고치는 것보다, 라이브러리 내부의 Observer와 Query 객체가 어떻게 유기적으로 동작하는지 그 구조를 파악하는 데 가장 많은 공을 들였습니다.
+회고
+
+이번 기여를 통해 "도구를 잘 알고 사용한다"는 것의 의미를 다시 한번 되새겼습니다. 
+
+라이브러리가 제공하는 인터페이스(API) 뒤편에서 Promise가 어떻게 관리되고 상태가 어떻게 전파되는지 깊게 파고드는 과정은 정말 즐거웠습니다.
+
+앞으로도 프론트엔드라는 영역에 국한되지 않고 서비스의 근간이 되는 로직들을 깊게 파고드는 T자형 개발자로 성장하고 싶습니다. 이렇게 직접 구르고 갈고 닦으며 생태계에 기여하는 개발자가 되어보겠습니다.
