@@ -13,10 +13,7 @@ declare global {
 
 function MicrosoftClarity() {
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    // Clarity 스크립트가 이미 로드되었는지 확인
-    if (window.clarity) return;
+    if (typeof window === "undefined" || window.clarity) return;
 
     const clarityId = process.env.NEXT_PUBLIC_CLARITY_ID;
     if (!clarityId) return;
@@ -36,6 +33,17 @@ function MicrosoftClarity() {
 
     const firstScript = document.getElementsByTagName("script")[0];
     firstScript?.parentNode?.insertBefore(script, firstScript);
+
+    // Clarity 로드 후 마스킹 설정 (엄격함 모드)
+    script.onload = () => {
+      if (window.clarity) {
+        // 모든 텍스트와 입력값 마스킹
+        window.clarity("set", "mask", "strict");
+
+        // 민감한 요소 자동 마스킹
+        window.clarity("set", "maskSensitiveElements", true);
+      }
+    };
   }, []);
 
   return null;
