@@ -7,9 +7,15 @@ import { pretendard } from "@/styles/font";
 import ThemeScript from "@/components/ThemeScript";
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 
-const GaBanner = dynamic(() => import("@/components/GaBanner"), {
+const GA = dynamic(() => import("@/components/GA"), {
   ssr: false,
 });
+const MicrosoftClarity = dynamic(
+  () => import("@/components/MicrosoftClarity"),
+  {
+    ssr: false,
+  },
+);
 
 export const metadata: Metadata = {
   title: BASE_META_TITLE,
@@ -58,7 +64,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body>
         <ClientProvider>{children}</ClientProvider>
-        <GaBanner />
+        <GA />
+        <MicrosoftClarity />
         <div id="modal-root"></div>
       </body>
     </html>
