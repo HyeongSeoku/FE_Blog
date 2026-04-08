@@ -1,0 +1,173 @@
+---
+title: QA 없이 디자인시스템 안전하게 운영하기 — Playwright VRT 도입기
+description: QA 인력 부족 환경에서 Playwright Visual Regression Test를 Docker로 구축해 시각적 회귀를 자동 감지한 경험
+category: DEV
+createdAt: 2026.03.30
+subCategory: FE
+tags:
+  - Playwright
+  - VRT
+  - 디자인시스템
+  - CI/CD
+  - Docker
+thumbnail: ""
+---
+
+## 배경: 조용히 생기는 버그
+
+디자인시스템(TCDS)을 구축하고 biz 서비스에 붙이기 시작하면서 예상치 못한 문제가 생겼습니다.
+
+디자인시스템 컴포넌트를 수정했는데, 그 수정이 biz 서비스의 **전혀 다른 컴포넌트**에 영향을 주는 케이스가 몇 번 생겼습니다. 예를 들어 Button 컴포넌트의 padding을 살짝 조정했더니, 그 Button을 쓰고 있는 Modal 레이아웃이 틀어지는 식이었습니다.
+
+더 큰 문제는 **이걸 발견하는 타이밍**이었습니다. 코드 리뷰에서 잡히지 않고, 배포 후 QA 혹은 운영에서 발견되는 경우가 많았습니다.
+
+우리 팀은 QA 전담 인력이 없었습니다. 디자인시스템 컴포넌트가 늘어날수록 수동으로 모든 UI를 눈으로 확인하는 건 현실적으로 불가능했습니다.
+
+> "코드가 머지되기 전에, 시각적으로 깨진 게 없는지 자동으로 잡을 수 없을까?"
+
+<br />
+
+## VRT(Visual Regression Test)란?
+
+VRT는 UI 컴포넌트의 스크린샷을 찍어 이전 버전과 픽셀 단위로 비교하는 테스트입니다.
+
+```
+기준 스냅샷 (baseline)
+      ↓
+코드 수정 후 스크린샷
+      ↓
+픽셀 비교 → 차이 발생 시 테스트 실패
+```
+
+변경이 없어야 할 컴포넌트가 바뀌면 CI에서 즉시 실패를 내뱉습니다. 리뷰어가 눈으로 일일이 확인하지 않아도 됩니다.
+
+<br />
+
+## 왜 Playwright인가?
+
+VRT 도구로는 Chromatic, Percy, Playwright, Storybook test runner 등이 있습니다.
+
+저는 Playwright를 선택했습니다.
+
+- **Chromatic/Percy**: 유료. 외부 서비스 의존
+- **Storybook test runner**: Storybook에 강하게 결합, 설정 복잡
+- **Playwright**: 오픈소스, 자체 스냅샷 기능 내장, CI 환경과 통합 쉬움
+
+이미 Playwright를 e2e 테스트에 쓰고 있었던 것도 선택 이유 중 하나였습니다.
+
+<br />
+
+## 첫 번째 문제: OS별 픽셀 차이
+
+Playwright VRT를 처음 CI에 붙였을 때 바로 문제가 생겼습니다.
+
+**로컬(Mac)에서 찍은 스냅샷과 CI(Linux)에서 찍은 스냅샷이 달랐습니다.**
+
+폰트 렌더링 방식, 서브픽셀 안티앨리어싱 처리가 OS마다 다르기 때문입니다. 코드를 전혀 바꾸지 않았는데도 스냅샷이 달라져서 매번 false positive가 발생했습니다.
+
+```
+Mac 스냅샷   ≠   Linux CI 스냅샷
+      → 코드 변경 없어도 테스트 실패
+```
+
+이를 해결하려면 **스냅샷을 찍는 환경을 고정**해야 했습니다.
+
+<br />
+
+## 해결: Playwright 공식 Docker 이미지
+
+Playwright는 공식 Docker 이미지를 제공합니다. CI에서 이 이미지를 사용하면 어떤 환경에서 실행하든 동일한 렌더링 환경이 보장됩니다.
+
+```yaml
+# ci.yml
+visual-regression:
+  name: Visual Regression
+  runs-on: [self-hosted, Linux, X64]
+  container:
+    image: mcr.microsoft.com/playwright:v1.58.2-jammy  # 환경 고정
+  steps:
+    - uses: actions/checkout@v4
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+    - name: Run VRT
+      run: pnpm test:vrt
+```
+
+이제 로컬이든 CI든 동일한 Docker 컨테이너에서 스냅샷을 찍으니 OS 차이로 인한 false positive가 사라졌습니다.
+
+<br />
+
+## 스냅샷 자동 생성 처리
+
+한 가지 더 고려해야 할 게 있었습니다. 새 컴포넌트를 추가하면 baseline 스냅샷이 없어서 VRT가 실패합니다. 이걸 매번 수동으로 처리하면 번거롭습니다.
+
+Linux 스냅샷이 없을 때 자동으로 생성하고 커밋하는 로직을 추가했습니다.
+
+```yaml
+- name: Generate Linux snapshots if missing
+  run: |
+    COUNT=$(find e2e/__snapshots__ -name "*-linux.png" 2>/dev/null | wc -l)
+    if [ "$COUNT" -eq "0" ]; then
+      echo "No Linux snapshots found — generating baseline..."
+      git config user.name "github-actions[bot]"
+      git config user.email "github-actions[bot]@users.noreply.github.com"
+      pnpm playwright test --update-snapshots || true
+      git add e2e/__snapshots__/
+      git diff --staged --quiet || (
+        git commit -m "ci: generate Linux VRT snapshots [skip ci]" && \
+        git push --no-verify origin HEAD:${{ github.head_ref || github.ref_name }}
+      )
+    fi
+```
+
+새 컴포넌트를 추가하면 첫 실행에서 baseline을 자동으로 생성하고, 이후 PR부터는 그 baseline과 비교합니다.
+
+<br />
+
+## CI 파이프라인에 게이트로 통합
+
+VRT를 CI의 필수 게이트로 배치했습니다.
+
+```
+PR 생성
+  ↓
+lint → unit test → visual regression  ← 여기서 시각적 회귀 감지
+  ↓ (모두 통과 시)
+Storybook 배포 트리거
+```
+
+VRT가 실패하면 배포로 넘어가지 않습니다. 시각적으로 깨진 채로 배포되는 상황을 원천 차단했습니다.
+
+실패 시에는 스크린샷 diff를 아티팩트로 업로드해서 어떤 컴포넌트가 얼마나 달라졌는지 바로 확인할 수 있게 했습니다.
+
+```yaml
+- name: Upload VRT report
+  uses: actions/upload-artifact@v3
+  if: failure()
+  with:
+    name: vrt-report
+    path: |
+      test-results/
+      playwright-report/
+    retention-days: 7
+```
+
+<br />
+
+## 효과
+
+VRT를 붙인 이후로 **디자인시스템 수정이 biz 서비스에 사이드이펙트를 주는 케이스가 배포 전에 잡히기 시작했습니다.**
+
+QA 인력이 없는 상황에서 사람이 눈으로 확인해야 할 범위를 크게 줄였고, 컴포넌트 수정에 대한 자신감도 높아졌습니다.
+
+<br />
+
+## 회고
+
+VRT를 도입하면서 "테스트는 코드 품질만을 위한 게 아니다"라는 걸 체감했습니다.
+
+이 VRT는 저 혼자 디자인시스템을 운영하는 상황에서 **믿을 수 있는 안전망** 같은 존재였습니다. 수정하고 "혹시 다른 데 영향이 가지 않을까?" 하는 불안감이 확연히 줄었습니다.
+
+Docker로 환경을 고정하는 아이디어는 단순해 보이지만, 이 작은 결정 하나가 false positive라는 노이즈를 없애고 테스트를 신뢰할 수 있게 만들었습니다.
+
+작은 팀일수록, 자동화로 얻는 안전망의 가치가 더 크다는 걸 이번에 다시 느꼈습니다.

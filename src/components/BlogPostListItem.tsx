@@ -1,9 +1,9 @@
 "use client";
 
-import { getDate } from "@/utils/date";
 import classNames from "classnames";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import { getDate } from "@/utils/date";
 
 const CATEGORY_COLORS: Record<string, string> = {
   DEV: "text-blue-600 dark:text-blue-400",
@@ -76,6 +76,7 @@ const BlogPostListItem = ({
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"

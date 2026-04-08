@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { formatTagDisplay } from "@/utils/tag";
 import classNames from "classnames";
+import { useEffect, useState } from "react";
+import { MOBILE_WIDTH } from "@/constants/basic.constants";
 import ArrowDown from "@/icon/arrow_right.svg";
 import CloseIcon from "@/icon/close_icon.svg";
-import { MOBILE_WIDTH } from "@/constants/basic.constants";
 import TagIcon from "@/icon/tag.svg";
+import { formatTagDisplay } from "@/utils/tag";
 
 interface TagItem {
   key: string;

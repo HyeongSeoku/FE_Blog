@@ -1,5 +1,5 @@
-import { MOBILE_WIDTH } from "@/constants/basic.constants";
 import { create } from "zustand";
+import { MOBILE_WIDTH } from "@/constants/basic.constants";
 
 interface DeviceTypeState {
   isMobileSize: boolean;

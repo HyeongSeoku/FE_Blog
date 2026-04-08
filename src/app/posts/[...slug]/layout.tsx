@@ -1,6 +1,6 @@
+import type { ReactNode } from "react";
 import DefaultLayout from "@/layout/DefaultLayout";
 import { getAllPosts } from "@/utils/post";
-import { ReactNode } from "react";
 
 export const dynamicParams = false;
 

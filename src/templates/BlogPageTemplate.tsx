@@ -1,16 +1,16 @@
 "use client";
 
-import BlogPostListItem from "@/components/BlogPostListItem";
-import Pagination from "@/components/Pagination";
-import { CATEGORY_MAP, DEFAULT_CATEGORY_ALL } from "@/constants/post.constants";
-import { PostDataProps } from "@/types/posts";
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
+import BlogPostListItem from "@/components/BlogPostListItem";
+import Pagination from "@/components/Pagination";
+import { CATEGORY_MAP, DEFAULT_CATEGORY_ALL } from "@/constants/post.constants";
+import CalendarIcon from "@/icon/calendar.svg";
 
 import TagIcon from "@/icon/tag.svg";
-import CalendarIcon from "@/icon/calendar.svg";
+import type { PostDataProps } from "@/types/posts";
 
 const BlogPageTemplateWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -177,6 +177,7 @@ const BlogPageTemplate = ({
             등록된 게시물이 없습니다.
           </p>
           <button
+            type="button"
             className="px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             onClick={() => router.back()}
           >

@@ -1,7 +1,7 @@
 "use client";
 
-import useThemeStore from "@/store/theme";
 import { useEffect, useRef } from "react";
+import useThemeStore from "@/store/theme";
 import "@/styles/giscus.css";
 
 export default function Giscus() {
@@ -35,7 +35,7 @@ export default function Giscus() {
     scriptElem.setAttribute("crossorigin", "anonymous");
 
     ref.current.appendChild(scriptElem);
-  }, [theme]);
+  }, [theme, repoId, clientId]);
 
   // https://github.com/giscus/giscus/blob/main/ADVANCED-USAGE.md#isetconfigmessage
   useEffect(() => {

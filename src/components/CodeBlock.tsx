@@ -1,11 +1,10 @@
 "use client";
 
-import useAnimationVisibility from "@/hooks/useAnimationVisibility";
 import classNames from "classnames";
-
-import { ReactNode, useState, useMemo } from "react";
-import { AnimationNameType } from "./AnimationContainer";
+import { type ReactNode, useMemo, useState } from "react";
 import { ANIMATE_FADE_IN_UP } from "@/constants/animation.constants";
+import useAnimationVisibility from "@/hooks/useAnimationVisibility";
+import type { AnimationNameType } from "./AnimationContainer";
 
 interface CodeBlockProps {
   children: ReactNode;
@@ -14,6 +13,23 @@ interface CodeBlockProps {
   hasCopyBtn?: boolean;
   className?: string;
 }
+
+const extractTextFromChildren = (node: ReactNode): string => {
+  if (typeof node === "string") {
+    return node;
+  }
+
+  if (Array.isArray(node)) {
+    return node.map(extractTextFromChildren).join("");
+  }
+
+  if (typeof node === "object" && node && "props" in node) {
+    const { children } = node.props as { children: ReactNode };
+    return extractTextFromChildren(children);
+  }
+
+  return "";
+};
 
 const CodeBlock = ({
   children,
@@ -24,23 +40,6 @@ const CodeBlock = ({
 }: CodeBlockProps) => {
   const [copied, setCopied] = useState(false);
   const [isVisible, ref] = useAnimationVisibility();
-
-  const extractTextFromChildren = (node: ReactNode): string => {
-    if (typeof node === "string") {
-      return node;
-    }
-
-    if (Array.isArray(node)) {
-      return node.map(extractTextFromChildren).join("");
-    }
-
-    if (typeof node === "object" && node && "props" in node) {
-      const { children } = node.props;
-      return extractTextFromChildren(children);
-    }
-
-    return "";
-  };
 
   const codeText = useMemo(() => {
     return extractTextFromChildren(children);
@@ -72,6 +71,7 @@ const CodeBlock = ({
       {children}
       {hasCopyBtn && (
         <button
+          type="button"
           onClick={() => void handleCopy()}
           className={classNames(
             "absolute top-2 right-2 p-1 bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 flex items-center justify-center w-16 h-8 transition-[opacity colors] duration-200 border border-transparent",

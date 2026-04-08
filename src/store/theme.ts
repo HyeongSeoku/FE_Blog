@@ -1,6 +1,6 @@
+import { create } from "zustand";
 import { LIGHT_DARK_THEME } from "@/constants/cookie.constants";
 import { setCookie } from "@/utils/cookies";
-import { create } from "zustand";
 
 interface ThemeState {
   isDarkMode: boolean;

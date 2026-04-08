@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import {
   CATEGORY_DESCRIPTION_BIG,
@@ -6,7 +7,6 @@ import {
 } from "@/constants/post.constants";
 import BlogPageTemplate from "@/templates/BlogPageTemplate";
 import { getAllPosts, getPostsByCategory } from "@/utils/post";
-import { notFound } from "next/navigation";
 
 export const dynamicParams = false;
 

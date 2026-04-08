@@ -1,8 +1,8 @@
 "use client";
 
+import type { ReactNode } from "react";
 import useDetectResize from "@/hooks/useDetectResize";
 import useTheme from "@/hooks/useTheme";
-import { ReactNode } from "react";
 
 export interface ClientProviderProps {
   children: ReactNode;

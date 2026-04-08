@@ -1,11 +1,10 @@
 "use client";
 
-import { getDate } from "@/utils/date";
-import { PostDataProps } from "@/types/posts";
 import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import type { PostDataProps } from "@/types/posts";
+import { getDate } from "@/utils/date";
 
 // 레이아웃 크기만 나타내는 variant (Category와 무관)
 // - large: 8컬럼, 2행 - 메인 피처 카드
@@ -14,10 +13,8 @@ import { useRouter } from "next/navigation";
 // - wide: 12컬럼 - 전체 너비 카드
 export type MainPostCardVariant = "large" | "side" | "standard" | "wide";
 
-export interface MainPostCardProps extends Omit<
-  PostDataProps,
-  "slug" | "content"
-> {
+export interface MainPostCardProps
+  extends Omit<PostDataProps, "slug" | "content"> {
   link: string;
   imgAlt?: string;
   categoryType?: "SUB" | "MAIN";
@@ -73,23 +70,12 @@ const MainPostCard = ({
   thumbnail = "/image/default_img.webp",
   variant = "standard",
 }: MainPostCardProps) => {
-  const router = useRouter();
   const isDefaultThumbnail = thumbnail === "/image/default_img.webp";
   const categoryLabel = getCategoryLabel(category, subCategory);
   const formattedDate = getDate("YYYY.MM.DD", createdAt);
   const isoDate = getDate("YYYY-MM-DD", createdAt);
 
-  const handleCategoryClick = (e: React.MouseEvent | React.KeyboardEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    router.push(`/blog/${category.toLowerCase()}`);
-  };
-
-  const handleCategoryKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      handleCategoryClick(e);
-    }
-  };
+  const categoryHref = `/blog/${category.toLowerCase()}`;
 
   // 모바일용 공통 카드 (md 이하에서 표시)
   const mobileCard = (
@@ -112,15 +98,13 @@ const MainPostCard = ({
           </div>
           <div className="flex flex-1 flex-col p-5 bg-white dark:bg-transparent">
             <div className="flex items-center gap-2 mb-2">
-              <span
-                role="link"
-                tabIndex={0}
+              <Link
+                href={categoryHref}
                 className={categoryTagClass}
-                onClick={handleCategoryClick}
-                onKeyDown={handleCategoryKeyDown}
+                onClick={(e) => e.stopPropagation()}
               >
                 {categoryLabel}
-              </span>
+              </Link>
               <time dateTime={isoDate} className={dateClass}>
                 {formattedDate}
               </time>
@@ -168,15 +152,13 @@ const MainPostCard = ({
             className="relative h-full flex flex-col justify-end p-10"
           >
             <div className="flex items-center gap-3 mb-3">
-              <span
-                role="link"
-                tabIndex={0}
+              <Link
+                href={categoryHref}
                 className={categoryTagLightClass}
-                onClick={handleCategoryClick}
-                onKeyDown={handleCategoryKeyDown}
+                onClick={(e) => e.stopPropagation()}
               >
                 {categoryLabel}
-              </span>
+              </Link>
               <time dateTime={isoDate} className={dateLightClass}>
                 {formattedDate}
               </time>
@@ -213,15 +195,13 @@ const MainPostCard = ({
           >
             <div className="p-5">
               <div className="flex items-center gap-2 mb-3">
-                <span
-                  role="link"
-                  tabIndex={0}
+                <Link
+                  href={categoryHref}
                   className={categoryTagClass}
-                  onClick={handleCategoryClick}
-                  onKeyDown={handleCategoryKeyDown}
+                  onClick={(e) => e.stopPropagation()}
                 >
                   {categoryLabel}
-                </span>
+                </Link>
                 <time dateTime={isoDate} className={dateClass}>
                   {formattedDate}
                 </time>
@@ -283,15 +263,13 @@ const MainPostCard = ({
           </Link>
           <div className="w-1/2 p-12 flex flex-col justify-center">
             <div className="flex items-center gap-3 mb-4">
-              <span
-                role="link"
-                tabIndex={0}
+              <Link
+                href={categoryHref}
                 className={categoryTagClass}
-                onClick={handleCategoryClick}
-                onKeyDown={handleCategoryKeyDown}
+                onClick={(e) => e.stopPropagation()}
               >
                 {categoryLabel}
-              </span>
+              </Link>
               <time dateTime={isoDate} className={dateClass}>
                 {formattedDate}
               </time>
@@ -344,15 +322,13 @@ const MainPostCard = ({
         </div>
         <div className="flex flex-1 flex-col p-5">
           <div className="flex items-center gap-2 mb-2">
-            <span
-              role="link"
-              tabIndex={0}
+            <Link
+              href={categoryHref}
               className={categoryTagClass}
-              onClick={handleCategoryClick}
-              onKeyDown={handleCategoryKeyDown}
+              onClick={(e) => e.stopPropagation()}
             >
               {categoryLabel}
-            </span>
+            </Link>
             <time dateTime={isoDate} className={dateClass}>
               {formattedDate}
             </time>

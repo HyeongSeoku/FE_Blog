@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
-import { getAllPosts, getPostsDetail } from "@/utils/post";
 import {
   BASE_META_TITLE,
   BASE_URL,
   PUBLIC_CONTENT_IMG_PATH,
 } from "@/constants/basic.constants";
-import { getStructuredData } from "@/utils/structure";
-import { FrontMatterProps } from "@/types/mdx";
 import MdxDetailTemplate from "@/templates/MdxDetailTemplate/MdxDetailTemplate";
+import type { FrontMatterProps } from "@/types/mdx";
+import { getAllPosts, getPostsDetail } from "@/utils/post";
+import { getStructuredData } from "@/utils/structure";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;

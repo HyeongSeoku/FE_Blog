@@ -1,10 +1,10 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
-import styles from "./index.module.css";
 import classNames from "classnames";
+import { type ReactNode, useEffect, useState } from "react";
 import useScrollDisable from "@/hooks/useScrollDisable";
 import CloseIcon from "@/icon/close_icon.svg";
+import styles from "./index.module.css";
 
 export interface BottomSheetProps {
   title: string;
@@ -75,7 +75,7 @@ const BottomSheet = ({
         <header className="flex items-center px-5 mb-1">
           <h3 className="text-lg font-bold">{title}</h3>
           {!hasCloseBtn && (
-            <button onClick={handleClose} className="ml-auto">
+            <button type="button" onClick={handleClose} className="ml-auto">
               <CloseIcon />
             </button>
           )}

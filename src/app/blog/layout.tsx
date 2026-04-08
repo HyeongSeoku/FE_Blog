@@ -1,7 +1,7 @@
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { BASE_URL } from "@/constants/basic.constants";
 import DefaultLayout from "@/layout/DefaultLayout";
-import { Metadata } from "next";
-import { ReactNode } from "react";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),

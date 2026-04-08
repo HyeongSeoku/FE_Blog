@@ -1,10 +1,10 @@
 "use client";
 
-import useThemeStore from "@/store/theme";
-import SunIcon from "@/icon/sun.svg";
-import MoonIcon from "@/icon/moon.svg";
-import styles from "./themeButton.module.css";
 import classNames from "classnames";
+import MoonIcon from "@/icon/moon.svg";
+import SunIcon from "@/icon/sun.svg";
+import useThemeStore from "@/store/theme";
+import styles from "./themeButton.module.css";
 
 const cx = (...args: string[]) =>
   classNames(...args.map((arg) => styles[arg] || arg));
@@ -15,6 +15,7 @@ const ThemeButton = () => {
 
   return (
     <button
+      type="button"
       className="flex flex-col flex-shrink-0 w-10 h-10 overflow-hidden hover:bg-gray-400/20 rounded-sm"
       aria-label="테마 변경"
       aria-pressed={isDarkMode}

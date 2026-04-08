@@ -1,5 +1,5 @@
-import GitHubIssueButton from "./GithubIssueButton";
 import RssIcon from "../icon/rss.svg";
+import GitHubIssueButton from "./GithubIssueButton";
 
 const Footer = () => {
   return (

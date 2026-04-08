@@ -1,11 +1,10 @@
 "use client";
 
-import useDeviceType from "@/hooks/useDeviceType";
-import { PostDataProps } from "@/types/posts";
-
 import { useEffect } from "react";
-import { GithubUserInfo } from "@/api/github";
+import type { GithubUserInfo } from "@/api/github";
+import useDeviceType from "@/hooks/useDeviceType";
 import useGithubInfoStore from "@/store/githubInfo";
+import type { PostDataProps } from "@/types/posts";
 
 interface HomeClientProps {
   postList: PostDataProps[];
@@ -23,7 +22,7 @@ export const HomeClient = ({ githubData }: HomeClientProps) => {
       githubUrl: githubData.html_url,
       githubName: githubData.login,
     });
-  }, [githubData]);
+  }, [githubData, setGithubUser]);
 
   useDeviceType();
 

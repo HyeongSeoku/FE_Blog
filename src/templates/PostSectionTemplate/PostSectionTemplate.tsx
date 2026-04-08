@@ -1,6 +1,8 @@
-import { PostDataProps } from "@/types/posts";
-import MainPostCard, { MainPostCardVariant } from "@/components/MainPostCard";
 import classNames from "classnames";
+import MainPostCard, {
+  type MainPostCardVariant,
+} from "@/components/MainPostCard";
+import type { PostDataProps } from "@/types/posts";
 
 export interface PostSectionProps {
   postList: PostDataProps[];
@@ -32,7 +34,6 @@ const getGridClass = (variant: MainPostCardVariant): string => {
       return "tablet:col-span-4 tablet:row-span-2";
     case "wide":
       return "tablet:col-span-12";
-    case "standard":
     default:
       return "tablet:col-span-4";
   }

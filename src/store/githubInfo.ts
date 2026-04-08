@@ -1,5 +1,5 @@
-import { GithubUser } from "@/types/github";
 import { create } from "zustand";
+import type { GithubUser } from "@/types/github";
 
 export interface GithubInfoState {
   githubUser: GithubUser;

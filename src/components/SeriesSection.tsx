@@ -1,13 +1,13 @@
 "use client";
 
-import { SeriesResponse } from "@/types/series";
-import SeriesCard from "@/components/SeriesCard";
-import { SwiperComponent } from "@/components/SwiperComponent";
-import { SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
-import { useState } from "react";
 import classNames from "classnames";
 import Link from "next/link";
+import { useState } from "react";
+import { Navigation } from "swiper/modules";
+import { SwiperSlide } from "swiper/react";
+import SeriesCard from "@/components/SeriesCard";
+import { SwiperComponent } from "@/components/SwiperComponent";
+import type { SeriesResponse } from "@/types/series";
 
 type SeriesListType = [string, SeriesResponse][];
 

@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import RightArrow from "@/icon/arrow_right.svg";
 import LeftArrow from "@/icon/arrow_left.svg";
+import RightArrow from "@/icon/arrow_right.svg";
 import DoubleLeftArrow from "@/icon/double_arrow_left.svg";
 import DoubleRightArrow from "@/icon/double_arrow_right.svg";
 
@@ -179,6 +179,7 @@ const Pagination: React.FC<PaginationProps> = ({
     <nav className="flex items-center justify-center space-x-2 h-8">
       {showShortCutNavigateBtn && (
         <button
+          type="button"
           className={classNames(
             "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
             {
@@ -195,6 +196,7 @@ const Pagination: React.FC<PaginationProps> = ({
       )}
       {!isSinglePage && (
         <button
+          type="button"
           className={classNames(
             "flex items-center px-3 py-1 rounded-md h-full w-8 p-1 transition-[background-color,color] duration-300  hover:text-black disabled:cursor-not-allowed disabled:text-gray-500",
             {
@@ -211,6 +213,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
       {pages.map((page) => (
         <button
+          type="button"
           key={page}
           className={classNames(
             "px-3 py-1 rounded-md transition-[background-color,color] duration-300 hover:bg-gray-100 hover:text-gray-900 border",
@@ -227,6 +230,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
       {!isSinglePage && (
         <button
+          type="button"
           className={classNames(
             "flex items-center px-3 py-1 rounded-md disabled:cursor-not-allowed transition-[background-color,color] disabled:text-gray-500",
             {
@@ -242,6 +246,7 @@ const Pagination: React.FC<PaginationProps> = ({
       )}
       {showShortCutNavigateBtn && (
         <button
+          type="button"
           className={classNames(
             "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
             {

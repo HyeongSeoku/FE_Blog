@@ -1,8 +1,8 @@
-import { getAllPosts, getAllTags } from "@/utils/post";
-import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { Suspense } from "react";
+import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import DefaultLoading from "@/layout/Loading";
+import { getAllPosts, getAllTags } from "@/utils/post";
 import TagsPageClient from "./TagsPageClient";
 
 export const metadata: Metadata = {

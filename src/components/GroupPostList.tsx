@@ -1,6 +1,6 @@
-import { getDate } from "@/utils/date";
-import { PostDataProps } from "@/types/posts";
 import Link from "next/link";
+import type { PostDataProps } from "@/types/posts";
+import { getDate } from "@/utils/date";
 
 type GroupedPosts = {
   [key: string]: PostDataProps[];

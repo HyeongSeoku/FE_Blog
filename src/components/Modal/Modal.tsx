@@ -1,14 +1,19 @@
 "use client";
 
-import { Dispatch, ReactNode, SetStateAction, useRef } from "react";
+import classNames from "classnames";
+import {
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+  useRef,
+} from "react";
 import ReactDOM from "react-dom";
+import useFocusTrap from "@/hooks/useFocusTrap";
+import useModalKeyboardControl from "@/hooks/useModalKeyboardControl";
+import useModalVisibility from "@/hooks/useModalVisiblilty";
+import useScrollDisable from "@/hooks/useScrollDisable";
 import CloseIcon from "@/icon/close_icon.svg";
 import { hexToRgba } from "@/utils/styles";
-import useScrollDisable from "@/hooks/useScrollDisable";
-import useModalVisibility from "@/hooks/useModalVisiblilty";
-import classNames from "classnames";
-import useModalKeyboardControl from "@/hooks/useModalKeyboardControl";
-import useFocusTrap from "@/hooks/useFocusTrap";
 
 export interface ModalProps {
   title?: string;
@@ -71,6 +76,9 @@ const Modal = ({
         modalContainerClassName,
       )}
       onClick={handleDimmedClick}
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && closeOnDimmedClick) closeModal();
+      }}
       aria-hidden="true"
       style={{
         backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -92,6 +100,7 @@ const Modal = ({
           opacity: isAnimating ? 1 : 0,
         }}
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
         aria-modal="true"
         aria-labelledby="modal-title"
       >

@@ -1,21 +1,21 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
-import BackButton from "./backButton";
-import MenuIcon from "@/icon/menu.svg";
-import { useRouter } from "next/navigation";
-import MobileNavigation from "@/components/MobileNavigation";
-import useScrollDirection from "@/hooks/useScrollDirection";
 import classNames from "classnames";
-import { triggerAnimation } from "@/utils/styles";
+import { useRouter } from "next/navigation";
+import { type ReactNode, useEffect } from "react";
+import MobileNavigation from "@/components/MobileNavigation";
+import Navigation from "@/components/Navigation";
 import {
   HEADER_SCROLL_THRESHOLD,
   MOBILE_WIDTH,
 } from "@/constants/basic.constants";
-import ThemeButton from "./ThemeButton/ThemeButton";
-import Navigation from "@/components/Navigation";
+import useScrollDirection from "@/hooks/useScrollDirection";
 import Logo from "@/icon/logo.svg";
+import MenuIcon from "@/icon/menu.svg";
 import useMobileNavStore from "@/store/mobileNav";
+import { triggerAnimation } from "@/utils/styles";
+import BackButton from "./backButton";
+import ThemeButton from "./ThemeButton/ThemeButton";
 
 export interface HeaderProps {
   headerType: HeaderType;
@@ -94,6 +94,7 @@ const Header = ({
             <ThemeButton />
 
             <button
+              type="button"
               className={classNames(
                 "ml-1 h-10 w-10 flex items-center justify-center relative z-50 hover:bg-gray-400/20 rounded-sm",
                 "tablet:hidden",

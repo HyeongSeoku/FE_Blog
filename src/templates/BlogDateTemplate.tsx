@@ -1,9 +1,9 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
 import BlogPostListItem from "@/components/BlogPostListItem";
 import Pagination from "@/components/Pagination";
-import { PostDataProps } from "@/types/posts";
-import { usePathname, useRouter } from "next/navigation";
+import type { PostDataProps } from "@/types/posts";
 
 export interface BlogDateTemplateProps {
   dateText: string;

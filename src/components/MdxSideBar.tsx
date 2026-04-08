@@ -1,12 +1,12 @@
 "use client";
 
-import { HeadingsProps } from "@/types/mdx";
+import classNames from "classnames";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import classNames from "classnames";
-import useScrollProgress from "@/hooks/useScrollProgress";
 import useScrollPosition from "@/hooks/useScrollPosition";
+import useScrollProgress from "@/hooks/useScrollProgress";
 import ArrowTop from "@/icon/arrow_top.svg";
+import type { HeadingsProps } from "@/types/mdx";
 
 export interface MdxSideBarProps {
   headings: HeadingsProps[];
@@ -89,15 +89,12 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
       <aside className="fixed top-24 right-6 hidden desktop:block z-50">
         <nav className="group">
           <ul className="relative max-h-[400px] overflow-y-auto scroll-bar-thin">
-            {headings.map((heading, idx) => {
+            {headings.map((heading) => {
               const isActive = activeId === heading.id;
               const isSubHeading = heading.level === 3;
 
               return (
-                <li
-                  key={`${heading.id}_${idx}`}
-                  className="relative flex items-center"
-                >
+                <li key={heading.id} className="relative flex items-center">
                   {/* 접힌 상태: 막대 인디케이터 (레벨에 따라 크기 다름) */}
                   <span
                     className={classNames(
@@ -157,6 +154,7 @@ const MdxSideBar = ({ headings }: MdxSideBarProps) => {
           </span>
         </div>
         <button
+          type="button"
           onClick={scrollToTop}
           aria-label="맨 위로 이동"
           className="w-12 h-12 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-200"

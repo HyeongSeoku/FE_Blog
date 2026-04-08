@@ -1,33 +1,32 @@
+import fs from "node:fs/promises";
+import http from "node:http";
+import https from "node:https";
+import path from "node:path";
 import matter from "gray-matter";
+import type { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
-import {
+import rehypeExternalLinks from "rehype-external-links";
+import rehypePrettyCode, { type Options } from "rehype-pretty-code";
+import rehypeRaw from "rehype-raw";
+import rehypeStringify from "rehype-stringify";
+import remarkGfm from "remark-gfm";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
+import { unified } from "unified";
+import { BASE_URL, DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
+import type {
   FrontMatterProps,
   GetMdxContentsBase,
   HeadingsProps,
   SerializeOptions,
 } from "@/types/mdx";
-import { unified } from "unified";
-import remarkParse from "remark-parse";
-import remarkGfm from "remark-gfm";
-import remarkRehype from "remark-rehype";
-import rehypeStringify from "rehype-stringify";
-import rehypeRaw from "rehype-raw";
-import rehypePrettyCode, { Options } from "rehype-pretty-code";
-import fs from "fs/promises";
-import path from "path";
-import rehypeExternalLinks from "rehype-external-links";
+import { getMdxFilesRecursively } from "./file";
 import {
   rehypeAnimateFadeInUp,
   rehypeCodeBlockClassifier,
   rehypeHeadingsWithIds,
   rehypeMarkCustomElements,
 } from "./mdxPlugin";
-import { BASE_URL, DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
-import { getMdxFilesRecursively } from "./file";
-
-import http from "http";
-import https from "https";
-import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 export async function getMdxContents<T extends boolean>(
   slug: string[],
@@ -35,13 +34,13 @@ export async function getMdxContents<T extends boolean>(
   hasDefaultImg: boolean = true,
   opts?: {
     serialize?: T;
-    mdxOptions?: any;
-    scope?: Record<string, any>;
+    mdxOptions?: Record<string, unknown>;
+    scope?: Record<string, unknown>;
   },
 ): Promise<GetMdxContentsBase<
   T extends true ? MDXRemoteSerializeResult : string
 > | null> {
-  const filePath = path.join(fileDirectory, ...slug) + ".mdx";
+  const filePath = `${path.join(fileDirectory, ...slug)}.mdx`;
 
   try {
     await fs.access(filePath);
@@ -207,7 +206,7 @@ export async function getMdxContents<T extends boolean>(
  * @param returnDefaultImg - true면 fallback 이미지 반환 (default: true)
  */
 export function getRepresentativeImage(
-  frontMatter: any,
+  frontMatter: Partial<FrontMatterProps>,
   content: string,
   returnDefaultImg: boolean = true,
 ): string {
@@ -256,21 +255,23 @@ export const extractHeadings = (content: string): HeadingsProps[] => {
   const cleanedContent = content.replace(/```[\s\S]*?```/g, "");
 
   const headingRegex = /^(#{2,3})\s+(.+)$/gm;
-  let match;
-  while ((match = headingRegex.exec(cleanedContent)) !== null) {
-    const [_, hashes, text] = match;
+  let match: RegExpExecArray | null = headingRegex.exec(cleanedContent);
+  while (match !== null) {
+    const [, hashes, text] = match;
 
     const level = hashes.length;
 
-    if (level > 3) continue;
+    if (level <= 3) {
+      const baseId = text.trim().replace(/\s+/g, "-").toLowerCase();
+      const count = headingCounts.get(baseId) || 0;
+      headingCounts.set(baseId, count + 1);
 
-    const baseId = text.trim().replace(/\s+/g, "-").toLowerCase();
-    const count = headingCounts.get(baseId) || 0;
-    headingCounts.set(baseId, count + 1);
+      const uniqueId = count === 0 ? baseId : `${baseId}-${count}`;
 
-    const uniqueId = count === 0 ? baseId : `${baseId}-${count}`;
+      headings.push({ id: uniqueId, text, level, isVisit: false });
+    }
 
-    headings.push({ id: uniqueId, text, level, isVisit: false });
+    match = headingRegex.exec(cleanedContent);
   }
 
   return headings;
@@ -279,7 +280,7 @@ export const extractHeadings = (content: string): HeadingsProps[] => {
 export const extractPlainText = (content: string): string => {
   const withoutCode = content.replace(/```[\s\S]*?```/g, "");
   const withoutTags = withoutCode.replace(/<[^>]+>/g, "");
-  const withoutSpecialChars = withoutTags.replace(/[*#>\[\]`_\-~]/g, "");
+  const withoutSpecialChars = withoutTags.replace(/[*#>[\]`_\-~]/g, "");
   return withoutSpecialChars;
 };
 

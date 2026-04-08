@@ -1,0 +1,165 @@
+---
+title: HLS 영상 점프 버그, Chrome MSE까지 파고들다
+description: CS로 접수된 영상 3초 점프 현상을 HAR·TS 파일 직접 분석으로 Chrome MSE 레이어까지 추적한 디버깅 회고
+category: DEV
+createdAt: 2026.03.30
+subCategory: FE
+tags:
+  - HLS
+  - 디버깅
+  - Chrome MSE
+  - 트러블슈팅
+thumbnail: ""
+---
+
+## 문제의 시작
+
+어느 날 CS 채널에 이런 제보가 올라왔습니다.
+
+> "카메라 영상을 보고 있으면 갑자기 3초 앞으로 점프됩니다."
+
+처음엔 단순한 네트워크 이슈라고 생각했습니다. 그런데 특정 카메라만 그런 게 아니라 전 카메라에서 발생하고 있었고, 재현도 쉽지 않았습니다.
+
+일반적인 FE 버그라면 콘솔 에러나 API 응답을 보면 되는데, 이건 영상 스트리밍 레이어의 문제였습니다. 어디서부터 시작해야 할지 막막했습니다.
+
+<br />
+
+## 1단계: HAR 파일로 네트워크 레이어 확인
+
+가장 먼저 한 건 Chrome DevTools에서 HAR 파일을 추출해 세그먼트 요청/응답 흐름을 확인하는 것이었습니다.
+
+HLS는 영상을 잘게 쪼갠 `.ts` 세그먼트 파일들을 순서대로 받아서 재생하는 방식입니다. HAR 파일을 보면 어떤 세그먼트가 언제 요청됐고, 응답 크기는 어떻게 되는지 알 수 있습니다.
+
+확인 결과 네트워크 레이어는 **정상**이었습니다. 세그먼트 요청도 정상적으로 이뤄지고 있었고, 응답도 제대로 오고 있었습니다.
+
+> 원인은 네트워크가 아니다 → TS 데이터 자체를 봐야 한다
+
+<br />
+
+## 2단계: TS 파일 직접 파싱 — PTS 분석
+
+HLS 세그먼트(`.ts`)는 MPEG-TS 컨테이너 포맷입니다. 각 프레임에는 PTS(Presentation Timestamp)가 있어서, 이 값들이 연속적으로 이어지는지 확인하면 데이터가 깨진 건지 알 수 있습니다.
+
+직접 TS 파일을 파싱해서 세그먼트별 PTS를 추출했습니다.
+
+```
+seg_2 마지막 PTS = 6.153s
+seg_3 첫 PTS   = 6.219s  (차이: 0.066s = 1프레임 간격, 정상)
+seg_3 마지막 PTS = 8.153s
+seg_4 첫 PTS   = 8.219s  (차이: 0.066s = 1프레임 간격, 정상)
+```
+
+**PTS 갭은 없었습니다.** TS 데이터 자체에는 문제가 없었습니다.
+
+> TS 데이터는 정상 → 브라우저가 디코딩하는 과정에서 문제가 생긴다
+
+<br />
+
+## 3단계: Chrome MSE와 DPB 리셋
+
+원인을 브라우저 레이어로 좁혔습니다. HLS.js는 세그먼트를 받아서 `fMP4`로 변환한 뒤 Chrome의 **MSE(Media Source Extensions) API**에 `appendBuffer`로 넘깁니다.
+
+여기서 핵심이 되는 개념이 **I-frame(IDR)**과 **P-frame**입니다.
+
+- **I-frame**: 독립적으로 디코딩 가능한 완전한 프레임
+- **P-frame**: 이전 I-frame을 참조해서 디코딩하는 프레임
+
+Chrome MSE는 `appendBuffer` 처리 중 **I-frame(IDR)을 만나는 순간 DPB(Decoded Picture Buffer)를 리셋**합니다. 문제는 이 I-frame이 세그먼트 *중간*에 있을 때입니다.
+
+```
+seg_3 프레임 구조 (108KB, 30 프레임):
+  [0]~[25]  PTS 6.22~7.89  P-frame × 26개  ← DPB 리셋으로 참조 무효화
+  [26]      PTS 7.96       I-frame 1개     ← 세그먼트 끝쪽에 위치
+  [27]~[29] PTS 8.02~8.15  P-frame × 3개  ← I-frame 참조, 정상
+```
+
+I-frame이 세그먼트 끝쪽(26번째)에 있으니, 앞쪽 P-frame 26개(약 1.7초 분량)는 참조 프레임이 리셋되면서 디코딩에 실패합니다. 그 결과 MSE 버퍼에 **hole**이 생깁니다.
+
+<br />
+
+## 근본 원인: I-frame 주기 vs 세그먼트 간격 불일치
+
+```
+카메라 I-frame 생성 주기: ~4초
+서버 세그먼트 분할 간격: ~2초 (고정)
+```
+
+서버가 2초 고정 간격으로 세그먼트를 자르다 보니, 4초마다 생성되는 I-frame이 세그먼트 **경계가 아닌 중간**에 위치하게 됩니다.
+
+```
+현재: [seg: P P P P] [seg: P P ... I P P] [seg: P P P P]
+              2초 고정        I-frame이 중간에
+
+개선: [seg: I P P P P P P P] [seg: I P P P P P P P]
+              I-frame 기준 분할 → 모든 세그먼트가 I-frame으로 시작
+```
+
+이 구조적 불일치가 연쇄적으로 문제를 일으켰습니다.
+
+```
+TS 데이터 정상
+  ↓
+HLS.js remuxer → fMP4 변환 → MSE appendBuffer
+  ↓
+Chrome MSE: mid-segment IDR 감지 → DPB 리셋
+  ↓
+IDR 앞 P-frame 26개 디코딩 실패 → buffer hole 발생
+  ↓
+다음 세그먼트(seg_4)도 P-frame only → 연쇄 실패
+  ↓
+HLS.js GapController: hole 감지 → currentTime 점프
+  ↓
+사용자: 영상이 갑자기 3초 앞으로 점프됨
+```
+
+<br />
+
+## 클라이언트에서 해결할 수 있는가?
+
+Chrome MSE의 DPB 리셋은 브라우저 내부 동작이라 JavaScript에서 제어할 수 없습니다. 세 가지 우회 방법을 시도했습니다.
+
+| 시도 | 결과 | 이유 |
+|------|------|------|
+| IDR 마스킹 (`sample.key = false`) | 실패 | NAL unit 레벨에서 IDR임이 감지됨 |
+| 세그먼트 분할 (pre-IDR/post-IDR) | 실패 | 빈 프레임 구간 발생, A/V 동기화 불가 |
+| P-frame deferral | 실패 | 라이브 환경에서 버퍼 고갈로 버벅임 |
+
+대신 HLS.js remuxer를 3곳 수정해 부분적으로 완화했습니다.
+
+- `isVideoContiguous = true` 강제 설정: P-frame-only 세그먼트가 이전 DPB를 참조 가능하게
+- `video.independent = firstKeyFrameIndex === 0`: mid-segment IDR에서 MSE가 새 Coded Frame Group을 불필요하게 생성하는 것 방지
+- `playRetry()` 조건 수정: HLS.js 자체 복구를 에러로 오인해 무한 재연결하던 문제 해결
+
+<br />
+
+## 근본 해결: 서버팀에 문서화하여 공유
+
+클라이언트 레벨의 완전한 해결은 불가능했습니다. 근본 해결 방안을 정리해 서버팀에 공유했습니다.
+
+**방법 1 (권장): I-frame 경계에서 세그먼트 분할**
+
+```bash
+ffmpeg -i input -c:v copy -f hls \
+  -hls_time 4 \
+  -hls_flags split_by_time \
+  -force_key_frames "expr:gte(t,n_forced*4)" \
+  output.m3u8
+```
+
+re-encoding 없이 적용 가능하고, 모든 카메라에 일괄 적용할 수 있는 방법입니다.
+
+**방법 2**: 카메라 I-frame 간격을 ~2초로 줄이기 (펌웨어 설정)
+
+**방법 3**: 서버에서 세그먼트 앞에 IDR 직접 삽입 (re-encoding 필요, 서버 부하 증가)
+
+<br />
+
+## 회고
+
+이 버그를 추적하면서 가장 많이 느낀 건 **"FE 개발자도 자기 레이어 밖을 알아야 한다"** 는 것이었습니다.
+
+"영상이 점프된다"는 현상에서 시작해, 네트워크 → TS 데이터 → HLS.js → Chrome MSE → 코덱 레이어까지 내려갔습니다. 각 레이어를 하나씩 제거해가며 원인을 좁히는 과정이 마치 탐정 수사처럼 느껴졌습니다.
+
+완전히 해결하지 못했다는 아쉬움도 있었습니다. 하지만 "클라이언트에서는 여기까지가 한계고, 근본 해결은 여기서 해야 한다"를 명확히 정리해 공유할 수 있었던 것도 하나의 결과라고 생각합니다.
+
+문제를 끝까지 파고드는 습관이 이번에도 값진 경험으로 돌아왔습니다.

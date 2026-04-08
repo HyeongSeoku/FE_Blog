@@ -1,4 +1,5 @@
-import { extractHeadings } from "@/utils/mdx";
+import type { PluggableList } from "unified";
+import type { extractHeadings } from "@/utils/mdx";
 
 export interface FrontMatterProps {
   title: string;
@@ -21,15 +22,11 @@ export interface HeadingsProps {
 
 export type ExtendedElement = {
   tagName?: string;
-  children: Array<{ type: string; value?: string; [key: string]: any }>;
-  properties?: Record<string, any>;
+  children: Array<{ type: string; value?: string; [key: string]: unknown }>;
+  properties?: Record<string, unknown>;
 };
 
-export type RehypePlugin =
-  | ((...args: any[]) => any)
-  | [(...args: any[]) => any, Record<string, any>?];
-
-export type RehypePluginList = RehypePlugin[];
+export type RehypePluginList = PluggableList;
 
 // 공통 반환형 (제네릭)
 export type GetMdxContentsBase<S> = {
@@ -50,8 +47,8 @@ export interface HeadingItems {
 
 export type SerializeOptions = {
   mdxOptions?: {
-    remarkPlugins?: any[];
-    rehypePlugins?: any[];
+    remarkPlugins?: PluggableList;
+    rehypePlugins?: PluggableList;
     format?: "mdx" | "md";
   };
   scope?: Record<string, unknown>;

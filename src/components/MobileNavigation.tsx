@@ -1,12 +1,12 @@
 "use client";
 
+import classNames from "classnames";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { NAV_GITHUB_ISSUE, NAV_LIST } from "@/constants/navigation.constants";
 import useIssueInfo from "@/hooks/useIssueInfo";
 import useScrollDisable from "@/hooks/useScrollDisable";
 import { issueUrl } from "@/utils/util";
-import classNames from "classnames";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 export interface MobileNavigationProps {
   isOpen: boolean;
@@ -54,9 +54,9 @@ const MobileNavigation = ({
       )}
     >
       <ul className={classNames("h-dvh", isOpen ? "visible" : "hidden")}>
-        {NAV_LIST.map(({ id, title, link, isExternalLink, target }, idx) => (
+        {NAV_LIST.map(({ id, title, link, isExternalLink, target }) => (
           <li
-            key={`${id}_${idx}`}
+            key={id}
             className={classNames(
               "px-4 py-2 cursor-pointer flex max-w-[var(--mobile-nav-max-width)] text-xl font-semibold text-center transition-transform will-change-transform",
               "hover:scale-105",

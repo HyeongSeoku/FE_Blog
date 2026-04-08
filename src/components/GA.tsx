@@ -1,8 +1,8 @@
 "use client";
 
+import Script from "next/script";
 import { COOKIE_GA_CONSENT } from "@/constants/storage.constant";
 import { getCookie, removeCookie } from "@/utils/cookies";
-import Script from "next/script";
 
 export default function GA() {
   const isAgreeGA = getCookie(COOKIE_GA_CONSENT) === "true";

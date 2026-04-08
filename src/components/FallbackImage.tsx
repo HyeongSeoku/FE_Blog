@@ -1,7 +1,7 @@
 "use client";
 
-import Image, { ImageProps, StaticImageData } from "next/image";
-import { useState, useEffect } from "react";
+import Image, { type ImageProps, type StaticImageData } from "next/image";
+import { useEffect, useState } from "react";
 import DefaultImg from "@/icon/default_img.svg";
 
 export interface FallbackImageProps extends Omit<ImageProps, "src"> {
