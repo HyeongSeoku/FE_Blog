@@ -1,11 +1,11 @@
 "use client";
 
+import classNames from "classnames";
+import { HEADER_SCROLL_THRESHOLD } from "@/constants/basic.constants";
 import useScrollDirection from "@/hooks/useScrollDirection";
 import useScrollPosition from "@/hooks/useScrollPosition";
 import useScrollProgress from "@/hooks/useScrollProgress";
-import { HEADER_SCROLL_THRESHOLD } from "@/constants/basic.constants";
 import useMobileNavStore from "@/store/mobileNav";
-import classNames from "classnames";
 
 export interface ScrollProgressBarProps {
   className?: string;

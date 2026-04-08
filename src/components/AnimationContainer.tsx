@@ -1,9 +1,9 @@
 "use client";
 
-import { ElementType, ReactNode } from "react";
 import classNames from "classnames";
-import useAnimationVisibility from "@/hooks/useAnimationVisibility";
+import type { ElementType, ReactNode } from "react";
 import { ANIMATE_FADE_IN_UP } from "@/constants/animation.constants";
+import useAnimationVisibility from "@/hooks/useAnimationVisibility";
 
 export type AnimationNameType =
   | "animate-fadeInUp"

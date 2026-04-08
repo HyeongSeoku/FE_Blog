@@ -1,10 +1,9 @@
 "use client";
 
-import React, { ReactNode } from "react";
+import classNames from "classnames";
+import type { ReactNode } from "react";
 import useIssueInfo from "@/hooks/useIssueInfo";
 import GithubIssueIcon from "@/icon/github_issue.svg";
-
-import classNames from "classnames";
 
 export interface GithubIssueButtonProps {
   children?: ReactNode;

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HTMLAttributeAnchorTarget, ReactNode } from "react";
+import type { HTMLAttributeAnchorTarget, ReactNode } from "react";
 import ExternalIcon from "@/icon/external.svg";
 
 interface MdxLinkProps {

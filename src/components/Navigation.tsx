@@ -1,15 +1,15 @@
 "use client";
 
-import {
-  NAV_GITHUB_ISSUE,
-  NAV_LIST,
-  NAV_LIST_TYPE,
-} from "@/constants/navigation.constants";
-import useIssueInfo from "@/hooks/useIssueInfo";
-import { issueUrl } from "@/utils/util";
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  NAV_GITHUB_ISSUE,
+  NAV_LIST,
+  type NAV_LIST_TYPE,
+} from "@/constants/navigation.constants";
+import useIssueInfo from "@/hooks/useIssueInfo";
+import { issueUrl } from "@/utils/util";
 
 function NavigationItem({
   item,

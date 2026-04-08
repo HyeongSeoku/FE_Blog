@@ -1,16 +1,15 @@
-import Link from "next/link";
 import Image from "next/image";
-
-import EmailIcon from "@/icon/email.svg";
-import GithubIcon from "@/icon/github.svg";
-import LinkedInIcon from "@/icon/linkedIn.svg";
-import { GithubUserInfo } from "@/api/github";
-import { getYearsWorked } from "@/utils/util";
+import Link from "next/link";
+import type { GithubUserInfo } from "@/api/github";
 import {
   EMAIL_ADDRESS,
   LINKED_IN_URL,
   MY_GITHUB_URL,
 } from "@/constants/basic.constants";
+import EmailIcon from "@/icon/email.svg";
+import GithubIcon from "@/icon/github.svg";
+import LinkedInIcon from "@/icon/linkedIn.svg";
+import { getYearsWorked } from "@/utils/util";
 
 interface IntroSectionTemplateProps {
   githubData?: GithubUserInfo | null;
@@ -27,6 +26,7 @@ const IntroSectionTemplate = ({ githubData }: IntroSectionTemplateProps) => {
             href={githubData.html_url}
             target="_blank"
             className="p-1 rounded-sm transform duration-300 will-change-transform hover:bg-gray-400/20"
+            rel="noopener"
           >
             <Image
               src={githubData.avatar_url}

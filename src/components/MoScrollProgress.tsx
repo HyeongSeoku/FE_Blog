@@ -1,9 +1,9 @@
 "use client";
 
+import classNames from "classnames";
 import useScrollPosition from "@/hooks/useScrollPosition";
 import useScrollProgress from "@/hooks/useScrollProgress";
 import ArrowTop from "@/icon/arrow_top.svg";
-import classNames from "classnames";
 
 const MoScrollProgress = () => {
   const progressWidth = useScrollProgress();
@@ -36,6 +36,7 @@ const MoScrollProgress = () => {
 
       {/* 원형 버튼 */}
       <button
+        type="button"
         onClick={scrollToTop}
         aria-label={`맨 위로 이동 (${Math.round(progressWidth)}% 읽음)`}
         className="group w-14 h-14 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-200"

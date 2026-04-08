@@ -1,6 +1,6 @@
-import { hexToRgba } from "@/utils/styles";
 import Image from "next/image";
 import { useRef } from "react";
+import { hexToRgba } from "@/utils/styles";
 
 export interface SkillChipProps {
   imgSrc: string;
@@ -49,6 +49,7 @@ const SkillChip = ({
   return (
     <li>
       <button
+        type="button"
         ref={chipRef}
         className="flex items-center gap-1 w-fit py-1 px-2 rounded-md animate-bounceJelly transform duration-300 hover:scale-110"
         style={{

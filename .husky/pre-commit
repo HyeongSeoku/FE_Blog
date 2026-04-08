@@ -20,11 +20,8 @@ if [ -z "$FILES" ]; then
   exit 0
 fi
 
-echo "🔍 Running ESLint..."
-echo "$FILES" | xargs eslint --fix
-
-echo "🎨 Running Prettier..."
-echo "$FILES" | xargs prettier --write
+echo "🔍 Running Biome ..."
+echo "$FILES" | xargs ./node_modules/.bin/biome check --write
 
 echo "➕ Restaging formatted files..."
 echo "$FILES" | xargs git add

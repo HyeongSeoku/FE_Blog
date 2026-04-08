@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 
 export const PUBLIC_IMG_PATH = "/image";
 export const PUBLIC_CONTENT_IMG_PATH = "/content-image";

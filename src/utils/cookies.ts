@@ -15,13 +15,14 @@ export const setCookie = (name: string, value: string, days: number) => {
   if (days) {
     const date = new Date();
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-    expires = "; expires=" + date.toUTCString();
+    expires = `; expires=${date.toUTCString()}`;
   }
-  document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  // biome-ignore lint/suspicious/noDocumentCookie: CSR cookie utility
+  document.cookie = `${name}=${value || ""}${expires}; path=/`;
 };
 
 export const getCookie = (name: string): string | null => {
-  const nameEQ = name + "=";
+  const nameEQ = `${name}=`;
   const ca = document.cookie.split(";");
   for (let i = 0; i < ca.length; i++) {
     let c = ca[i];
@@ -32,5 +33,6 @@ export const getCookie = (name: string): string | null => {
 };
 
 export const removeCookie = (name: string) => {
-  document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  // biome-ignore lint/suspicious/noDocumentCookie: CSR cookie utility
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 };

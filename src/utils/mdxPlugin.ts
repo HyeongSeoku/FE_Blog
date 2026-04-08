@@ -1,17 +1,18 @@
-import { visit } from "unist-util-visit";
 import type { Plugin } from "unified";
-import type { HeadingsProps } from "@/types/mdx";
+import type { Node } from "unist";
+import { visit } from "unist-util-visit";
 import {
   MARKUP_ANIMATE,
   MARKUP_BEFORE_ANIMATE,
 } from "@/constants/animation.constants";
+import type { HeadingsProps } from "@/types/mdx";
 
-type ElementNode = {
-  type: "element";
+interface HastNode extends Node {
   tagName?: string;
   properties?: Record<string, unknown>;
-  children?: any[];
-};
+  children?: HastNode[];
+  value?: string;
+}
 
 export const rehypeHeadingsWithIds: Plugin<[HeadingsProps[]]> = (
   headingData,
@@ -21,14 +22,12 @@ export const rehypeHeadingsWithIds: Plugin<[HeadingsProps[]]> = (
       return;
     }
 
-    visit(tree, "element", (node) => {
-      const elementNode = node as ElementNode;
-
-      if (["h2", "h3"].includes(elementNode.tagName || "")) {
-        if (Array.isArray(elementNode.children)) {
-          for (const item of elementNode.children) {
+    visit(tree as HastNode, "element", (node: HastNode) => {
+      if (["h2", "h3"].includes(node.tagName || "")) {
+        if (Array.isArray(node.children)) {
+          for (const item of node.children) {
             if (item.type === "text" && item.value) {
-              const headingLevel = elementNode.tagName === "h2" ? 2 : 3;
+              const headingLevel = node.tagName === "h2" ? 2 : 3;
               const heading = headingData.find(
                 (h) =>
                   h.text === item.value &&
@@ -38,8 +37,8 @@ export const rehypeHeadingsWithIds: Plugin<[HeadingsProps[]]> = (
 
               if (heading) {
                 heading.isVisit = true;
-                elementNode.properties = elementNode.properties || {};
-                (elementNode.properties as any).id = heading.id;
+                node.properties = node.properties ?? {};
+                node.properties.id = heading.id;
               }
             }
           }
@@ -50,35 +49,38 @@ export const rehypeHeadingsWithIds: Plugin<[HeadingsProps[]]> = (
 };
 
 export const rehypeCodeBlockClassifier = () => {
-  return (tree: any) => {
-    visit(tree, "element", (node, _, parent) => {
-      if (node.tagName === "code") {
-        const isBlockCode = parent?.tagName === "pre";
-        node.properties = node.properties || {};
+  return (tree: HastNode) => {
+    visit(
+      tree,
+      "element",
+      (node: HastNode, _, parent: HastNode | undefined) => {
+        if (node.tagName === "code") {
+          const isBlockCode = parent?.tagName === "pre";
+          node.properties = node.properties ?? {};
 
-        const cls = node.properties.className || [];
-        const normalized = Array.isArray(cls) ? cls : [cls];
+          const cls = node.properties.className ?? [];
+          const normalized = Array.isArray(cls) ? cls : [cls];
 
-        node.properties.className = [
-          ...normalized,
-          isBlockCode ? "block-code" : "inline-code",
-        ];
-      }
-    });
+          node.properties.className = [
+            ...(normalized as string[]),
+            isBlockCode ? "block-code" : "inline-code",
+          ];
+        }
+      },
+    );
   };
 };
 
 export const rehypeAnimateFadeInUp: Plugin<[]> = () => {
   return (tree) => {
-    visit(tree, "element", (node: Element) => {
-      const el = node as Element & { properties: Record<string, any> };
-      el.properties = el.properties || {};
+    visit(tree as HastNode, "element", (node: HastNode) => {
+      node.properties = node.properties ?? {};
 
-      const cls = (el.properties.className || []) as string[] | string;
+      const cls = (node.properties.className ?? []) as string[] | string;
       const normalized = Array.isArray(cls) ? cls : [cls];
 
       if (!normalized.includes(MARKUP_ANIMATE)) {
-        el.properties.className = [
+        node.properties.className = [
           ...normalized,
           MARKUP_ANIMATE,
           MARKUP_BEFORE_ANIMATE,
@@ -89,20 +91,24 @@ export const rehypeAnimateFadeInUp: Plugin<[]> = () => {
 };
 
 export const rehypeMarkCustomElements = () => {
-  return (tree: any) => {
-    visit(tree, "element", (node: any, _index, parent) => {
-      if (node.tagName === "code") {
-        const isInlineCode = parent?.tagName !== "pre";
-        node.properties = node.properties || {};
+  return (tree: HastNode) => {
+    visit(
+      tree,
+      "element",
+      (node: HastNode, _index, parent: HastNode | undefined) => {
+        if (node.tagName === "code") {
+          const isInlineCode = parent?.tagName !== "pre";
+          node.properties = node.properties ?? {};
 
-        if (!isInlineCode) {
-          node.properties["data-custom-code"] = "true";
+          if (!isInlineCode) {
+            node.properties["data-custom-code"] = "true";
+          }
         }
-      }
-      if (node.tagName === "a") {
-        node.properties = node.properties || {};
-        node.properties["data-custom-link"] = "true";
-      }
-    });
+        if (node.tagName === "a") {
+          node.properties = node.properties ?? {};
+          node.properties["data-custom-link"] = "true";
+        }
+      },
+    );
   };
 };

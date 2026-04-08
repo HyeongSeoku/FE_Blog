@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import ParticleCanvas from "@/components/ParticleCanvas";
 import {
   ABOUT_NAVIGATION_ID_LIST,
@@ -231,6 +231,7 @@ function ExternalLinkIcon({ className = "w-4 h-4" }: { className?: string }) {
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
+      aria-hidden="true"
     >
       <path
         strokeLinecap="round"
@@ -249,6 +250,7 @@ function ArrowRightIcon({ className = "w-4 h-4" }: { className?: string }) {
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
+      aria-hidden="true"
     >
       <path
         strokeLinecap="round"

@@ -19,10 +19,11 @@ function MicrosoftClarity() {
     if (!clarityId) return;
 
     // Clarity 초기화 함수
-    window.clarity = function (...args: unknown[]) {
+    window.clarity = (...args: unknown[]) => {
       const clarity = window.clarity;
       if (clarity) {
-        (clarity.q = clarity.q || []).push(args);
+        clarity.q = clarity.q ?? [];
+        clarity.q.push(args);
       }
     };
 

@@ -1,9 +1,9 @@
+import { notFound } from "next/navigation";
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
 import BlogDateTemplate from "@/templates/BlogDateTemplate";
 import { formatToKoreanMonth } from "@/utils/date";
 import { getAllMonths, getPostsByDate } from "@/utils/post";
-import { notFound } from "next/navigation";
 
 export const dynamicParams = false;
 

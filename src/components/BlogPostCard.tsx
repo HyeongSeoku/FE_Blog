@@ -1,11 +1,11 @@
 "use client";
 
-import { getDate } from "@/utils/date";
+import classNames from "classnames";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
+import { getDate } from "@/utils/date";
 import { formatTagDisplay, getTagPath } from "@/utils/tag";
-import classNames from "classnames";
 
 export type BlogPostCardVariant = "featured" | "standard" | "wide";
 
@@ -42,9 +42,9 @@ const BlogPostCard = ({
 
   const tagListView = !!tagList?.length && (
     <ul className="flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400">
-      {tagList.slice(0, 3).map((item, idx) => (
+      {tagList.slice(0, 3).map((item) => (
         <li
-          key={`${item}_${idx}`}
+          key={item}
           className="rounded-full bg-[var(--bg-gray-color)] px-2 py-1 transition-colors duration-300 hover:bg-[var(--bg-gray-hover-color)]"
         >
           <Link replace={isReplace} href={getTagPath(item)}>

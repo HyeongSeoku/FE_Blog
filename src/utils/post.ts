@@ -1,25 +1,25 @@
 /**해당 파일은 server 전용 파일 */
-import { getMdxFilesRecursively } from "@/utils/file";
-import fs from "fs/promises";
-import path from "path";
-import matter from "gray-matter";
-import {
-  Category,
-  SubCategory,
-  PostDataProps,
-  getAllPostsRequest,
-  getAllPostResponse,
-  getPostsByCategoryResponse,
-} from "@/types/posts";
-import { getMdxContents, getRepresentativeImage } from "./mdx";
-import { getDate } from "./date";
 
+import fs from "node:fs/promises";
+import path from "node:path";
+import matter from "gray-matter";
 import {
   CATEGORY_MAP,
   DEFAULT_PAGE_SIZE,
   SUB_CATEGORY_MAP,
 } from "@/constants/post.constants";
-import { GetMdxContentsBase } from "@/types/mdx";
+import type { GetMdxContentsBase } from "@/types/mdx";
+import type {
+  Category,
+  getAllPostResponse,
+  getAllPostsRequest,
+  getPostsByCategoryResponse,
+  PostDataProps,
+  SubCategory,
+} from "@/types/posts";
+import { getMdxFilesRecursively } from "@/utils/file";
+import { getDate } from "./date";
+import { getMdxContents, getRepresentativeImage } from "./mdx";
 
 const POST_PATH = path.join(process.cwd(), "src/mdx/content");
 
@@ -57,9 +57,7 @@ export const getAllPosts = async ({
       }
 
       if (!isValidSubCategory(data.category, data?.subCategory)) {
-        console.warn(
-          `🛠️  게시물 파일 ${filePath} 의 subCategory를 수정하세요.`,
-        );
+        console.warn(`🛠️  게시물 파일 ${filePath} 의 subCategory를 수정하세요.`);
       }
 
       const subCategory = isValidSubCategory(data.category, data?.subCategory)

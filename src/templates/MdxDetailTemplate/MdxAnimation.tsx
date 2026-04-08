@@ -1,9 +1,9 @@
 "use client";
+import { useEffect } from "react";
 import {
   ANIMATE_FADE_IN_UP,
   MARKUP_ANIMATE,
 } from "@/constants/animation.constants";
-import { useEffect } from "react";
 
 export default function MdxAnimation() {
   useEffect(() => {
@@ -23,6 +23,7 @@ export default function MdxAnimation() {
       { threshold: 0.3 },
     );
 
+    // biome-ignore lint/suspicious/useIterableCallbackReturn: observe returns void
     targets.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();

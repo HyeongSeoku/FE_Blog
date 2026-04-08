@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
-import Header, { HeaderType } from "@/components/Header";
+import type { ReactNode } from "react";
 import Footer from "@/components/Footer";
+import Header, { type HeaderType } from "@/components/Header";
 
 export interface DefaultLayoutProps {
   children: ReactNode;

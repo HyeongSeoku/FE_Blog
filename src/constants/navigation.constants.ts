@@ -1,4 +1,4 @@
-import { HTMLAttributeAnchorTarget } from "react";
+import type { HTMLAttributeAnchorTarget } from "react";
 
 export type NAV_LIST_TYPE = {
   id: string;

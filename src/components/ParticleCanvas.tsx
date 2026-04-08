@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 interface Particle {
   x: number;
@@ -263,7 +263,7 @@ const ParticleCanvas = ({
       let alignInfluence = 0;
       if (distance > deadZone && distance < alignRadius) {
         const alignRange = alignRadius - deadZone;
-        alignInfluence = Math.pow(1 - (distance - deadZone) / alignRange, 0.4);
+        alignInfluence = (1 - (distance - deadZone) / alignRange) ** 0.4;
       }
 
       // 물결 효과로 각도 흔들림 - 더 극적으로

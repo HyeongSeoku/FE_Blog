@@ -1,7 +1,7 @@
+import type { Metadata } from "next";
 import SeriesCard from "@/components/SeriesCard";
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { getAllSeriesMetadata } from "@/utils/series";
-import { Metadata } from "next";
 
 export function generateMetadata(): Metadata {
   const metaTitle = `${BASE_META_TITLE} | 시리즈`;

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
-import { ReactNode } from "react";
 import dynamic from "next/dynamic";
+import type { ReactNode } from "react";
 import ClientProvider from "@/components/ClientProvider";
-import { pretendard } from "@/styles/font";
 import ThemeScript from "@/components/ThemeScript";
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
+import { pretendard } from "@/styles/font";
 
 const GA = dynamic(() => import("@/components/GA"), {
   ssr: false,

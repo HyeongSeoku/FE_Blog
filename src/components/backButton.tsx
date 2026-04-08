@@ -21,6 +21,7 @@ const BackButton = ({ customClassName = "", onBackClick }: BackButtonProps) => {
 
   return (
     <button
+      type="button"
       className={`flex w-3 ${customClassName}`}
       onClick={handleBackButton}
     >

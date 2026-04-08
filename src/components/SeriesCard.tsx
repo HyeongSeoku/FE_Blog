@@ -1,7 +1,7 @@
-import { SeriesMetadata } from "@/types/series";
-import Link from "next/link";
 import classNames from "classnames";
 import Image from "next/image";
+import Link from "next/link";
+import type { SeriesMetadata } from "@/types/series";
 
 export interface SeriesCardProps extends SeriesMetadata {
   seriesKey: string;

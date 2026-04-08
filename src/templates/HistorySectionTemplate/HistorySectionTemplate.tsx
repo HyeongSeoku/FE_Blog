@@ -1,10 +1,11 @@
 "use client";
 
 import "./history-section-template.css";
+import Image from "next/image";
 import { PUBLIC_IMG_PATH } from "@/constants/basic.constants";
 import {
   HISTORY_LIST,
-  HISTORY_LIST_ITEM_PROPS,
+  type HISTORY_LIST_ITEM_PROPS,
 } from "@/constants/history.constant";
 
 const FIRST_YEAR = 2022;
@@ -32,18 +33,19 @@ const HistoryItem = ({ targetYear, currentJob }: HistoryItemProps) => {
         )}
         <div className="absolute top-1/2 left-5 w-5 h-5 rounded-full bg-[var(--text-color)] transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
       </div>
-      {!!yearData.length ? (
+      {yearData.length ? (
         <div className="history-detail-container ">
-          {yearData.map(({ month, title, description, logoSrc }, idx) => (
+          {yearData.map(({ month, title, description, logoSrc }) => (
             <div
-              key={`${month}_${idx}`}
+              key={`${month}_${title}`}
               className="flex items-center gap-2 pl-3 mb-2 min-h-20"
             >
               <span className="text-xl font-bold">{month}</span>
-              <img
+              <Image
                 src={`${PUBLIC_IMG_PATH}/${logoSrc}`}
                 className="bg-slate-400"
                 width={30}
+                height={30}
                 alt={title}
               />
               <div>
@@ -59,11 +61,12 @@ const HistoryItem = ({ targetYear, currentJob }: HistoryItemProps) => {
         <div className="history-detail-container ">
           <div className="flex items-center gap-2 pl-3 mb-2 min-h-20">
             <span className="text-xl font-bold">{currentJob?.month}</span>
-            <img
-              src={`${PUBLIC_IMG_PATH}/${currentJob?.logoSrc}`}
+            <Image
+              src={`${PUBLIC_IMG_PATH}/${currentJob?.logoSrc ?? ""}`}
               className="bg-slate-400"
               width={30}
-              title={currentJob?.title}
+              height={30}
+              alt={currentJob?.title ?? ""}
             />
             <div>
               <div className="">{currentJob?.title}</div>
@@ -88,12 +91,8 @@ const HistorySectionTemplate = () => {
 
   return (
     <article className="history-container flex max-w-3xl justify-between relative overflow-x-scroll z-10">
-      {yearList.map((year, idx) => (
-        <HistoryItem
-          key={`${year}_${idx}`}
-          targetYear={year}
-          currentJob={currentJob}
-        />
+      {yearList.map((year) => (
+        <HistoryItem key={year} targetYear={year} currentJob={currentJob} />
       ))}
     </article>
   );

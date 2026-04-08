@@ -18,7 +18,11 @@ const HamburgerButton = () => {
 
   return (
     <>
-      <button className="hamburger-container" onClick={toggleMenu}>
+      <button
+        type="button"
+        className="hamburger-container"
+        onClick={toggleMenu}
+      >
         <MenuIcon style={{ width: 18, height: 18 }} fill="black" />
       </button>
 

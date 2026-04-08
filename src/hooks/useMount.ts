@@ -5,7 +5,7 @@ const useMount = (callback: () => void) => {
     if (callback && typeof callback === "function") {
       callback();
     }
-  }, []);
+  }, [callback]);
 };
 
 export default useMount;

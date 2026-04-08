@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import AboutLayoutComponent from "@/layout/AboutLayout";
 
 export default function AboutLayout({ children }: { children: ReactNode }) {

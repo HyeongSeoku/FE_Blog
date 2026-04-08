@@ -1,6 +1,6 @@
-import { SkillName } from "@/components/SkillChip";
+import type { SkillName } from "@/components/SkillChip";
+import type { Category, SubCategory } from "@/types/posts";
 import { PUBLIC_IMG_PATH, SKILL_PATH } from "./basic.constants";
-import { Category, SubCategory } from "@/types/posts";
 import { CATEGORY_COLORS } from "./style.constants";
 
 export const SKILL_LIST: {

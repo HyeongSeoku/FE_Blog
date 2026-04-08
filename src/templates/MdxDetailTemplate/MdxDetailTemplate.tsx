@@ -1,16 +1,16 @@
-import { FrontMatterProps, HeadingsProps } from "@/types/mdx";
-import MdxSideBar from "@/components/MdxSideBar";
-import Link from "next/link";
-import RightArrow from "@/icon/arrow_right.svg";
-import LeftArrow from "@/icon/arrow_left.svg";
+import dayjs from "dayjs";
 import dynamic from "next/dynamic";
+import Image from "next/image";
+import Link from "next/link";
+import MdxSideBar from "@/components/MdxSideBar";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
+import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
+import LeftArrow from "@/icon/arrow_left.svg";
+import RightArrow from "@/icon/arrow_right.svg";
 import DoubleArrow from "@/icon/arrow_right_double.svg";
 import TimeIcon from "@/icon/time.svg";
-import ScrollProgressBar from "@/components/ScrollProgressBar";
-import Image from "next/image";
-import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
+import type { FrontMatterProps, HeadingsProps } from "@/types/mdx";
 import { formatTagDisplay, getTagPath } from "@/utils/tag";
-import dayjs from "dayjs";
 import MdxAnimation from "./MdxAnimation";
 import { ParsePostContent } from "./ParsePostContent";
 
@@ -115,10 +115,10 @@ const MdxDetailTemplate = ({
           {/* 태그 */}
           {!!tags?.length && (
             <div className="flex flex-wrap items-center gap-2">
-              {tags.map((tagItem, idx) => (
+              {tags.map((tagItem) => (
                 <Link
                   href={getTagPath(tagItem)}
-                  key={`${tagItem}_${idx}`}
+                  key={tagItem}
                   className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   #{formatTagDisplay(tagItem)}

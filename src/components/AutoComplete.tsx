@@ -1,14 +1,14 @@
 "use client";
 
+import classNames from "classnames";
 import {
-  ChangeEvent,
-  KeyboardEvent,
-  MouseEvent,
-  SetStateAction,
+  type ChangeEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+  type SetStateAction,
   useMemo,
   useState,
 } from "react";
-import classNames from "classnames";
 import { handleKeyboardClick } from "@/utils/eventListener";
 
 interface AutoCompleteProps {
@@ -43,7 +43,7 @@ const AutoComplete = ({
   };
 
   function handleClick(
-    e: MouseEvent<HTMLLIElement> | KeyboardEvent<HTMLLIElement>,
+    e: MouseEvent<HTMLDivElement> | KeyboardEvent<HTMLDivElement>,
   ) {
     const { innerText } = e.currentTarget;
     setInputValue(innerText);
@@ -51,7 +51,7 @@ const AutoComplete = ({
   }
 
   const handleSuggestionKeyDown = (
-    e: KeyboardEvent<HTMLLIElement>,
+    e: KeyboardEvent<HTMLDivElement>,
     suggestion: string,
   ) => {
     handleKeyboardClick(e, () => {
@@ -90,12 +90,12 @@ const AutoComplete = ({
   const renderSuggestion = (suggestion: string, index: number) => {
     const isActive = index === activeSuggestionIndex;
     return (
-      <li
+      <div
         key={suggestion}
         id={`suggestion-${suggestion}`}
         role="option"
-        aria-selected={isActive}
         tabIndex={0}
+        aria-selected={isActive}
         className={classNames("p-2 cursor-pointer", {
           "bg-gray-200 text-blue-500": isActive,
         })}
@@ -103,15 +103,20 @@ const AutoComplete = ({
         onKeyDown={(e) => handleSuggestionKeyDown(e, suggestion)}
       >
         {suggestion}
-      </li>
+      </div>
     );
   };
 
   const SuggestionsListComponent = () => {
     return filteredSuggestions.length ? (
-      <ul className="suggestions" role="listbox" id="autocomplete-listbox">
+      <div
+        role="listbox"
+        tabIndex={0}
+        className="suggestions"
+        id="autocomplete-listbox"
+      >
         {filteredSuggestions.map(renderSuggestion)}
-      </ul>
+      </div>
     ) : (
       <div className="no-suggestions"></div>
     );

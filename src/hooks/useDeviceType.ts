@@ -1,6 +1,6 @@
+import { useEffect } from "react";
 import { MOBILE_WIDTH } from "@/constants/basic.constants";
 import useDeviceStore from "@/store/deviceType";
-import { useEffect } from "react";
 
 function useDeviceType() {
   const { setIsMobile } = useDeviceStore();

@@ -1,12 +1,12 @@
-import { Metadata } from "next";
-import AboutPageClient from "./AboutPageClient";
+import type { Metadata } from "next";
 import {
   BASE_URL,
-  FIRST_WORKED_DATE,
-  MY_GITHUB_URL,
-  LINKED_IN_URL,
   EMAIL_ADDRESS,
+  FIRST_WORKED_DATE,
+  LINKED_IN_URL,
+  MY_GITHUB_URL,
 } from "@/constants/basic.constants";
+import AboutPageClient from "./AboutPageClient";
 
 function getCareerYears(): number {
   const now = new Date();

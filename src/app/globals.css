@@ -104,14 +104,8 @@ main {
   transition-timing-function: var(--transition-timing-function);
   transition-duration: var(--transition-duration);
   font-family:
-    var(--font-pretendard),
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    Roboto,
-    "Noto Sans KR",
-    "Apple SD Gothic Neo",
-    sans-serif;
+    var(--font-pretendard), system-ui, -apple-system, "Segoe UI", Roboto,
+    "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
 }
 
 /* Scrollbar Styles */

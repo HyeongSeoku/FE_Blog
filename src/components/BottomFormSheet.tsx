@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import BottomSheet, { BottomSheetProps } from "./BottomSheet/BottomSheet";
+import BottomSheet, { type BottomSheetProps } from "./BottomSheet/BottomSheet";
 
 export interface BottomFormSheetProps extends BottomSheetProps {
   confirmText?: string;
@@ -41,12 +41,14 @@ export default function BottomFormSheet({
       bottomChildren={
         <div className="flex gap-2 px-5 py-1 leading-8">
           <button
+            type="button"
             className="rounded-md flex-1 bg-primary hover:bg-primary-hover transition-colors duration-300"
             onClick={handleConfirm}
           >
             {confirmText}
           </button>
           <button
+            type="button"
             className="rounded-md flex-1 bg-gray-400 hover:bg-gray-200  transition-colors duration-300"
             onClick={handleCancel}
           >

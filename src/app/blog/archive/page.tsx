@@ -1,8 +1,8 @@
-import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
-import { getAllPosts } from "@/utils/post";
-import { getDate } from "@/utils/date";
+import type { Metadata } from "next";
 import Link from "next/link";
-import { Metadata } from "next";
+import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
+import { getDate } from "@/utils/date";
+import { getAllPosts } from "@/utils/post";
 
 export function generateMetadata(): Metadata {
   const metaTitle = `${BASE_META_TITLE} | Archive`;

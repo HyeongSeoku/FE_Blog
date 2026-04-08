@@ -1,21 +1,20 @@
-import { getAllPosts, getYearlyPostCounts } from "@/utils/post";
-import { HomeClient } from "./pageClient";
+import type { Metadata } from "next";
+import Link from "next/link";
 import { fetchGithubUserInfo } from "@/api/github";
-import DefaultLayout from "@/layout/DefaultLayout";
+import ArchiveSection from "@/components/ArchiveSection";
+import { SeriesSection } from "@/components/SeriesSection";
+import { BASE_URL } from "@/constants/basic.constants";
 import {
   DEFAULT_MAIN_POST_COUNT,
   SERIES_MAX_LENGTH,
 } from "@/constants/post.constants";
-import { BASE_URL } from "@/constants/basic.constants";
-import Link from "next/link";
-import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
+import DefaultLayout from "@/layout/DefaultLayout";
 import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionTemplate";
-import { getStructuredData } from "@/utils/structure";
-
+import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
+import { getAllPosts, getYearlyPostCounts } from "@/utils/post";
 import { getAllSeriesMetadata } from "@/utils/series";
-import { SeriesSection } from "@/components/SeriesSection";
-import ArchiveSection from "@/components/ArchiveSection";
-import { Metadata } from "next";
+import { getStructuredData } from "@/utils/structure";
+import { HomeClient } from "./pageClient";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },

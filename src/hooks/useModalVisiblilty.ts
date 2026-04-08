@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function useModalVisibility(show: boolean, animationDuration = 300) {
   const [isVisible, setIsVisible] = useState(show);

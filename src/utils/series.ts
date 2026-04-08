@@ -1,8 +1,8 @@
-import rawSeriesData from "@/data/series.json";
-import { SeriesListData, SeriesMetadata } from "@/types/series";
-import { getAllPosts } from "./post";
-import { PostDataProps } from "@/types/posts";
 import dayjs from "dayjs";
+import rawSeriesData from "@/data/series.json";
+import type { PostDataProps } from "@/types/posts";
+import type { SeriesListData, SeriesMetadata } from "@/types/series";
+import { getAllPosts } from "./post";
 
 interface GetAllSeriesMetadataProps {
   sortByLatestPost?: boolean; // undefined면 정렬 안함

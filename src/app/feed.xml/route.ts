@@ -1,5 +1,5 @@
+import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { getAllPosts } from "@/utils/post";
-import { BASE_URL, BASE_META_TITLE } from "@/constants/basic.constants";
 
 export async function GET() {
   const { postList } = await getAllPosts({ isSorted: true });

@@ -42,11 +42,8 @@ jobs:
       - name: Type Check
         run: pnpm run type-check
 
-      - name: Run ESLint
-        run: pnpm run lint
-
-      - name: Run Prettier (check only)
-        run: pnpm run format:check
+      - name: Run Biome (lint + format check)
+        run: pnpm run check
 
       - name: Run cSpell
         run: pnpm run spell-check

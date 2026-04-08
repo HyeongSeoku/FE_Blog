@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
-import Header from "@/components/Header";
+import type { ReactNode } from "react";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 
 export interface AboutLayout {
   children: ReactNode;

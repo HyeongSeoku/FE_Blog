@@ -1,4 +1,4 @@
-export interface FetchDataResponse<T = any> {
+export interface FetchDataResponse<T = unknown> {
   data: T | null;
   error: FetchErrorProps | null;
   setCookieHeaders: string[] | null;

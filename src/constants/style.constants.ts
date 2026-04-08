@@ -1,4 +1,4 @@
-import { Category, SubCategory } from "@/types/posts";
+import type { Category, SubCategory } from "@/types/posts";
 
 export const CATEGORY_COLORS: Record<Category | SubCategory, string> = {
   DEV: "var(--category-dev-bg)",

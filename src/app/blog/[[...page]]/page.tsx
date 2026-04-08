@@ -1,8 +1,8 @@
+import { notFound } from "next/navigation";
 import { BASE_URL } from "@/constants/basic.constants";
 import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
 import BlogPageTemplate from "@/templates/BlogPageTemplate";
 import { getAllPosts } from "@/utils/post";
-import { notFound } from "next/navigation";
 
 export const dynamicParams = false;
 

@@ -1,13 +1,13 @@
+import { notFound } from "next/navigation";
+import MonthlySection from "@/components/MonthlySection";
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
-import MonthlySection from "@/components/MonthlySection";
 import BlogDateTemplate from "@/templates/BlogDateTemplate";
 import {
   getAllYears,
   getMonthlyPostCounts,
   getPostsByDate,
 } from "@/utils/post";
-import { notFound } from "next/navigation";
 
 export const dynamicParams = false;
 

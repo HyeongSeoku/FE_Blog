@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, RefObject } from "react";
+import { type RefObject, useEffect, useRef, useState } from "react";
 
 const useAnimationVisibility = <T extends HTMLElement>(
   threshold: number = 0.3,

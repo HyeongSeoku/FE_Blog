@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import BlogPostListItem from "@/components/BlogPostListItem";
 import MultiSelectTagList from "@/components/MultiSelectTagList";
-import { PostDataProps } from "@/types/posts";
+import type { PostDataProps } from "@/types/posts";
 
 interface TagItem {
   key: string;
