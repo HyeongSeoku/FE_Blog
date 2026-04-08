@@ -99,14 +99,7 @@ const SKILL_CATEGORIES = [
   },
   {
     category: "DevOps & DX",
-    skills: [
-      "GitHub Actions",
-      "Webpack",
-      "ESLint",
-      "Prettier",
-      "Husky",
-      "SonarQube",
-    ],
+    skills: ["GitHub Actions", "Webpack", "ESLint", "Prettier", "Husky"],
   },
 ];
 
@@ -225,7 +218,6 @@ const PROJECT_TECH_STACK = [
   "Next.js 14",
   "React",
   "TypeScript",
-  "SonarQube",
   "GitHub Actions",
   "Husky",
 ];
