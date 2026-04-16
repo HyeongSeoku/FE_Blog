@@ -349,10 +349,12 @@ export default function AboutPageClient() {
               </h2>
             </div>
 
-            <p className="text-sm tablet:text-base text-gray-600 dark:text-gray-400 leading-relaxed mb-6 tablet:mb-8 max-w-lg mx-auto break-keep text-balance">
-              복잡한 아이디어를 날카롭고 성능 좋은 웹 경험으로 변환합니다.
-              기술적 정밀함과 미학적 감각을 결합합니다.
-            </p>
+            <div className="text-sm tablet:text-base text-gray-600 dark:text-gray-400 leading-relaxed mb-6 tablet:mb-8 max-w-lg mx-auto break-keep text-balance">
+              <p>
+                복잡한 아이디어를 날카롭고 성능 좋은 웹 경험으로 변환합니다.
+              </p>
+              <p>기술적 정밀함과 미학적 감각을 결합합니다.</p>
+            </div>
 
             <nav className="flex flex-wrap items-center justify-center gap-2 tablet:gap-3 text-xs tablet:text-sm text-gray-500 tracking-widest">
               {ABOUT_NAVIGATION_ID_LIST.map((navId, index) => (
@@ -410,10 +412,10 @@ export default function AboutPageClient() {
               </strong>
               을 높인 컴포넌트를 제작합니다.
             </p>
-            <p className="text-lg tablet:text-xl desktop:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed font-light break-keep text-balance">
-              레거시 프로젝트를 현대의 기술로 전환하는 작업에 주력하며, 다양한
-              문제를 코드로 풀어나가는 것을 즐깁니다.
-            </p>
+            <div className="text-lg tablet:text-xl desktop:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed font-light break-keep text-balance">
+              <p>레거시 프로젝트를 현대의 기술로 전환하는 작업에 주력하며,</p>
+              <p>다양한 문제를 코드로 풀어나가는 것을 즐깁니다.</p>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 tablet:grid-cols-4 gap-6 tablet:gap-8 mt-16 tablet:mt-20">
@@ -661,7 +663,7 @@ export default function AboutPageClient() {
             더 많은 이야기가
             <br className="tablet:hidden" /> 궁금하다면
           </h2>
-          <p className="text-gray-500 dark:text-gray-400 mb-10 max-w-lg mx-auto leading-relaxed">
+          <p className="text-gray-500 dark:text-gray-400 mb-10 max-w-xl mx-auto leading-relaxed">
             개발하며 마주친 문제와 해결 과정, 새로 배운 기술들을 블로그에
             기록하고 있습니다.
           </p>
