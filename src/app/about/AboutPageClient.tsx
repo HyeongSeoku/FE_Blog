@@ -91,15 +91,31 @@ const SKILL_CATEGORIES = [
   },
   {
     category: "Styling & UI",
-    skills: ["Tailwind CSS", "CSS Modules", "Figma"],
+    skills: ["Tailwind CSS", "Radix UI", "Sass"],
   },
   {
-    category: "Backend & Infra",
-    skills: ["Node.js", "Nginx", "Jenkins", "Nexus"],
+    category: "Testing",
+    skills: ["Playwright (VRT)", "Jest", "react-testing-library"],
   },
   {
-    category: "DevOps & DX",
-    skills: ["GitHub Actions", "Webpack", "ESLint", "Prettier", "Husky"],
+    category: "DevOps & Infra",
+    skills: ["GitHub Actions", "Nginx", "Webpack", "Docker"],
+  },
+  {
+    category: "Media",
+    skills: ["HLS.js", "MSE (Media Source Extensions)"],
+  },
+  {
+    category: "Tools",
+    skills: [
+      "Figma",
+      "Storybook",
+      "Nexus",
+      "Husky",
+      "ESLint",
+      "Prettier",
+      "biome",
+    ],
   },
 ];
 
@@ -110,32 +126,44 @@ const CAREERS = [
     period: "2023.11 ~ 재직 중",
     projects: [
       {
-        title: "사내 패키지 생태계(Nexus) 구축 및 레거시 자산화",
-        period: "2025.01 ~ 2025.06",
+        title: "사내 패키지 생태계(Nexus) 구축 및 라이브러리 관리 체계화",
+        period: "2026.01 ~ 2026.03",
         highlights: [
-          "소스 코드가 유실된 커스텀 hls.js를 AI(Claude Code) 활용해 분석 및 복원, npm 패키지로 전환",
-          "Nexus 기반 npm install 방식으로 표준화하여 버전 파편화 문제 해결",
-          "전사 공통 디자인 시스템(TCDS) 파이프라인 구축",
-          "Figma를 활용해 UI/UX 초안을 직접 설계하여 개발 병목 해소",
+          "소스 코드 유실된 커스텀 hls.js를 빌드 역분석으로 복원, npm 패키지 전환 및 Nexus 버전 관리",
+          "프로젝트마다 빌드 파일 직접 복사하던 방식을 Nexus 기반 npm install로 표준화, 버전 파편화 제거",
+          "HEVC 카메라 재생 불가 이슈 대응: hls.js v1.4.14 → v1.6.15 업그레이드 & 커스터마이징",
+          "HLS 영상 3초 점프 버그 수정: HAR → TS PTS → Chrome MSE 레이어까지 추적. I-frame(4s)/세그먼트(2s) 불일치로 인한 buffer hole → remuxer 3곳 패치",
+          "디자인 리소스 부재 상황에서 Figma를 활용해 UI/UX 초안을 직접 설계, 개발 병목 해소",
+        ],
+      },
+      {
+        title: "디자인 시스템(TCDS) 구축",
+        period: "2026.03.01 ~ 2026.03.30",
+        highlights: [
+          "B2B 서비스 Next.js 마이그레이션 선행 작업으로, 전사 공통 UI 라이브러리 설계·구축",
+          "69개 컴포넌트 구현: 범용 36개(Radix UI) + B2B 특화 33개(CameraPlayer 등). Figma MCP + Claude Code로 디자인 토큰 추출 자동화",
+          "Storybook 도입: UI 명칭 혼선 해소, 배포 없이 기획자 직접 동작 확인 가능",
+          "Playwright VRT 도입: Docker 환경으로 OS 픽셀 차이 제거, CI 게이트 통합으로 시각적 회귀 자동 감지",
+          "GitHub Actions label 기반 자동 버전 bump → Nexus 자동 배포 (patch/minor/major 라벨 머지 시 트리거)",
         ],
       },
       {
         title: "개발 생산성(DX) 및 배포 파이프라인 고도화",
         period: "2025.01 ~ 2025.12",
         highlights: [
-          "GitHub Actions 도입으로 수동 배포 과정을 10분 → 2분 이내로 단축",
-          "Husky, ESLint, Prettier, Type Check를 pre-commit 단계에 적용하여 코드 품질 강제화",
-          "React.lazy 기반 Code Splitting으로 FCP/LCP 지표 개선",
-          "Nginx HTTP/2 및 gzip_static으로 리소스 전송 효율 극대화",
+          "GitHub Actions + NHN Cloud Deploy API로 배포 완전 자동화. alpha/beta/real 3환경 분리, Dooray 알림 연동. 배포 소요시간 80% 단축",
+          "Husky + ESLint/Prettier/Type Check pre-commit 적용, 불량 코드 유입 차단",
+          "React.lazy Code Splitting + hls.js Lazy Loading으로 FCP/LCP 개선",
+          "Nginx HTTP/2 + gzip_static으로 정적 리소스 전송 최적화",
         ],
       },
       {
         title: "대규모 레거시 리팩토링 및 서비스 운영",
         period: "2024.05 ~ 2024.11",
         highlights: [
-          "불용 코드 및 중복 로직 약 9만 줄 제거로 유지보수성 확보 및 번들 사이즈 감소",
-          "jQuery 기반 레거시 → 순수 JavaScript(ES6+) 및 TypeScript 전환",
-          "일본 서비스 i18n 다국어 처리 및 SEO 최적화를 위한 Nginx 라우팅 커스텀",
+          "불용 코드·중복 로직 90,714줄 제거 (Gulp/AngularJS), 번들 사이즈 감소 및 유지보수성 향상",
+          "jQuery → ES6+ 전환으로 의존성 제거. URL 구조를 json 방식에서 query string 파싱으로 개편, 인코딩 오류·보안 위험 제거",
+          "i18n 다국어 처리 및 SEO 대응: 일본 서비스 Nginx 라우팅/Webpack 빌드 커스텀",
         ],
       },
     ],
@@ -154,20 +182,20 @@ const CAREERS = [
         ],
       },
       {
-        title: "알바몬 MSA 전환 프로젝트 프론트엔드 개발",
-        period: "2022.07 ~ 2023.01",
+        title: "Analytics 연동 및 앱-웹 통신 안정화",
+        period: "2023.04 ~ 2023.11",
         highlights: [
-          ".Net 기반 레거시 → Next.js, TypeScript MSA 환경 전환",
-          "모바일/PC/웹뷰 전반의 UI 및 비즈니스 로직 구현 전담",
-          "React Query 도입으로 서버 부하 감소 및 상태 관리 최적화",
+          "Braze/GA 인스턴스 개발: 전사 공통 로그 수집 모듈 개발, 데이터 정합성 확보",
+          "AppBridge 구조 개선: 앱-웹 통신 데이터 유실 문제를 레거시(.Net) 로직 분석으로 해결",
         ],
       },
       {
-        title: "데이터 파이프라인 개선",
-        period: "2023.04 ~ 2023.11",
+        title: "알바몬 MSA 전환 프로젝트 프론트엔드 개발",
+        period: "2022.07 ~ 2023.01",
         highlights: [
-          "Braze/GA 로그 수집 모듈 공통화로 데이터 정합성 확보",
-          "AppBridge 구조 개선으로 앱-웹 간 데이터 유실 문제 해결",
+          ".Net 기반 레거시를 MSA 환경(Next.js, TypeScript)으로 전환, 모바일/PC/웹뷰 전반 UI·비즈니스 로직 전담",
+          "서비스 안정화: 신규 아키텍처 도입 초기 운영 이슈와 버그를 신속 파악·해결",
+          "React Query 도입으로 서버 부하 감소 및 상태 관리 최적화",
         ],
       },
     ],
@@ -369,19 +397,22 @@ export default function AboutPageClient() {
       {/* ═══ Summary + Metrics ═══ */}
       <section className="w-full py-20 tablet:py-32 px-6 tablet:px-12">
         <FadeIn className="max-w-4xl mx-auto">
-          <p className="text-center text-lg tablet:text-xl desktop:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed font-light">
-            <strong className="font-semibold text-gray-900 dark:text-white">
-              {CAREER_YEARS}년차
-            </strong>{" "}
-            웹 프론트엔드 엔지니어로, 빠른 UI 개발은 기본,{" "}
-            <strong className="font-semibold text-gray-900 dark:text-white">
-              확장성과 성능, 안정성
-            </strong>
-            을 높인 컴포넌트를 제작합니다.
-            <br className="mobile:hidden" />
-            레거시 프로젝트를 현대의 기술로 전환하는 작업에 주력하며, 다양한
-            문제를 코드로 풀어나가는 것을 즐깁니다.
-          </p>
+          <div className="text-center space-y-4">
+            <p className="text-lg tablet:text-xl desktop:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed font-light break-keep text-balance">
+              <strong className="font-semibold text-gray-900 dark:text-white">
+                {CAREER_YEARS}년차
+              </strong>{" "}
+              웹 프론트엔드 엔지니어로, 빠른 UI 개발은 기본,{" "}
+              <strong className="font-semibold text-gray-900 dark:text-white">
+                확장성과 성능, 안정성
+              </strong>
+              을 높인 컴포넌트를 제작합니다.
+            </p>
+            <p className="text-lg tablet:text-xl desktop:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed font-light break-keep text-balance">
+              레거시 프로젝트를 현대의 기술로 전환하는 작업에 주력하며, 다양한
+              문제를 코드로 풀어나가는 것을 즐깁니다.
+            </p>
+          </div>
 
           <div className="grid grid-cols-2 tablet:grid-cols-4 gap-6 tablet:gap-8 mt-16 tablet:mt-20">
             {KEY_METRICS.map((metric, idx) => (
