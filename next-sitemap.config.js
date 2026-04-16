@@ -10,7 +10,7 @@ const config = {
   sitemapSize: 5000,
   autoLastmod: true,
   additionalPaths: async () => {
-    const POSTS_DIR = path.join(process.cwd(), "src", "posts");
+    const POSTS_DIR = path.join(process.cwd(), "src", "mdx", "content");
     const entries = [];
 
     if (fs.existsSync(POSTS_DIR)) {
