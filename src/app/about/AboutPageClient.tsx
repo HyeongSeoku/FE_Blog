@@ -397,19 +397,22 @@ export default function AboutPageClient() {
       {/* ═══ Summary + Metrics ═══ */}
       <section className="w-full py-20 tablet:py-32 px-6 tablet:px-12">
         <FadeIn className="max-w-4xl mx-auto">
-          <p className="text-center text-lg tablet:text-xl desktop:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed font-light">
-            <strong className="font-semibold text-gray-900 dark:text-white">
-              {CAREER_YEARS}년차
-            </strong>{" "}
-            웹 프론트엔드 엔지니어로, 빠른 UI 개발은 기본,{" "}
-            <strong className="font-semibold text-gray-900 dark:text-white">
-              확장성과 성능, 안정성
-            </strong>
-            을 높인 컴포넌트를 제작합니다.
-            <br className="mobile:hidden" />
-            레거시 프로젝트를 현대의 기술로 전환하는 작업에 주력하며, 다양한
-            문제를 코드로 풀어나가는 것을 즐깁니다.
-          </p>
+          <div className="text-center space-y-4">
+            <p className="text-lg tablet:text-xl desktop:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed font-light break-keep text-balance">
+              <strong className="font-semibold text-gray-900 dark:text-white">
+                {CAREER_YEARS}년차
+              </strong>{" "}
+              웹 프론트엔드 엔지니어로, 빠른 UI 개발은 기본,{" "}
+              <strong className="font-semibold text-gray-900 dark:text-white">
+                확장성과 성능, 안정성
+              </strong>
+              을 높인 컴포넌트를 제작합니다.
+            </p>
+            <p className="text-lg tablet:text-xl desktop:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed font-light break-keep text-balance">
+              레거시 프로젝트를 현대의 기술로 전환하는 작업에 주력하며, 다양한
+              문제를 코드로 풀어나가는 것을 즐깁니다.
+            </p>
+          </div>
 
           <div className="grid grid-cols-2 tablet:grid-cols-4 gap-6 tablet:gap-8 mt-16 tablet:mt-20">
             {KEY_METRICS.map((metric, idx) => (
