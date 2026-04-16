@@ -95,11 +95,11 @@ const SKILL_CATEGORIES = [
   },
   {
     category: "Testing",
-    skills: ["Playwright (VRT)", "Jest", "react-testing-library"],
+    skills: ["Playwright (VRT)", "Vitest", "Jest", "react-testing-library"],
   },
   {
     category: "DevOps & Infra",
-    skills: ["GitHub Actions", "Nginx", "Webpack", "Docker"],
+    skills: ["GitHub Actions", "Nginx", "Docker"],
   },
   {
     category: "Media",
@@ -111,10 +111,12 @@ const SKILL_CATEGORIES = [
       "Figma",
       "Storybook",
       "Nexus",
+      "Webpack",
+      "Vite",
       "Husky",
       "ESLint",
       "Prettier",
-      "biome",
+      "Biome",
     ],
   },
 ];
@@ -164,6 +166,7 @@ const CAREERS = [
           "불용 코드·중복 로직 90,714줄 제거 (Gulp/AngularJS), 번들 사이즈 감소 및 유지보수성 향상",
           "jQuery → ES6+ 전환으로 의존성 제거. URL 구조를 json 방식에서 query string 파싱으로 개편, 인코딩 오류·보안 위험 제거",
           "i18n 다국어 처리 및 SEO 대응: 일본 서비스 Nginx 라우팅/Webpack 빌드 커스텀",
+          "Vue 2 기반 사내 컴포넌트 라이브러리 유지보수",
         ],
       },
     ],
@@ -195,7 +198,8 @@ const CAREERS = [
         highlights: [
           ".Net 기반 레거시를 MSA 환경(Next.js, TypeScript)으로 전환, 모바일/PC/웹뷰 전반 UI·비즈니스 로직 전담",
           "서비스 안정화: 신규 아키텍처 도입 초기 운영 이슈와 버그를 신속 파악·해결",
-          "React Query 도입으로 서버 부하 감소 및 상태 관리 최적화",
+          "기존 페이지 성능 병목 구간 개선으로 로딩 속도 단축 및 사용자 점유율 향상",
+          "React Query 직접 도입으로 불필요한 API 호출 제거, 서버 부하 감소 및 상태 관리 최적화",
         ],
       },
     ],
@@ -239,12 +243,11 @@ const KEY_METRICS = [
   { number: `${CAREER_YEARS}+`, label: "Experience" },
   { number: "7+", label: "Projects" },
   { number: "3", label: "Open Source" },
-  { number: "15+", label: "Technologies" },
+  { number: "25+", label: "Technologies" },
 ];
 
 const PROJECT_TECH_STACK = [
   "Next.js 14",
-  "React",
   "TypeScript",
   "GitHub Actions",
   "Husky",
@@ -346,9 +349,8 @@ export default function AboutPageClient() {
               </h2>
             </div>
 
-            <p className="text-sm tablet:text-base text-gray-600 dark:text-gray-400 leading-relaxed mb-6 tablet:mb-8 max-w-lg mx-auto">
+            <p className="text-sm tablet:text-base text-gray-600 dark:text-gray-400 leading-relaxed mb-6 tablet:mb-8 max-w-lg mx-auto break-keep text-balance">
               복잡한 아이디어를 날카롭고 성능 좋은 웹 경험으로 변환합니다.
-              <br className="mobile:hidden" />
               기술적 정밀함과 미학적 감각을 결합합니다.
             </p>
 
@@ -441,7 +443,7 @@ export default function AboutPageClient() {
             <SectionHeader
               label="Skills"
               title="기술 스택"
-              description="프론트엔드를 중심으로, 백엔드와 인프라까지 확장하며 역량을 키워가고 있습니다."
+              description="프론트엔드를 중심으로, 미디어·인프라·테스트 영역까지 확장하며 역량을 키워가고 있습니다."
             />
           </FadeIn>
 

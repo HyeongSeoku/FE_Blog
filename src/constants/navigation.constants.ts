@@ -46,4 +46,10 @@ export const ABOUT_NAVIGATION_SKILL_LABEL_MAP = {
   BLOG: "블로그",
 };
 
-export const ABOUT_SKILLS = ["REACT", "TYPESCRIPT", "NEXT.JS", "NODE.JS"];
+export const ABOUT_SKILLS = [
+  "REACT",
+  "TYPESCRIPT",
+  "NEXT.JS",
+  "NODE.JS",
+  "PLAYWRIGHT",
+];
