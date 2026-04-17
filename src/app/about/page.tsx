@@ -47,6 +47,14 @@ export const metadata: Metadata = {
     url: "/about",
     type: "profile",
     siteName: "SEOK 블로그",
+    images: [
+      {
+        url: "/image/og_image.png",
+        width: 1200,
+        height: 630,
+        alt: "김형석 블로그 OG 이미지",
+      },
+    ],
     locale: "ko_KR",
   },
   twitter: {
