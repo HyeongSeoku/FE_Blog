@@ -1,0 +1,102 @@
+/* ── About page ─────────────────────────────────────────────────── */
+
+/* ── Keyframes ───────────────────────────────────────────────────── */
+
+@keyframes ab-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes ab-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes ab-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(1.5); }
+}
+
+/* ── Name gradient ───────────────────────────────────────────────── */
+
+.ab-name-gradient {
+  background: linear-gradient(
+    110deg,
+    var(--text-color) 0%,
+    var(--text-color) 35%,
+    var(--primary-color) 75%,
+    var(--text-color) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Animation utilities ─────────────────────────────────────────── */
+
+.ab-marquee-track {
+  display: flex;
+  animation: ab-marquee 35s linear infinite;
+  white-space: nowrap;
+}
+
+.ab-blink {
+  animation: ab-blink 1s step-end infinite;
+}
+
+.ab-pulse {
+  animation: ab-pulse 2s ease-in-out infinite;
+}
+
+/* ── Accordion (grid-row trick) ──────────────────────────────────── */
+
+.ab-accordion-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s ease-out;
+}
+
+.ab-accordion-body.open {
+  grid-template-rows: 1fr;
+}
+
+.ab-accordion-inner {
+  overflow: hidden;
+}
+
+/* ── Scroll fade-in ──────────────────────────────────────────────── */
+
+.ab-fade {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.55s ease-out, transform 0.55s ease-out;
+}
+
+.ab-fade.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Blog CTA hover button ───────────────────────────────────────── */
+
+.ab-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2.5rem;
+  border: 1.5px solid var(--primary-color);
+  color: var(--primary-color);
+  background: transparent;
+  font-size: 0.925rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.ab-cta-btn:hover {
+  background: var(--primary-color);
+  color: #fff;
+}
