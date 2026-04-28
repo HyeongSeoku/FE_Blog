@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useIntersectionObserver } from "../_hooks/useIntersectionObserver";
 
 interface Props {
   children: ReactNode;
@@ -16,29 +16,15 @@ export function FadeInSection({
   style,
   delay,
 }: Props) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  const { ref, isIntersecting } = useIntersectionObserver<HTMLDivElement>(
+    0.08,
+    "0px 0px -40px 0px",
+  );
 
   return (
     <div
       ref={ref}
-      className={`ab-fade${visible ? " visible" : ""} ${className}`}
+      className={`ab-fade${isIntersecting ? " visible" : ""} ${className}`}
       style={{
         ...style,
         transitionDelay: delay !== undefined ? `${delay}ms` : undefined,

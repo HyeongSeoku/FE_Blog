@@ -2,19 +2,11 @@ import type { Metadata } from "next";
 import {
   BASE_URL,
   EMAIL_ADDRESS,
-  FIRST_WORKED_DATE,
   LINKED_IN_URL,
   MY_GITHUB_URL,
 } from "@/constants/basic.constants";
 import AboutPageClient from "./AboutPageClient";
-
-function getCareerYears(): number {
-  const now = new Date();
-  const diffYears =
-    (now.getTime() - FIRST_WORKED_DATE.getTime()) /
-    (365.25 * 24 * 60 * 60 * 1000);
-  return Math.floor(diffYears) + 1;
-}
+import { getCareerYears } from "./utils";
 
 const careerYears = getCareerYears();
 

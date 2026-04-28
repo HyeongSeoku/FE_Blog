@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import { useIntersectionObserver } from "../_hooks/useIntersectionObserver";
 import { FadeInSection } from "./FadeInSection";
 
 interface Project {
@@ -112,11 +113,13 @@ const HIGHLIGHT_PATTERNS = [
   "69개",
 ];
 
+const HIGHLIGHT_REGEX = new RegExp(
+  `(${HIGHLIGHT_PATTERNS.map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`,
+  "g",
+);
+
 function HighlightText({ text }: { text: string }) {
-  const escaped = HIGHLIGHT_PATTERNS.map((p) =>
-    p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-  ).join("|");
-  const parts = text.split(new RegExp(`(${escaped})`, "g"));
+  const parts = text.split(HIGHLIGHT_REGEX);
 
   return (
     <>
@@ -189,25 +192,8 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 export function Career() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const lineRef = useRef<HTMLDivElement>(null);
-  const [lineDrawn, setLineDrawn] = useState(false);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setLineDrawn(true);
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.15 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  const { ref: sectionRef, isIntersecting: lineDrawn } =
+    useIntersectionObserver<HTMLElement>(0.15);
 
   return (
     <section
@@ -257,11 +243,7 @@ export function Career() {
                   }}
                 />
                 {careerIdx < CAREERS.length - 1 && (
-                  /* Animated draw: scaleY 0 → 1 from top */
-                  <div
-                    ref={careerIdx === 0 ? lineRef : undefined}
-                    className="flex-1 w-px mt-2 overflow-hidden"
-                  >
+                  <div className="flex-1 w-px mt-2 overflow-hidden">
                     <div
                       style={{
                         height: "100%",

@@ -1,16 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-
-function getCareerYears(): number {
-  const now = new Date();
-  const start = new Date(2022, 6, 1);
-  return (
-    Math.floor(
-      (now.getTime() - start.getTime()) / (365.25 * 24 * 60 * 60 * 1000),
-    ) + 1
-  );
-}
+import { useEffect, useState } from "react";
+import { useIntersectionObserver } from "../_hooks/useIntersectionObserver";
+import { getCareerYears } from "../utils";
 
 const METRICS = [
   {
@@ -143,24 +135,8 @@ function SlotNumber({
 }
 
 export function Stats() {
-  const ref = useRef<HTMLElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.3 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  const { ref, isIntersecting: visible } =
+    useIntersectionObserver<HTMLElement>(0.3);
 
   return (
     <section

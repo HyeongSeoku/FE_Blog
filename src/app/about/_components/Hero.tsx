@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTypewriter } from "../_hooks/useTypewriter";
+import { getCareerYears } from "../utils";
 import { HeroParticles } from "./HeroParticles";
 
 const PHRASES = [
   "복잡한 문제를 명확하고 빠른 웹 경험으로 변환합니다",
   "레거시를 현대 기술 스택으로 전환하는 일을 즐깁니다",
   "코드와 사용자 경험 사이의 교차점을 탐구합니다",
-];
+] as const;
 
 const MARQUEE_ITEMS = [
   "React",
@@ -21,54 +23,18 @@ const MARQUEE_ITEMS = [
   "Tailwind CSS",
 ];
 
-function getCareerYears(): number {
-  const now = new Date();
-  const start = new Date(2022, 6, 1);
-  return (
-    Math.floor(
-      (now.getTime() - start.getTime()) / (365.25 * 24 * 60 * 60 * 1000),
-    ) + 1
-  );
-}
+const MARQUEE_CONTENT = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
+
+const careerYears = getCareerYears();
 
 export function Hero() {
-  const [displayed, setDisplayed] = useState("");
-  const [phraseIdx, setPhraseIdx] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const displayed = useTypewriter(PHRASES);
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 80);
     return () => clearTimeout(t);
   }, []);
-
-  useEffect(() => {
-    const phrase = PHRASES[phraseIdx];
-    let timer: ReturnType<typeof setTimeout>;
-
-    if (!isDeleting) {
-      if (displayed.length < phrase.length) {
-        timer = setTimeout(
-          () => setDisplayed(phrase.slice(0, displayed.length + 1)),
-          38,
-        );
-      } else {
-        timer = setTimeout(() => setIsDeleting(true), 2200);
-      }
-    } else {
-      if (displayed.length > 0) {
-        timer = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 18);
-      } else {
-        setIsDeleting(false);
-        setPhraseIdx((i) => (i + 1) % PHRASES.length);
-      }
-    }
-
-    return () => clearTimeout(timer);
-  }, [displayed, isDeleting, phraseIdx]);
-
-  const marqueeContent = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
-  const careerYears = getCareerYears();
 
   return (
     <section
@@ -150,7 +116,7 @@ export function Hero() {
         style={{ bottom: "2rem", padding: "0.625rem 0" }}
       >
         <div className="ab-marquee-track">
-          {marqueeContent.map((item, i) => (
+          {MARQUEE_CONTENT.map((item, i) => (
             <span
               // biome-ignore lint/suspicious/noArrayIndexKey: duplicated items — index is intentional
               key={i}

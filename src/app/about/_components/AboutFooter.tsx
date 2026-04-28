@@ -1,24 +1,12 @@
 "use client";
 
-import { useState } from "react";
-
-function ExternalIcon() {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-    </svg>
-  );
-}
+import { useEffect, useRef, useState } from "react";
+import {
+  EMAIL_ADDRESS,
+  LINKED_IN_URL,
+  MY_GITHUB_URL,
+} from "@/constants/basic.constants";
+import { ExternalIcon } from "./icons";
 
 function CopyIcon() {
   return (
@@ -59,15 +47,23 @@ function CheckIcon() {
 
 export function AboutFooter() {
   const [copied, setCopied] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    },
+    [],
+  );
 
   const handleCopyEmail = async () => {
     try {
-      await navigator.clipboard.writeText("gudtjr3437@gmail.com");
+      await navigator.clipboard.writeText(EMAIL_ADDRESS);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => setCopied(false), 2000);
     } catch {
-      // fallback: open mail client
-      window.location.href = "mailto:gudtjr3437@gmail.com";
+      window.location.href = `mailto:${EMAIL_ADDRESS}`;
     }
   };
 
@@ -104,7 +100,7 @@ export function AboutFooter() {
                 onClick={handleCopyEmail}
                 className="group text-sm text-gray-700 dark:text-gray-300 hover:text-primary inline-flex items-center gap-2 transition-colors w-fit"
               >
-                <span>gudtjr3437@gmail.com</span>
+                <span>{EMAIL_ADDRESS}</span>
                 <span
                   className="transition-all duration-200"
                   style={{
@@ -130,7 +126,7 @@ export function AboutFooter() {
               </span>
 
               <a
-                href="https://github.com/HyeongSeoku"
+                href={MY_GITHUB_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-gray-700 dark:text-gray-300 hover:text-primary inline-flex items-center gap-1.5 transition-colors"
@@ -139,7 +135,7 @@ export function AboutFooter() {
                 <ExternalIcon />
               </a>
               <a
-                href="https://www.linkedin.com/in/%ED%98%95%EC%84%9D-%EA%B9%80-901539232/"
+                href={LINKED_IN_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-gray-700 dark:text-gray-300 hover:text-primary inline-flex items-center gap-1.5 transition-colors"
