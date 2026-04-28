@@ -54,8 +54,6 @@ function sampleText(): Float32Array {
   return new Float32Array(positions);
 }
 
-// ── GLSL ──────────────────────────────────────────────────────────────────────
-
 const vertexShader = `
 uniform float uTime;
 uniform float uProgress;
