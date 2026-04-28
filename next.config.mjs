@@ -67,6 +67,12 @@ const nextConfig = withAnalyzer(
     ...(isProd ? { output: "export" } : {}),
     eslint: { ignoreDuringBuilds: true },
     swcMinify: true,
+    transpilePackages: [
+      "three",
+      "@react-three/fiber",
+      "@react-three/postprocessing",
+      "postprocessing",
+    ],
     experimental: {
       esmExternals: false,
     },

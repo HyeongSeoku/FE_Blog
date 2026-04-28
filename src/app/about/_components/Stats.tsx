@@ -16,7 +16,7 @@ const METRICS = [
   {
     target: getCareerYears(),
     suffix: "+",
-    label: "Years\nExperience",
+    label: "Years Experience",
     context: "2022년 7월부터 현재까지",
   },
   {
@@ -28,7 +28,7 @@ const METRICS = [
   {
     target: 3,
     suffix: "",
-    label: "Open Source\nContributions",
+    label: "Open Source",
     context: "TanStack Query 외 2건",
   },
   {
@@ -39,7 +39,67 @@ const METRICS = [
   },
 ];
 
-function CountUp({
+// 40-item repeating column (0-9 × 4): 3 full rotations + final digit = index 30..39
+const SLOT_COLUMN = Array.from({ length: 40 }, (_, i) => i % 10);
+const SPIN_ROUNDS = 3;
+const SLOT_DURATION = 1400; // ms
+
+function SlotDigit({
+  digit,
+  active,
+  delay,
+}: {
+  digit: number;
+  active: boolean;
+  delay: number;
+}) {
+  const [rolling, setRolling] = useState(false);
+
+  useEffect(() => {
+    if (!active) return;
+    const t = setTimeout(() => setRolling(true), delay);
+    return () => clearTimeout(t);
+  }, [active, delay]);
+
+  // translateY(-finalIndex * 1em) shows the correct digit through the 1em viewport
+  const finalIndex = SPIN_ROUNDS * 10 + digit;
+
+  return (
+    <span
+      style={{
+        display: "inline-block",
+        overflow: "hidden",
+        height: "1em",
+        verticalAlign: "top",
+      }}
+    >
+      <span
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          lineHeight: 1,
+          transform: rolling ? `translateY(-${finalIndex}em)` : "translateY(0)",
+          transition: rolling
+            ? `transform ${SLOT_DURATION}ms cubic-bezier(0.17, 0.67, 0.12, 0.99)`
+            : "none",
+          willChange: "transform",
+        }}
+      >
+        {SLOT_COLUMN.map((d, i) => (
+          <span
+            // biome-ignore lint/suspicious/noArrayIndexKey: fixed-length repeating column
+            key={i}
+            style={{ display: "block", textAlign: "center" }}
+          >
+            {d}
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
+function SlotNumber({
   target,
   suffix,
   active,
@@ -50,35 +110,34 @@ function CountUp({
   active: boolean;
   delay: number;
 }) {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!active) return;
-    const startTime = Date.now() + delay;
-    let raf: number;
-
-    const tick = () => {
-      const now = Date.now();
-      if (now < startTime) {
-        raf = requestAnimationFrame(tick);
-        return;
-      }
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / 1200, 1);
-      const eased = 1 - (1 - progress) ** 3;
-      setCount(Math.floor(eased * target));
-      if (progress < 1) raf = requestAnimationFrame(tick);
-      else setCount(target);
-    };
-
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [active, target, delay]);
+  const digits = target.toString().split("").map(Number);
 
   return (
-    <span>
-      {count}
-      {suffix}
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "flex-start",
+        fontVariantNumeric: "tabular-nums",
+      }}
+    >
+      {digits.map((d, i) => (
+        <SlotDigit
+          // biome-ignore lint/suspicious/noArrayIndexKey: digit position is stable for a fixed number
+          key={i}
+          digit={d}
+          active={active}
+          delay={delay + i * 80}
+        />
+      ))}
+      {/* suffix fades in just as the last digit settles */}
+      <span
+        style={{
+          opacity: active ? 1 : 0,
+          transition: `opacity 0.35s ease ${delay + digits.length * 80 + SLOT_DURATION - 150}ms`,
+        }}
+      >
+        {suffix}
+      </span>
     </span>
   );
 }
@@ -86,7 +145,6 @@ function CountUp({
 export function Stats() {
   const ref = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
-  const [hovered, setHovered] = useState<number | null>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -112,32 +170,27 @@ export function Stats() {
     >
       <div className="grid grid-cols-2 tablet:grid-cols-4 max-w-[860px] mx-auto gap-px bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden">
         {METRICS.map((m, i) => (
-          // biome-ignore lint/a11y/noStaticElementInteractions: hover exposes contextual text visually
           <div
             key={m.label}
-            className="bg-gray-50 dark:bg-gray-900/60 text-center p-6 tablet:p-8 cursor-default select-none"
+            className="ab-stat-cell bg-gray-50 dark:bg-gray-900/60 text-center p-6 tablet:p-8 cursor-default select-none"
             style={{
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(14px)",
-              transition: `opacity 0.5s ease-out, transform 0.5s ease-out`,
+              transition: "opacity 0.5s ease-out, transform 0.5s ease-out",
               transitionDelay: `${i * 100}ms`,
             }}
-            onMouseEnter={() => setHovered(i)}
-            onMouseLeave={() => setHovered(null)}
           >
             <div
-              className="text-primary"
+              className="ab-stat-number text-primary"
               style={{
                 fontSize: "clamp(2.25rem, 5vw, 3.25rem)",
                 fontWeight: 800,
                 lineHeight: 1,
                 marginBottom: "0.5rem",
                 letterSpacing: "-0.02em",
-                transition: "transform 0.2s ease",
-                transform: hovered === i ? "scale(1.08)" : "scale(1)",
               }}
             >
-              <CountUp
+              <SlotNumber
                 target={m.target}
                 suffix={m.suffix}
                 active={visible}
@@ -153,26 +206,13 @@ export function Stats() {
                 textTransform: "uppercase",
                 letterSpacing: "0.08em",
                 lineHeight: 1.4,
-                whiteSpace: "pre-line",
                 marginBottom: "0.5rem",
               }}
             >
               {m.label}
             </div>
 
-            {/* Hover context */}
-            <div
-              className="text-primary overflow-hidden"
-              style={{
-                fontSize: "0.72rem",
-                fontWeight: 500,
-                maxHeight: hovered === i ? "2rem" : "0",
-                opacity: hovered === i ? 1 : 0,
-                transition: "max-height 0.25s ease, opacity 0.25s ease",
-              }}
-            >
-              {m.context}
-            </div>
+            <div className="ab-stat-context text-primary">{m.context}</div>
           </div>
         ))}
       </div>

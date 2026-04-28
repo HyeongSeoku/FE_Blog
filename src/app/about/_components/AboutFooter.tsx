@@ -106,24 +106,13 @@ export function AboutFooter() {
               >
                 <span>gudtjr3437@gmail.com</span>
                 <span
-                  className="text-gray-400 group-hover:text-primary transition-all duration-200"
+                  className="transition-all duration-200"
                   style={{
-                    opacity: copied ? 1 : 0,
-                    transform: copied ? "scale(1)" : "scale(0.8)",
                     color: copied ? "var(--primary-color)" : undefined,
+                    transform: copied ? "scale(1.1)" : "scale(1)",
                   }}
                 >
                   {copied ? <CheckIcon /> : <CopyIcon />}
-                </span>
-                <span
-                  className="text-gray-400 group-hover:text-primary transition-all duration-200"
-                  style={{
-                    opacity: copied ? 0 : 1,
-                    transform: copied ? "scale(0.8)" : "scale(1)",
-                    position: copied ? "absolute" : "static",
-                  }}
-                >
-                  {!copied && <CopyIcon />}
                 </span>
               </button>
 

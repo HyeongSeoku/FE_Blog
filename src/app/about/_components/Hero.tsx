@@ -1,57 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-
-const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
-const TARGET_NAME = "KIM HYEONG SEOK";
-
-function useScramble(target: string, startDelay = 700) {
-  const [text, setText] = useState(target);
-  const frameRef = useRef(0);
-  const rafRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const run = () => {
-    if (rafRef.current) clearInterval(rafRef.current);
-    frameRef.current = 0;
-    const totalFrames = 36;
-
-    rafRef.current = setInterval(() => {
-      frameRef.current += 1;
-      const f = frameRef.current;
-
-      const result = target
-        .split("")
-        .map((char, i) => {
-          if (char === " ") return " ";
-          const settleAt =
-            Math.floor((i / target.replace(/ /g, "").length) * totalFrames) + 4;
-          if (f > settleAt) return char;
-          return SCRAMBLE_CHARS[
-            Math.floor(Math.random() * SCRAMBLE_CHARS.length)
-          ];
-        })
-        .join("");
-
-      setText(result);
-
-      if (f >= totalFrames + 6 && rafRef.current) {
-        clearInterval(rafRef.current);
-        setText(target);
-      }
-    }, 38);
-  };
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: run and startDelay are intentionally omitted to only run on mount
-  useEffect(() => {
-    const t = setTimeout(run, startDelay);
-    return () => {
-      clearTimeout(t);
-      if (rafRef.current) clearInterval(rafRef.current);
-    };
-  }, []);
-
-  return { text, retrigger: run };
-}
+import { useEffect, useState } from "react";
+import { HeroParticles } from "./HeroParticles";
 
 const PHRASES = [
   "복잡한 문제를 명확하고 빠른 웹 경험으로 변환합니다",
@@ -86,7 +36,6 @@ export function Hero() {
   const [phraseIdx, setPhraseIdx] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { text: scrambledName, retrigger } = useScramble(TARGET_NAME, 700);
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 80);
@@ -166,23 +115,9 @@ export function Hero() {
           Frontend Developer · {careerYears}년차
         </p>
 
-        {/* Name — scramble on mount, retrigger on hover */}
-        <h1
-          className="ab-name-gradient"
-          style={{
-            fontSize: "clamp(2.75rem, 9vw, 7.5rem)",
-            fontWeight: 800,
-            letterSpacing: "-0.03em",
-            lineHeight: 0.95,
-            margin: "0 0 1.75rem",
-            cursor: "default",
-            fontFamily: "'Courier New', 'Lucida Console', monospace",
-          }}
-          onMouseEnter={retrigger}
-          title="hover to scramble"
-        >
-          {scrambledName}
-        </h1>
+        <div style={{ margin: "0 0 1.75rem" }}>
+          <HeroParticles />
+        </div>
 
         {/* Teal accent underline */}
         <div

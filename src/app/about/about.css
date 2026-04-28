@@ -77,6 +77,53 @@
   transform: translateY(0);
 }
 
+/* ── Stats card hover (CSS-only, no React state) ────────────────── */
+
+.ab-stat-number {
+  transition: transform 0.2s ease;
+}
+.ab-stat-cell:hover .ab-stat-number {
+  transform: scale(1.08);
+}
+.ab-stat-context {
+  height: 1rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.ab-stat-cell:hover .ab-stat-context {
+  opacity: 1;
+}
+
+/* ── Skill card hover (CSS-only, no React state) ─────────────────── */
+
+.ab-skill-card {
+  border-left-width: 3px;
+  border-left-color: transparent;
+  transition: border-left-color 0.3s ease, transform 0.3s ease,
+    background 0.3s ease;
+}
+.ab-skill-card:hover {
+  border-left-color: var(--primary-color);
+  transform: translateX(4px);
+}
+.ab-skill-card:hover .ab-skill-title {
+  color: var(--primary-color);
+}
+.ab-skill-tag {
+  border: 1px solid;
+  border-color: rgba(0, 0, 0, 0.12);
+  transition: border-color 0.2s ease;
+}
+
+[data-theme="dark"] .ab-skill-tag {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.ab-skill-card:hover .ab-skill-tag {
+  border-color: rgba(10, 186, 181, 0.4);
+}
+
 /* ── Blog CTA hover button ───────────────────────────────────────── */
 
 .ab-cta-btn {

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { FadeInSection } from "./FadeInSection";
 
 const SKILL_CATEGORIES = [
@@ -49,40 +48,17 @@ function SkillCard({
   skills: string[];
   delay: number;
 }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <FadeInSection delay={delay}>
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: purely decorative hover effect */}
-      <div
-        className="h-full p-5 tablet:p-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/60 dark:bg-white/[0.02] transition-all duration-300"
-        style={{
-          borderLeftWidth: "3px",
-          borderLeftColor: hovered ? "var(--primary-color)" : "transparent",
-          transform: hovered ? "translateX(4px)" : "translateX(0)",
-        }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-      >
-        <h3
-          className="text-sm font-semibold mb-4 tracking-wide transition-colors duration-200"
-          style={{
-            color: hovered ? "var(--primary-color)" : undefined,
-          }}
-        >
+      <div className="ab-skill-card h-full p-5 tablet:p-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50/60 dark:bg-white/[0.02]">
+        <h3 className="ab-skill-title text-sm font-semibold mb-4 tracking-wide transition-colors duration-200 text-gray-900 dark:text-white">
           {label}
         </h3>
         <div className="flex flex-wrap gap-2">
           {skills.map((skill) => (
             <span
               key={skill}
-              className="px-3 py-1 text-sm rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium transition-all duration-200"
-              style={{
-                border: hovered
-                  ? "1px solid rgba(10,186,181,0.35)"
-                  : "1px solid",
-                borderColor: hovered ? "rgba(10,186,181,0.35)" : undefined,
-              }}
+              className="ab-skill-tag px-3 py-1 text-sm rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium"
             >
               {skill}
             </span>
