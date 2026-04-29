@@ -54,11 +54,7 @@ export default async function Home() {
       />
       <IntroSectionTemplate githubData={githubData} />
 
-      <HomeClient
-        postList={postList}
-        postCount={totalPostCount}
-        githubData={githubData}
-      />
+      <HomeClient githubData={githubData} />
 
       <section className="my-16">
         {/* 게시물 섹션 헤더 */}

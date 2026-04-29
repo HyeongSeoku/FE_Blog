@@ -11,6 +11,7 @@ const useAnimationVisibility = <T extends HTMLElement>(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
+          observer.unobserve(entry.target);
         }
       },
       { threshold },

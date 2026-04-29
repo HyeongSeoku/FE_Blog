@@ -1,7 +1,7 @@
 "use client";
 
 import classNames from "classnames";
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { ANIMATE_FADE_IN_UP } from "@/constants/animation.constants";
 import useAnimationVisibility from "@/hooks/useAnimationVisibility";
 import type { AnimationNameType } from "./AnimationContainer";
@@ -40,16 +40,23 @@ const CodeBlock = ({
 }: CodeBlockProps) => {
   const [copied, setCopied] = useState(false);
   const [isVisible, ref] = useAnimationVisibility();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const codeText = useMemo(() => {
-    return extractTextFromChildren(children);
-  }, [children]);
+  useEffect(
+    () => () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    },
+    [],
+  );
+
+  const codeText = useMemo(() => extractTextFromChildren(children), [children]);
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(codeText);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => setCopied(false), 2000);
     } catch (error) {
       console.error("복사 실패:", error);
     }

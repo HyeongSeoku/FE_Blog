@@ -4,7 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import MdxSideBar from "@/components/MdxSideBar";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
-import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
+import {
+  DEFAULT_POST_THUMBNAIL,
+  MY_GITHUB_URL,
+} from "@/constants/basic.constants";
 import LeftArrow from "@/icon/arrow_left.svg";
 import RightArrow from "@/icon/arrow_right.svg";
 import DoubleArrow from "@/icon/arrow_right_double.svg";
@@ -42,8 +45,9 @@ const MdxDetailTemplate = ({
   nextPost,
   relatedPosts,
 }: MdxDetailTemplateProps) => {
-  const isoDate = dayjs(createdAt, "YYYY.MM.DD").isValid()
-    ? dayjs(createdAt, "YYYY.MM.DD").format("YYYY-MM-DD")
+  const parsedDate = dayjs(createdAt, "YYYY.MM.DD");
+  const isoDate = parsedDate.isValid()
+    ? parsedDate.format("YYYY-MM-DD")
     : new Date().toISOString().split("T")[0];
 
   const categoryLabel = subCategory || category;
@@ -82,7 +86,7 @@ const MdxDetailTemplate = ({
             {/* 아바타 */}
             <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden flex-shrink-0">
               <Image
-                src="https://github.com/HyeongSeoku.png"
+                src={`${MY_GITHUB_URL}.png`}
                 alt="김형석"
                 width={40}
                 height={40}
