@@ -18,7 +18,6 @@ function MicrosoftClarity() {
     const clarityId = process.env.NEXT_PUBLIC_CLARITY_ID;
     if (!clarityId) return;
 
-    // Clarity 초기화 함수
     window.clarity = (...args: unknown[]) => {
       const clarity = window.clarity;
       if (clarity) {
@@ -27,24 +26,12 @@ function MicrosoftClarity() {
       }
     };
 
-    // Clarity 스크립트 로드
     const script = document.createElement("script");
     script.async = true;
     script.src = `https://www.clarity.ms/tag/${clarityId}`;
 
     const firstScript = document.getElementsByTagName("script")[0];
     firstScript?.parentNode?.insertBefore(script, firstScript);
-
-    // Clarity 로드 후 마스킹 설정 (엄격함 모드)
-    script.onload = () => {
-      if (window.clarity) {
-        // 모든 텍스트와 입력값 마스킹
-        window.clarity("set", "mask", "strict");
-
-        // 민감한 요소 자동 마스킹
-        window.clarity("set", "maskSensitiveElements", true);
-      }
-    };
   }, []);
 
   return null;

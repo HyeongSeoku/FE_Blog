@@ -16,15 +16,13 @@ interface TagsPageClientProps {
   tagList: TagItem[];
 }
 
-const normalizeTag = (tag: string): string => {
-  return tag.trim().toLowerCase().replace(/\s+/g, "-").replace(/-+/g, "-");
-};
+const normalizeTag = (tag: string): string =>
+  tag.trim().toLowerCase().replace(/\s+/g, "-").replace(/-+/g, "-");
 
 const TagsPageClient = ({ postList, tagList }: TagsPageClientProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // URL에서 선택된 태그 가져오기
   const selectedTagsFromUrl = useMemo(() => {
     const tagsParam = searchParams.get("tags");
     if (!tagsParam) return [];
@@ -34,22 +32,18 @@ const TagsPageClient = ({ postList, tagList }: TagsPageClientProps) => {
   const [selectedTags, setSelectedTags] =
     useState<string[]>(selectedTagsFromUrl);
 
-  // URL 변경 시 상태 동기화
   useEffect(() => {
     setSelectedTags(selectedTagsFromUrl);
   }, [selectedTagsFromUrl]);
 
-  // OR 방식 필터링: 선택된 태그를 모두 포함하는 게시물만 표시
   const filteredPosts = useMemo(() => {
     if (selectedTags.length === 0) return postList;
-
     return postList.filter((post) => {
       const postTagsNormalized = post.tags.map(normalizeTag);
       return selectedTags.some((tag) => postTagsNormalized.includes(tag));
     });
   }, [postList, selectedTags]);
 
-  // 태그 선택/해제 핸들러
   const handleTagToggle = (tag: string) => {
     const newSelectedTags = selectedTags.includes(tag)
       ? selectedTags.filter((t) => t !== tag)
@@ -57,7 +51,6 @@ const TagsPageClient = ({ postList, tagList }: TagsPageClientProps) => {
 
     setSelectedTags(newSelectedTags);
 
-    // URL 업데이트
     const params = new URLSearchParams();
     if (newSelectedTags.length > 0) {
       params.set("tags", newSelectedTags.join(","));
@@ -69,7 +62,6 @@ const TagsPageClient = ({ postList, tagList }: TagsPageClientProps) => {
     router.replace(newUrl, { scroll: false });
   };
 
-  // 전체 선택 해제
   const handleClearAll = () => {
     setSelectedTags([]);
     router.replace("/blog/tags", { scroll: false });
@@ -77,7 +69,6 @@ const TagsPageClient = ({ postList, tagList }: TagsPageClientProps) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      {/* 헤더 */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           태그 검색
@@ -89,7 +80,6 @@ const TagsPageClient = ({ postList, tagList }: TagsPageClientProps) => {
         </p>
       </div>
 
-      {/* 태그 선택 목록 */}
       <MultiSelectTagList
         tagList={tagList}
         selectedTags={selectedTags}
@@ -97,7 +87,6 @@ const TagsPageClient = ({ postList, tagList }: TagsPageClientProps) => {
         onClearAll={handleClearAll}
       />
 
-      {/* 게시물 리스트 */}
       <div className="divide-y divide-gray-100 dark:divide-gray-800">
         {filteredPosts.length > 0 ? (
           filteredPosts.map((post) => (
