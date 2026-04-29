@@ -128,7 +128,7 @@ function HighlightText({ text }: { text: string }) {
           <span
             // biome-ignore lint/suspicious/noArrayIndexKey: split fragments
             key={i}
-            className="text-primary bg-primary/10 px-1.5 py-0.5 rounded text-[0.85em] font-medium"
+            className="text-primary bg-primary/10 px-1.5 py-0.5 rounded text-[0.85em] font-medium whitespace-nowrap"
           >
             {part}
           </span>

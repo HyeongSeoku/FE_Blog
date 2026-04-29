@@ -44,7 +44,7 @@ export function Hero() {
       {/* ── Atmospheric teal glow ── */}
       <div
         aria-hidden="true"
-        className="absolute pointer-events-none"
+        className="absolute pointer-events-none ab-hero-glow"
         style={{
           top: "25%",
           left: "50%",
@@ -52,8 +52,6 @@ export function Hero() {
           width: "min(70vw, 700px)",
           height: "min(70vw, 700px)",
           borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(10,186,181,0.06) 0%, transparent 68%)",
           filter: "blur(32px)",
         }}
       />

@@ -58,11 +58,11 @@ export function OpenSource() {
                   href={contrib.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex flex-col tablet:flex-row tablet:items-center gap-4 p-5 tablet:p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-white/[0.02] hover:border-primary/50 transition-colors duration-300 no-underline"
+                  className="ab-oss-card group flex flex-col tablet:flex-row tablet:items-center gap-4 p-5 tablet:p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-white/[0.02] no-underline"
                 >
                   {/* Left accent */}
                   <div
-                    className="hidden tablet:block flex-shrink-0 rounded-full"
+                    className="hidden tablet:block flex-shrink-0 rounded-full ab-oss-accent"
                     style={{
                       width: "3px",
                       alignSelf: "stretch",
@@ -75,7 +75,7 @@ export function OpenSource() {
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2.5 flex-wrap mb-2">
-                      <h3 className="text-base font-semibold text-gray-900 dark:text-white group-hover:text-primary transition-colors">
+                      <h3 className="text-base font-semibold text-gray-900 dark:text-white group-hover:text-primary">
                         {contrib.project}
                       </h3>
                       {contrib.version && (
@@ -90,7 +90,7 @@ export function OpenSource() {
                   </div>
 
                   {/* PR link */}
-                  <span className="text-xs text-gray-400 dark:text-gray-500 flex-shrink-0 tabular-nums group-hover:text-primary transition-colors">
+                  <span className="text-xs text-gray-400 dark:text-gray-500 flex-shrink-0 tabular-nums group-hover:text-primary">
                     {contrib.prNumber} →
                   </span>
                 </a>

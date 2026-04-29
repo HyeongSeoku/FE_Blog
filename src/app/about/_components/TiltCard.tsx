@@ -17,18 +17,21 @@ export function TiltCard({
   maxDeg = 7,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
+
+  const onEnter = () => {
+    const card = ref.current;
+    if (!card) return;
+    rectRef.current = card.getBoundingClientRect();
+    card.style.transition = "none";
+  };
 
   const onMove = (e: MouseEvent<HTMLDivElement>) => {
     const card = ref.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
-    const rotX = -((y - cy) / cy) * maxDeg;
-    const rotY = ((x - cx) / cx) * maxDeg;
-    card.style.transition = "transform 0.08s ease-out";
+    const rect = rectRef.current;
+    if (!card || !rect) return;
+    const rotX = -(((e.clientY - rect.top) / rect.height) * 2 - 1) * maxDeg;
+    const rotY = (((e.clientX - rect.left) / rect.width) * 2 - 1) * maxDeg;
     card.style.transform = `perspective(700px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.015)`;
   };
 
@@ -50,6 +53,7 @@ export function TiltCard({
         willChange: "transform",
         transformStyle: "preserve-3d",
       }}
+      onMouseEnter={onEnter}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
     >
