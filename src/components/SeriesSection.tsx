@@ -2,7 +2,7 @@
 
 import classNames from "classnames";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigation } from "swiper/modules";
 import { SwiperSlide } from "swiper/react";
 import SeriesCard from "@/components/SeriesCard";
@@ -21,8 +21,13 @@ export function MoSeriesSection({
   maxLength,
 }: MoSeriesSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
   const showMoreBtn = !!maxLength && seriesList.length > maxLength;
   const validSeriesList = seriesList.filter(([, value]) => !!value?.title);
+
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return null;
 
   return (
     <section className="overflow-hidden py-4 tablet:hidden">
