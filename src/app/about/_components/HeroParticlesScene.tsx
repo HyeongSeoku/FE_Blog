@@ -3,6 +3,7 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
+import useThemeStore from "@/store/theme";
 
 const TEXT = "KHS";
 const SAMPLE_W = 900;
@@ -90,10 +91,11 @@ void main() {
 }
 `;
 
-// Glow is achieved in-shader via bright core + soft falloff + AdditiveBlending.
-// No EffectComposer needed → canvas stays fully transparent (no dark rectangle).
+// Dark mode: AdditiveBlending (teal glow on dark bg)
+// Light mode: NormalBlending (deeper teal on light bg) — uDarkMode uniform switches behavior
 const fragmentShader = `
 varying float vEntered;
+uniform float uDarkMode;
 
 void main() {
   vec2 uv = gl_PointCoord - 0.5;
@@ -102,9 +104,17 @@ void main() {
 
   float core = pow(1.0 - smoothstep(0.0, 0.5, r), 1.5);
   float halo = 1.0 - smoothstep(0.0, 1.0, r);
-  float a    = (core * 0.72 + halo * 0.18) * vEntered; // fade in with entrance
+  float a    = (core * 0.72 + halo * 0.18) * vEntered;
 
-  gl_FragColor = vec4(0.039, 0.729, 0.710, a);
+  // dark: bright teal #0abab5, light: deeper teal #048c87
+  vec3 darkColor  = vec3(0.039, 0.729, 0.710);
+  vec3 lightColor = vec3(0.016, 0.549, 0.529);
+  vec3 color = mix(lightColor, darkColor, uDarkMode);
+
+  // light mode needs slightly higher alpha to read on white
+  float alphaScale = mix(1.35, 1.0, uDarkMode);
+
+  gl_FragColor = vec4(color, min(a * alphaScale, 1.0));
 }
 `;
 
@@ -123,7 +133,7 @@ function AdaptiveCamera() {
   return null;
 }
 
-function ParticleMesh() {
+function ParticleMesh({ isDarkMode }: { isDarkMode: boolean }) {
   const matRef = useRef<THREE.ShaderMaterial>(null);
   const mouseWorld = useRef(new THREE.Vector2(-999, -999));
   const { camera, gl } = useThree();
@@ -150,9 +160,19 @@ function ParticleMesh() {
       uTime: { value: 0 },
       uProgress: { value: 0 },
       uMouse: { value: new THREE.Vector2(-999, -999) },
+      uDarkMode: { value: 1.0 },
     }),
     [],
   );
+
+  useEffect(() => {
+    if (!matRef.current) return;
+    matRef.current.uniforms.uDarkMode.value = isDarkMode ? 1.0 : 0.0;
+    matRef.current.blending = isDarkMode
+      ? THREE.AdditiveBlending
+      : THREE.NormalBlending;
+    matRef.current.needsUpdate = true;
+  }, [isDarkMode]);
 
   useEffect(() => {
     const canvas = gl.domElement;
@@ -199,13 +219,14 @@ function ParticleMesh() {
         fragmentShader={fragmentShader}
         transparent
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        blending={isDarkMode ? THREE.AdditiveBlending : THREE.NormalBlending}
       />
     </points>
   );
 }
 
 export function HeroParticlesScene() {
+  const { isDarkMode } = useThemeStore();
   return (
     <Canvas
       orthographic
@@ -214,7 +235,7 @@ export function HeroParticlesScene() {
       style={{ background: "transparent", display: "block" }}
     >
       <AdaptiveCamera />
-      <ParticleMesh />
+      <ParticleMesh isDarkMode={isDarkMode} />
     </Canvas>
   );
 }

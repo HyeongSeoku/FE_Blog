@@ -83,7 +83,7 @@
   transition: transform 0.2s ease;
 }
 .ab-stat-cell:hover .ab-stat-number {
-  transform: scale(1.08);
+  transform: translateY(-4px);
 }
 .ab-stat-context {
   height: 1rem;
@@ -96,6 +96,26 @@
   opacity: 1;
 }
 
+/* ── Hero atmospheric glow ───────────────────────────────────────── */
+
+.ab-hero-glow {
+  background: radial-gradient(circle, rgba(10, 186, 181, 0.06) 0%, transparent 68%);
+}
+
+[data-theme="light"] .ab-hero-glow {
+  background: radial-gradient(circle, rgba(10, 186, 181, 0.14) 0%, transparent 68%);
+}
+
+/* ── Hero particles ──────────────────────────────────────────────── */
+
+.ab-hero-particles {
+  border-radius: 0.75rem;
+}
+
+.ab-hero-name {
+  color: var(--text-color);
+}
+
 /* ── Skill card hover (CSS-only, no React state) ─────────────────── */
 
 .ab-skill-card {
@@ -103,6 +123,11 @@
   border-left-color: transparent;
   transition: border-left-color 0.3s ease, transform 0.3s ease,
     background 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .ab-skill-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 .ab-skill-card:hover {
   border-left-color: var(--primary-color);
@@ -122,6 +147,32 @@
 }
 .ab-skill-card:hover .ab-skill-tag {
   border-color: rgba(10, 186, 181, 0.4);
+}
+
+/* ── OSS card border hover (GPU: opacity instead of border-color) ── */
+
+.ab-oss-card {
+  position: relative;
+}
+
+.ab-oss-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  border: 1px solid var(--primary-color);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.ab-oss-card:hover::before {
+  opacity: 0.5;
+}
+
+.ab-oss-card:hover .ab-oss-accent {
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
 /* ── Blog CTA hover button ───────────────────────────────────────── */

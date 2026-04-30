@@ -20,12 +20,16 @@ const Scene = dynamic(
 
 export function HeroParticles() {
   return (
-    <div style={{ width: "100%", aspectRatio: ASPECT, position: "relative" }}>
+    <div
+      className="ab-hero-particles"
+      style={{ width: "100%", aspectRatio: ASPECT, position: "relative" }}
+    >
       {/* particle canvas — z-index auto (below h1) */}
       <Scene />
 
       {/* full name as a real heading rendered on top of the particles */}
       <h1
+        className="ab-hero-name"
         style={{
           position: "absolute",
           inset: 0,
@@ -38,7 +42,6 @@ export function HeroParticles() {
           letterSpacing: "0.2em",
           whiteSpace: "nowrap",
           fontFamily: "var(--font-pretendard), system-ui, sans-serif",
-          color: "inherit",
           zIndex: 1,
           pointerEvents: "none",
           userSelect: "none",
