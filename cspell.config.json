@@ -1,12 +1,7 @@
 {
   "version": "0.2",
   "language": "en",
-  "ignorePaths": [
-    "node_modules",
-    "dist",
-    ".next",
-    "**/*.mdx"
-  ],
+  "ignorePaths": ["node_modules", "dist", ".next", "**/*.mdx"],
   "words": [
     "contenteditable",
     "dirents",

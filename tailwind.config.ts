@@ -221,12 +221,12 @@ export default {
     },
   },
   plugins: [
-    function ({
+    ({
       addUtilities,
     }: {
       addUtilities: (utilities: Record<string, Record<string, string>>) => void;
       addBase: (baseStyles: Record<string, Record<string, string>>) => void;
-    }) {
+    }) => {
       const newUtilities = {
         ".scrollbar-thin": {
           "scrollbar-width": "thin",
