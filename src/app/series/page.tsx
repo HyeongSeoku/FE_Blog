@@ -50,13 +50,14 @@ async function SeriesPage() {
       </header>
 
       <section className="flex flex-col gap-sk-item">
-        {seriesList.map(([key, value]) => (
+        {seriesList.map(([key, value], index) => (
           <SeriesListItem
             key={key}
             seriesKey={key}
             title={value.title}
             count={value.count}
             latestDate={value.latestDate}
+            index={index}
           />
         ))}
       </section>

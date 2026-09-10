@@ -115,12 +115,13 @@ const BlogDescription = ({ category }: { category?: string }) => {
 const BlogPostList = ({ postList }: { postList: PostDataProps[] }) => {
   return (
     <div className="flex flex-col gap-sk-item">
-      {postList.map((post) => (
+      {postList.map((post, index) => (
         <BlogPostListItem
           key={post.slug}
           title={post.title}
           createdAt={post.createdAt}
           slug={post.slug}
+          index={index}
         />
       ))}
     </div>

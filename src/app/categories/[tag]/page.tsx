@@ -91,12 +91,13 @@ const TagPage = async ({ params }: { params: { tag: string } }) => {
         </header>
 
         <div className="flex flex-col gap-sk-item">
-          {posts.map((post) => (
+          {posts.map((post, index) => (
             <BlogPostListItem
               key={post.slug}
               title={post.title}
               createdAt={post.createdAt}
               slug={post.slug}
+              index={index}
             />
           ))}
         </div>

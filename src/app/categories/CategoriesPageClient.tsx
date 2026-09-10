@@ -115,12 +115,13 @@ const CategoriesPageClient = ({
 
       <div className="flex flex-col gap-sk-item">
         {filteredPosts.length > 0 ? (
-          filteredPosts.map((post) => (
+          filteredPosts.map((post, index) => (
             <BlogPostListItem
               key={post.slug}
               title={post.title}
               createdAt={post.createdAt}
               slug={post.slug}
+              index={index}
             />
           ))
         ) : (

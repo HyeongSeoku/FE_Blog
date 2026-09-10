@@ -52,12 +52,13 @@ export default async function Home() {
       <section className="mt-sk-section flex flex-col gap-4">
         <h2 className="text-sk-label text-muted">글</h2>
         <div className="flex flex-col gap-sk-item">
-          {postList.map((post) => (
+          {postList.map((post, index) => (
             <BlogPostListItem
               key={post.slug}
               title={post.title}
               createdAt={post.createdAt}
               slug={post.slug}
+              index={index}
             />
           ))}
         </div>
@@ -75,13 +76,14 @@ export default async function Home() {
         <section className="mt-sk-section flex flex-col gap-4">
           <h2 className="text-sk-label text-muted">시리즈</h2>
           <div className="flex flex-col gap-sk-item">
-            {seriesList.map(([key, value]) => (
+            {seriesList.map(([key, value], index) => (
               <SeriesListItem
                 key={key}
                 seriesKey={key}
                 title={value.title}
                 count={value.count}
                 latestDate={value.latestDate}
+                index={index}
               />
             ))}
           </div>

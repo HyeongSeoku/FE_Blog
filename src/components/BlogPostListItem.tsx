@@ -1,16 +1,19 @@
 import Link from "next/link";
+import { getStaggerDelayMs } from "@/utils/animation";
 import { getDate } from "@/utils/date";
 
 export interface BlogPostListItemProps {
   title: string;
   createdAt: string;
   slug: string;
+  index?: number;
 }
 
 const BlogPostListItem = ({
   title,
   createdAt,
   slug,
+  index = 0,
 }: BlogPostListItemProps) => {
   const formattedDate = getDate("YYYY. MM. DD", createdAt);
   const isoDate = getDate("YYYY-MM-DD", createdAt);
@@ -18,7 +21,8 @@ const BlogPostListItem = ({
   return (
     <Link
       href={`/posts/${slug}`}
-      className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 transition-opacity hover:opacity-[.55]"
+      style={{ animationDelay: `${getStaggerDelayMs(index)}ms` }}
+      className="sk-fade-in flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 transition-opacity hover:opacity-[.55]"
     >
       <span className="min-w-[180px] flex-1 text-sk-body text-theme">
         {title}

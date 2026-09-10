@@ -231,3 +231,36 @@ body[data-modal-open="true"] {
     text-wrap: balance;
   }
 }
+
+/* seoku 블로그 리디자인 애니메이션 (jihoonwrks-design-spec 7장 기준)
+   뷰 전환/목록 스태거: opacity + 4px translateY, 200ms ease-out.
+   스크롤 기반 등장 애니메이션은 사용하지 않는다 — 최초 렌더 시 한 번만 재생. */
+@keyframes sk-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sk-fade-in {
+  animation: sk-fade-in 200ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk-fade-in {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
