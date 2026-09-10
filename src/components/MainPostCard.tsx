@@ -1,8 +1,11 @@
 "use client";
 
+import { badgeVariants } from "@seoku/design-system";
 import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type { MouseEvent } from "react";
 import type { PostDataProps } from "@/types/posts";
 import { getDate } from "@/utils/date";
 
@@ -46,12 +49,16 @@ const cardBaseClass =
   "group relative overflow-hidden rounded-3xl bg-[#f8f8f8] dark:bg-neutral-900/80 shadow-[0_1px_3px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] dark:shadow-none dark:hover:shadow-white/5 transition-all duration-500 hover:-translate-y-1 border border-gray-200/60 dark:border-white/5";
 
 // 카테고리 태그 스타일 (standard와 동일)
-const categoryTagClass =
-  "w-fit rounded-full bg-gray-100 px-3 py-1 text-xs font-medium uppercase tracking-wide text-gray-700 dark:bg-white/10 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20 transition-colors cursor-pointer";
+const categoryTagClass = classNames(
+  badgeVariants({ variant: "outline" }),
+  "!w-fit !h-auto !rounded-full !bg-gray-100 !px-3 !py-1 !text-xs !font-medium !text-gray-700 uppercase tracking-wide dark:!bg-white/10 dark:!text-gray-300 hover:!bg-gray-200 dark:hover:!bg-white/20 transition-colors cursor-pointer",
+);
 
 // 카테고리 태그 스타일 (라이트 버전 - 배경 이미지 위에서 사용)
-const categoryTagLightClass =
-  "w-fit rounded-full backdrop-blur-sm bg-white/20 px-3 py-1 text-xs font-medium uppercase tracking-wide text-white/90 hover:bg-white/30 transition-colors border border-white/10 cursor-pointer";
+const categoryTagLightClass = classNames(
+  badgeVariants({ variant: "outline" }),
+  "!w-fit !h-auto !rounded-full backdrop-blur-sm !bg-white/20 !px-3 !py-1 !text-xs !font-medium !text-white/90 uppercase tracking-wide hover:!bg-white/30 transition-colors !border !border-white/10 cursor-pointer",
+);
 
 // 날짜 스타일
 const dateClass = "text-xs text-gray-500 dark:text-gray-500";
@@ -76,6 +83,15 @@ const MainPostCard = ({
   const isoDate = getDate("YYYY-MM-DD", createdAt);
 
   const categoryHref = `/blog/${category.toLowerCase()}`;
+  const router = useRouter();
+
+  // 카드 전체가 게시글 링크 앵커이므로, 카테고리 태그는 중첩 앵커를 피하기 위해
+  // button으로 렌더링하고 클릭 시 직접 라우팅한다.
+  const navigateToCategory = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    router.push(categoryHref);
+  };
 
   // 모바일용 공통 카드 (md 이하에서 표시)
   const mobileCard = (
@@ -98,13 +114,13 @@ const MainPostCard = ({
           </div>
           <div className="flex flex-1 flex-col p-5 bg-white dark:bg-transparent">
             <div className="flex items-center gap-2 mb-2">
-              <Link
-                href={categoryHref}
+              <button
+                type="button"
                 className={categoryTagClass}
-                onClick={(e) => e.stopPropagation()}
+                onClick={navigateToCategory}
               >
                 {categoryLabel}
-              </Link>
+              </button>
               <time dateTime={isoDate} className={dateClass}>
                 {formattedDate}
               </time>
@@ -152,13 +168,13 @@ const MainPostCard = ({
             className="relative h-full flex flex-col justify-end p-10"
           >
             <div className="flex items-center gap-3 mb-3">
-              <Link
-                href={categoryHref}
+              <button
+                type="button"
                 className={categoryTagLightClass}
-                onClick={(e) => e.stopPropagation()}
+                onClick={navigateToCategory}
               >
                 {categoryLabel}
-              </Link>
+              </button>
               <time dateTime={isoDate} className={dateLightClass}>
                 {formattedDate}
               </time>
@@ -195,13 +211,13 @@ const MainPostCard = ({
           >
             <div className="p-5">
               <div className="flex items-center gap-2 mb-3">
-                <Link
-                  href={categoryHref}
+                <button
+                  type="button"
                   className={categoryTagClass}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={navigateToCategory}
                 >
                   {categoryLabel}
-                </Link>
+                </button>
                 <time dateTime={isoDate} className={dateClass}>
                   {formattedDate}
                 </time>
@@ -322,13 +338,13 @@ const MainPostCard = ({
         </div>
         <div className="flex flex-1 flex-col p-5">
           <div className="flex items-center gap-2 mb-2">
-            <Link
-              href={categoryHref}
+            <button
+              type="button"
               className={categoryTagClass}
-              onClick={(e) => e.stopPropagation()}
+              onClick={navigateToCategory}
             >
               {categoryLabel}
-            </Link>
+            </button>
             <time dateTime={isoDate} className={dateClass}>
               {formattedDate}
             </time>

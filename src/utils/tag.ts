@@ -8,5 +8,5 @@ export function normalizeTagForUrl(tag: string): string {
 
 export function getTagPath(tag: string): string {
   const normalizedTag = normalizeTagForUrl(tag);
-  return `/blog/tags/${normalizedTag}`;
+  return `/categories/${normalizedTag}`;
 }

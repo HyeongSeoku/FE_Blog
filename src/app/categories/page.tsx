@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import DefaultLoading from "@/layout/Loading";
 import { getAllPosts, getAllTags } from "@/utils/post";
-import TagsPageClient from "./TagsPageClient";
+import CategoriesPageClient from "./CategoriesPageClient";
 
 export const metadata: Metadata = {
   title: `${BASE_META_TITLE} 태그 검색`,
@@ -11,12 +11,12 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${BASE_META_TITLE} 태그 검색`,
     description: "태그로 블로그 게시글을 필터링합니다.",
-    url: "/blog/tags",
+    url: "/categories",
     type: "website",
     images: [],
   },
   alternates: {
-    canonical: "/blog/tags",
+    canonical: "/categories",
   },
 };
 
@@ -58,7 +58,7 @@ const TagsPage = async () => {
         "@type": "ListItem",
         position: 2,
         name: "태그",
-        item: `${BASE_URL}/blog/tags`,
+        item: `${BASE_URL}/categories`,
       },
     ],
   };
@@ -66,8 +66,8 @@ const TagsPage = async () => {
   const collectionStructuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "@id": `${BASE_URL}/blog/tags`,
-    url: `${BASE_URL}/blog/tags`,
+    "@id": `${BASE_URL}/categories`,
+    url: `${BASE_URL}/categories`,
     name: "태그",
     description: "블로그 태그 목록입니다.",
     isPartOf: {
@@ -80,7 +80,7 @@ const TagsPage = async () => {
   return (
     <>
       <Suspense fallback={<DefaultLoading />}>
-        <TagsPageClient postList={postList} tagList={tagList} />
+        <CategoriesPageClient postList={postList} tagList={tagList} />
       </Suspense>
       <script
         type="application/ld+json"

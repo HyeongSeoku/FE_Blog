@@ -15,10 +15,10 @@ export function generateMetadata(): Metadata {
     openGraph: {
       title: metaTitle,
       description: metaDescription,
-      url: "/blog/archive",
+      url: "/archive",
       type: "website",
     },
-    alternates: { canonical: "/blog/archive" },
+    alternates: { canonical: "/archive" },
   };
 }
 
@@ -80,7 +80,7 @@ async function ArchivePage() {
         "@type": "ListItem",
         position: 2,
         name: "Archive",
-        item: `${BASE_URL}/blog/archive`,
+        item: `${BASE_URL}/archive`,
       },
     ],
   };
@@ -88,8 +88,8 @@ async function ArchivePage() {
   const collectionStructuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "@id": `${BASE_URL}/blog/archive`,
-    url: `${BASE_URL}/blog/archive`,
+    "@id": `${BASE_URL}/archive`,
+    url: `${BASE_URL}/archive`,
     name: "Archive",
     description: "생각, 튜토리얼, 그리고 개발 로그들의 시간순 모음입니다.",
     isPartOf: {
@@ -100,57 +100,44 @@ async function ArchivePage() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full">
       {/* 헤더 */}
-      <div className="mb-12">
-        <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-2">
-          Archive
-          <span className="ml-3 text-lg font-normal text-gray-400 dark:text-gray-500">
-            ({totalPostCount} posts)
-          </span>
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-4">
-          생각, 튜토리얼, 그리고 개발 로그들의 시간순 모음입니다.
-        </p>
-      </div>
+      <header className="mb-sk-section-lg">
+        <h1 className="text-sk-h1 font-bold text-theme">전체 목록</h1>
+        <p className="mt-2 text-sk-meta text-muted">{totalPostCount}개의 글</p>
+      </header>
 
       {/* 년도별 그룹 */}
-      <div className="space-y-16">
+      <div className="flex flex-col gap-sk-section-lg">
         {yearGroups.map(({ year, posts }) => (
-          <section key={year} className="relative">
-            {/* 년도 */}
+          <section key={year} className="flex flex-col gap-4">
             <Link
-              href={`/blog/archive/${year}`}
-              className="text-6xl font-bold text-gray-100 dark:text-gray-800/50 absolute -left-4 top-0 select-none hover:text-gray-300 dark:hover:text-gray-700 transition-colors cursor-pointer mobile:relative mobile:left-0 mobile:text-4xl mobile:text-gray-200 mobile:dark:text-gray-700 mobile:mb-4 block w-fit"
+              href={`/archive/${year}`}
+              className="w-fit text-sk-label text-muted transition-opacity hover:opacity-[.55]"
             >
               {year}
             </Link>
 
-            {/* 글 목록 */}
-            <div className="ml-24 mobile:ml-0 border-l border-gray-200 dark:border-gray-700 pl-8 mobile:pl-4">
-              <ul className="space-y-4">
-                {posts.map((post) => (
-                  <li key={post.slug} className="group">
-                    <Link
-                      href={`/posts/${post.slug}`}
-                      className="flex items-baseline gap-4 py-2 -ml-8 pl-8 mobile:-ml-4 mobile:pl-4 hover:bg-gray-50 dark:hover:bg-white/5 rounded-r-lg transition-colors"
+            <ul className="flex flex-col gap-sk-item">
+              {posts.map((post) => (
+                <li key={post.slug}>
+                  <Link
+                    href={`/posts/${post.slug}`}
+                    className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 transition-opacity hover:opacity-[.55]"
+                  >
+                    <span className="min-w-[180px] flex-1 text-sk-body text-theme">
+                      {post.title}
+                    </span>
+                    <time
+                      dateTime={getDate("YYYY-MM-DD", post.createdAt)}
+                      className="shrink-0 text-sk-meta text-muted"
                     >
-                      {/* 날짜 */}
-                      <time
-                        dateTime={getDate("YYYY-MM-DD", post.createdAt)}
-                        className="flex-shrink-0 w-16 text-sm text-gray-400 dark:text-gray-500 font-mono"
-                      >
-                        {post.month} {post.day}
-                      </time>
-                      {/* 제목 */}
-                      <span className="text-gray-900 dark:text-white font-medium group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
-                        {post.title}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                      {post.month} {post.day}
+                    </time>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </section>
         ))}
       </div>

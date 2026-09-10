@@ -1,5 +1,6 @@
 "use client";
 
+import { Toggle } from "@seoku/design-system";
 import classNames from "classnames";
 import MoonIcon from "@/icon/moon.svg";
 import SunIcon from "@/icon/sun.svg";
@@ -14,13 +15,12 @@ const ThemeButton = () => {
   const isDarkMode = useThemeStore((state) => state.isDarkMode);
 
   return (
-    <button
-      type="button"
-      className="flex flex-col flex-shrink-0 w-10 h-10 overflow-hidden hover:bg-gray-400/20 rounded-sm"
+    <Toggle
+      pressed={isDarkMode}
+      onPressedChange={toggleTheme}
+      className="!flex !flex-col !items-start !justify-start !flex-shrink-0 !w-10 !h-10 !min-w-0 !p-0 !overflow-hidden hover:!bg-gray-400/20 !rounded-sm !bg-transparent data-[state=on]:!bg-transparent data-[state=on]:!text-inherit"
       aria-label="테마 변경"
-      aria-pressed={isDarkMode}
       title="테마 변경"
-      onClick={toggleTheme}
       suppressHydrationWarning
     >
       <div
@@ -33,7 +33,7 @@ const ThemeButton = () => {
           <MoonIcon style={{ width: 24, height: 24 }} />
         </div>
       </div>
-    </button>
+    </Toggle>
   );
 };
 

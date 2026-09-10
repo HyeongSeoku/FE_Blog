@@ -1,7 +1,10 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  content: ["./src/**/*.{js,jsx,ts,tsx,mdx}"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx,mdx}",
+    "./node_modules/@seoku/design-system/dist/**/*.{js,mjs}",
+  ],
   darkMode: ["class", '[data-theme="dark"]'],
   theme: {
     screens: {
@@ -26,6 +29,7 @@ export default {
       textColor: {
         theme: "var(--text-color)",
         "opposite-theme": "var(--contrasting-text-color)",
+        muted: "var(--muted-color)",
       },
       scale: {
         "102": "1.02",
@@ -35,6 +39,33 @@ export default {
         "primary-hover": "var(--primary-hover-color)",
         theme: "var(--bg-color)",
         "opposite-theme": "var(--contrasting-bg-color)",
+        muted: "var(--muted-color)",
+        hairline: "var(--hairline-color)",
+      },
+      borderColor: {
+        hairline: "var(--hairline-color)",
+      },
+      spacing: {
+        "sk-section": "var(--sk-space-section)",
+        "sk-section-lg": "var(--sk-space-section-lg)",
+        "sk-item": "var(--sk-space-item)",
+      },
+      borderRadius: {
+        "sk-image": "var(--sk-radius-image)",
+      },
+      fontSize: {
+        "sk-h1": ["var(--sk-text-h1)", { lineHeight: "1.35" }],
+        "sk-hero-name": [
+          "var(--sk-text-hero-name)",
+          { letterSpacing: "-0.02em" },
+        ],
+        "sk-h2": ["var(--sk-text-h2)", { fontWeight: "600" }],
+        "sk-label": ["var(--sk-text-label)", { fontWeight: "600" }],
+        "sk-meta": "var(--sk-text-meta)",
+        "sk-body": [
+          "var(--sk-text-body)",
+          { lineHeight: "var(--sk-line-body)" },
+        ],
       },
       transitionDuration: {
         custom: "var(--transition-duration)",

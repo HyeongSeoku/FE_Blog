@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import SeriesCard from "@/components/SeriesCard";
+import SeriesListItem from "@/components/SeriesListItem";
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { getAllSeriesMetadata } from "@/utils/series";
 
@@ -13,23 +13,23 @@ export function generateMetadata(): Metadata {
     openGraph: {
       title: metaTitle,
       description: metaDescription,
-      url: "/blog/series",
+      url: "/series",
       type: "website",
       images: [],
     },
-    alternates: { canonical: "/blog/series" },
+    alternates: { canonical: "/series" },
   };
 }
 
 async function SeriesPage() {
-  const seriesData = await getAllSeriesMetadata();
+  const seriesData = await getAllSeriesMetadata({ sortByLatestPost: true });
   const seriesList = Object.entries(seriesData);
 
   const collectionStructuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "@id": `${BASE_URL}/blog/series`,
-    url: `${BASE_URL}/blog/series`,
+    "@id": `${BASE_URL}/series`,
+    url: `${BASE_URL}/series`,
     name: "시리즈",
     description: "블로그 연재 시리즈 목록입니다.",
     isPartOf: {
@@ -40,28 +40,23 @@ async function SeriesPage() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full">
       {/* 헤더 */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          시리즈
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400">
+      <header className="mb-sk-section-lg">
+        <h1 className="text-sk-h1 font-bold text-theme">시리즈</h1>
+        <p className="mt-2 text-sk-meta text-muted">
           {seriesList.length}개의 시리즈
         </p>
-      </div>
+      </header>
 
-      {/* 시리즈 그리드 */}
-      <section className="grid grid-cols-1 gap-6 mobile:gap-8 tablet:grid-cols-2 desktop:grid-cols-3">
-        {seriesList.map(([key, value], index) => (
-          <SeriesCard
+      <section className="flex flex-col gap-sk-item">
+        {seriesList.map(([key, value]) => (
+          <SeriesListItem
             key={key}
             seriesKey={key}
-            seriesIndex={index}
             title={value.title}
-            description={value.description}
-            thumbnail={value.thumbnail}
-            seriesCount={value.count}
+            count={value.count}
+            latestDate={value.latestDate}
           />
         ))}
       </section>

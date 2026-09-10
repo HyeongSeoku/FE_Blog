@@ -1,5 +1,6 @@
 "use client";
 
+import { badgeVariants } from "@seoku/design-system";
 import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
@@ -43,11 +44,15 @@ const BlogPostCard = ({
   const tagListView = !!tagList?.length && (
     <ul className="flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400">
       {tagList.slice(0, 3).map((item) => (
-        <li
-          key={item}
-          className="rounded-full bg-[var(--bg-gray-color)] px-2 py-1 transition-colors duration-300 hover:bg-[var(--bg-gray-hover-color)]"
-        >
-          <Link replace={isReplace} href={getTagPath(item)}>
+        <li key={item}>
+          <Link
+            replace={isReplace}
+            href={getTagPath(item)}
+            className={classNames(
+              badgeVariants({ variant: "outline" }),
+              "!border-0 !bg-[var(--bg-gray-color)] hover:!bg-[var(--bg-gray-hover-color)] transition-colors duration-300 !rounded-full !px-2 !py-1 !h-auto !text-inherit !font-normal",
+            )}
+          >
             {formatTagDisplay(item)}
           </Link>
         </li>
@@ -82,7 +87,12 @@ const BlogPostCard = ({
             <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
             <span className="relative z-10">
               {tagLabel && (
-                <span className="w-fit rounded-full bg-white/20 px-3 py-1 text-xs uppercase tracking-wide">
+                <span
+                  className={classNames(
+                    badgeVariants({ variant: "outline" }),
+                    "!w-fit !border-0 !rounded-full !bg-white/20 !px-3 !py-1 !h-auto !text-xs !text-inherit !font-normal uppercase tracking-wide",
+                  )}
+                >
                   {tagLabel}
                 </span>
               )}
@@ -136,7 +146,12 @@ const BlogPostCard = ({
         </Link>
         <div className="flex flex-1 flex-col px-5 py-4">
           {tagLabel && (
-            <span className="w-fit rounded-full bg-gray-100 px-3 py-1 text-xs uppercase tracking-wide text-gray-600 dark:bg-white/10 dark:text-gray-300">
+            <span
+              className={classNames(
+                badgeVariants({ variant: "outline" }),
+                "!w-fit !border-0 !rounded-full !bg-gray-100 !px-3 !py-1 !h-auto !text-xs !text-gray-600 !font-normal uppercase tracking-wide dark:!bg-white/10 dark:!text-gray-300",
+              )}
+            >
               {tagLabel}
             </span>
           )}

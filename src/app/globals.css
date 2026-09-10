@@ -9,29 +9,58 @@
 /* 라이트 및 다크 모드 기본 색상 */
 :root {
   /* Light Mode Colors */
-  --light-bg-color: #fafafa;
-  --light-text-color: #121212;
+  --light-bg-color: #ffffff;
+  --light-text-color: #1a1a1a;
   --light-second-bg-color: rgba(0, 144, 255, 0.3);
   --light-bg-gray-color: #f1f3f5;
   --light-bg-gray-hover-color: #dee2e6;
+  --light-muted-color: #6b6b6b;
+  --light-hairline-color: #e6e6e6;
 
   /* Dark Mode Colors */
-  --dark-bg-color: #121212;
-  --dark-text-color: #fafafa;
+  --dark-bg-color: #151515;
+  --dark-text-color: #ededed;
   --dark-second-bg-color: rgba(63, 63, 63, 0.3);
   --dark-bg-gray-color: #2d2d2d;
   --dark-bg-gray-hover-color: #404040;
-  --dark-link-text-color: #6aa6ec;
+  --dark-link-text-color: var(--dark-muted-color);
+  --dark-muted-color: #8a8a8a;
+  --dark-hairline-color: #2e2e2e;
 
   /* Common Colors */
   --gray-bg-color: #d9d9d9;
   --dimmed-color: #6a737d;
+  --description-text-color: #a8afbd;
+  --link-text-color: var(--text-color);
+  --link-text-hover-color: var(--muted-color);
+  --hover-link-color: rgba(192, 192, 192, 0.3);
+
+  /* Legacy accent — kept only for /about (excluded from the seoku-blog grayscale
+     redesign, see jihoonwrks design spec). Do not use in blog shell/list/post
+     components going forward; use the neutral --muted-color / --hairline-color
+     tokens below instead. */
   --primary-color: #0abab5;
   --primary-hover-color: #0abab580;
-  --description-text-color: #a8afbd;
-  --link-text-color: #0070f3;
-  --link-text-hover-color: #3399ff;
-  --hover-link-color: rgba(192, 192, 192, 0.3);
+
+  /* Seoku Design System tokens — re-themed to the blog's 3-step grayscale
+     (no accent color). Only consumed by design-system primitives used in the
+     blog shell/list/detail UI (Button, Badge, Toggle, Drawer, Pagination,
+     Progress, Skeleton, NavigationMenu) — /about does not import these. */
+  --sds-primary-50: #f7f7f7;
+  --sds-primary-100: #e6e6e6;
+  --sds-primary-200: #d4d4d4;
+  --sds-primary-300: #b3b3b3;
+  --sds-primary-400: #8a8a8a;
+  --sds-primary-500: #6b6b6b;
+  --sds-primary-600: #4d4d4d;
+  --sds-primary-700: #333333;
+  --sds-primary-800: #222222;
+  --sds-primary-900: #1a1a1a;
+  --sds-action-primary: var(--sds-primary-700);
+  --sds-action-primary-hover: var(--sds-primary-800);
+  --sds-ring-primary: rgba(107, 107, 107, 0.22);
+  --sds-accent-soft: var(--sds-primary-50);
+  --sds-accent-soft2: var(--sds-primary-100);
 
   /* TODO: 삭제 요망 */
   /** Gray Scale*/
@@ -43,6 +72,24 @@
   --silver: #c0c0c0;
   --light-silver: #e0e0e0;
   --whisper-gray: #f5f5f5;
+}
+
+/* seoku 블로그 리디자인 타이포/여백 스케일 (jihoonwrks-design-spec 5장 기준) */
+:root {
+  --sk-text-h1: clamp(24px, 6.5vw, 32px);
+  --sk-text-hero-name: clamp(22px, 6vw, 26px);
+  --sk-text-h2: 19px;
+  --sk-text-label: 13px;
+  --sk-text-meta: 14px;
+  --sk-text-body: 16px;
+  --sk-line-body: 1.85;
+  --sk-line-intro: 1.8;
+  --sk-space-section: clamp(56px, 12vw, 96px);
+  --sk-space-section-lg: clamp(48px, 12vw, 72px);
+  --sk-space-item: 16px;
+  --sk-radius-image: 10px;
+  --sk-hero-image: clamp(180px, 42vw, 300px);
+  --sk-hover-opacity: 0.55;
 }
 
 /* 전환 관련 속성 */
@@ -72,7 +119,7 @@
 }
 
 /* Light Theme */
-[data-theme="light"] {
+:root[data-theme="light"] {
   --bg-color: var(--light-bg-color);
   --contrasting-bg-color: var(--dark-bg-color);
   --text-color: var(--light-text-color);
@@ -81,10 +128,12 @@
   --border-color: var(--light-gray);
   --bg-gray-color: var(--light-bg-gray-color);
   --bg-gray-hover-color: var(--light-bg-gray-hover-color);
+  --muted-color: var(--light-muted-color);
+  --hairline-color: var(--light-hairline-color);
 }
 
 /* Dark Theme */
-[data-theme="dark"] {
+:root[data-theme="dark"] {
   --bg-color: var(--dark-bg-color);
   --contrasting-bg-color: var(--light-bg-color);
   --text-color: var(--dark-text-color);
@@ -93,6 +142,15 @@
   --border-color: var(--dark-gray);
   --bg-gray-color: var(--dark-bg-gray-color);
   --bg-gray-hover-color: var(--dark-bg-gray-hover-color);
+  --muted-color: var(--dark-muted-color);
+  --hairline-color: var(--dark-hairline-color);
+
+  /* Seoku Design System - dark mode uses lighter gray tints for contrast */
+  --sds-action-primary: var(--sds-primary-300);
+  --sds-action-primary-hover: var(--sds-primary-200);
+  --sds-ring-primary: rgba(138, 138, 138, 0.3);
+  --sds-accent-soft: rgba(138, 138, 138, 0.14);
+  --sds-accent-soft2: rgba(138, 138, 138, 0.22);
 }
 
 /* Global Styles */
@@ -119,12 +177,13 @@ main {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: var(--primary-color);
+  background-color: var(--muted-color);
   border-radius: 10px;
+  opacity: 0.4;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: var(--primary-hover-color);
+  background-color: var(--text-color);
 }
 
 .scroll-bar-thin {

@@ -5,20 +5,18 @@ import Header, { type HeaderType } from "@/components/Header";
 export interface DefaultLayoutProps {
   children: ReactNode;
   headerType?: HeaderType;
-  hasHeaderAnimation?: boolean;
   structuredData?: object;
 }
 
 const DefaultLayout = ({
   children,
   headerType = "DEFAULT",
-  hasHeaderAnimation = false,
   structuredData,
 }: DefaultLayoutProps) => {
   return (
     <div className="w-full h-auto min-h-fit flex flex-col flex-grow">
-      <Header headerType={headerType} hasAnimation={hasHeaderAnimation} />
-      <main className="box-border w-full h-full min-h-fit flex flex-col flex-grow px-64 py-10 desktop-only:px-36 tablet-only:px-32 mobile:px-5 max-w-[1600px] mx-auto">
+      <Header headerType={headerType} />
+      <main className="mx-auto box-border flex w-full max-w-[680px] flex-grow flex-col px-5 pt-sk-section">
         {children}
       </main>
       <Footer />

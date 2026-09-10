@@ -51,8 +51,8 @@ export function generateMetadata({
     currentPage && currentPage > 1 ? ` (page ${currentPage})` : "";
   const url =
     currentPage && currentPage > 1
-      ? `/blog/series/${encodeURIComponent(seriesName)}/p/${currentPage}`
-      : `/blog/series/${encodeURIComponent(seriesName)}`;
+      ? `/series/${encodeURIComponent(seriesName)}/p/${currentPage}`
+      : `/series/${encodeURIComponent(seriesName)}`;
 
   return {
     title: `${metaTitle}${pageSuffix}`,
@@ -106,8 +106,8 @@ export default async function SeriesDetailPage({
   const collectionStructuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "@id": `${BASE_URL}/blog/series/${encodeURIComponent(seriesName)}`,
-    url: `${BASE_URL}/blog/series/${encodeURIComponent(seriesName)}`,
+    "@id": `${BASE_URL}/series/${encodeURIComponent(seriesName)}`,
+    url: `${BASE_URL}/series/${encodeURIComponent(seriesName)}`,
     name: seriesMeta.title,
     description: seriesMeta.description,
     isPartOf: {
@@ -125,7 +125,7 @@ export default async function SeriesDetailPage({
         postList={paginated}
         currentPage={boundedPage}
         totalPages={totalPages}
-        basePath={`/blog/series/${encodeURIComponent(seriesName)}`}
+        basePath={`/series/${encodeURIComponent(seriesName)}`}
       />
       <script
         type="application/ld+json"

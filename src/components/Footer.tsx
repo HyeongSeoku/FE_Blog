@@ -1,24 +1,37 @@
-import RssIcon from "../icon/rss.svg";
-import GitHubIssueButton from "./GithubIssueButton";
+import {
+  EMAIL_ADDRESS,
+  LINKED_IN_URL,
+  MY_GITHUB_URL,
+} from "@/constants/basic.constants";
+
+const FOOTER_LINKS = [
+  { label: "Github", href: MY_GITHUB_URL },
+  { label: "Linkedin", href: LINKED_IN_URL },
+  { label: "Contact", href: `mailto:${EMAIL_ADDRESS}` },
+  { label: "RSS", href: "/feed.xml" },
+];
 
 const Footer = () => {
   return (
-    <footer className="px-64 py-5 desktop-only:px-44 tablet-only:px-32 mobile:px-5 mobile:py-3 max-w-[1600px] mx-auto">
-      <section className="flex items-center justify-center mt-1">
-        <span className="text-sm mr-2 text-gray-500 dark:text-gray-400">
-          © 2025 Seok All rights reserved.
+    <footer className="w-full pb-[clamp(28px,7vw,48px)] pt-sk-section">
+      <div className="mx-auto flex w-full max-w-[680px] flex-wrap items-baseline justify-between gap-x-4 gap-y-2 px-5">
+        <span className="text-sk-label font-normal text-muted">
+          © {new Date().getFullYear()}
         </span>
-        <GitHubIssueButton className="!bg-transparent hover:!bg-gray-400/20" />
-        <a
-          href="/feed.xml"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="p-2 rounded-lg transition-colors hover:bg-gray-400/20 text-gray-500 overflow-hidden"
-          aria-label="RSS Feed"
-        >
-          <RssIcon className="w-5 h-5" />
-        </a>
-      </section>
+        <nav className="flex items-baseline gap-4">
+          {FOOTER_LINKS.map(({ label, href }) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sk-label font-normal text-muted transition-opacity hover:opacity-[.55]"
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
+      </div>
     </footer>
   );
 };

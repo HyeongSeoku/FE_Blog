@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge, badgeVariants } from "@seoku/design-system";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { MOBILE_WIDTH } from "@/constants/basic.constants";
@@ -76,7 +77,10 @@ const MultiSelectTagList = ({
                   key={tag}
                   type="button"
                   onClick={() => onTagToggle(tag)}
-                  className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-1 text-sm rounded-md bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors max-w-[120px]"
+                  className={classNames(
+                    badgeVariants({ variant: "outline" }),
+                    "!flex-shrink-0 !h-auto !border-0 !gap-1 !px-2 !py-1 !text-sm !rounded-md !font-normal !bg-blue-100 dark:!bg-blue-900 !text-blue-700 dark:!text-blue-300 hover:!bg-blue-200 dark:hover:!bg-blue-800 transition-colors max-w-[120px]",
+                  )}
                 >
                   <span className="truncate">#{formatTagDisplay(tag)}</span>
                   <span className="flex-shrink-0 text-blue-500 dark:text-blue-400">
@@ -129,16 +133,17 @@ const MultiSelectTagList = ({
                 <span className="truncate text-sm font-medium">
                   {formatTagDisplay(key)}
                 </span>
-                <span
+                <Badge
+                  variant="outline"
                   className={classNames(
-                    "flex-shrink-0 min-w-5 h-5 flex items-center justify-center rounded-full text-xs font-semibold",
+                    "!flex-shrink-0 !min-w-5 !h-5 !w-auto !border-0 !rounded-full !text-xs !font-semibold !p-0 justify-center",
                     isSelected
-                      ? "bg-white/20 text-white"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400",
+                      ? "!bg-white/20 !text-white"
+                      : "!bg-gray-200 dark:!bg-gray-700 !text-gray-600 dark:!text-gray-400",
                   )}
                 >
                   {value}
-                </span>
+                </Badge>
               </button>
             </li>
           );

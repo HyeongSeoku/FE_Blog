@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@seoku/design-system";
 import classNames from "classnames";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -62,16 +63,17 @@ const ExpandableTagList = ({ tagList, currentTag }: ExpandableTagListProps) => {
                 <span className="truncate text-sm font-medium">
                   {formatTagDisplay(key)}
                 </span>
-                <span
+                <Badge
+                  variant="outline"
                   className={classNames(
-                    "flex-shrink-0 min-w-5 h-5 flex items-center justify-center rounded-full text-xs font-semibold",
+                    "!flex-shrink-0 !min-w-5 !h-5 !w-auto !border-0 !rounded-full !text-xs !font-semibold !p-0 justify-center",
                     isSelected
-                      ? "bg-white/20 dark:bg-gray-900/20 text-white dark:text-gray-900"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400",
+                      ? "!bg-white/20 dark:!bg-gray-900/20 !text-white dark:!text-gray-900"
+                      : "!bg-gray-200 dark:!bg-gray-700 !text-gray-600 dark:!text-gray-400",
                   )}
                 >
                   {value}
-                </span>
+                </Badge>
               </Link>
             </li>
           );

@@ -1,5 +1,6 @@
 "use client";
 
+import { Progress } from "@seoku/design-system";
 import classNames from "classnames";
 import { HEADER_SCROLL_THRESHOLD } from "@/constants/basic.constants";
 import useScrollDirection from "@/hooks/useScrollDirection";
@@ -31,17 +32,12 @@ const ScrollProgressBar = ({ className = "" }: ScrollProgressBarProps) => {
       )}
     >
       {/* 프로그레스바 */}
-      <div
-        className={classNames(
-          "w-full h-1 bg-gray-200 dark:bg-gray-800 overflow-hidden",
-          className,
-        )}
-      >
-        <div
-          className="h-full w-full bg-primary origin-left will-change-transform"
-          style={{ transform: `scaleX(${progressWidth / 100})` }}
-        />
-      </div>
+      <Progress
+        value={progressWidth}
+        size="xsmall"
+        className={classNames("!rounded-none", className)}
+        indicatorClassName="!rounded-none !duration-0"
+      />
     </div>
   );
 };

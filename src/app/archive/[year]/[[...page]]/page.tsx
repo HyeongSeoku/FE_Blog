@@ -1,9 +1,13 @@
 import { notFound } from "next/navigation";
+import MonthlySection from "@/components/MonthlySection";
 import { BASE_META_TITLE, BASE_URL } from "@/constants/basic.constants";
 import { DEFAULT_PAGE_SIZE } from "@/constants/post.constants";
 import BlogDateTemplate from "@/templates/BlogDateTemplate";
-import { formatToKoreanMonth } from "@/utils/date";
-import { getAllMonths, getPostsByDate } from "@/utils/post";
+import {
+  getAllYears,
+  getMonthlyPostCounts,
+  getPostsByDate,
+} from "@/utils/post";
 
 export const dynamicParams = false;
 
@@ -16,23 +20,22 @@ const parsePageParam = (page?: string[]) => {
 };
 
 export async function generateStaticParams() {
-  const months = await getAllMonths(); // returns "YYYY-MM"
+  const years = await getAllYears();
   const params = await Promise.all(
-    months.map(async (monthStr) => {
-      const [year, month] = monthStr.split("-");
+    years.map(async (year) => {
       const { totalPostCount } = await getPostsByDate({
-        type: "month",
-        date: monthStr,
+        type: "year",
+        date: year,
         page: 1,
         pageSize: DEFAULT_PAGE_SIZE,
       });
       const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
-      const pageParams: { year: string; month: string; page?: string[] }[] = [
-        { year, month, page: [] },
+      const pageParams: { year: string; page?: string[] }[] = [
+        { year, page: [] },
       ];
 
       for (let page = 2; page <= totalPages; page += 1) {
-        pageParams.push({ year, month, page: ["p", String(page)] });
+        pageParams.push({ year, page: ["p", String(page)] });
       }
 
       return pageParams;
@@ -45,23 +48,23 @@ export async function generateStaticParams() {
 export const generateMetadata = ({
   params,
 }: {
-  params: { year: string; month: string; page?: string[] };
+  params: { year: string; page?: string[] };
 }) => {
-  const { year, month } = params;
+  const { year } = params;
   const currentPage = parsePageParam(params.page);
   const pageSuffix =
     currentPage && currentPage > 1 ? ` (page ${currentPage})` : "";
   const url =
     currentPage && currentPage > 1
-      ? `/blog/archive/${year}/${month}/p/${currentPage}`
-      : `/blog/archive/${year}/${month}`;
+      ? `/archive/${year}/p/${currentPage}`
+      : `/archive/${year}`;
 
   return {
-    title: `${year}년 ${month}월 게시물${pageSuffix}`,
-    description: `${year}년 ${month}월 작성된 블로그 글 목록을 확인하세요.`,
+    title: `${year}년도 게시물${pageSuffix}`,
+    description: `${year}년도 작성된 블로그 글 목록을 확인하세요.`,
     openGraph: {
-      title: `${year}년 ${month}월 게시물${pageSuffix}`,
-      description: `${year}년 ${month}월 작성된 블로그 글 목록을 확인하세요.`,
+      title: `${year}년도 게시물${pageSuffix}`,
+      description: `${year}년도 작성된 블로그 글 목록을 확인하세요.`,
       url,
       type: "website",
     },
@@ -71,20 +74,18 @@ export const generateMetadata = ({
   };
 };
 
-const BlogArchiveMonthPage = async ({
+const BlogArchiveYearPage = async ({
   params,
 }: {
-  params: { year: string; month: string; page?: string[] };
+  params: { year: string; page?: string[] };
 }) => {
-  const { year, month } = params;
-  const normalizedMonth = `${year}-${month}`;
+  const { year } = params;
+  const yearText = `${year}년`;
   const currentPage = parsePageParam(params.page);
 
   if (!currentPage) {
     notFound();
   }
-
-  const formattedMonth = formatToKoreanMonth(normalizedMonth);
 
   const breadcrumbStructuredData = {
     "@context": "https://schema.org",
@@ -106,24 +107,17 @@ const BlogArchiveMonthPage = async ({
         "@type": "ListItem",
         position: 3,
         name: `${year}년`,
-        item: `${BASE_URL}/blog/archive/${year}`,
-      },
-      {
-        "@type": "ListItem",
-        position: 4,
-        name: `${month}월`,
-        item: `${BASE_URL}/blog/archive/${year}/${month}`,
+        item: `${BASE_URL}/archive/${year}`,
       },
     ],
   };
-
   const collectionStructuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "@id": `${BASE_URL}/blog/archive/${year}/${month}`,
-    url: `${BASE_URL}/blog/archive/${year}/${month}`,
-    name: `${formattedMonth} 게시물`,
-    description: `${formattedMonth}에 작성된 블로그 글 모음 페이지입니다.`,
+    "@id": `${BASE_URL}/archive/${year}`,
+    url: `${BASE_URL}/archive/${year}`,
+    name: `${yearText} 게시물`,
+    description: `${yearText}에 작성된 블로그 글 모음 페이지입니다.`,
     isPartOf: {
       "@type": "Blog",
       name: BASE_META_TITLE,
@@ -132,27 +126,35 @@ const BlogArchiveMonthPage = async ({
   };
 
   const { postList, totalPostCount } = await getPostsByDate({
-    type: "month",
-    date: normalizedMonth,
+    type: "year",
+    date: year,
     page: currentPage,
     pageSize: DEFAULT_PAGE_SIZE,
   });
   const totalPages = Math.ceil(totalPostCount / DEFAULT_PAGE_SIZE);
+
+  // 월별 데이터 가져오기
+  const monthlyData = await getMonthlyPostCounts(year);
 
   if (totalPages && totalPages < currentPage) {
     notFound();
   }
 
   return (
-    <>
-      <BlogDateTemplate
-        dateText={formattedMonth}
-        postList={postList}
-        postCount={totalPostCount}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        basePath={`/blog/archive/${year}/${month}`}
-      />
+    <div className="w-full">
+      <MonthlySection year={year} monthlyData={monthlyData} />
+
+      <div className="mt-sk-section">
+        <BlogDateTemplate
+          dateText={yearText}
+          postList={postList}
+          postCount={totalPostCount}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          basePath={`/archive/${year}`}
+        />
+      </div>
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -165,8 +167,8 @@ const BlogArchiveMonthPage = async ({
           __html: JSON.stringify(collectionStructuredData),
         }}
       />
-    </>
+    </div>
   );
 };
 
-export default BlogArchiveMonthPage;
+export default BlogArchiveYearPage;

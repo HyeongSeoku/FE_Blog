@@ -18,7 +18,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { tag } = params;
   const { count } = await getPostsByTag(tag);
-  const url = `/blog/tags/${tag}`;
+  const url = `/categories/${tag}`;
 
   return {
     title: `${BASE_META_TITLE} | #${tag}`,
@@ -57,13 +57,13 @@ const TagPage = async ({ params }: { params: { tag: string } }) => {
         "@type": "ListItem",
         position: 2,
         name: "태그",
-        item: `${BASE_URL}/blog/tags`,
+        item: `${BASE_URL}/categories`,
       },
       {
         "@type": "ListItem",
         position: 3,
         name: `#${tag}`,
-        item: `${BASE_URL}/blog/tags/${tag}`,
+        item: `${BASE_URL}/categories/${tag}`,
       },
     ],
   };
@@ -71,8 +71,8 @@ const TagPage = async ({ params }: { params: { tag: string } }) => {
   const collectionStructuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "@id": `${BASE_URL}/blog/tags/${tag}`,
-    url: `${BASE_URL}/blog/tags/${tag}`,
+    "@id": `${BASE_URL}/categories/${tag}`,
+    url: `${BASE_URL}/categories/${tag}`,
     name: `#${tag} 태그`,
     description: `#${tag} 태그가 달린 블로그 게시글 모음입니다.`,
     isPartOf: {
@@ -84,25 +84,19 @@ const TagPage = async ({ params }: { params: { tag: string } }) => {
 
   return (
     <>
-      <div className="w-full max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            #{tag}
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400">{count}개의 포스트</p>
-        </div>
+      <div className="w-full">
+        <header className="mb-sk-section-lg">
+          <h1 className="text-sk-h1 font-bold text-theme">#{tag}</h1>
+          <p className="mt-2 text-sk-meta text-muted">{count}개의 글</p>
+        </header>
 
-        <div className="divide-y divide-gray-100 dark:divide-gray-800">
+        <div className="flex flex-col gap-sk-item">
           {posts.map((post) => (
             <BlogPostListItem
               key={post.slug}
               title={post.title}
-              description={post.description}
               createdAt={post.createdAt}
               slug={post.slug}
-              thumbnail={post.thumbnail}
-              category={post.category}
-              subCategory={post.subCategory}
             />
           ))}
         </div>

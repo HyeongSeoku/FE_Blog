@@ -1,3 +1,4 @@
+import { badgeVariants } from "@seoku/design-system";
 import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
@@ -53,7 +54,12 @@ export default function SeriesCard({
       {/* 상단 뱃지 영역 */}
       <div className="relative z-10 flex justify-between items-start p-5">
         {/* 시리즈 번호 뱃지 */}
-        <span className="px-3 py-1.5 rounded-full bg-black/30 backdrop-blur-sm text-[10px] font-bold tracking-widest uppercase text-white/90 transition-all duration-300 group-hover:bg-black/50">
+        <span
+          className={classNames(
+            badgeVariants({ variant: "outline" }),
+            "!px-3 !py-1.5 !h-auto !border-0 !rounded-full !bg-black/30 backdrop-blur-sm !text-[10px] !font-bold tracking-widest uppercase !text-white/90 transition-all duration-300 group-hover:!bg-black/50",
+          )}
+        >
           Series {seriesNumber}
         </span>
 
