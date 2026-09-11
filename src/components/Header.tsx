@@ -69,7 +69,7 @@ const Header = ({
             <Logo
               width={90}
               height={30}
-              className="text-theme transition-opacity hover:opacity-[.55] mobile:w-[72px]"
+              className="text-primary transition-colors hover:text-primary-hover mobile:w-[72px]"
             />
           </button>
         )}

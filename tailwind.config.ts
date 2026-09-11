@@ -48,6 +48,7 @@ export default {
       spacing: {
         "sk-section": "var(--sk-space-section)",
         "sk-section-lg": "var(--sk-space-section-lg)",
+        "sk-stack": "var(--sk-space-stack)",
         "sk-item": "var(--sk-space-item)",
       },
       borderRadius: {

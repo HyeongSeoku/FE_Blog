@@ -12,7 +12,7 @@ const IntroSectionTemplate = () => {
         </p>
       </section>
 
-      <section className="mt-sk-section flex flex-col gap-4">
+      <section className="mt-sk-stack flex flex-col gap-4">
         <h2 className="text-sk-label text-muted">소개</h2>
         <p className="text-sk-body leading-[var(--sk-line-intro)] text-theme">
           웹에서 사람이 실제로 겪는 문제를 코드로 좁히는 일을 합니다. 화면이

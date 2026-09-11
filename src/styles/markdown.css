@@ -49,8 +49,12 @@
 .markdown-contents p {
   font-size: var(--sk-text-body);
   line-height: var(--sk-line-body);
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0;
+}
+
+.markdown-contents p:first-child {
+  margin-top: 0;
 }
 
 .markdown-contents li {
@@ -69,7 +73,7 @@
 }
 
 .markdown-contents code {
-  @apply p-4 rounded text-xs font-mono;
+  @apply rounded text-xs font-mono;
 }
 
 .markdown-contents code.inline-code {
@@ -134,7 +138,9 @@
 }
 
 .markdown-contents pre {
-  @apply p-2 rounded-md overflow-x-auto mt-2 mb-2 overflow-y-hidden w-full;
+  @apply p-4 rounded-md overflow-x-auto mt-2 mb-2 overflow-y-hidden w-full;
+  background-color: var(--bg-gray-color);
+  border: 1px solid var(--hairline-color);
 }
 
 .markdown-contents hr {

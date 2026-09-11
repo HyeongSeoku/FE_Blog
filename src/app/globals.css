@@ -86,6 +86,7 @@
   --sk-line-intro: 1.8;
   --sk-space-section: clamp(56px, 12vw, 96px);
   --sk-space-section-lg: clamp(48px, 12vw, 72px);
+  --sk-space-stack: clamp(28px, 5vw, 40px);
   --sk-space-item: 16px;
   --sk-radius-image: 10px;
   --sk-hero-image: clamp(180px, 42vw, 300px);
