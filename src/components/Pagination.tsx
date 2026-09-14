@@ -1,3 +1,4 @@
+import { paginationButtonVariants } from "@seoku/design-system";
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -5,6 +6,15 @@ import LeftArrow from "@/icon/arrow_left.svg";
 import RightArrow from "@/icon/arrow_right.svg";
 import DoubleLeftArrow from "@/icon/double_arrow_left.svg";
 import DoubleRightArrow from "@/icon/double_arrow_right.svg";
+
+const navItemClassName = (disabled: boolean) =>
+  classNames(
+    paginationButtonVariants({ variant: "default" }),
+    disabled && "!pointer-events-none !opacity-40",
+  );
+
+const pageItemClassName = (isCurrent: boolean) =>
+  paginationButtonVariants({ variant: isCurrent ? "active" : "default" });
 
 interface PaginationProps {
   currentPage: number;
@@ -91,13 +101,7 @@ const Pagination: React.FC<PaginationProps> = ({
             href={href(1)}
             replace={isReplace}
             scroll={!preserveScroll}
-            className={classNames(
-              "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
-              {
-                "hover:bg-gray-100 hover:text-gray-900": !isPrevBtnDisabled,
-                "cursor-not-allowed text-gray-500": isPrevBtnDisabled,
-              },
-            )}
+            className={navItemClassName(isPrevBtnDisabled)}
             aria-label="First Page"
           >
             <DoubleLeftArrow style={{ width: 15, height: 15 }} />
@@ -108,13 +112,7 @@ const Pagination: React.FC<PaginationProps> = ({
             href={href(currentPage - 1)}
             replace={isReplace}
             scroll={!preserveScroll}
-            className={classNames(
-              "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
-              {
-                "hover:bg-gray-100 hover:text-gray-900": !isPrevBtnDisabled,
-                "cursor-not-allowed text-gray-500": isPrevBtnDisabled,
-              },
-            )}
+            className={navItemClassName(isPrevBtnDisabled)}
             aria-label="Previous Page"
           >
             <LeftArrow style={{ width: 15, height: 15 }} />
@@ -127,10 +125,8 @@ const Pagination: React.FC<PaginationProps> = ({
             replace={isReplace}
             scroll={!preserveScroll}
             key={page}
-            className={classNames("px-3 py-1 rounded-md border", {
-              "border-gray-200": page === currentPage,
-              "border-transparent": page !== currentPage,
-            })}
+            className={pageItemClassName(page === currentPage)}
+            aria-current={page === currentPage ? "page" : undefined}
           >
             {page}
           </Link>
@@ -141,13 +137,7 @@ const Pagination: React.FC<PaginationProps> = ({
             href={href(currentPage + 1)}
             replace={isReplace}
             scroll={!preserveScroll}
-            className={classNames(
-              "flex items-center justify-center h-full w-8 p-1 rounded-md  transition-[background-color,color]",
-              {
-                "hover:bg-gray-100 hover:text-gray-900": !isNextBtnDisabled,
-                "cursor-not-allowed text-gray-500": isNextBtnDisabled,
-              },
-            )}
+            className={navItemClassName(isNextBtnDisabled)}
             aria-label="Next Page"
           >
             <RightArrow style={{ width: 15, height: 15 }} />
@@ -159,13 +149,7 @@ const Pagination: React.FC<PaginationProps> = ({
             href={href(totalPages)}
             replace={isReplace}
             scroll={!preserveScroll}
-            className={classNames(
-              "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
-              {
-                "hover:bg-gray-100 hover:text-gray-900": !isNextBtnDisabled,
-                "cursor-not-allowed text-gray-500": isNextBtnDisabled,
-              },
-            )}
+            className={navItemClassName(isNextBtnDisabled)}
             aria-label="Last Page"
           >
             <DoubleRightArrow style={{ width: 15, height: 15 }} />
@@ -180,13 +164,7 @@ const Pagination: React.FC<PaginationProps> = ({
       {showShortCutNavigateBtn && (
         <button
           type="button"
-          className={classNames(
-            "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
-            {
-              "hover:bg-gray-100 hover:text-gray-900": !isPrevBtnDisabled,
-              "cursor-not-allowed text-gray-500": isPrevBtnDisabled,
-            },
-          )}
+          className={navItemClassName(isPrevBtnDisabled)}
           onClick={() => handlePageChange(1)}
           disabled={isPrevBtnDisabled}
           aria-label="First Page"
@@ -197,12 +175,7 @@ const Pagination: React.FC<PaginationProps> = ({
       {!isSinglePage && (
         <button
           type="button"
-          className={classNames(
-            "flex items-center px-3 py-1 rounded-md h-full w-8 p-1 transition-[background-color,color] duration-300  hover:text-black disabled:cursor-not-allowed disabled:text-gray-500",
-            {
-              "hover:bg-gray-100 hover:text-gray-900": !isPrevBtnDisabled,
-            },
-          )}
+          className={navItemClassName(isPrevBtnDisabled)}
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={isPrevBtnDisabled}
           aria-label="Previous Page"
@@ -215,14 +188,9 @@ const Pagination: React.FC<PaginationProps> = ({
         <button
           type="button"
           key={page}
-          className={classNames(
-            "px-3 py-1 rounded-md transition-[background-color,color] duration-300 hover:bg-gray-100 hover:text-gray-900 border",
-            {
-              "border-gray-200": page === currentPage,
-              "border-[var(--bg-color)]": page !== currentPage,
-            },
-          )}
+          className={pageItemClassName(page === currentPage)}
           onClick={() => handlePageChange(page)}
+          aria-current={page === currentPage ? "page" : undefined}
         >
           {page}
         </button>
@@ -231,12 +199,7 @@ const Pagination: React.FC<PaginationProps> = ({
       {!isSinglePage && (
         <button
           type="button"
-          className={classNames(
-            "flex items-center px-3 py-1 rounded-md disabled:cursor-not-allowed transition-[background-color,color] disabled:text-gray-500",
-            {
-              "hover:bg-gray-100 hover:text-gray-900": !isNextBtnDisabled,
-            },
-          )}
+          className={navItemClassName(isNextBtnDisabled)}
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={isNextBtnDisabled}
           aria-label="Next Page"
@@ -247,13 +210,7 @@ const Pagination: React.FC<PaginationProps> = ({
       {showShortCutNavigateBtn && (
         <button
           type="button"
-          className={classNames(
-            "flex items-center justify-center h-full w-8 p-1 rounded-md transition-[background-color,color] duration-300",
-            {
-              "hover:bg-gray-100 hover:text-gray-900": !isNextBtnDisabled,
-              "cursor-not-allowed text-gray-500": isNextBtnDisabled,
-            },
-          )}
+          className={navItemClassName(isNextBtnDisabled)}
           onClick={() => handlePageChange(totalPages)}
           disabled={isNextBtnDisabled}
           aria-label="Last Page"

@@ -133,15 +133,8 @@ const PostPage = async ({ params }: { params: { slug: string[] } }) => {
     return notFound();
   }
 
-  const {
-    source,
-    frontMatter,
-    readingTime,
-    heading,
-    nextPost,
-    previousPost,
-    relatedPosts,
-  } = postData;
+  const { source, frontMatter, readingTime, heading, nextPost, previousPost } =
+    postData;
 
   const { blogPosting, breadcrumbs } = getPostsStructuredData(
     params.slug,
@@ -158,7 +151,6 @@ const PostPage = async ({ params }: { params: { slug: string[] } }) => {
         heading={heading}
         nextPost={nextPost}
         previousPost={previousPost}
-        relatedPosts={relatedPosts}
       />
 
       <script

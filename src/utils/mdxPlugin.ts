@@ -1,10 +1,6 @@
 import type { Plugin } from "unified";
 import type { Node } from "unist";
 import { visit } from "unist-util-visit";
-import {
-  MARKUP_ANIMATE,
-  MARKUP_BEFORE_ANIMATE,
-} from "@/constants/animation.constants";
 import type { HeadingsProps } from "@/types/mdx";
 
 interface HastNode extends Node {
@@ -68,25 +64,6 @@ export const rehypeCodeBlockClassifier = () => {
         }
       },
     );
-  };
-};
-
-export const rehypeAnimateFadeInUp: Plugin<[]> = () => {
-  return (tree) => {
-    visit(tree as HastNode, "element", (node: HastNode) => {
-      node.properties = node.properties ?? {};
-
-      const cls = (node.properties.className ?? []) as string[] | string;
-      const normalized = Array.isArray(cls) ? cls : [cls];
-
-      if (!normalized.includes(MARKUP_ANIMATE)) {
-        node.properties.className = [
-          ...normalized,
-          MARKUP_ANIMATE,
-          MARKUP_BEFORE_ANIMATE,
-        ];
-      }
-    });
   };
 };
 

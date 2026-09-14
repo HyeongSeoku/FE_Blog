@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import "@seoku/design-system/styles";
+import "@seoku/design-system/tokens.css";
 import "@/app/globals.css";
 import dynamic from "next/dynamic";
 import type { ReactNode } from "react";

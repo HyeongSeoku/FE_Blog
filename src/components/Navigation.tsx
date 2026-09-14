@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+} from "@seoku/design-system";
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -24,13 +29,13 @@ function NavigationItem({
   const { id, link, title, isExternalLink, target, baseUrl } = item;
   const isSelected = baseUrl?.includes(pathBaseUrl);
 
+  const itemClassName = classNames(
+    "transition-colors duration-200 hover:text-theme",
+    isSelected ? "text-theme" : "text-muted",
+  );
+
   return (
-    <li
-      className={classNames(
-        "transition-opacity duration-300 hover:opacity-100 will-change-[opacity]",
-        { "opacity-50": !isSelected, "opacity-100": isSelected },
-      )}
-    >
+    <NavigationMenuItem className={itemClassName}>
       {isExternalLink ? (
         <a
           href={handleExternalLink(link, id)}
@@ -45,7 +50,7 @@ function NavigationItem({
           {title}
         </Link>
       )}
-    </li>
+    </NavigationMenuItem>
   );
 }
 
@@ -67,8 +72,8 @@ function Navigation({ className = "" }: NavigationProps) {
   };
 
   return (
-    <nav className={classNames(className)}>
-      <ul className="flex gap-4 font-semibold text-lg">
+    <NavigationMenu className={classNames("!max-w-none !flex-none", className)}>
+      <NavigationMenuList className="!gap-4 !font-normal !text-meta !justify-start">
         {NAV_LIST.filter((item) => !item.isMobile).map((item) => (
           <NavigationItem
             key={item.id}
@@ -76,8 +81,8 @@ function Navigation({ className = "" }: NavigationProps) {
             handleExternalLink={handleExternalLink}
           />
         ))}
-      </ul>
-    </nav>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 }
 

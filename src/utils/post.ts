@@ -18,6 +18,7 @@ import type {
   SubCategory,
 } from "@/types/posts";
 import { getMdxFilesRecursively } from "@/utils/file";
+import { normalizeTagForUrl } from "@/utils/tag";
 import { getDate } from "./date";
 import { getMdxContents, getRepresentativeImage } from "./mdx";
 
@@ -144,13 +145,6 @@ export const getPostsDetail = async (
   return mdxContentData;
 };
 
-/**
- * 태그를 URL-safe한 형태로 정규화
- */
-const normalizeTag = (tag: string): string => {
-  return tag.trim().toLowerCase().replace(/\s+/g, "-").replace(/-+/g, "-");
-};
-
 export const getPostsByTag = async (
   tag: string,
 ): Promise<{
@@ -159,7 +153,7 @@ export const getPostsByTag = async (
   tagList: { key: string; value: number }[];
 }> => {
   const filePaths = await getMdxFilesRecursively(POST_PATH);
-  const normalizedSearchTag = normalizeTag(tag);
+  const normalizedSearchTag = normalizeTagForUrl(tag);
 
   const tagCounts: Record<string, number> = {};
 
@@ -185,7 +179,7 @@ export const getPostsByTag = async (
 
       // 정규화된 태그로 카운트
       tags.forEach((t) => {
-        const normalizedTag = normalizeTag(t);
+        const normalizedTag = normalizeTagForUrl(t);
         if (normalizedTag) {
           tagCounts[normalizedTag] = (tagCounts[normalizedTag] || 0) + 1;
         }
@@ -207,7 +201,8 @@ export const getPostsByTag = async (
 
   // 정규화된 태그로 비교
   const filteredPosts = (posts.filter(Boolean) as PostDataProps[]).filter(
-    (post) => post.tags.some((t) => normalizeTag(t) === normalizedSearchTag),
+    (post) =>
+      post.tags.some((t) => normalizeTagForUrl(t) === normalizedSearchTag),
   );
 
   const tagList = Object.keys(tagCounts)
@@ -223,12 +218,7 @@ export const getAllTags = async (): Promise<string[]> => {
 
   postList.forEach((post) => {
     post.tags.forEach((tag) => {
-      // 공백을 하이픈으로 변환하여 URL-safe하게
-      const normalizedTag = tag
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/-+/g, "-");
+      const normalizedTag = normalizeTagForUrl(tag);
       if (normalizedTag) {
         tagSet.add(normalizedTag);
       }

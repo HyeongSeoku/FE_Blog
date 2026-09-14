@@ -59,7 +59,7 @@ seg_4 첫 PTS   = 8.219s  (차이: 0.066s = 1프레임 간격, 정상)
 
 원인을 브라우저 레이어로 좁혔습니다. HLS.js는 세그먼트를 받아서 `fMP4`로 변환한 뒤 Chrome의 **MSE(Media Source Extensions) API**에 `appendBuffer`로 넘깁니다.
 
-여기서 핵심이 되는 개념이 **I-frame(IDR)**과 **P-frame**입니다.
+여기서 핵심이 되는 개념이 <strong>I-frame(IDR)</strong>과 **P-frame**입니다.
 
 - **I-frame**: 독립적으로 디코딩 가능한 완전한 프레임
 - **P-frame**: 이전 I-frame을 참조해서 디코딩하는 프레임

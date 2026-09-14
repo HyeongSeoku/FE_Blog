@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import matter from "gray-matter";
 
 const CONTENT_PATH = path.join(process.cwd(), "src/mdx/content");
@@ -148,7 +148,9 @@ const validatePosts = () => {
     console.log("\n⚠️  경고 (선택 사항):\n");
     for (const { file, warnings: warns } of warnings) {
       console.log(`  📄 ${file}`);
-      warns.forEach((w) => console.log(`     └─ ${w}`));
+      warns.forEach((w) => {
+        console.log(`     └─ ${w}`);
+      });
     }
   }
 
@@ -156,7 +158,9 @@ const validatePosts = () => {
     console.log("\n❌ 오류 (필수 수정):\n");
     for (const { file, errors: errs } of errors) {
       console.log(`  📄 ${file}`);
-      errs.forEach((e) => console.log(`     └─ ${e}`));
+      errs.forEach((e) => {
+        console.log(`     └─ ${e}`);
+      });
     }
     console.log("\n─".repeat(50));
     console.log(

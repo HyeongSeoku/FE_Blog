@@ -11,6 +11,7 @@ export interface FrontMatterProps {
   thumbnail?: string;
   series?: string;
   seriesOrder?: number;
+  endnote?: string;
 }
 
 export interface HeadingsProps {

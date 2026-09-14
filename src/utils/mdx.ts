@@ -22,7 +22,6 @@ import type {
 } from "@/types/mdx";
 import { getMdxFilesRecursively } from "./file";
 import {
-  rehypeAnimateFadeInUp,
   rehypeCodeBlockClassifier,
   rehypeHeadingsWithIds,
   rehypeMarkCustomElements,
@@ -168,7 +167,6 @@ export async function getMdxContents<T extends boolean>(
       .use(remarkRehype, { allowDangerousHtml: true }) // md -> hast
       .use(rehypeRaw) // raw HTML 통합
       .use(rehypeHeadingsWithIds, heading)
-      .use(rehypeAnimateFadeInUp)
       .use(rehypePrettyCode, rehypePrettyCodeOptions) // 코드 하이라이트(+line span)
       .use(rehypeMarkCustomElements)
       .use(rehypeExternalLinks, {

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { fetchGithubUserInfo } from "@/api/github";
-import ArchiveSection from "@/components/ArchiveSection";
-import { SeriesSection } from "@/components/SeriesSection";
+import BlogPostListItem from "@/components/BlogPostListItem";
+import SeriesListItem from "@/components/SeriesListItem";
 import { BASE_URL } from "@/constants/basic.constants";
 import {
   DEFAULT_MAIN_POST_COUNT,
@@ -10,11 +9,9 @@ import {
 } from "@/constants/post.constants";
 import DefaultLayout from "@/layout/DefaultLayout";
 import IntroSectionTemplate from "@/templates/IntroSectionTemplate/IntroSectionTemplate";
-import PostSectionTemplate from "@/templates/PostSectionTemplate/PostSectionTemplate";
-import { getAllPosts, getYearlyPostCounts } from "@/utils/post";
+import { getAllPosts } from "@/utils/post";
 import { getAllSeriesMetadata } from "@/utils/series";
 import { getStructuredData } from "@/utils/structure";
-import { HomeClient } from "./pageClient";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -27,10 +24,7 @@ export default async function Home() {
     isSorted: true,
   });
   const seriesData = await getAllSeriesMetadata({ sortByLatestPost: true });
-  const seriesList = Object.entries(seriesData);
-  const yearlyData = await getYearlyPostCounts();
-
-  const githubData = await fetchGithubUserInfo();
+  const seriesList = Object.entries(seriesData).slice(0, SERIES_MAX_LENGTH);
 
   const structuredData = getStructuredData();
 
@@ -41,7 +35,7 @@ export default async function Home() {
     url: BASE_URL,
     potentialAction: {
       "@type": "SearchAction",
-      target: `${BASE_URL}/blog/tags?tags={search_term_string}`,
+      target: `${BASE_URL}/categories?tags={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   };
@@ -52,60 +46,55 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
-      <IntroSectionTemplate githubData={githubData} />
 
-      <HomeClient githubData={githubData} />
+      <IntroSectionTemplate />
 
-      <section className="my-16">
-        {/* 게시물 섹션 헤더 */}
-        <div className="flex justify-between items-start mb-8">
-          <div>
-            <span className="text-xs font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-2 block">
-              Latest
-            </span>
-            <h2 className="text-3xl font-semibold text-gray-900 dark:text-white">
-              최신 게시물
-            </h2>
-          </div>
-          {totalPostCount > DEFAULT_MAIN_POST_COUNT && (
-            <Link
-              href="/blog"
-              className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors flex items-center gap-1"
-            >
-              View All <span>→</span>
-            </Link>
-          )}
+      <section className="mt-section flex flex-col gap-4">
+        <h2 className="text-label text-muted">글</h2>
+        <div className="flex flex-col gap-item">
+          {postList.map((post, index) => (
+            <BlogPostListItem
+              key={post.slug}
+              title={post.title}
+              createdAt={post.createdAt}
+              slug={post.slug}
+              index={index}
+            />
+          ))}
         </div>
-        <PostSectionTemplate postList={postList} />
+        {totalPostCount > DEFAULT_MAIN_POST_COUNT && (
+          <Link
+            href="/archive"
+            className="mt-2 text-meta text-muted transition-opacity hover:opacity-[.55]"
+          >
+            전체 목록
+          </Link>
+        )}
       </section>
 
       {!!seriesList.length && (
-        <section className="my-16">
-          {/* 시리즈 섹션 헤더 */}
-          <div className="flex justify-between items-start mb-8">
-            <div>
-              <span className="text-xs font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-2 block">
-                Deep Dive
-              </span>
-              <h2 className="text-3xl font-semibold text-gray-900 dark:text-white">
-                연재 시리즈
-              </h2>
-            </div>
-            <Link
-              href="/blog/series"
-              className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors flex items-center gap-1"
-            >
-              All Series <span>→</span>
-            </Link>
+        <section className="mt-section flex flex-col gap-4">
+          <h2 className="text-label text-muted">시리즈</h2>
+          <div className="flex flex-col gap-item">
+            {seriesList.map(([key, value], index) => (
+              <SeriesListItem
+                key={key}
+                seriesKey={key}
+                title={value.title}
+                count={value.count}
+                latestDate={value.latestDate}
+                index={index}
+              />
+            ))}
           </div>
-          <SeriesSection
-            seriesList={seriesList}
-            maxLength={SERIES_MAX_LENGTH}
-          />
+          <Link
+            href="/series"
+            className="mt-2 text-meta text-muted transition-opacity hover:opacity-[.55]"
+          >
+            전체 시리즈
+          </Link>
         </section>
       )}
-
-      <ArchiveSection yearlyData={yearlyData} />
     </DefaultLayout>
   );
 }

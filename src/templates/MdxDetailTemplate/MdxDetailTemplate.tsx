@@ -2,20 +2,14 @@ import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import MdxSideBar from "@/components/MdxSideBar";
-import ScrollProgressBar from "@/components/ScrollProgressBar";
-import {
-  DEFAULT_POST_THUMBNAIL,
-  MY_GITHUB_URL,
-} from "@/constants/basic.constants";
+import MdxSectionRail from "@/components/MdxSectionRail";
+import ShareButton from "@/components/ShareButton";
+import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
 import LeftArrow from "@/icon/arrow_left.svg";
 import RightArrow from "@/icon/arrow_right.svg";
-import DoubleArrow from "@/icon/arrow_right_double.svg";
-import TimeIcon from "@/icon/time.svg";
 import type { FrontMatterProps, HeadingsProps } from "@/types/mdx";
 import { formatTagDisplay, getTagPath } from "@/utils/tag";
-import MdxAnimation from "./MdxAnimation";
-import { ParsePostContent } from "./ParsePostContent";
+import ArticleWithReadingIsland from "./ArticleWithReadingIsland";
 
 const Giscus = dynamic(() => import("@/components/Giscus"), {
   ssr: false,
@@ -33,108 +27,77 @@ interface MdxDetailTemplateProps {
   heading?: HeadingsProps[];
   previousPost: MdxDetailRelatedPost | null;
   nextPost: MdxDetailRelatedPost | null;
-  relatedPosts: MdxDetailRelatedPost[] | null;
 }
 
 const MdxDetailTemplate = ({
   source,
-  frontMatter: { title, createdAt, tags, thumbnail, category, subCategory },
+  frontMatter: {
+    title,
+    createdAt,
+    tags,
+    thumbnail,
+    category,
+    subCategory,
+    endnote,
+  },
   readingTime,
   heading = [],
   previousPost,
   nextPost,
-  relatedPosts,
 }: MdxDetailTemplateProps) => {
   const parsedDate = dayjs(createdAt, "YYYY.MM.DD");
   const isoDate = parsedDate.isValid()
     ? parsedDate.format("YYYY-MM-DD")
     : new Date().toISOString().split("T")[0];
-
-  const categoryLabel = subCategory || category;
+  const displayDate = parsedDate.isValid()
+    ? parsedDate.format("YYYY. MM. DD")
+    : createdAt;
 
   const postThumbnail = thumbnail ?? DEFAULT_POST_THUMBNAIL;
 
   return (
     <>
-      <MdxAnimation />
-      <ScrollProgressBar />
-
       {/* 헤더 섹션 */}
-      <header className="mb-10">
-        {/* 카테고리 · 날짜 */}
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-sm font-semibold uppercase tracking-wide text-gray-900 dark:text-white">
-            {categoryLabel}
-          </span>
-          <span className="text-gray-300 dark:text-gray-600">·</span>
-          <time
-            dateTime={isoDate}
-            className="text-sm text-gray-400 dark:text-gray-500 uppercase tracking-wide"
-          >
-            {dayjs(createdAt, "YYYY.MM.DD").format("MMM D, YYYY")}
-          </time>
-        </div>
+      <header className="mb-section-lg flex flex-col gap-4">
+        <h1 className="text-h1 font-bold text-theme">{title}</h1>
 
-        {/* 제목 */}
-        <h1 className="text-3xl tablet:text-5xl font-bold mb-6 text-gray-900 dark:text-white leading-tight">
-          {title}
-        </h1>
-
-        {/* 작성자 정보 */}
-        <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-100 dark:border-gray-800">
-          <div className="flex items-center gap-3">
-            {/* 아바타 */}
-            <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden flex-shrink-0">
-              <Image
-                src={`${MY_GITHUB_URL}.png`}
-                alt="김형석"
-                width={40}
-                height={40}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                김형석
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Frontend Developer
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* 메타 정보 (읽기 시간, 태그) */}
-        <div className="flex flex-col gap-3 mb-8">
-          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-400 dark:text-gray-500">
-            <div className="flex items-center gap-1">
-              <span>{createdAt}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <TimeIcon className="w-4 h-4" />
-              <span>{readingTime} min read</span>
-            </div>
-          </div>
-
-          {/* 태그 */}
-          {!!tags?.length && (
-            <div className="flex flex-wrap items-center gap-2">
-              {tags.map((tagItem) => (
-                <Link
-                  href={getTagPath(tagItem)}
-                  key={tagItem}
-                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-                >
-                  #{formatTagDisplay(tagItem)}
-                </Link>
-              ))}
-            </div>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-meta text-muted">
+          <span>{category}</span>
+          {subCategory && (
+            <>
+              <span>·</span>
+              <span>{subCategory}</span>
+            </>
+          )}
+          <span>·</span>
+          <time dateTime={isoDate}>{displayDate}</time>
+          {!!readingTime && (
+            <>
+              <span>·</span>
+              <span>{readingTime}분 읽기</span>
+            </>
           )}
         </div>
 
-        {/* 히어로 이미지 */}
+        {!!tags?.length && (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            {tags.map((tagItem) => (
+              <Link
+                href={getTagPath(tagItem)}
+                key={tagItem}
+                className="text-label text-muted transition-opacity hover:opacity-[.55]"
+              >
+                #{formatTagDisplay(tagItem)}
+              </Link>
+            ))}
+          </div>
+        )}
+
         {postThumbnail && (
-          <div className="w-[80%] mx-auto aspect-[4/3] tablet:aspect-[16/9] relative overflow-hidden rounded-xl mobile:w-full">
+          <div
+            className="relative w-full overflow-hidden rounded-image"
+            style={{ height: "var(--hero-image)" }}
+          >
             <Image
               src={postThumbnail}
               alt={title}
@@ -146,68 +109,59 @@ const MdxDetailTemplate = ({
         )}
       </header>
 
-      <MdxSideBar headings={heading} />
-      <section className="relative py-5 border-b border-gray-200 dark:border-gray-700">
-        <ParsePostContent html={source} />
+      <MdxSectionRail headings={heading} />
+
+      <ArticleWithReadingIsland
+        title={title}
+        source={source}
+        headings={heading}
+      />
+
+      {endnote && (
+        <section className="mt-section-lg flex flex-col gap-2">
+          <h2 className="text-label text-muted">Endnote</h2>
+          <p className="text-body leading-[var(--line-intro)] text-muted">
+            {endnote}
+          </p>
+        </section>
+      )}
+
+      <section className="mt-section-lg flex justify-end">
+        <ShareButton />
       </section>
 
       {(previousPost || nextPost) && (
-        <section className="my-4">
-          <div className="flex justify-between text-sm text-gray-400">
-            <div className="w-1/2">
-              {previousPost && (
-                <Link
-                  href={`/posts/${previousPost.slug}`}
-                  className="group flex flex-col items-start"
-                >
-                  <div className="flex items-center group-hover:text-theme">
-                    <LeftArrow style={{ width: 16, height: 16 }} />
-                    <span>Previous</span>
-                  </div>
-                  <span className="group-hover:text-theme group-hover:bg-gray-100/5 rounded-sm p-0.5">
-                    {previousPost.title}
-                  </span>
-                </Link>
-              )}
-            </div>
-            <div className="w-1/2">
-              {nextPost && (
-                <Link
-                  href={`/posts/${nextPost.slug}`}
-                  className="group flex flex-col items-end ml-auto"
-                >
-                  <div className="flex items-center group-hover:text-theme">
-                    <span>Next</span>
-                    <RightArrow style={{ width: 16, height: 16 }} />
-                  </div>
-                  <span className="group-hover:text-theme group-hover:bg-gray-100/5 rounded-sm p-0.5">
-                    {nextPost.title}
-                  </span>
-                </Link>
-              )}
-            </div>
+        <section className="mt-6 flex flex-col gap-4 border-t border-hairline pt-6 text-meta tablet:flex-row tablet:items-start tablet:justify-between">
+          <div className="flex-1">
+            {previousPost && (
+              <Link
+                href={`/posts/${previousPost.slug}`}
+                className="group flex flex-col items-start gap-1 transition-opacity hover:opacity-[.55]"
+              >
+                <span className="flex items-center gap-1 text-muted">
+                  <LeftArrow style={{ width: 14, height: 14 }} />
+                  이전 글
+                </span>
+                <span className="line-clamp-2 text-theme">
+                  {previousPost.title}
+                </span>
+              </Link>
+            )}
           </div>
-
-          <div className="mt-3">
-            {!!relatedPosts && !!relatedPosts.length && (
-              <div className="text-gray-400">
-                <div className="flex items-center text-sm">
-                  <span>Related Posts</span>
-                  <DoubleArrow style={{ width: 16, height: 16 }} />
-                </div>
-                <ul className="text-sm">
-                  {relatedPosts.map(({ slug, title }) => (
-                    <li key={slug}>
-                      <Link
-                        className="group hover:text-theme hover:bg-gray-100/5 rounded-sm p-0.5 underline underline-offset-4"
-                        href={`/posts/${slug}`}
-                      >
-                        {title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+          <div className="flex-1 tablet:text-right">
+            {nextPost && (
+              <Link
+                href={`/posts/${nextPost.slug}`}
+                className="group flex flex-col items-start gap-1 transition-opacity hover:opacity-[.55] tablet:ml-auto tablet:items-end"
+              >
+                <span className="flex items-center gap-1 text-muted">
+                  다음 글
+                  <RightArrow style={{ width: 14, height: 14 }} />
+                </span>
+                <span className="line-clamp-2 text-theme">
+                  {nextPost.title}
+                </span>
+              </Link>
             )}
           </div>
         </section>

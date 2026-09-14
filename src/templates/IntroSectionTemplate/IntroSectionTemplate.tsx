@@ -1,77 +1,31 @@
-import Image from "next/image";
-import Link from "next/link";
-import type { GithubUserInfo } from "@/api/github";
-import {
-  EMAIL_ADDRESS,
-  LINKED_IN_URL,
-  MY_GITHUB_URL,
-} from "@/constants/basic.constants";
-import EmailIcon from "@/icon/email.svg";
-import GithubIcon from "@/icon/github.svg";
-import LinkedInIcon from "@/icon/linkedIn.svg";
 import { getYearsWorked } from "@/utils/util";
 
-interface IntroSectionTemplateProps {
-  githubData?: GithubUserInfo | null;
-}
-
-const IntroSectionTemplate = ({ githubData }: IntroSectionTemplateProps) => {
+const IntroSectionTemplate = () => {
   const workedYear = getYearsWorked();
+
   return (
-    <section className="flex flex-col gap-2">
-      <div className="flex gap-1 items-center h-8">
-        <strong className="text-xl">김형석</strong>
-        {githubData && (
-          <a
-            href={githubData.html_url}
-            target="_blank"
-            className="p-1 rounded-sm transform duration-300 will-change-transform hover:bg-gray-400/20"
-            rel="noopener"
-          >
-            <Image
-              src={githubData.avatar_url}
-              alt={githubData.name}
-              width={22}
-              height={22}
-              className="w-6 h-6 rounded-3xl"
-            />
-          </a>
-        )}
-      </div>
+    <>
+      <section className="flex flex-col gap-2">
+        <h1 className="text-hero-name font-bold text-theme">김형석</h1>
+        <p className="text-[15px] text-muted">
+          {workedYear}년차 프론트엔드 개발자
+        </p>
+      </section>
 
-      <div className="flex flex-col text-sm text-gray-400">
-        <p>{workedYear}년차 프론트엔드 개발자로 일하고 있습니다.</p>
-        <p>코드를 넘어 사용자와 제품을 이해하는 개발자가 되고 싶습니다.</p>
-        <p>지속적으로 성장하며 좋은 경험을 만드는 일을 하고 싶습니다.</p>
-      </div>
-
-      <div className="flex items-center gap-1">
-        <Link
-          className="text-theme p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"
-          href={`mailto:${EMAIL_ADDRESS}`}
-          passHref
-          target="_blank"
-        >
-          <EmailIcon title="email" style={{ width: 20, height: 20 }} />
-        </Link>
-        <Link
-          className="text-theme p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"
-          href={MY_GITHUB_URL}
-          passHref
-          target="_blank"
-        >
-          <GithubIcon title="email" style={{ width: 20, height: 20 }} />
-        </Link>
-        <Link
-          className="text-theme p-1 rounded-sm transition-colors duration-300 ease-in-out hover:bg-gray-400/20"
-          href={LINKED_IN_URL}
-          passHref
-          target="_blank"
-        >
-          <LinkedInIcon title="email" style={{ width: 20, height: 20 }} />
-        </Link>
-      </div>
-    </section>
+      <section className="mt-stack flex flex-col gap-4">
+        <h2 className="text-label text-muted">소개</h2>
+        <p className="text-body leading-[var(--line-intro)] text-theme">
+          웹에서 사람이 실제로 겪는 문제를 코드로 좁히는 일을 합니다. 화면이
+          느리게 뜨는 이유, 영상이 끊기는 지점, 디자인과 구현이 어긋나는 자리를
+          끝까지 따라가 원인을 찾고 고치는 과정을 좋아합니다.
+        </p>
+        <p className="text-body leading-[var(--line-intro)] text-muted">
+          여기에는 그 과정에서 남은 기록을 정리합니다. 디버깅하며 알게 된
+          브라우저 내부 동작, 디자인 시스템을 만들며 내린 결정, 오픈소스에
+          기여하며 배운 것들. 대체로 결론보다 거기까지 간 경로를 적습니다.
+        </p>
+      </section>
+    </>
   );
 };
 

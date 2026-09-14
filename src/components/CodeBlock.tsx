@@ -2,14 +2,9 @@
 
 import classNames from "classnames";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { ANIMATE_FADE_IN_UP } from "@/constants/animation.constants";
-import useAnimationVisibility from "@/hooks/useAnimationVisibility";
-import type { AnimationNameType } from "./AnimationContainer";
 
 interface CodeBlockProps {
   children: ReactNode;
-  hasAnimation?: boolean;
-  animationName?: AnimationNameType;
   hasCopyBtn?: boolean;
   className?: string;
 }
@@ -33,13 +28,10 @@ const extractTextFromChildren = (node: ReactNode): string => {
 
 const CodeBlock = ({
   children,
-  hasAnimation = true,
-  animationName = undefined,
   hasCopyBtn = true,
   className,
 }: CodeBlockProps) => {
   const [copied, setCopied] = useState(false);
-  const [isVisible, ref] = useAnimationVisibility();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(
@@ -63,18 +55,7 @@ const CodeBlock = ({
   };
 
   return (
-    <code
-      className={classNames(
-        "relative group",
-        {
-          "opacity-0 transition duration-300 will-change-transform":
-            hasAnimation,
-          [animationName || ANIMATE_FADE_IN_UP]: hasAnimation && isVisible,
-        },
-        className,
-      )}
-      ref={ref}
-    >
+    <code className={classNames("relative group", className)}>
       {children}
       {hasCopyBtn && (
         <button

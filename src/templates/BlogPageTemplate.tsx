@@ -51,16 +51,16 @@ const CategoryTabs = ({
             key={key}
             href={href}
             className={classNames(
-              "text-2xl transition-colors duration-200",
+              "text-h2 transition-opacity duration-200",
               isSelected
-                ? "font-bold text-gray-900 dark:text-white"
-                : "font-light text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300",
+                ? "font-semibold text-theme"
+                : "text-muted hover:opacity-[.55]",
             )}
             replace
           >
             {key}
             {isSelected && (
-              <sup className="ml-0.5 text-xs font-normal text-gray-400">
+              <sup className="ml-0.5 text-xs font-normal text-muted">
                 {count}
               </sup>
             )}
@@ -69,22 +69,22 @@ const CategoryTabs = ({
       })}
 
       {/* 구분선 */}
-      <span className="hidden sm:block w-px h-6 bg-gray-300 dark:bg-gray-600" />
+      <span className="hidden sm:block w-px h-6 bg-hairline" />
 
       {/* 서브 링크 */}
       <div className="flex items-center gap-4">
         <Link
-          href="/blog/tags"
-          className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors flex items-center gap-1"
+          href="/categories"
+          className="text-meta text-muted hover:opacity-[.55] transition-opacity flex items-center gap-1"
         >
           <TagIcon className="w-4 h-4" />
-          Tags
+          카테고리
         </Link>
         <Link
-          href="/blog/archive"
-          className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors flex items-center gap-1"
+          href="/archive"
+          className="text-meta text-muted hover:opacity-[.55] transition-opacity flex items-center gap-1"
         >
-          <CalendarIcon className="w-4 h-4" /> Archive
+          <CalendarIcon className="w-4 h-4" /> 전체 목록
         </Link>
       </div>
     </nav>
@@ -105,26 +105,21 @@ const BlogDescription = ({ category }: { category?: string }) => {
   if (!description) return null;
 
   return (
-    <p className="text-gray-500 dark:text-gray-400 mb-12 max-w-md">
-      {description}
-    </p>
+    <p className="text-meta text-muted mb-section-lg max-w-md">{description}</p>
   );
 };
 
 // 게시물 리스트
 const BlogPostList = ({ postList }: { postList: PostDataProps[] }) => {
   return (
-    <div className="divide-y divide-gray-100 dark:divide-gray-800">
-      {postList.map((post) => (
+    <div className="flex flex-col gap-item">
+      {postList.map((post, index) => (
         <BlogPostListItem
           key={post.slug}
           title={post.title}
-          description={post.description}
           createdAt={post.createdAt}
           slug={post.slug}
-          thumbnail={post.thumbnail}
-          category={post.category}
-          subCategory={post.subCategory}
+          index={index}
         />
       ))}
     </div>

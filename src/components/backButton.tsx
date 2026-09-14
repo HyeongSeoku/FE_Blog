@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@seoku/design-system";
 import { useRouter } from "next/navigation";
 import BackIcon from "@/icon/back_icon.svg";
 
@@ -20,13 +21,15 @@ const BackButton = ({ customClassName = "", onBackClick }: BackButtonProps) => {
   };
 
   return (
-    <button
+    <Button
       type="button"
-      className={`flex w-3 ${customClassName}`}
+      variant="ghost"
+      size="icon"
+      className={`!h-auto !w-3 !p-0 ${customClassName}`}
       onClick={handleBackButton}
     >
       <BackIcon />
-    </button>
+    </Button>
   );
 };
 

@@ -1,7 +1,10 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  content: ["./src/**/*.{js,jsx,ts,tsx,mdx}"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx,mdx}",
+    "./node_modules/@seoku/design-system/dist/**/*.{js,mjs}",
+  ],
   darkMode: ["class", '[data-theme="dark"]'],
   theme: {
     screens: {
@@ -26,6 +29,7 @@ export default {
       textColor: {
         theme: "var(--text-color)",
         "opposite-theme": "var(--contrasting-text-color)",
+        muted: "var(--muted-color)",
       },
       scale: {
         "102": "1.02",
@@ -35,6 +39,28 @@ export default {
         "primary-hover": "var(--primary-hover-color)",
         theme: "var(--bg-color)",
         "opposite-theme": "var(--contrasting-bg-color)",
+        muted: "var(--muted-color)",
+        hairline: "var(--hairline-color)",
+      },
+      borderColor: {
+        hairline: "var(--hairline-color)",
+      },
+      spacing: {
+        section: "var(--space-section)",
+        "section-lg": "var(--space-section-lg)",
+        stack: "var(--space-stack)",
+        item: "var(--space-item)",
+      },
+      borderRadius: {
+        image: "var(--radius-image)",
+      },
+      fontSize: {
+        h1: ["var(--text-h1)", { lineHeight: "1.35" }],
+        "hero-name": ["var(--text-hero-name)", { letterSpacing: "-0.02em" }],
+        h2: ["var(--text-h2)", { fontWeight: "600" }],
+        label: ["var(--text-label)", { fontWeight: "600" }],
+        meta: "var(--text-meta)",
+        body: ["var(--text-body)", { lineHeight: "var(--line-body)" }],
       },
       transitionDuration: {
         custom: "var(--transition-duration)",
@@ -221,12 +247,12 @@ export default {
     },
   },
   plugins: [
-    function ({
+    ({
       addUtilities,
     }: {
       addUtilities: (utilities: Record<string, Record<string, string>>) => void;
       addBase: (baseStyles: Record<string, Record<string, string>>) => void;
-    }) {
+    }) => {
       const newUtilities = {
         ".scrollbar-thin": {
           "scrollbar-width": "thin",

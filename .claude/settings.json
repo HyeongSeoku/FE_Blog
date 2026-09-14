@@ -1,0 +1,56 @@
+{
+  "permissions": {
+    "allow": ["Bash(git:*)", "Bash(ls:*)", "Bash(find:*)", "Bash(grep:*)"],
+    "deny": []
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path') && pnpm biome check --write \"$FILE\" 2>/dev/null || true"
+          },
+          {
+            "type": "command",
+            "command": "FILE=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path') && echo \"$FILE\" | grep -qE '\\.(tsx|ts)$' && [ -f tsconfig.json ] && npx tsc --noEmit 2>&1 | tail -20 || true"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CMD=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.command') && echo \"$CMD\" | grep -qE '(rm -rf|git push --force|git reset --hard|git checkout -- \\.)' && echo 'BLOCKED: 위험한 명령입니다. 직접 실행이 필요하면 터미널에서 수동으로 실행하세요.' && exit 1 || exit 0"
+          },
+          {
+            "type": "command",
+            "command": "CMD=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.command') && echo \"$CMD\" | grep -qE 'git commit' && BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null) && { [[ \"$BRANCH\" == 'main' || \"$BRANCH\" == 'master' ]] && echo 'BLOCKED: main/master 브랜치에 직접 커밋할 수 없습니다. 브랜치를 만들어 작업하세요.' && exit 1; } || exit 0"
+          },
+          {
+            "type": "command",
+            "command": "CMD=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.command') && echo \"[$(date '+%Y-%m-%d %H:%M:%S')] $CMD\" >> ~/.claude/bash-history.log",
+            "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path') && echo \"$FILE\" | grep -qE '(\\.env$|\\.env\\.local$|node_modules/)' && echo 'BLOCKED: 해당 파일은 직접 수정할 수 없습니다.' && exit 1 || exit 0"
+          },
+          {
+            "type": "command",
+            "command": "FILE=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path') && echo \"$FILE\" | grep -qE '(^|/)package\\.json$' && echo 'BLOCKED: package.json은 직접 수정 금지. 의존성은 pnpm add/remove를 사용하세요.' && exit 1 || exit 0"
+          }
+        ]
+      }
+    ]
+  }
+}
