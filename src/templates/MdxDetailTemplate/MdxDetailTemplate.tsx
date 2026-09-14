@@ -9,7 +9,7 @@ import LeftArrow from "@/icon/arrow_left.svg";
 import RightArrow from "@/icon/arrow_right.svg";
 import type { FrontMatterProps, HeadingsProps } from "@/types/mdx";
 import { formatTagDisplay, getTagPath } from "@/utils/tag";
-import { ParsePostContent } from "./ParsePostContent";
+import ArticleWithReadingIsland from "./ArticleWithReadingIsland";
 
 const Giscus = dynamic(() => import("@/components/Giscus"), {
   ssr: false,
@@ -111,9 +111,11 @@ const MdxDetailTemplate = ({
 
       <MdxToc headings={heading} />
 
-      <section className="markdown-contents-wrapper">
-        <ParsePostContent html={source} />
-      </section>
+      <ArticleWithReadingIsland
+        title={title}
+        source={source}
+        headings={heading}
+      />
 
       {endnote && (
         <section className="mt-sk-section-lg flex flex-col gap-2">

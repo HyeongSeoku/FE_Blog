@@ -27,8 +27,8 @@ importers:
         specifier: ^2.19.1
         version: 2.19.1(@react-three/fiber@8.18.0(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(three@0.184.0))(@types/three@0.184.0)(react@18.3.1)(three@0.184.0)
       '@seoku/design-system':
-        specifier: ^1.1.16
-        version: 1.1.16(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.1.19
+        version: 1.1.19(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@svgr/webpack':
         specifier: ^8.1.0
         version: 8.1.0(typescript@5.9.3)
@@ -2254,8 +2254,8 @@ packages:
     resolution: {integrity: sha512-z95ECmE3i9pbWoXQrD/7PgkBAzJYR+iXtPuTkpBjDKs86O3mT+PXOT3BAn79w2wkn7/i3vOGD2xVr1uiMl26dA==}
     engines: {node: '>=6'}
 
-  '@seoku/design-system@1.1.16':
-    resolution: {integrity: sha512-WlVcWcBbXzS4UFMEUPtf5AVatBo8iL0fGF5RORI0LdtBbchEHqbWtj0KKg6kjkjn8iz5H+53NSSINdYYNstUgA==}
+  '@seoku/design-system@1.1.19':
+    resolution: {integrity: sha512-8aU7wY5b/gY3et6JCwgovgjbAIVDMe3zUUdc7yTKItdn2hQ5bW/iN6QuITNXLT04Xf3f8yWGutVZaWT3Iw33+Q==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: '>=18.3.1 <20.0.0'
@@ -7868,7 +7868,7 @@ snapshots:
       '@sentry/types': 6.19.7
       tslib: 1.14.1
 
-  '@seoku/design-system@1.1.16(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@seoku/design-system@1.1.19(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@radix-ui/react-accordion': 1.2.12(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-alert-dialog': 1.1.15(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
