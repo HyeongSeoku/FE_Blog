@@ -1,8 +1,11 @@
 "use client";
 
-import { DynamicIsland, type DynamicIslandItem } from "@seoku/design-system";
 import classNames from "classnames";
 import type { RefObject } from "react";
+import {
+  DynamicIsland,
+  type DynamicIslandItem,
+} from "@/components/DynamicIsland";
 import useActiveHeading from "@/hooks/useActiveHeading";
 import useArticleReadingProgress from "@/hooks/useArticleReadingProgress";
 import type { HeadingsProps } from "@/types/mdx";
