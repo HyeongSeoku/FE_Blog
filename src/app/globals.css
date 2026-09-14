@@ -73,7 +73,7 @@
   --whisper-gray: #f5f5f5;
 }
 
-/* seoku 블로그 리디자인 타이포/여백 스케일 (jihoonwrks-design-spec 5장 기준) */
+/* seoku 블로그 리디자인 타이포/여백 스케일 */
 :root {
   --text-h1: clamp(24px, 6.5vw, 32px);
   --text-hero-name: clamp(22px, 6vw, 26px);
@@ -241,7 +241,7 @@ body[data-modal-open="true"] {
   }
 }
 
-/* seoku 블로그 리디자인 애니메이션 (jihoonwrks-design-spec 7장 기준)
+/* seoku 블로그 리디자인 애니메이션
    뷰 전환/목록 스태거: opacity + 4px translateY, 200ms ease-out.
    스크롤 기반 등장 애니메이션은 사용하지 않는다 — 최초 렌더 시 한 번만 재생. */
 @keyframes fade-in {

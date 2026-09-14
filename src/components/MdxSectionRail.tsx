@@ -21,7 +21,6 @@ const DEFAULT_LINE_STYLE = { size: "h-px w-1.5", bar: "bg-muted opacity-60" };
 /**
  * PC 전용 플로팅 섹션 레일 — 화면 오른쪽에 고정된 라인 + 텍스트로 헤딩 목록을
  * 상시 표시한다. 스크롤해도 사라지지 않고, hover 시 항목 간 간격이 넓어진다.
- * jihoonwrks.me의 인덱스 라인 내비게이션 참고.
  */
 const MdxSectionRail = ({ headings }: MdxSectionRailProps) => {
   const activeId = useActiveHeading(headings);
