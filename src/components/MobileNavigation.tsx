@@ -62,7 +62,7 @@ const MobileNavigation = ({
             <li
               key={id}
               className={classNames(
-                "px-5 py-3 cursor-pointer flex max-w-[var(--mobile-nav-max-width)] text-sk-h2 transition-opacity hover:opacity-[.55]",
+                "px-5 py-3 cursor-pointer flex max-w-[var(--mobile-nav-max-width)] text-h2 transition-opacity hover:opacity-[.55]",
                 link === basePathname ? "text-theme" : "text-muted",
               )}
             >

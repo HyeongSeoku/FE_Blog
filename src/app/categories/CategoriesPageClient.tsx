@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import BlogPostListItem from "@/components/BlogPostListItem";
 import type { PostDataProps } from "@/types/posts";
-import { formatTagDisplay } from "@/utils/tag";
+import { formatTagDisplay, normalizeTagForUrl } from "@/utils/tag";
 
 interface TagItem {
   key: string;
@@ -16,9 +16,6 @@ interface CategoriesPageClientProps {
   postList: PostDataProps[];
   tagList: TagItem[];
 }
-
-const normalizeTag = (tag: string): string =>
-  tag.trim().toLowerCase().replace(/\s+/g, "-").replace(/-+/g, "-");
 
 const CategoriesPageClient = ({
   postList,
@@ -43,7 +40,7 @@ const CategoriesPageClient = ({
   const filteredPosts = useMemo(() => {
     if (selectedTags.length === 0) return postList;
     return postList.filter((post) => {
-      const postTagsNormalized = post.tags.map(normalizeTag);
+      const postTagsNormalized = post.tags.map(normalizeTagForUrl);
       return selectedTags.some((tag) => postTagsNormalized.includes(tag));
     });
   }, [postList, selectedTags]);
@@ -72,16 +69,16 @@ const CategoriesPageClient = ({
 
   return (
     <div className="w-full">
-      <header className="mb-sk-section-lg">
-        <h1 className="text-sk-h1 font-bold text-theme">카테고리</h1>
-        <p className="mt-2 text-sk-meta text-muted">
+      <header className="mb-section-lg">
+        <h1 className="text-h1 font-bold text-theme">카테고리</h1>
+        <p className="mt-2 text-meta text-muted">
           {selectedTags.length > 0
             ? `${selectedTags.length}개 선택됨 · ${filteredPosts.length}개의 글`
             : `${postList.length}개의 글`}
         </p>
       </header>
 
-      <div className="mb-sk-section-lg flex flex-wrap items-baseline gap-x-4 gap-y-2">
+      <div className="mb-section-lg flex flex-wrap items-baseline gap-x-4 gap-y-2">
         {tagList.map(({ key, value }) => {
           const isSelected = selectedTags.includes(key);
 
@@ -92,8 +89,8 @@ const CategoriesPageClient = ({
               onClick={() => handleTagToggle(key)}
               aria-pressed={isSelected}
               className={classNames(
-                "text-sk-label transition-opacity hover:opacity-[.55]",
-                isSelected ? "text-theme" : "text-muted",
+                "text-label transition-opacity hover:opacity-[.55]",
+                isSelected ? "font-semibold text-primary" : "text-muted",
               )}
             >
               #{formatTagDisplay(key)}
@@ -106,14 +103,14 @@ const CategoriesPageClient = ({
           <button
             type="button"
             onClick={handleClearAll}
-            className="text-sk-label text-muted underline underline-offset-4 transition-opacity hover:opacity-[.55]"
+            className="text-label text-muted underline underline-offset-4 transition-opacity hover:opacity-[.55]"
           >
             전체 해제
           </button>
         )}
       </div>
 
-      <div className="flex flex-col gap-sk-item">
+      <div className="flex flex-col gap-item">
         {filteredPosts.length > 0 ? (
           filteredPosts.map((post, index) => (
             <BlogPostListItem
@@ -125,7 +122,7 @@ const CategoriesPageClient = ({
             />
           ))
         ) : (
-          <p className="py-16 text-sk-meta text-muted">
+          <p className="py-16 text-meta text-muted">
             선택한 태그와 일치하는 글이 없습니다.
           </p>
         )}

@@ -73,7 +73,7 @@ function Navigation({ className = "" }: NavigationProps) {
 
   return (
     <NavigationMenu className={classNames("!max-w-none !flex-none", className)}>
-      <NavigationMenuList className="!gap-4 !font-normal !text-sk-meta !justify-start">
+      <NavigationMenuList className="!gap-4 !font-normal !text-meta !justify-start">
         {NAV_LIST.filter((item) => !item.isMobile).map((item) => (
           <NavigationItem
             key={item.id}

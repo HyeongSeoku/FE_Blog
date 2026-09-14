@@ -1,9 +1,9 @@
-import { type RefObject, useEffect, useState } from "react";
+import { type RefObject, useEffect, useRef, useState } from "react";
 
 interface ArticleReadingProgress {
   /** 0~100, 아티클 영역 기준 읽기 진행률 */
   progress: number;
-  /** 첫 문단을 지나 아티클 중간까지 스크롤했고, 아직 끝까지 읽지 않았을 때만 true */
+  /** 첫 문단을 지나 아티클 중간까지 스크롤했고, 위로(뒤로) 스크롤 중일 때만 true */
   visible: boolean;
 }
 
@@ -13,6 +13,10 @@ interface ArticleReadingProgress {
 const START_VIEWPORT_RATIO = 0.35;
 const END_OFFSET_PX = 80;
 
+// 이 값보다 작은 스크롤 변화는 방향 판정에 반영하지 않는다 (모멘텀 스크롤이
+// 멈추는 순간의 미세한 역방향 흔들림으로 계속 켜졌다 꺼졌다 하는 걸 방지).
+const DIRECTION_THRESHOLD_PX = 4;
+
 const useArticleReadingProgress = (
   articleRef: RefObject<HTMLElement>,
 ): ArticleReadingProgress => {
@@ -21,12 +25,23 @@ const useArticleReadingProgress = (
     visible: false,
   });
 
+  const lastScrollYRef = useRef(0);
+  const isScrollingUpRef = useRef(false);
+
   useEffect(() => {
     let ticking = false;
+    lastScrollYRef.current = window.scrollY;
 
     const measure = () => {
       const el = articleRef.current;
       if (!el) return;
+
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollYRef.current;
+      if (Math.abs(delta) >= DIRECTION_THRESHOLD_PX) {
+        isScrollingUpRef.current = delta < 0;
+        lastScrollYRef.current = currentScrollY;
+      }
 
       const rect = el.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
@@ -38,7 +53,10 @@ const useArticleReadingProgress = (
       const hasStarted = rect.top < viewportHeight * START_VIEWPORT_RATIO;
       const hasEnded = rect.bottom < END_OFFSET_PX;
 
-      setState({ progress, visible: hasStarted && !hasEnded });
+      setState({
+        progress,
+        visible: hasStarted && !hasEnded && isScrollingUpRef.current,
+      });
     };
 
     const onScroll = () => {

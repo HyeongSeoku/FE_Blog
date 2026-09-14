@@ -102,35 +102,35 @@ async function ArchivePage() {
   return (
     <div className="w-full">
       {/* 헤더 */}
-      <header className="mb-sk-section-lg">
-        <h1 className="text-sk-h1 font-bold text-theme">전체 목록</h1>
-        <p className="mt-2 text-sk-meta text-muted">{totalPostCount}개의 글</p>
+      <header className="mb-section-lg">
+        <h1 className="text-h1 font-bold text-theme">전체 목록</h1>
+        <p className="mt-2 text-meta text-muted">{totalPostCount}개의 글</p>
       </header>
 
       {/* 년도별 그룹 */}
-      <div className="flex flex-col gap-sk-section-lg">
+      <div className="flex flex-col gap-section-lg">
         {yearGroups.map(({ year, posts }) => (
           <section key={year} className="flex flex-col gap-4">
             <Link
               href={`/archive/${year}`}
-              className="w-fit text-sk-label text-muted transition-opacity hover:opacity-[.55]"
+              className="w-fit text-label text-muted transition-opacity hover:opacity-[.55]"
             >
               {year}
             </Link>
 
-            <ul className="flex flex-col gap-sk-item">
+            <ul className="flex flex-col gap-item">
               {posts.map((post) => (
                 <li key={post.slug}>
                   <Link
                     href={`/posts/${post.slug}`}
                     className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 transition-opacity hover:opacity-[.55]"
                   >
-                    <span className="min-w-[180px] flex-1 text-sk-body text-theme">
+                    <span className="min-w-[180px] flex-1 text-body text-theme">
                       {post.title}
                     </span>
                     <time
                       dateTime={getDate("YYYY-MM-DD", post.createdAt)}
-                      className="shrink-0 text-sk-meta text-muted"
+                      className="shrink-0 text-meta text-muted"
                     >
                       {post.month} {post.day}
                     </time>

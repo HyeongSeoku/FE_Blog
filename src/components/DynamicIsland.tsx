@@ -73,7 +73,7 @@ function ProgressRing({ progress }: { progress: number }) {
         strokeLinecap="round"
         strokeDasharray={RING_CIRCUMFERENCE}
         strokeDashoffset={offset}
-        className="text-white transition-all duration-300 ease-out"
+        className="text-white"
       />
     </svg>
   );

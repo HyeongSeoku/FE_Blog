@@ -30,6 +30,9 @@ const MobileReadingIsland = ({
     active: heading.id === activeId,
   }));
 
+  const activeItem = items.find((item) => item.active);
+  const pillLabel = activeItem?.label ?? title;
+
   const handleItemSelect = (item: DynamicIslandItem) => {
     const target = document.getElementById(item.id);
     if (!target) return;
@@ -52,7 +55,7 @@ const MobileReadingIsland = ({
         )}
       >
         <DynamicIsland
-          title={title}
+          title={pillLabel}
           progress={progress}
           items={items}
           onItemSelect={handleItemSelect}

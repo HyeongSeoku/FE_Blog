@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import MdxToc from "@/components/MdxToc";
+import MdxSectionRail from "@/components/MdxSectionRail";
 import ShareButton from "@/components/ShareButton";
 import { DEFAULT_POST_THUMBNAIL } from "@/constants/basic.constants";
 import LeftArrow from "@/icon/arrow_left.svg";
@@ -58,10 +58,10 @@ const MdxDetailTemplate = ({
   return (
     <>
       {/* 헤더 섹션 */}
-      <header className="mb-sk-section-lg flex flex-col gap-4">
-        <h1 className="text-sk-h1 font-bold text-theme">{title}</h1>
+      <header className="mb-section-lg flex flex-col gap-4">
+        <h1 className="text-h1 font-bold text-theme">{title}</h1>
 
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sk-meta text-muted">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-meta text-muted">
           <span>{category}</span>
           {subCategory && (
             <>
@@ -85,7 +85,7 @@ const MdxDetailTemplate = ({
               <Link
                 href={getTagPath(tagItem)}
                 key={tagItem}
-                className="text-sk-label text-muted transition-opacity hover:opacity-[.55]"
+                className="text-label text-muted transition-opacity hover:opacity-[.55]"
               >
                 #{formatTagDisplay(tagItem)}
               </Link>
@@ -95,8 +95,8 @@ const MdxDetailTemplate = ({
 
         {postThumbnail && (
           <div
-            className="relative w-full overflow-hidden rounded-sk-image"
-            style={{ height: "var(--sk-hero-image)" }}
+            className="relative w-full overflow-hidden rounded-image"
+            style={{ height: "var(--hero-image)" }}
           >
             <Image
               src={postThumbnail}
@@ -109,7 +109,7 @@ const MdxDetailTemplate = ({
         )}
       </header>
 
-      <MdxToc headings={heading} />
+      <MdxSectionRail headings={heading} />
 
       <ArticleWithReadingIsland
         title={title}
@@ -118,20 +118,20 @@ const MdxDetailTemplate = ({
       />
 
       {endnote && (
-        <section className="mt-sk-section-lg flex flex-col gap-2">
-          <h2 className="text-sk-label text-muted">Endnote</h2>
-          <p className="text-sk-body leading-[var(--sk-line-intro)] text-muted">
+        <section className="mt-section-lg flex flex-col gap-2">
+          <h2 className="text-label text-muted">Endnote</h2>
+          <p className="text-body leading-[var(--line-intro)] text-muted">
             {endnote}
           </p>
         </section>
       )}
 
-      <section className="mt-sk-section-lg flex justify-end">
+      <section className="mt-section-lg flex justify-end">
         <ShareButton />
       </section>
 
       {(previousPost || nextPost) && (
-        <section className="mt-6 flex items-start justify-between gap-4 border-t border-hairline pt-6 text-sk-meta">
+        <section className="mt-6 flex flex-col gap-4 border-t border-hairline pt-6 text-meta tablet:flex-row tablet:items-start tablet:justify-between">
           <div className="flex-1">
             {previousPost && (
               <Link
@@ -142,21 +142,25 @@ const MdxDetailTemplate = ({
                   <LeftArrow style={{ width: 14, height: 14 }} />
                   이전 글
                 </span>
-                <span className="text-theme">{previousPost.title}</span>
+                <span className="line-clamp-2 text-theme">
+                  {previousPost.title}
+                </span>
               </Link>
             )}
           </div>
-          <div className="flex-1 text-right">
+          <div className="flex-1 tablet:text-right">
             {nextPost && (
               <Link
                 href={`/posts/${nextPost.slug}`}
-                className="group ml-auto flex flex-col items-end gap-1 transition-opacity hover:opacity-[.55]"
+                className="group flex flex-col items-start gap-1 transition-opacity hover:opacity-[.55] tablet:ml-auto tablet:items-end"
               >
                 <span className="flex items-center gap-1 text-muted">
                   다음 글
                   <RightArrow style={{ width: 14, height: 14 }} />
                 </span>
-                <span className="text-theme">{nextPost.title}</span>
+                <span className="line-clamp-2 text-theme">
+                  {nextPost.title}
+                </span>
               </Link>
             )}
           </div>

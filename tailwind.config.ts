@@ -46,27 +46,21 @@ export default {
         hairline: "var(--hairline-color)",
       },
       spacing: {
-        "sk-section": "var(--sk-space-section)",
-        "sk-section-lg": "var(--sk-space-section-lg)",
-        "sk-stack": "var(--sk-space-stack)",
-        "sk-item": "var(--sk-space-item)",
+        section: "var(--space-section)",
+        "section-lg": "var(--space-section-lg)",
+        stack: "var(--space-stack)",
+        item: "var(--space-item)",
       },
       borderRadius: {
-        "sk-image": "var(--sk-radius-image)",
+        image: "var(--radius-image)",
       },
       fontSize: {
-        "sk-h1": ["var(--sk-text-h1)", { lineHeight: "1.35" }],
-        "sk-hero-name": [
-          "var(--sk-text-hero-name)",
-          { letterSpacing: "-0.02em" },
-        ],
-        "sk-h2": ["var(--sk-text-h2)", { fontWeight: "600" }],
-        "sk-label": ["var(--sk-text-label)", { fontWeight: "600" }],
-        "sk-meta": "var(--sk-text-meta)",
-        "sk-body": [
-          "var(--sk-text-body)",
-          { lineHeight: "var(--sk-line-body)" },
-        ],
+        h1: ["var(--text-h1)", { lineHeight: "1.35" }],
+        "hero-name": ["var(--text-hero-name)", { letterSpacing: "-0.02em" }],
+        h2: ["var(--text-h2)", { fontWeight: "600" }],
+        label: ["var(--text-label)", { fontWeight: "600" }],
+        meta: "var(--text-meta)",
+        body: ["var(--text-body)", { lineHeight: "var(--line-body)" }],
       },
       transitionDuration: {
         custom: "var(--transition-duration)",

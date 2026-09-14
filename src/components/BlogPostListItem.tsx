@@ -22,12 +22,10 @@ const BlogPostListItem = ({
     <Link
       href={`/posts/${slug}`}
       style={{ animationDelay: `${getStaggerDelayMs(index)}ms` }}
-      className="sk-fade-in flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 transition-opacity hover:opacity-[.55]"
+      className="fade-in flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 transition-opacity hover:opacity-[.55]"
     >
-      <span className="min-w-[180px] flex-1 text-sk-body text-theme">
-        {title}
-      </span>
-      <time dateTime={isoDate} className="shrink-0 text-sk-meta text-muted">
+      <span className="min-w-[180px] flex-1 text-body text-theme">{title}</span>
+      <time dateTime={isoDate} className="shrink-0 text-meta text-muted">
         {formattedDate}
       </time>
     </Link>

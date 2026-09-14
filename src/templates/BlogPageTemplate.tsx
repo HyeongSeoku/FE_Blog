@@ -51,7 +51,7 @@ const CategoryTabs = ({
             key={key}
             href={href}
             className={classNames(
-              "text-sk-h2 transition-opacity duration-200",
+              "text-h2 transition-opacity duration-200",
               isSelected
                 ? "font-semibold text-theme"
                 : "text-muted hover:opacity-[.55]",
@@ -75,14 +75,14 @@ const CategoryTabs = ({
       <div className="flex items-center gap-4">
         <Link
           href="/categories"
-          className="text-sk-meta text-muted hover:opacity-[.55] transition-opacity flex items-center gap-1"
+          className="text-meta text-muted hover:opacity-[.55] transition-opacity flex items-center gap-1"
         >
           <TagIcon className="w-4 h-4" />
           카테고리
         </Link>
         <Link
           href="/archive"
-          className="text-sk-meta text-muted hover:opacity-[.55] transition-opacity flex items-center gap-1"
+          className="text-meta text-muted hover:opacity-[.55] transition-opacity flex items-center gap-1"
         >
           <CalendarIcon className="w-4 h-4" /> 전체 목록
         </Link>
@@ -105,16 +105,14 @@ const BlogDescription = ({ category }: { category?: string }) => {
   if (!description) return null;
 
   return (
-    <p className="text-sk-meta text-muted mb-sk-section-lg max-w-md">
-      {description}
-    </p>
+    <p className="text-meta text-muted mb-section-lg max-w-md">{description}</p>
   );
 };
 
 // 게시물 리스트
 const BlogPostList = ({ postList }: { postList: PostDataProps[] }) => {
   return (
-    <div className="flex flex-col gap-sk-item">
+    <div className="flex flex-col gap-item">
       {postList.map((post, index) => (
         <BlogPostListItem
           key={post.slug}

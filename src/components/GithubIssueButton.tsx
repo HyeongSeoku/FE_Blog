@@ -1,10 +1,7 @@
 "use client";
 
-import { Button } from "@seoku/design-system";
-import classNames from "classnames";
 import type { ReactNode } from "react";
 import useIssueInfo from "@/hooks/useIssueInfo";
-import GithubIssueIcon from "@/icon/github_issue.svg";
 
 export interface GithubIssueButtonProps {
   children?: ReactNode;
@@ -23,26 +20,16 @@ const GitHubIssueButton = ({
   )}&body=${encodeURIComponent(`${body}`)}`;
 
   return (
-    <Button
-      asChild
-      variant="ghost"
-      className={classNames(
-        "!ml-1 !h-10 !px-2 !py-1 !min-w-10 !w-fit !rounded-sm",
-        "!bg-gray-300 dark:!bg-gray-600 hover:!bg-gray-400/20",
-        className,
-      )}
+    <a
+      href={issueUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      title="Report Issue Button"
+      aria-label="Report Issue Button"
+      className={className}
     >
-      <a
-        href={issueUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Report Issue Button"
-        aria-label="Report Issue Button"
-      >
-        <GithubIssueIcon style={{ width: 32, height: 32 }} />
-        {children ?? <span className="sr-only">Report Issue</span>}
-      </a>
-    </Button>
+      {children ?? <span className="sr-only">Report Issue</span>}
+    </a>
   );
 };
 

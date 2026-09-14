@@ -144,7 +144,7 @@ const BlogArchiveYearPage = async ({
     <div className="w-full">
       <MonthlySection year={year} monthlyData={monthlyData} />
 
-      <div className="mt-sk-section">
+      <div className="mt-section">
         <BlogDateTemplate
           dateText={yearText}
           postList={postList}

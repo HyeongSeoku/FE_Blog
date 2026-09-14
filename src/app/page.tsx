@@ -49,9 +49,9 @@ export default async function Home() {
 
       <IntroSectionTemplate />
 
-      <section className="mt-sk-section flex flex-col gap-4">
-        <h2 className="text-sk-label text-muted">글</h2>
-        <div className="flex flex-col gap-sk-item">
+      <section className="mt-section flex flex-col gap-4">
+        <h2 className="text-label text-muted">글</h2>
+        <div className="flex flex-col gap-item">
           {postList.map((post, index) => (
             <BlogPostListItem
               key={post.slug}
@@ -65,7 +65,7 @@ export default async function Home() {
         {totalPostCount > DEFAULT_MAIN_POST_COUNT && (
           <Link
             href="/archive"
-            className="mt-2 text-sk-meta text-muted transition-opacity hover:opacity-[.55]"
+            className="mt-2 text-meta text-muted transition-opacity hover:opacity-[.55]"
           >
             전체 목록
           </Link>
@@ -73,9 +73,9 @@ export default async function Home() {
       </section>
 
       {!!seriesList.length && (
-        <section className="mt-sk-section flex flex-col gap-4">
-          <h2 className="text-sk-label text-muted">시리즈</h2>
-          <div className="flex flex-col gap-sk-item">
+        <section className="mt-section flex flex-col gap-4">
+          <h2 className="text-label text-muted">시리즈</h2>
+          <div className="flex flex-col gap-item">
             {seriesList.map(([key, value], index) => (
               <SeriesListItem
                 key={key}
@@ -89,7 +89,7 @@ export default async function Home() {
           </div>
           <Link
             href="/series"
-            className="mt-2 text-sk-meta text-muted transition-opacity hover:opacity-[.55]"
+            className="mt-2 text-meta text-muted transition-opacity hover:opacity-[.55]"
           >
             전체 시리즈
           </Link>

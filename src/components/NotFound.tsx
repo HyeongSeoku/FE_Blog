@@ -1,31 +1,39 @@
 "use client";
 
 import Link from "next/link";
+import GithubIssueIcon from "@/icon/github_issue.svg";
 import GitHubIssueButton from "./GithubIssueButton";
 
 const NotFound = () => {
   return (
-    <section className="w-full h-full px-8 mobile:px-4 flex flex-col">
-      <div className="flex flex-col items-center gap-2 my-auto">
-        <h1 className="text-sk-h1 font-bold text-theme">404 Not found</h1>
-        <div className="text-sk-body flex flex-col text-center text-muted">
-          <span>페이지를 찾을 수 없습니다</span>
-          <span>페이지가 이동되거나 변경되었습니다.</span>
-        </div>
-
-        <nav className="flex flex-col items-center gap-2 mt-5">
-          <Link
-            className="text-sk-meta text-theme transition-opacity hover:opacity-[.55]"
-            href="/"
-            replace
-          >
-            홈으로
-          </Link>
-          <GitHubIssueButton className="text-sk-meta text-muted transition-opacity hover:opacity-[.55]">
-            이슈 신고하기
-          </GitHubIssueButton>
-        </nav>
+    <section className="flex flex-col gap-10">
+      <div className="fade-in flex flex-col gap-3">
+        <span className="text-label text-muted">Error</span>
+        <h1 className="text-[clamp(3.5rem,14vw,7rem)] font-bold leading-none text-theme">
+          404
+        </h1>
+        <p className="text-body leading-[var(--line-intro)] text-muted">
+          페이지를 찾을 수 없습니다. 주소가 바뀌었거나 더 이상 존재하지 않는
+          페이지입니다.
+        </p>
       </div>
+
+      <nav
+        className="fade-in flex flex-wrap items-center gap-3"
+        style={{ animationDelay: "80ms" }}
+      >
+        <Link
+          className="rounded-full bg-opposite-theme px-5 py-2.5 text-meta font-medium text-opposite-theme transition-opacity hover:opacity-[.85]"
+          href="/"
+          replace
+        >
+          홈으로
+        </Link>
+        <GitHubIssueButton className="inline-flex items-center gap-1.5 rounded-full border border-hairline px-4 py-2.5 text-meta text-muted transition-colors hover:border-theme hover:text-theme">
+          <GithubIssueIcon style={{ width: 14, height: 14 }} />
+          이슈 신고하기
+        </GitHubIssueButton>
+      </nav>
     </section>
   );
 };

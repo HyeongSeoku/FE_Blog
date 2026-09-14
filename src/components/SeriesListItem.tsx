@@ -18,18 +18,22 @@ const SeriesListItem = ({
   index = 0,
 }: SeriesListItemProps) => {
   const formattedDate = latestDate ? dayjs(latestDate).format("YYYY. MM") : "";
-  const meta = formattedDate ? `${formattedDate} · ${count}편` : `${count}편`;
 
   return (
     <Link
       href={`/series/${seriesKey}`}
       style={{ animationDelay: `${getStaggerDelayMs(index)}ms` }}
-      className="sk-fade-in flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 transition-opacity hover:opacity-[.55]"
+      className="fade-in flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 transition-opacity hover:opacity-[.55]"
     >
-      <span className="min-w-[180px] flex-1 text-sk-body text-theme">
+      <span className="flex min-w-[180px] flex-1 items-baseline gap-2 text-body text-theme">
         {title}
+        <span className="shrink-0 rounded-full border border-hairline px-2 py-0.5 text-label text-muted">
+          {count}편
+        </span>
       </span>
-      <span className="shrink-0 text-sk-meta text-muted">{meta}</span>
+      {formattedDate && (
+        <span className="shrink-0 text-meta text-muted">{formattedDate}</span>
+      )}
     </Link>
   );
 };

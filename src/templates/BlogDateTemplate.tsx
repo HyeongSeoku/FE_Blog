@@ -37,13 +37,13 @@ const BlogDateTemplate = ({
   return (
     <div className="w-full h-full flex flex-col flex-grow max-w-4xl mx-auto">
       {/* 헤더 */}
-      <div className="mb-sk-section-lg">
-        <h1 className="text-sk-h1 font-bold text-theme mb-2">{dateText}</h1>
-        <p className="text-sk-meta text-muted">{postCount}개의 포스트</p>
+      <div className="mb-section-lg">
+        <h1 className="text-h1 font-bold text-theme mb-2">{dateText}</h1>
+        <p className="text-meta text-muted">{postCount}개의 포스트</p>
       </div>
 
       {/* 게시물 리스트 */}
-      <div className="flex flex-col gap-sk-item">
+      <div className="flex flex-col gap-item">
         {postList.map((post, index) => (
           <BlogPostListItem
             key={post.slug}

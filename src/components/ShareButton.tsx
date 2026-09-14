@@ -31,7 +31,7 @@ const ShareButton = () => {
     <button
       type="button"
       onClick={() => void handleShare()}
-      className="flex items-center gap-1 text-sk-meta text-muted transition-opacity hover:opacity-[.55]"
+      className="flex items-center gap-1 text-meta text-muted transition-opacity hover:opacity-[.55]"
     >
       <LinkIcon style={{ width: 14, height: 14 }} />
       {copied ? "링크 복사됨" : "공유"}

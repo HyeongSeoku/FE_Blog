@@ -35,10 +35,9 @@
   --link-text-hover-color: var(--muted-color);
   --hover-link-color: rgba(192, 192, 192, 0.3);
 
-  /* Legacy accent — kept only for /about (excluded from the seoku-blog grayscale
-     redesign, see jihoonwrks design spec). Do not use in blog shell/list/post
-     components going forward; use the neutral --muted-color / --hairline-color
-     tokens below instead. */
+  /* 사이트 공식 accent (2026-09-14 승격). 그레이스케일 톤 안에서 "현재/선택된
+     상태"를 표시할 때 의도적으로 딱 한 곳에만 쓰는 색이다 — 여러 컴포넌트에
+     흩어 쓰면 그레이스케일 정체성이 흐려지니, 새 용도를 추가할 땐 먼저 상의할 것. */
   --primary-color: #0abab5;
   --primary-hover-color: #0abab580;
 
@@ -76,21 +75,21 @@
 
 /* seoku 블로그 리디자인 타이포/여백 스케일 (jihoonwrks-design-spec 5장 기준) */
 :root {
-  --sk-text-h1: clamp(24px, 6.5vw, 32px);
-  --sk-text-hero-name: clamp(22px, 6vw, 26px);
-  --sk-text-h2: 19px;
-  --sk-text-label: 13px;
-  --sk-text-meta: 14px;
-  --sk-text-body: 16px;
-  --sk-line-body: 1.85;
-  --sk-line-intro: 1.8;
-  --sk-space-section: clamp(56px, 12vw, 96px);
-  --sk-space-section-lg: clamp(48px, 12vw, 72px);
-  --sk-space-stack: clamp(28px, 5vw, 40px);
-  --sk-space-item: 16px;
-  --sk-radius-image: 10px;
-  --sk-hero-image: clamp(180px, 42vw, 300px);
-  --sk-hover-opacity: 0.55;
+  --text-h1: clamp(24px, 6.5vw, 32px);
+  --text-hero-name: clamp(22px, 6vw, 26px);
+  --text-h2: 19px;
+  --text-label: 13px;
+  --text-meta: 14px;
+  --text-body: 16px;
+  --line-body: 1.85;
+  --line-intro: 1.8;
+  --space-section: clamp(56px, 12vw, 96px);
+  --space-section-lg: clamp(48px, 12vw, 72px);
+  --space-stack: clamp(28px, 5vw, 40px);
+  --space-item: 16px;
+  --radius-image: 10px;
+  --hero-image: clamp(180px, 42vw, 300px);
+  --hover-opacity: 0.55;
 }
 
 /* 전환 관련 속성 */
@@ -131,6 +130,11 @@
   --bg-gray-hover-color: var(--light-bg-gray-hover-color);
   --muted-color: var(--light-muted-color);
   --hairline-color: var(--light-hairline-color);
+
+  /* 코드블록은 syntax 하이라이팅 색이 어두운 배경 전제로 고정돼 있어 완전히
+     밝게 뺄 수 없다. 페이지 배경(흰색)과의 대비가 너무 튀지 않도록 순수
+     검정에 가까운 톤 대신 부드러운 다크 그레이를 쓴다. */
+  --code-bg-color: #474747;
 }
 
 /* Dark Theme */
@@ -145,6 +149,10 @@
   --bg-gray-hover-color: var(--dark-bg-gray-hover-color);
   --muted-color: var(--dark-muted-color);
   --hairline-color: var(--dark-hairline-color);
+
+  /* 다크모드는 페이지 배경(#151515) 자체가 이미 어두우니, 코드블록도
+     그 배경에 가깝게 눌러서 튀는 카드가 아니라 은은하게 얹힌 표면처럼 보이게 한다. */
+  --code-bg-color: #202020;
 
   /* Seoku Design System - dark mode uses lighter gray tints for contrast */
   --sds-action-primary: var(--sds-primary-300);
@@ -236,7 +244,7 @@ body[data-modal-open="true"] {
 /* seoku 블로그 리디자인 애니메이션 (jihoonwrks-design-spec 7장 기준)
    뷰 전환/목록 스태거: opacity + 4px translateY, 200ms ease-out.
    스크롤 기반 등장 애니메이션은 사용하지 않는다 — 최초 렌더 시 한 번만 재생. */
-@keyframes sk-fade-in {
+@keyframes fade-in {
   from {
     opacity: 0;
     transform: translateY(4px);
@@ -247,12 +255,12 @@ body[data-modal-open="true"] {
   }
 }
 
-.sk-fade-in {
-  animation: sk-fade-in 200ms ease-out both;
+.fade-in {
+  animation: fade-in 200ms ease-out both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sk-fade-in {
+  .fade-in {
     animation: none;
   }
 

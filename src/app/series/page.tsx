@@ -42,14 +42,14 @@ async function SeriesPage() {
   return (
     <div className="w-full">
       {/* 헤더 */}
-      <header className="mb-sk-section-lg">
-        <h1 className="text-sk-h1 font-bold text-theme">시리즈</h1>
-        <p className="mt-2 text-sk-meta text-muted">
+      <header className="mb-section-lg">
+        <h1 className="text-h1 font-bold text-theme">시리즈</h1>
+        <p className="mt-2 text-meta text-muted">
           {seriesList.length}개의 시리즈
         </p>
       </header>
 
-      <section className="flex flex-col gap-sk-item">
+      <section className="flex flex-col gap-item">
         {seriesList.map(([key, value], index) => (
           <SeriesListItem
             key={key}
