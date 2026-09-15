@@ -90,6 +90,9 @@
   --radius-image: 10px;
   --hero-image: clamp(180px, 42vw, 300px);
   --hover-opacity: 0.55;
+  /* Header.tsx의 상단 padding과 동일한 값 — MobileReadingIsland가 모바일
+     헤더 행과 같은 기준선에서 시작해 세로 중앙을 맞출 때 재사용한다. */
+  --header-top-padding: clamp(28px, 7vw, 48px);
 }
 
 /* 전환 관련 속성 */
