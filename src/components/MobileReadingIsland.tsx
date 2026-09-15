@@ -44,11 +44,18 @@ const MobileReadingIsland = ({
   return (
     <div
       aria-hidden={!visible}
-      className="pointer-events-none fixed inset-x-0 top-3 z-40 hidden justify-center mobile:flex"
+      className="pointer-events-none fixed inset-x-0 z-40 hidden h-10 items-start justify-center mobile:flex"
+      style={{ top: "var(--header-top-padding)" }}
     >
+      {/*
+        래퍼를 items-center로 세로 중앙 정렬하면, 펼쳐져서 키가 커질 때
+        중앙 기준으로 위/아래 균등하게 늘어나 헤더 위쪽 화면 밖으로 넘친다.
+        items-start + mt-1(접혔을 때 세로 중앙과 같은 오프셋)로 위쪽을 고정하고
+        아래로만 펼쳐지게 한다.
+      */}
       <div
         className={classNames(
-          "transition-opacity duration-200",
+          "mt-1 transition-opacity duration-200",
           visible
             ? "pointer-events-auto opacity-100"
             : "pointer-events-none opacity-0",

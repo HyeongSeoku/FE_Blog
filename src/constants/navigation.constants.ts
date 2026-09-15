@@ -13,6 +13,7 @@ export type NAV_LIST_TYPE = {
 export const NAV_POSTS = "POSTS";
 export const NAV_SERIES = "SERIES";
 export const NAV_CATEGORIES = "CATEGORIES";
+export const NAV_PORTFOLIO = "PORTFOLIO";
 export const NAV_ABOUT = "ABOUT";
 export const NAV_GITHUB_ISSUE = "GITHUB_ISSUE";
 
@@ -29,6 +30,12 @@ export const NAV_LIST: NAV_LIST_TYPE[] = [
     title: "카테고리",
     link: "/categories",
     baseUrl: ["/categories"],
+  },
+  {
+    id: NAV_PORTFOLIO,
+    title: "포트폴리오",
+    link: "/portfolio",
+    baseUrl: ["/portfolio"],
   },
   { id: NAV_ABOUT, title: "소개", link: "/about", baseUrl: ["/about"] },
   {

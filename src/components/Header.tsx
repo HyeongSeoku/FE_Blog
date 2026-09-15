@@ -56,7 +56,7 @@ const Header = ({
   };
 
   return (
-    <header className="w-full pt-[clamp(28px,7vw,48px)]">
+    <header className="sticky top-0 z-30 w-full bg-theme pb-4 pt-[var(--header-top-padding)]">
       <div className="mx-auto flex w-full max-w-[680px] items-center px-5">
         {headerType === "DEFAULT" && (
           <button
